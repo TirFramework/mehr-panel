@@ -4,6 +4,7 @@ import { Switch, Route, Redirect } from 'react-router-dom';
 
 import Dashboard from './pages/Dashboard';
 import Index from './pages/Index';
+import Create from './pages/Create';
 
 import NotFound from './pages/404';
 
@@ -11,8 +12,9 @@ const Routes = () => {
   return (
     <Switch>
 
-      <Route path="/" component={Dashboard} />
-      <Route path="/:slug/index" component={Index} />
+      <Route path="/dashboard" component={Dashboard} />
+      <Route path="/post/index" component={Index} />
+      <Route path="/post/create" component={Create} />
 
       <Route component={NotFound} />
     </Switch>

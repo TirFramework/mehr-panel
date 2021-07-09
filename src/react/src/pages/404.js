@@ -1,8 +1,13 @@
+import DefaultLayout from '../layouts/DefaultLayout'
+
+
 function NotFound() {
-    return (
-        <h1>NotFound</h1>
-    );
-  }
-  
-  export default NotFound;
-  
+  return (
+      <DefaultLayout>
+          <h1>NotFound</h1>
+      </DefaultLayout>
+  );
+}
+
+export default NotFound;
+ 

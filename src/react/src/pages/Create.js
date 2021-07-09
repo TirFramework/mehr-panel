@@ -1,13 +1,13 @@
 import DefaultLayout from '../layouts/DefaultLayout'
 
 
-function Index() {
+function Create() {
   return (
       <DefaultLayout>
-          <h1>index</h1>
+          <h1>Create</h1>
       </DefaultLayout>
   );
 }
 
-export default Index;
+export default Create;
  

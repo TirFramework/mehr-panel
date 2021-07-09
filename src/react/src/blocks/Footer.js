@@ -2,7 +2,7 @@ import { Layout } from "antd";
 
 const { Footer } = Layout;
 
-function App() {
+function Foot() {
   return (
     <Footer className="text-center">
       Ant Design ©2018 Created by Ant UED
@@ -10,4 +10,4 @@ function App() {
   );
 }
 
-export default App;
+export default Foot;

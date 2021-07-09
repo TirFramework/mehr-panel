@@ -9,8 +9,9 @@ import {
 
 
 import Sidebar from "../blocks/Sidebar";
+import Footer from "../blocks/Footer";
 
-const { Header, Content, Footer } = Layout;
+const { Header, Content } = Layout;
 const { SubMenu } = Menu;
 
 function App( props ) {
@@ -29,9 +30,7 @@ function App( props ) {
           {props.children}
 
         </Content>
-        <Footer style={{ textAlign: "center" }}>
-          Ant Design ©2018 Created by Ant UED
-        </Footer>
+        <Footer />
       </Layout>
     </Layout>
   );
