@@ -1,0 +1,28 @@
+{
+    "name": "tir/first-panel",
+    "description": "The admin panel for Tir framework",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Tirdad Abbasi",
+            "email": "abbasi.tirdad@gmail.com"
+        }
+    ],
+    "require": {
+        "tir/crud": "*"
+    },
+
+    "autoload": {
+        "psr-4": {
+            "Tir\\FirstPanel\\": "src/"
+        }
+    },
+
+    "extra": {
+        "laravel": {
+            "providers": [
+              "MehrPanelServiceProvider"
+            ]
+        }
+    }
+}
