@@ -13,7 +13,7 @@ import Sidebar from "../blocks/Sidebar";
 const { Header, Content, Footer } = Layout;
 const { SubMenu } = Menu;
 
-function App() {
+function App( props ) {
   return (
     <Layout className="bg-gray-800" style={{ minHeight: "100vh" }}>
       <Sidebar />
@@ -24,12 +24,10 @@ function App() {
             <Breadcrumb.Item>User</Breadcrumb.Item>
             <Breadcrumb.Item>Bill</Breadcrumb.Item>
           </Breadcrumb>
-          <div
-            className="site-layout-background"
-            style={{ padding: 24, minHeight: 360 }}
-          >
-            Bill is a cat.
-          </div>
+
+
+          {props.children}
+
         </Content>
         <Footer style={{ textAlign: "center" }}>
           Ant Design ©2018 Created by Ant UED
