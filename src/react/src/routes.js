@@ -14,7 +14,7 @@ const Routes = () => {
 
       <Route path="/dashboard" component={Dashboard} />
       <Route path="/post/index" component={Index} />
-      <Route path="/post/create" component={Create} />
+      <Route path="/:pageType/create" component={Create} />
 
       <Route component={NotFound} />
     </Switch>

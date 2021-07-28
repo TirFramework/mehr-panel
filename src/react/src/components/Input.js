@@ -1,10 +1,23 @@
-import { Input } from 'antd';
+import { Form, Input } from "antd";
 
-
-const Text = () => {
-    return(
-        <Input placeholder="Basic usage" />
-    )
-}
+const Text = (data) => {
+  return (
+    <>
+      <Form.Item
+        label={data.label}
+        name={data.name}
+        initialValue={data.val}
+        rules={[
+          {
+            required: true,
+            message: "Please input your username!",
+          },
+        ]}
+      >
+        <Input />
+      </Form.Item>
+    </>
+  );
+};
 
 export default Text;

@@ -1,3 +1,4 @@
+import React, { useState } from 'react';
 import { Layout, Menu } from "antd";
 import {
   DesktopOutlined,
@@ -14,7 +15,18 @@ import { Link } from "react-router-dom";
 const { Sider } = Layout;
 const { SubMenu } = Menu;
 
+
 function App() {
+
+
+  const [current, setCurrent] = useState();
+
+  console.log("🚀 sidebar")
+  const handleClick = (e) => {
+    setCurrent(e.key);
+  }
+
+
   return (
     <Sider
       style={{
@@ -25,14 +37,14 @@ function App() {
       }}
     >
       <div className="logo h-8 m-4 " />
-      <Menu theme="dark" defaultSelectedKeys={["1"]} mode="inline">
-        <Menu.Item key="1" icon={<PieChartOutlined />}>
+      <Menu theme="dark" defaultSelectedKeys={["Dashboard"]} onClick={handleClick} selectedKeys={[current]} mode="inline">
+        <Menu.Item key="Post" icon={<PieChartOutlined />}>
           <Link to="/post/index">Post</Link>
         </Menu.Item>
-        <Menu.Item key="11" icon={<PieChartOutlined />}>
-          <Link to="/post/create">Post create</Link>
+        <Menu.Item key="Create" icon={<PieChartOutlined />}>
+          <Link to="/post/create">Post Create</Link>
         </Menu.Item>
-        <Menu.Item key="2" icon={<DesktopOutlined />}>
+        <Menu.Item key="Dashboard" icon={<DesktopOutlined />}>
         <Link to="/dashboard">Dashboard</Link>
         </Menu.Item>
         <SubMenu key="sub1" icon={<UserOutlined />} title="User">
