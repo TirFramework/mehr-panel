@@ -1,24 +1,34 @@
-import React from 'react';
-import { Switch, Route, Redirect } from 'react-router-dom';
-
-
-import Dashboard from './pages/Dashboard';
+import Dashboard from './pages/Dashboard.js';
 import Index from './pages/Index';
 import Create from './pages/Create';
 
-import NotFound from './pages/404';
 
-const Routes = () => {
-  return (
-    <Switch>
+const dashboardRoutes = [
+  {
+    path: "/dashboard",
+    name: "Dashboard",
+    component: Dashboard,
+    layout: "/admin",
+  },
+  {
+    path: "/:pageModule/:pageType/:pageId",
+    name: "Edit",
+    component: Create,
+    layout: "/admin",
+  },
+  {
+    path: "/:pageModule/:pageType",
+    name: "Create",
+    component: Create,
+    layout: "/admin",
+  },
+  {
+    path: "/:pageModule",
+    name: "Index",
+    component: Index,
+    layout: "/admin",
+  }
 
-      <Route path="/dashboard" component={Dashboard} />
-      <Route path="/post/index" component={Index} />
-      <Route path="/:pageType/create" component={Create} />
+];
 
-      <Route component={NotFound} />
-    </Switch>
-  );
-};
-
-export default Routes;
+export default dashboardRoutes;

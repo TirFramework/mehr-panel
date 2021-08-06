@@ -4,8 +4,8 @@ const { Footer } = Layout;
 
 function Foot() {
   return (
-    <Footer className="text-center">
-      Ant Design ©2018 Created by Ant UED
+    <Footer className="text-center py-1 text-sm">
+      Designed by the AMAJ
     </Footer>
   );
 }

@@ -1,87 +1,132 @@
-import DefaultLayout from "../layouts/DefaultLayout";
-// import Input from "../components/Input";
+import { useEffect, useState } from "react";
+import { Link, useParams } from "react-router-dom";
+import {
+  Form,
+  Spin,
+  Button,
+  Breadcrumb,
+  notification,
+  Typography,
+  Card,
+  Row,
+  Space,
+} from "antd";
 
-import React, { lazy, useEffect, useState } from "react";
-// import shortid from 'shortid';
-import { useHistory, useParams } from 'react-router-dom'
+import * as api from "../api";
 
-import { Form, Button, Breadcrumb } from "antd";
+import Field from "../components/Field";
 
+const { Title } = Typography;
 
+const Create = () => {
+  const { pageModule } = useParams();
+  const { pageType } = useParams();
+  const { pageId } = useParams();
 
+  const [fields, setFields] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-const importView = (subreddit) =>
-  lazy(() => import(`../components/${subreddit}`).catch(() => import(`./404`)));
-
-const searchSubreddit = async (query) => {
-  return fetch(`http://localhost:8000/${query}/fields.json`).then((_) => _.json());
-}
-
-function Create({ subredditsToShow }) {
-
-  const { pageType } = useParams()
-
-
-  const [views, setViews] = useState([]);
-
-  const extractData = (response) => {
-    return response.data.map(({ data }) => data);
+  const makeField = () => {
+    if (pageType === "create") {
+      api.getCreateFields(pageModule).then((res) => {
+        setFields(res);
+        setLoading(false);
+      });
+    } else {
+      api.getEditFields(pageModule, pageId).then((res) => {
+        setFields(res);
+        setLoading(false);
+      });
+    }
   };
+
+  useEffect(() => {
+    async function makePage() {
+      await makeField();
+    }
+    makePage();
+  }, []);
 
   const onFinish = (values) => {
     console.log("Success:", values);
+
+    setLoading(true);
+      if (pageType === "create") {
+        api
+        .postCreate(pageModule, values)
+        .then((res) => {
+          setLoading(false);
+          notification["success"]({
+            message: res.data.message,
+          });
+        })
+        .catch((err) => {
+          setLoading(false);
+          console.log(err);
+        });
+      } else {
+        api
+        .postEdit(pageModule, pageId, values)
+        .then((res) => {
+          setLoading(false);
+          notification["success"]({
+            message: res.data.message,
+          });
+        })
+        .catch((err) => {
+          setLoading(false);
+          notification["error"]({
+            message: err.data.message,
+          });
+          console.log(err);
+        });
+      }
   };
 
   const onFinishFailed = (errorInfo) => {
     console.log("Failed:", errorInfo);
   };
 
-  useEffect(() => {
-    async function loadViews() {
-      const subredditsToShow = await searchSubreddit(pageType).then(
-        extractData
-      );
-      const componentPromises = subredditsToShow.map(async (data) => {
-        const View = await importView(data.subreddit);
-        return <View key={data.key} {...data} />;
-      });
-
-      Promise.all(componentPromises).then(setViews);
-    }
-
-    loadViews();
-  }, [subredditsToShow]);
-
   return (
-    <DefaultLayout >
+    <>
       <Breadcrumb>
-        <Breadcrumb.Item className="capitalize">{pageType}</Breadcrumb.Item>
+        <Breadcrumb.Item className="capitalize">{pageModule}</Breadcrumb.Item>
         <Breadcrumb.Item>Create</Breadcrumb.Item>
       </Breadcrumb>
+      <Title>
+        {pageType} {pageModule}
+      </Title>
+      <Form
+        name="basic"
+        labelCol={{
+          span: 6,
+        }}
+        wrapperCol={{
+          span: 18,
+        }}
+        initialValues={{
+          remember: true,
+        }}
+        onFinish={onFinish}
+        onFinishFailed={onFinishFailed}
+      >
+        <Card>
+          {fields.map((field, index) => (
+            <Field key={index} type={field.type} loading={loading} {...field} />
+          ))}
+        </Card>
 
-      <React.Suspense fallback="Loading views...">
-        <Form
-          name="basic"
-          labelCol={{
-            span: 8,
-          }}
-          wrapperCol={{
-            span: 16,
-          }}
-          initialValues={{
-            remember: true,
-          }}
-          onFinish={onFinish}
-          onFinishFailed={onFinishFailed}
-        >
-          {views}
-          <Button type="primary" htmlType="submit">
+        <Space className="justify-end flex mt-2">
+          <Button>
+            <Link to={`/admin/${pageModule}`}>Cancel</Link>
+          </Button>
+          <Button type="primary" htmlType="submit" loading={loading}>
             Submit
           </Button>
-        </Form>
-      </React.Suspense>
-    </DefaultLayout>
+        </Space>
+      </Form>
+    </>
   );
-}
+};
 
 export default Create;

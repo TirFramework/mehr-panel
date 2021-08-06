@@ -1,4 +1,5 @@
-import { Form, Input } from "antd";
+
+import { Form, InputNumber } from "antd";
 
 const Text = (data) => {
   return (
@@ -14,7 +15,7 @@ const Text = (data) => {
           },
         ]}
       >
-        <Input />
+        <InputNumber />
       </Form.Item>
     </>
   );

@@ -1,23 +1,35 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import { BrowserRouter as Router } from "react-router-dom";
+import { BrowserRouter, Route, Switch, Redirect } from "react-router-dom";
+import { QueryClient, QueryClientProvider, useQuery } from "react-query";
 
-import reportWebVitals from "./reportWebVitals";
-import Routes from './routes';
+// import reportWebVitals from "./reportWebVitals";
 
+import PrivateRoute from "./PrivateRoute.js";
+
+// core components
+import DefaultLayout from "./layouts/DefaultLayout.js";
+import Login from "./layouts/Login.js";
 
 import "./assets/index.less";
 
+const queryClient = new QueryClient();
+
 ReactDOM.render(
-  <React.StrictMode>
-    <Router >
-      <Routes />
-    </Router>
-  </React.StrictMode>,
+  <QueryClientProvider client={queryClient}>
+    <BrowserRouter>
+      <Switch>
+        <PrivateRoute path="/admin" component={DefaultLayout} />
+        {/* <Redirect from="/" to="/admin/login" /> */}
+        <Route path="/login" component={Login} />
+      </Switch>
+    </BrowserRouter>
+  </QueryClientProvider>,
+
   document.getElementById("root")
 );
 
 // If you want to start measuring performance in your app, pass a function
 // to log results (for example: reportWebVitals(console.log))
 // or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();
+// reportWebVitals();
