@@ -1,3 +1,5 @@
+import Editor from "../components/Editor";
+
 function Dashboard() {
   return (
     <>

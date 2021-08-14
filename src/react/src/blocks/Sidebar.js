@@ -51,7 +51,7 @@ function App() {
           <Menu.Item key="8">Team 2</Menu.Item>
         </SubMenu> */}
 
-        {menus.data.map((menu, index) => (
+        {menus?.data.map((menu, index) => (
           <Menu.Item key={index} icon={<Icon type={menu.icon} />}>
             <Link to={menu.link}>{menu.title}</Link>
           </Menu.Item>

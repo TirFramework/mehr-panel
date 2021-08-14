@@ -49,7 +49,7 @@ function DefaultLayout(props) {
 
   return (
     <div>
-      <Sidebar />
+      {/* <Sidebar /> */}
       <Layout className="site-layout" style={{ marginLeft: 200 }}>
         <div className="flex flex-col h-screen">
           <Header className="bg-white px-4">

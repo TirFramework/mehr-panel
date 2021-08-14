@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, Redirect, useParams } from "react-router-dom";
 import {
   Form,
   Spin,
@@ -16,6 +16,8 @@ import * as api from "../api";
 
 import Field from "../components/Field";
 
+import {mapErrors } from '../lib/helpers'
+
 const { Title } = Typography;
 
 const Create = () => {
@@ -25,6 +27,7 @@ const Create = () => {
 
   const [fields, setFields] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [redirecting, setRedirecting] = useState(false);
 
   const makeField = () => {
     if (pageType === "create") {
@@ -55,30 +58,35 @@ const Create = () => {
         api
         .postCreate(pageModule, values)
         .then((res) => {
+          console.log("🚀 ~ file: Create.js ~ line 59 ~ .then ~ res", res)
           setLoading(false);
           notification["success"]({
-            message: res.data.message,
+            message: res.message,
           });
+          setRedirecting(`/admin/${pageModule}/edit/${res.id}`)
         })
         .catch((err) => {
           setLoading(false);
-          console.log(err);
+          console.log("🚀 ~ file: Create.js ~ line 88 ~ onFinish ~ err", err.response.data.message)
+          
+          notification["error"]({
+            message: mapErrors(err.response.data.message),
+          });
         });
-      } else {
+      } else if (pageType === "edit") {
         api
         .postEdit(pageModule, pageId, values)
         .then((res) => {
+          console.log("🚀 ~ file: Create.js ~ line 77 ~ .then ~ res", res)
           setLoading(false);
           notification["success"]({
-            message: res.data.message,
+            message: res.message,
           });
         })
         .catch((err) => {
+          console.log("🚀 ~ file: Create.js ~ line 88 ~ onFinish ~ err", err)
           setLoading(false);
-          notification["error"]({
-            message: err.data.message,
-          });
-          console.log(err);
+          
         });
       }
   };
@@ -87,13 +95,21 @@ const Create = () => {
     console.log("Failed:", errorInfo);
   };
 
+
+
+  console.log("🚀 ~ file: Create.js ~ line 96 ~ Create ~ redirecting", redirecting)
+
+  if (redirecting) {
+    return <Redirect to={redirecting} />;
+  }
+
   return (
     <>
       <Breadcrumb>
         <Breadcrumb.Item className="capitalize">{pageModule}</Breadcrumb.Item>
         <Breadcrumb.Item>Create</Breadcrumb.Item>
       </Breadcrumb>
-      <Title>
+      <Title className="capitalize">
         {pageType} {pageModule}
       </Title>
       <Form

@@ -1,9 +1,9 @@
 import { Form, Input } from "antd";
 
-import separationRules from "../lib/helpers";
+import { separationRules } from "../lib/helpers";
 
 const Text = (data) => {
-console.log("🚀 ~ file: text.js ~ line 6 ~ Text ~ data", data)
+// console.log("🚀 ~ file: text.js ~ line 6 ~ Text ~ data", data)
 // console.log("🚀 ~ ---------------------------------------------------")
 // console.log("🚀 ~ file: text.js ~ line 15 ~ Text ~ data.display", data.display)
 // console.log("🚀 ~ file: text.js ~ line 6 ~ Text ~ data", data)
@@ -23,7 +23,6 @@ console.log("🚀 ~ file: text.js ~ line 6 ~ Text ~ data", data)
         label={data.display}
         name={data.name}
         initialValue={data.value}
-        disable={data.loading}
         rules={rules}
         >
         <Input placeholder={data.options.placeholder} />

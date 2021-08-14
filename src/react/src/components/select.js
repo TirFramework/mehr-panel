@@ -21,7 +21,8 @@ const options = data.data.map((d, index) => <Option key={index} value={d.value}>
       <Form.Item
         name={data.name}
         label={data.display}
-        valuePropName="option"
+        // valuePropName="option"
+        initialValue={data.value}
         rules={[
           {
             required: true,
@@ -30,7 +31,6 @@ const options = data.data.map((d, index) => <Option key={index} value={d.value}>
       >
         <Select
           allowClear
-          value={data.value}
         >
             {options}
         </Select>

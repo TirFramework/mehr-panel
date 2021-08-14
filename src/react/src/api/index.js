@@ -21,14 +21,15 @@ const getEditFields = async (module, id) => {
 };
 
 
-const postCreate = async (module, data) => {
-  const { response } = await axios.post(`${module}/create`, data);
-  return await response;
+const postCreate = async (module, body) => {
+  const { data } = await axios.post(`${module}`, body);
+  return await data;
 };
 
-const postEdit = async (module, id, data) => {
-    const { response } = await axios.get(`${module}/${id}/edit`, data );
-    return await response;
+
+const postEdit = async (module, id, body) => {
+    const { data } = await axios.put(`${module}/${id}`, body );
+    return await data;
   };
   
 
