@@ -11,7 +11,7 @@ const dashboardRoutes = [
     layout: "/admin",
   },
   {
-    path: "/:pageModule/:pageType/:pageId",
+    path: "/:pageModule/:pageId/:pageType",
     name: "Edit",
     component: Create,
     layout: "/admin",

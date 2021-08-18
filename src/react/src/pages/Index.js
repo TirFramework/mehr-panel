@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { Button, Card, Row, Table, Typography } from "antd";
-
 import { useParams, Link } from "react-router-dom";
+
+import { Button, Card, Row, Table, Typography } from "antd";
+import { EditOutlined } from "@ant-design/icons";
 
 import axios from "../lib/axios";
 
@@ -62,6 +63,37 @@ function Index() {
     api
       .getCols()
       .then((res) => {
+        console.log("🚀 ~ file: Index.js ~ line 69 ~ .then ~ res", res);
+        let cols = res.cols;
+
+        console.log("🚀 ~ file: Index.js ~ line 68 ~ .then ~ cols", cols);
+
+        let react = React;
+
+        for (let i = 0; i < cols.length; i++) {
+          if (cols[i].render) {
+            cols[i].render = eval(cols[i].render);
+          }
+        }
+
+        let actions = {
+          title: "Actions",
+          dataIndex: "actions",
+          render: (actions, data) => {
+            return (
+              <Link to={`/admin/user/edit/${data.id}`}>
+                <EditOutlined title={actions.edit.name} />
+              </Link>
+            );
+          },
+        };
+
+        cols.push(actions);
+        console.log(
+          "🚀 ~ file: Index.js ~ line 101 ~ .then ~ res.cols",
+          res.cols
+        );
+
         setColumns(res.cols);
       })
       .catch((err) => {
@@ -70,14 +102,31 @@ function Index() {
   };
 
   // const getColumns = () => {
-  //   axios
-  //     .get(`${pageModule}`)
-  //     .then((res) => {
-  //       setColumns(res.data.cols);
-  //     })
-  //     .catch((err) => {
-  //       console.log(err);
-  //     });
+  //   let cols = {
+  //     cols: [
+  //       {
+  //         title: "Name",
+  //         dataIndex: "name",
+  //         sorter: true,
+  //         filters: [],
+  //         render: (name, data) => name + data.id,
+  //       },
+  //       {
+  //         title: "Email",
+  //         dataIndex: "email",
+  //         sorter: true,
+  //         filters: [],
+  //       },
+  //       {
+  //         title: "Type",
+  //         dataIndex: "type",
+  //         sorter: true,
+  //         filters: [],
+  //       },
+  //     ],
+  //   };
+
+  //   setColumns(cols.cols);
   // };
 
   useEffect(() => {
@@ -91,7 +140,7 @@ function Index() {
     }
 
     makeTable();
-  }, []);
+  }, [pageModule]);
 
   const handleTableChange = (pagination, filters, sorter) => {
     // console.log(

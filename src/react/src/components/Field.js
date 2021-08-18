@@ -1,4 +1,5 @@
 import { lazy, Suspense } from "react";
+import { Skeleton } from "antd";
 import { capitalize } from "../lib/helpers"
 
 const DynamicField = (props) => {
@@ -9,8 +10,9 @@ const DynamicField = (props) => {
 const Field = (props) => {
 // console.log("🚀 ~ file: Field.js ~ line 9 ~ Field ~ props", props)
   return (
-    <Suspense fallback={<div>Loading...</div>}>
+    <Suspense fallback={<div><Skeleton.Input active={true}  className="w-full mb-6" /></div>}>
       <DynamicField type={props.type} {...props} />
+      
     </Suspense>
   );
 };

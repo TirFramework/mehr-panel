@@ -97,7 +97,7 @@ const Create = () => {
 
 
 
-  console.log("🚀 ~ file: Create.js ~ line 96 ~ Create ~ redirecting", redirecting)
+  // console.log("🚀 ~ file: Create.js ~ line 96 ~ Create ~ redirecting", redirecting)
 
   if (redirecting) {
     return <Redirect to={redirecting} />;

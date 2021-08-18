@@ -1,3 +1,7 @@
+import Config from "../../constants/config";
+
+
+
 const separationRules = ({ pageType, rules, creationRules, updateRules }) => {
   let newRules = [];
 
@@ -15,9 +19,12 @@ const separationRules = ({ pageType, rules, creationRules, updateRules }) => {
   // console.log("🚀 ~ file: index.js ~ line 7 ~ pageType", pageType)
 
   // console.log("🚀 ~ file: index.js ~ line 25 ~ rules", rules)
-  if (rules.length === 0) {
-    // console.log("🚀 ~ file: index.js ~ line 25 ~ rules", rules)
-    return false;
+  
+  if (rules === '') {
+    return null;
+  }
+  if (rules?.length === 0) {
+    return null;
   }
 
   // console.log("🚀 ~ file: not empty", rules)
@@ -33,7 +40,7 @@ const separationRules = ({ pageType, rules, creationRules, updateRules }) => {
 
   // newRules['required'] = rules.indexOf("required") > -1;
 
-  // // console.log("🚀 ~ file: index.js ~ line 15 ~ separationRoles ~ newRules", newRules)
+  // // console.log("🚀 ~ file: index.js ~ line 15 ~ separationrules ~ newRules", newRules)
 
   const defaultRules = ["min", "required", "max"];
 
@@ -48,7 +55,7 @@ const separationRules = ({ pageType, rules, creationRules, updateRules }) => {
     if (b.length > 0) {
       b = findValue(b[0]);
       thisRules[term] = Number(b);
-      // console.log("🚀 ~ file: index.js ~ line 42 ~ separationRoles ~ b", b)
+      // console.log("🚀 ~ file: index.js ~ line 42 ~ separationrules ~ b", b)
       newRules.push(thisRules);
     }
   }
@@ -66,9 +73,9 @@ const findValue = (string) => {
   return true;
 };
 
-const diagnosisUseRules = () => {
-  return false;
-};
+// const diagnosisUseRules = () => {
+//   return false;
+// };
 
 const capitalize = (s) => {
   return s.charAt(0).toUpperCase() + s.slice(1);
@@ -82,4 +89,18 @@ const mapErrors = (errors) => {
   return errs;
 };
 
-export { separationRules, capitalize, mapErrors };
+
+
+
+
+
+const removeBaseUrl = (str) => {
+  console.log("🚀 ~ file: index.js ~ line 99 ~ removeBaseUrl ~ Config.apiBaseUrl", Config.apiBaseUrl)
+  return str.replace( Config.apiBaseUrl, '')
+}
+
+
+
+
+
+export { separationRules, capitalize, mapErrors, removeBaseUrl };

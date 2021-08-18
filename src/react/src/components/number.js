@@ -1,4 +1,4 @@
-import { Form, Input } from "antd";
+import { Form, InputNumber } from "antd";
 
 import { separationRules } from "../lib/helpers";
 
@@ -23,7 +23,7 @@ const Text = (props) => {
         initialValue={props.value}
         rules={rules}
         >
-        <Input placeholder={props.options.placeholder} />
+        <InputNumber placeholder={props.options.placeholder} />
       </Form.Item>
     </>
   );
