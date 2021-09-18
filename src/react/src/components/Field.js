@@ -1,6 +1,6 @@
 import { lazy, Suspense } from "react";
 import { Skeleton } from "antd";
-import { capitalize } from "../lib/helpers"
+// import { capitalize } from "../lib/helpers"
 
 const DynamicField = (props) => {
   const F = lazy(() => import(`./${props.type}.js`));

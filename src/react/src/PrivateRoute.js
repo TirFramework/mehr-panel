@@ -11,7 +11,7 @@ const PrivateRoute = ({ component, ...rest }) => {
 //   console.log( "🚀 ~ file: PrivateRoute.js ~ line 9 ~ PrivateRoute ~ auth", auth );
 
   if (auth === undefined) {
-    history.push("/login");
+    history.push("/admin/login");
   }
 
   return <Route component={component} {...rest} />;

@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 
-import { Button, Card, Row, Table, Typography } from "antd";
+import { Button, Card, Row, Table, Tag, Typography } from "antd";
 import { EditOutlined } from "@ant-design/icons";
 
-import axios from "../lib/axios";
+import * as helpers from "../lib/helpers";
 
 import * as api from "../api";
 
@@ -17,9 +17,9 @@ const { Title } = Typography;
 function Index() {
   const { pageModule } = useParams();
 
-  const [columns, setColumns] = useState([]);
+  const [columns, setColumns] = useState();
 
-  const [data, setData] = useState([]);
+  const [data, setData] = useState();
 
   const [loading, setLoading] = useState(true);
 
@@ -29,28 +29,26 @@ function Index() {
     total: 0,
   });
 
-  const getData = ({ page, results, filter = false }) => {
-    // console.log("-------------------------------------- getData");
-    // console.log("🚀 ~ file: Index.js ~ line 65 ~ getData ~ filter", filter);
-    // console.log("🚀 ~ file: Index.js ~ line 65 ~ getData ~ results", results);
-    // console.log("🚀 ~ file: Index.js ~ line 65 ~ getData ~ page", page);
-    setLoading(true);
+  const actions = {
+    title: "Actions",
+    dataIndex: "id",
+    fixed: "right",
+    render: (id) => (
+      <Link to={`/admin/${pageModule}/${id}/edit`}>
+        <EditOutlined title="Edit" />
+      </Link>
+    ),
+  };
 
-    axios
-      .get(`${pageModule}/data`, {
-        params: {
-          page: page,
-          results: results,
-          filter: filter,
-        },
-      })
-      .then((res) => {
-        setData(res.data.data);
-        // console.log( "🚀 ~ file: Index.js ~ line 48 ~ .then ~ res.data", res.data.data );
+  const getData = async ({ page, result, filters = null }) => {
+    return api
+      .getRows(pageModule, page, result, filters)
+      .then( (res) => {
+        setData(res.data)
         setPagination({
-          current: res.data.current_page,
-          pageSize: res.data.per_page,
-          total: res.data.total,
+          current: res.current_page,
+          pageSize: res.per_page,
+          total: res.total,
         });
         setLoading(false);
       })
@@ -60,108 +58,50 @@ function Index() {
   };
 
   const getColumns = () => {
-    api
-      .getCols()
-      .then((res) => {
-        console.log("🚀 ~ file: Index.js ~ line 69 ~ .then ~ res", res);
-        let cols = res.cols;
-
-        console.log("🚀 ~ file: Index.js ~ line 68 ~ .then ~ cols", cols);
-
-        let react = React;
-
-        for (let i = 0; i < cols.length; i++) {
-          if (cols[i].render) {
-            cols[i].render = eval(cols[i].render);
-          }
-        }
-
-        let actions = {
-          title: "Actions",
-          dataIndex: "actions",
-          render: (actions, data) => {
-            return (
-              <Link to={`/admin/user/edit/${data.id}`}>
-                <EditOutlined title={actions.edit.name} />
-              </Link>
-            );
-          },
-        };
-
-        cols.push(actions);
-        console.log(
-          "🚀 ~ file: Index.js ~ line 101 ~ .then ~ res.cols",
-          res.cols
-        );
-
-        setColumns(res.cols);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+      api
+        .getCols(pageModule)
+        .then((res) => {
+          let cols = res.cols;
+          // loop for detect array
+          cols.forEach((col) => {
+            if (col.valueType === 'array') {
+              col.render = (arr) => arr?.map((item, index) => <Tag key={index}>{item.text}</Tag>);
+            } else if (col.valueType === 'object') {
+              col.render = (arr) => arr?.text;
+            }
+          });
+          // add edit to row
+          cols.push(actions);
+          setColumns(res.cols);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
   };
 
-  // const getColumns = () => {
-  //   let cols = {
-  //     cols: [
-  //       {
-  //         title: "Name",
-  //         dataIndex: "name",
-  //         sorter: true,
-  //         filters: [],
-  //         render: (name, data) => name + data.id,
-  //       },
-  //       {
-  //         title: "Email",
-  //         dataIndex: "email",
-  //         sorter: true,
-  //         filters: [],
-  //       },
-  //       {
-  //         title: "Type",
-  //         dataIndex: "type",
-  //         sorter: true,
-  //         filters: [],
-  //       },
-  //     ],
-  //   };
-
-  //   setColumns(cols.cols);
-  // };
-
   useEffect(() => {
-    async function makeTable() {
+    (async () => {
+      setLoading(true)
+      setData()
       await getColumns();
-
-      await getData({
-        page: pagination.current,
-        results: pagination.pageSize,
-      });
-    }
-
-    makeTable();
+      await getData({ page: pagination.current, result: pagination.pageSize });
+    })();
   }, [pageModule]);
 
+
+  // useEffect(() => {
+  //   getColumns()
+  // }, [data])
+
+
+
+
   const handleTableChange = (pagination, filters, sorter) => {
-    // console.log(
-    //   "🚀 ~ file: Index.js ~ line 92 ~ handleTableChange ~ sorter",
-    //   sorter
-    // );
-    // console.log(
-    //   "🚀 ~ file: Index.js ~ line 92 ~ handleTableChange ~ filters",
-    //   filters
-    // );
-    // console.log(
-    //   "🚀 ~ file: Index.js ~ line 96 ~ handleTableChange ~ pagination",
-    //   pagination
-    // );
+    filters = helpers.removeNullFromObject(filters);
     getData({
-      filter: {
-        key: "gender",
-        value: "male",
-      },
+      filters: filters,
       page: pagination.current,
-      results: pagination.pageSize,
+      result: pagination.pageSize,
     });
   };
 

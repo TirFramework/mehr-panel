@@ -63,7 +63,7 @@ const Create = () => {
           notification["success"]({
             message: res.message,
           });
-          setRedirecting(`/admin/${pageModule}/edit/${res.id}`)
+          setRedirecting(`/admin/${pageModule}/${res.id}/edit`)
         })
         .catch((err) => {
           setLoading(false);

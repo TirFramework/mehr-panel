@@ -1,12 +1,28 @@
 import axios from "../lib/axios";
 
+const postLogin = async (body) => {
+  const { data } = await axios.post(`/login`, body);
+  return data;
+};
+
 const getSidebar = async () => {
   const { data } = await axios.get(`/sidebar`);
   return data;
 };
 
-const getCols = async () => {
-  const { data } = await axios.get(`/user`);
+const getCols = async (module) => {
+  const { data } = await axios.get(`${module}`);
+  return await data;
+};
+
+const getRows = async (module, page , result , filters) => {
+  const { data } = await axios.get(`${module}/data`, {
+    params: {
+      page: page,
+      result: result,
+      filters,
+    },
+  });
   return await data;
 };
 
@@ -32,16 +48,27 @@ const postEdit = async (module, id, body) => {
 
 const getSelect = async (dataUrl,q) => {
   const { data } = await axios.get(`${dataUrl}&search=${q}`);
-  console.log("🚀 ~ file: index.js ~ line 37 ~ getSelect ~ data", data)
+  return await data;
+};
+
+const getSelectValue = async (dataUrl,id) => {
+  const { data } = await axios.get(dataUrl, {
+    params: {
+      id: id
+    },  
+  });
   return await data;
 };
 
 export {
+  postLogin,
   getSidebar,
   getCols,
+  getRows,
   getCreateFields,
   getEditFields,
   postCreate,
   postEdit,
   getSelect,
+  getSelectValue,
 };

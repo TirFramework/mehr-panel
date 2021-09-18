@@ -19,9 +19,9 @@ ReactDOM.render(
   <QueryClientProvider client={queryClient}>
     <BrowserRouter>
       <Switch>
+        <Route path="/admin/login" component={Login} />
         <PrivateRoute path="/admin" component={DefaultLayout} />
         {/* <Redirect from="/" to="/admin/login" /> */}
-        <Route path="/login" component={Login} />
       </Switch>
     </BrowserRouter>
   </QueryClientProvider>,

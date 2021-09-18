@@ -8,12 +8,14 @@ import { Link } from "react-router-dom";
 
 import { useSidebar } from "../hooks";
 
+import { PieChartOutlined, DesktopOutlined } from '@ant-design/icons';
+
 import Icon from "../components/Icon";
 
-import * as api from "../api";
+// import * as api from "../api";
 
 const { Sider } = Layout;
-const { SubMenu } = Menu;
+// const { SubMenu } = Menu;
 
 function App() {
   const [current, setCurrent] = useState();
@@ -55,9 +57,9 @@ function App() {
     setCurrent(e.key);
   };
 
-  const { data: menus, isLoading } = useSidebar();
+  // const { data: menus, isLoading } = useSidebar();
 
-  if (isLoading) return <p>loading...</p>;
+  // if (isLoading) return <p>loading...</p>;
 
   // if (loading) return <p>loading...</p>;
 
@@ -71,15 +73,18 @@ function App() {
         selectedKeys={[current]}
         mode="inline"
       >
-        {/* <Menu.Item key="Create" icon={<PieChartOutlined />}>
+        <Menu.Item key="Create" icon={<PieChartOutlined />}>
           <Link to="/admin/user/create">user Create</Link>
         </Menu.Item>
         <Menu.Item key="Dashboard" icon={<DesktopOutlined />}>
           <Link to="/admin/dashboard">Dashboard</Link>
         </Menu.Item>
-        <Menu.Item key="index" icon={<DesktopOutlined />}>
-          <Link to="/admin/user">user index</Link>
-        </Menu.Item> */}
+        <Menu.Item key="user" icon={<DesktopOutlined />}>
+          <Link to="/admin/user">User index</Link>
+        </Menu.Item>
+        <Menu.Item key="post" icon={<DesktopOutlined />}>
+          <Link to="/admin/post">Post index</Link>
+        </Menu.Item>
         {/* <SubMenu key="sub1" icon={<UserOutlined />} title="User">
           <Menu.Item key="3">Tom</Menu.Item>
           <Menu.Item key="4">Bill</Menu.Item>
@@ -90,11 +95,11 @@ function App() {
           <Menu.Item key="8">Team 2</Menu.Item>
         </SubMenu> */}
 
-        {menus?.data.map((menu, index) => (
+        {/* {menus?.data.map((menu, index) => (
           <Menu.Item key={index} icon={<Icon type={menu.icon} />}>
             <Link to={menu.link}>{menu.title}</Link>
           </Menu.Item>
-        ))}
+        ))} */}
       </Menu>
     </Sider>
   );
