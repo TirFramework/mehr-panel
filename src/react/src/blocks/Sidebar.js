@@ -73,9 +73,6 @@ function App() {
         selectedKeys={[current]}
         mode="inline"
       >
-        <Menu.Item key="Create" icon={<PieChartOutlined />}>
-          <Link to="/admin/user/create">user Create</Link>
-        </Menu.Item>
         <Menu.Item key="Dashboard" icon={<DesktopOutlined />}>
           <Link to="/admin/dashboard">Dashboard</Link>
         </Menu.Item>

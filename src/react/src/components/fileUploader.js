@@ -40,6 +40,8 @@ import { HTML5Backend } from "react-dnd-html5-backend";
 import update from "immutability-helper";
 import { UploadOutlined } from "@ant-design/icons";
 
+import { separationRules } from "../lib/helpers";
+
 import Cookies from "js-cookie";
 
 import Config from "../constants/config";
@@ -158,7 +160,7 @@ const DragSortingUpload = (props) => {
     <>
       <DndProvider backend={HTML5Backend}>
         <Upload
-          action={`${Config.apiBaseUrl}/admin/file-manager/upload`}
+          action={`${Config.apiBaseUrl}/file-manager/upload`}
           headers={{ Authorization: `Bearer ${token}` }}
           // defaultFileList={initialValueHandeling(props.value)}
           fileList={fileList}
@@ -184,6 +186,15 @@ const DragSortingUpload = (props) => {
 
 const CustomUpload = (props) => {
   console.log("🚀 ~ file: Upload.js ~ line 148 ~ CustomUpload ~ props", props);
+
+  const rules = separationRules({
+    pageType: props.pageType,
+    rules: props.rules,
+    creationRules: props.creationRules,
+    updateRules: props.updateRules,
+  });
+
+
   
   const normFile = (e) => {
     console.log("Upload event:", e);
@@ -211,6 +222,7 @@ const CustomUpload = (props) => {
       label={props.display}
       // valuePropName="fileList"
       initialValue={props.value}
+      rules={rules}
       getValueFromEvent={normFile}
       // setFieldsValue={fileList}
     >

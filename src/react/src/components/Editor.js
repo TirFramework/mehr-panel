@@ -19,6 +19,7 @@ import Config from "../constants/config";
 const token = Cookies.get('api_token')
 
 
+
 Quill.register("modules/htmlEditButton", htmlEditButton);
 
 var quillObj;
@@ -53,21 +54,21 @@ const MyComponent = (props) => {
   };
 
   const uploadFiles = (uploadFileObj, filename, quillObj) => {
-    console.log(
-      "🚀 ~ file: editor.js ~ line 37 ~ MyComponent ~ uploadFiles ~ quillObj",
-      quillObj
-    );
-    console.log(
-      "🚀 ~ file: editor.js ~ line 37 ~ MyComponent ~ uploadFiles ~ filename",
-      filename
-    );
-    console.log(
-      "🚀 ~ file: editor.js ~ line 37 ~ MyComponent ~ uploadFiles ~ uploadFileObj",
-      uploadFileObj
-    );
+    // console.log(
+    //   "🚀 ~ file: editor.js ~ line 37 ~ MyComponent ~ uploadFiles ~ quillObj",
+    //   quillObj
+    // );
+    // console.log(
+    //   "🚀 ~ file: editor.js ~ line 37 ~ MyComponent ~ uploadFiles ~ filename",
+    //   filename
+    // );
+    // console.log(
+    //   "🚀 ~ file: editor.js ~ line 37 ~ MyComponent ~ uploadFiles ~ uploadFileObj",
+    //   uploadFileObj
+    // );
 
     //To Upload in root folder
-    const apiUrl = `${Config.apiBaseUrl}/file-manager/upload`;
+    const apiUrl = `/file-manager/upload`;
     //         fetch(apiUrl, {
     //           method: 'POST',
     //           headers: {
@@ -130,12 +131,20 @@ const MyComponent = (props) => {
     }
   };
 
+  const rules = separationRules({
+    pageType: props.pageType,
+    rules: props.rules,
+    creationRules: props.creationRules,
+    updateRules: props.updateRules,
+  });
+
+
   return (
     <Form.Item
       label={props.display}
       name={props.name}
       initialValue={props.value}
-      // rules={rules}
+      rules={rules}
     >
       <ReactQuill
         ref={(el) => {

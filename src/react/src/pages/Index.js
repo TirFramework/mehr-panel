@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 
-import { Button, Card, Row, Table, Tag, Typography } from "antd";
-import { EditOutlined } from "@ant-design/icons";
+import { Button, Card, Row, Table, Tag, Typography, Popover } from "antd";
+import { EditOutlined, QuestionCircleOutlined } from "@ant-design/icons";
 
 import * as helpers from "../lib/helpers";
 
@@ -69,6 +69,14 @@ function Index() {
             } else if (col.valueType === 'object') {
               col.render = (arr) => arr?.text;
             }
+            if(col.filters !== undefined ){
+              col.filters?.map((item) => item.text = item.label);
+            }
+
+            if(col.comment?.content !== undefined ){
+              col.title = <div>{col.title} <Popover content={col.comment.content} title={col.comment.title}> <QuestionCircleOutlined /> </Popover> </div>
+            }
+
           });
           // add edit to row
           cols.push(actions);
