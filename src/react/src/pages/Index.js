@@ -3,6 +3,7 @@ import { useParams, Link } from "react-router-dom";
 
 import { Button, Card, Row, Table, Tag, Typography, Popover } from "antd";
 import { EditOutlined, QuestionCircleOutlined } from "@ant-design/icons";
+import { CSVLink } from "react-csv";
 
 import * as helpers from "../lib/helpers";
 
@@ -43,8 +44,8 @@ function Index() {
   const getData = async ({ page, result, filters = null }) => {
     return api
       .getRows(pageModule, page, result, filters)
-      .then( (res) => {
-        setData(res.data)
+      .then((res) => {
+        setData(res.data);
         setPagination({
           current: res.current_page,
           pageSize: res.per_page,
@@ -58,51 +59,58 @@ function Index() {
   };
 
   const getColumns = () => {
-      api
-        .getCols(pageModule)
-        .then((res) => {
-          let cols = res.cols;
-          // loop for detect array
-          cols.forEach((col) => {
-            if (col.valueType === 'array') {
-              col.render = (arr) => arr?.map((item, index) => <Tag key={index}>{item.text}</Tag>);
-            } else if (col.valueType === 'object') {
-              col.render = (arr) => arr?.text;
-            }
-            if(col.filters !== undefined ){
-              col.filters?.map((item) => item.text = item.label);
-            }
+    api
+      .getCols(pageModule)
+      .then((res) => {
+        let cols = res.cols;
+        // loop for detect array
+        cols.forEach((col) => {
+          if (col.valueType === "array") {
+            col.render = (arr) =>
+              arr?.map((item, index) => <Tag key={index}>{item.text}</Tag>);
+          } else if (col.valueType === "object") {
+            col.render = (arr) => arr?.text;
+          }
+          if (col.filters !== undefined) {
+            col.filters?.map((item) => (item.text = item.label));
+          }
 
-            if(col.comment?.content !== undefined ){
-              col.title = <div>{col.title} <Popover content={col.comment.content} title={col.comment.title}> <QuestionCircleOutlined /> </Popover> </div>
-            }
-
-          });
-          // add edit to row
-          cols.push(actions);
-          setColumns(res.cols);
-        })
-        .catch((err) => {
-          console.log(err);
+          if (col.comment?.content !== undefined) {
+            col.title = (
+              <div>
+                {col.title}{" "}
+                <Popover
+                  content={col.comment.content}
+                  title={col.comment.title}
+                >
+                  {" "}
+                  <QuestionCircleOutlined />{" "}
+                </Popover>{" "}
+              </div>
+            );
+          }
         });
+        // add edit to row
+        cols.push(actions);
+        setColumns(res.cols);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
 
   useEffect(() => {
     (async () => {
-      setLoading(true)
-      setData()
+      setLoading(true);
+      setData();
       await getColumns();
       await getData({ page: pagination.current, result: pagination.pageSize });
     })();
   }, [pageModule]);
 
-
   // useEffect(() => {
   //   getColumns()
   // }, [data])
-
-
-
 
   const handleTableChange = (pagination, filters, sorter) => {
     filters = helpers.removeNullFromObject(filters);
@@ -112,6 +120,21 @@ function Index() {
       result: pagination.pageSize,
     });
   };
+
+  const list = [
+    {
+      id: 1,
+      name: "admin",
+      user_id: 1,
+      email: "admin@tir.loc",
+      email_verified_at: null,
+      type: "admin",
+      status: "enabled",
+      created_at: null,
+      updated_at: null,
+      deleted_at: null,
+    },
+  ];
 
   return (
     <>
@@ -129,6 +152,19 @@ function Index() {
           pagination={pagination}
           loading={loading}
           onChange={handleTableChange}
+          footer={() => (
+            <>
+              {!loading && (
+                <CSVLink
+                  filename={"Expense_Table.csv"}
+                  data={data}
+                  className="btn btn-primary"
+                >
+                  Export to CSV
+                </CSVLink>
+              )}
+            </>
+          )}
         />
       </Card>
     </>
