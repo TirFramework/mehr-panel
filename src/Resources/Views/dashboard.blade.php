@@ -6,13 +6,13 @@
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
-    <link rel="stylesheet" href="{{asset('/css/app.css')}}">
-    <link rel="stylesheet" href="{{asset('/css/tailwindcss.css')}}">
+    <link rel="stylesheet" href="{{asset('/admin-assets/css/app.css')}}">
+    <link rel="stylesheet" href="{{asset('/admin-assets/css/tailwindcss.css')}}">
 </head>
 <body>
     <div id="root"></div>
 
-    <script src="{{asset('/js/index.js')}}"></script>
+    <script src="{{asset('/admin-assets/js/index.js')}}"></script>
 
 </body>
 </html>
