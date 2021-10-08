@@ -60,7 +60,9 @@ const Text = (props) => {
           <Select
             mode={props.multiple ? "multiple" : false}
             options={props.data}
-            allowClear
+            disabled={props.disabled}
+            className={props.readonly && 'readOnly' }
+            allowClear={!props.readonly && true} 
           >
           </Select>
         </Form.Item>
@@ -77,7 +79,6 @@ const Text = (props) => {
         >
           <Select
             // onSearch={(q) => getOptions(q)}
-            allowClear
             showSearch
             loading={loading}
             // notFoundContent={loading ? <Spin size="small" /> : <Empty imageStyle={{ height: 250 }} />}
@@ -85,6 +86,10 @@ const Text = (props) => {
             optionFilterProp="label"
             options={options}
             mode={props.multiple ? "multiple" : false}
+            disabled={props.disabled}
+            className={props.readonly && 'readOnly' }
+            allowClear={!props.readonly && true} 
+
           ></Select>
         </Form.Item>
       </>
