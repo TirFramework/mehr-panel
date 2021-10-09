@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link, Redirect, useParams } from "react-router-dom";
+import { Link, Redirect, useParams, useHistory } from "react-router-dom";
 import {
   Form,
   Spin,
@@ -29,6 +29,12 @@ const Create = () => {
   const [loading, setLoading] = useState(true);
   const [redirecting, setRedirecting] = useState(false);
 
+  const history = useHistory()
+
+  const goBack = () => {
+    history.goBack()
+  }
+
   const makeField = () => {
     if (pageType === "create") {
       api.getCreateFields(pageModule).then((res) => {
@@ -48,7 +54,7 @@ const Create = () => {
       await makeField();
     }
     makePage();
-  }, []);
+  }, [pageModule, pageId]);
 
   const onFinish = (values) => {
     console.log("Success:", values);
@@ -133,8 +139,9 @@ const Create = () => {
         </Card>
 
         <Space className="justify-end flex mt-2">
-          <Button>
-            <Link to={`/admin/${pageModule}`}>Cancel</Link>
+          <Button onClick={goBack}>
+            {/* <Link to={`/admin/${pageModule}`}>Cancel</Link> */}
+            Cancel
           </Button>
           <Button type="primary" htmlType="submit" loading={loading}>
             Submit

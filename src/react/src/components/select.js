@@ -60,7 +60,7 @@ const Text = (props) => {
           <Select
             mode={props.multiple ? "multiple" : false}
             options={props.data}
-            disabled={props.disabled}
+            disabled={props.readonly}
             className={props.readonly && 'readOnly' }
             allowClear={!props.readonly && true} 
           >
@@ -86,10 +86,9 @@ const Text = (props) => {
             optionFilterProp="label"
             options={options}
             mode={props.multiple ? "multiple" : false}
-            disabled={props.disabled}
+            disabled={props.readonly}
             className={props.readonly && 'readOnly' }
             allowClear={!props.readonly && true} 
-
           ></Select>
         </Form.Item>
       </>

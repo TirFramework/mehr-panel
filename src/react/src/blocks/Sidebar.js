@@ -8,9 +8,10 @@ import { Link } from "react-router-dom";
 
 import { useSidebar } from "../hooks";
 
-import { PieChartOutlined, DesktopOutlined } from '@ant-design/icons';
+import { PieChartOutlined, DesktopOutlined, UserOutlined } from '@ant-design/icons';
 
 import Icon from "../components/Icon";
+import SubMenu from "antd/lib/menu/SubMenu";
 
 // import * as api from "../api";
 
@@ -76,21 +77,38 @@ function App() {
         <Menu.Item key="Dashboard" icon={<DesktopOutlined />}>
           <Link to="/admin/dashboard">Dashboard</Link>
         </Menu.Item>
-        <Menu.Item key="user" icon={<DesktopOutlined />}>
-          <Link to="/admin/user">User index</Link>
+        <Menu.Item key="User" icon={<DesktopOutlined />}>
+          <Link to="/admin/user">User</Link>
         </Menu.Item>
-        <Menu.Item key="post" icon={<DesktopOutlined />}>
-          <Link to="/admin/post">Post index</Link>
+        <Menu.Item key="Post" icon={<DesktopOutlined />}>
+          <Link to="/admin/post">Post</Link>
         </Menu.Item>
-        {/* <SubMenu key="sub1" icon={<UserOutlined />} title="User">
-          <Menu.Item key="3">Tom</Menu.Item>
-          <Menu.Item key="4">Bill</Menu.Item>
-          <Menu.Item key="5">Alex</Menu.Item>
+        <Menu.Item key="Service" icon={<DesktopOutlined />}>
+          <Link to="/admin/service">Service</Link>
+        </Menu.Item>
+        <Menu.Item key="Message" icon={<DesktopOutlined />}>
+          <Link to="/admin/message">Message</Link>
+        </Menu.Item>
+        <Menu.Item key="Testimonial" icon={<DesktopOutlined />}>
+          <Link to="/admin/testimonial">Testimonial</Link>
+        </Menu.Item>
+        <Menu.Item key="Newsletter" icon={<DesktopOutlined />}>
+          <Link to="/admin/newsletter">Newsletter</Link>
+        </Menu.Item>
+        <Menu.Item key="Slider" icon={<DesktopOutlined />}>
+          <Link to="/admin/slider">Slider</Link>
+        </Menu.Item>
+        <SubMenu key="Setting" icon={<UserOutlined />} title="Setting">
+          <Menu.Item key="GeneralSetting" icon={<DesktopOutlined />}>
+            <Link to="/admin/generalSetting/1/edit">General Setting</Link>
+          </Menu.Item>
+          <Menu.Item key="ContactSetting" icon={<DesktopOutlined />}>
+            <Link to="/admin/contactSetting/1/edit">Contact Setting</Link>
+          </Menu.Item>
+          <Menu.Item key="HomeSetting" icon={<DesktopOutlined />}>
+            <Link to="/admin/homeSetting/1/edit">Home Setting</Link>
+          </Menu.Item>
         </SubMenu>
-        <SubMenu key="sub2" icon={<TeamOutlined />} title="Team">
-          <Menu.Item key="6">Team 1</Menu.Item>
-          <Menu.Item key="8">Team 2</Menu.Item>
-        </SubMenu> */}
 
         {/* {menus?.data.map((menu, index) => (
           <Menu.Item key={index} icon={<Icon type={menu.icon} />}>

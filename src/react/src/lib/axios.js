@@ -22,6 +22,7 @@ axios.interceptors.request.use((config) => {
 
   // const token = Cookies.get('api_token')
   // config.params = { api_token: token };
+  // config.params = { locale: 'Fa' };
   
 
   // console.log("🚀 ~ file: axios.js ~ line 26 ~ axios.interceptors.request.use ~ config", config)

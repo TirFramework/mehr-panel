@@ -167,6 +167,8 @@ const DragSortingUpload = (props) => {
           listType="picture"
           maxCount={props.maxCount}
           onChange={onChange}
+          disabled={props.readonly}
+          className={props.readonly && "readOnly"}
           //   {...props}
           itemRender={(originNode, file, currFileList) => (
             <DragableUploadListItem
