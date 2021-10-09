@@ -60,6 +60,11 @@ const getSelectValue = async (dataUrl,id) => {
   return await data;
 };
 
+const deleteRow = async (module, id) => {
+  const { data } = await axios.delete(`${module}/${id}`);
+  return await data;
+};
+
 export {
   postLogin,
   getSidebar,
@@ -71,4 +76,5 @@ export {
   postEdit,
   getSelect,
   getSelectValue,
+  deleteRow,
 };

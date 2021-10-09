@@ -92,7 +92,6 @@ const Create = () => {
         .catch((err) => {
           console.log("🚀 ~ file: Create.js ~ line 88 ~ onFinish ~ err", err)
           setLoading(false);
-          
         });
       }
   };

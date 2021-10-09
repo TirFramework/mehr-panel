@@ -66,7 +66,7 @@ function App() {
 
   return (
     <Sider className="overflow-auto h-screen fixed left-0">
-      <div className="logo text-xl text-white p-4 bg-black">AMAJGROUP</div>
+      <div className="logo text-xl text-white p-4 bg-black">ADMIN PANEL</div>
       <Menu
         theme="dark"
         defaultSelectedKeys={["0"]}
