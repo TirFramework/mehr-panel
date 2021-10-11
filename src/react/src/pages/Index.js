@@ -35,14 +35,14 @@ function Index() {
     setLoading(true);
     api.deleteRow(pageModule, id)
     .then((res) => {
-      console.log("🚀 ~ file: Create.js ~ line 77 ~ .then ~ res", res)
+      // console.log("🚀 ~ file: Create.js ~ line 77 ~ .then ~ res", res)
       notification["success"]({
         message: res.message,
       });
       getData({ page: pagination.current, result: pagination.pageSize });
     })
     .catch((err) => {
-      console.log("🚀 ~ file: Create.js ~ line 88 ~ onFinish ~ err", err);
+      // console.log("🚀 ~ file: Create.js ~ line 88 ~ onFinish ~ err", err);
       setLoading(false);
     });
   }
@@ -159,9 +159,9 @@ function Index() {
   ];
 
   return (
-    <>
+    <div className={`${pageModule}-index`}>
       <Row justify="space-between" align="bottom" className="mb-4">
-        <Title>{pageModule}</Title>
+        <Title className="capitalize">{pageModule}</Title>
         <Button type="primary">
           <Link to={`/admin/${pageModule}/create`}>Create {pageModule}</Link>
         </Button>
@@ -189,7 +189,7 @@ function Index() {
           )}
         />
       </Card>
-    </>
+    </div>
   );
 }
 

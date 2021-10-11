@@ -50,6 +50,8 @@ const Create = () => {
   };
 
   useEffect(() => {
+    setLoading(true);
+    setFields([])
     async function makePage() {
       await makeField();
     }
@@ -58,7 +60,6 @@ const Create = () => {
 
   const onFinish = (values) => {
     console.log("Success:", values);
-
     setLoading(true);
       if (pageType === "create") {
         api
@@ -109,10 +110,10 @@ const Create = () => {
   }
 
   return (
-    <>
+    <div className={`${pageModule}-${pageType}`}>
       <Breadcrumb>
         <Breadcrumb.Item className="capitalize">{pageModule}</Breadcrumb.Item>
-        <Breadcrumb.Item>Create</Breadcrumb.Item>
+        <Breadcrumb.Item className="capitalize">{pageType}</Breadcrumb.Item>
       </Breadcrumb>
       <Title className="capitalize">
         {pageType} {pageModule}
@@ -147,7 +148,7 @@ const Create = () => {
           </Button>
         </Space>
       </Form>
-    </>
+    </div>
   );
 };
 

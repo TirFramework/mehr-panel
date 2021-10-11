@@ -10,8 +10,8 @@ import { useSidebar } from "../hooks";
 
 import { PieChartOutlined, DesktopOutlined, UserOutlined } from '@ant-design/icons';
 
-import Icon from "../components/Icon";
-import SubMenu from "antd/lib/menu/SubMenu";
+// import Icon from "../components/Icon";
+// import SubMenu from "antd/lib/menu/SubMenu";
 
 // import * as api from "../api";
 
@@ -23,7 +23,7 @@ function App() {
   // const [menus, setMenus] = useState();
   // const [loading, setLoading] = useState(true);
 
-  console.log("🚀 sidebar");
+  // console.log("🚀 sidebar");
 
   // const getMenus = () => {
   //   // const data = useSidebar();
@@ -83,8 +83,14 @@ function App() {
         <Menu.Item key="Post" icon={<DesktopOutlined />}>
           <Link to="/admin/post">Post</Link>
         </Menu.Item>
+        <Menu.Item key="PostCategory" icon={<DesktopOutlined />}>
+          <Link to="/admin/postCategory">Post Category</Link>
+        </Menu.Item>
         <Menu.Item key="Service" icon={<DesktopOutlined />}>
           <Link to="/admin/service">Service</Link>
+        </Menu.Item>
+        <Menu.Item key="ServiceCategory" icon={<DesktopOutlined />}>
+          <Link to="/admin/serviceCategory">Service Category</Link>
         </Menu.Item>
         <Menu.Item key="Message" icon={<DesktopOutlined />}>
           <Link to="/admin/message">Message</Link>
@@ -98,17 +104,15 @@ function App() {
         <Menu.Item key="Slider" icon={<DesktopOutlined />}>
           <Link to="/admin/slider">Slider</Link>
         </Menu.Item>
-        <SubMenu key="Setting" icon={<UserOutlined />} title="Setting">
-          <Menu.Item key="GeneralSetting" icon={<DesktopOutlined />}>
-            <Link to="/admin/generalSetting/1/edit">General Setting</Link>
-          </Menu.Item>
-          <Menu.Item key="ContactSetting" icon={<DesktopOutlined />}>
-            <Link to="/admin/contactSetting/1/edit">Contact Setting</Link>
-          </Menu.Item>
-          <Menu.Item key="HomeSetting" icon={<DesktopOutlined />}>
-            <Link to="/admin/homeSetting/1/edit">Home Setting</Link>
-          </Menu.Item>
-        </SubMenu>
+        <Menu.Item key="GeneralSetting" icon={<DesktopOutlined />}>
+          <Link to="/admin/generalSetting/1/edit">General Setting</Link>
+        </Menu.Item>
+        <Menu.Item key="ContactSetting" icon={<DesktopOutlined />}>
+          <Link to="/admin/contactSetting/1/edit">Contact Setting</Link>
+        </Menu.Item>
+        <Menu.Item key="HomeSetting" icon={<DesktopOutlined />}>
+          <Link to="/admin/homeSetting/1/edit">Home Setting</Link>
+        </Menu.Item>
 
         {/* {menus?.data.map((menu, index) => (
           <Menu.Item key={index} icon={<Icon type={menu.icon} />}>
