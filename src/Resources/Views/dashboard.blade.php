@@ -8,6 +8,7 @@
     <title>Document</title>
     <link rel="stylesheet" href="{{asset('/admin-assets/css/app.css')}}">
     <link rel="stylesheet" href="{{asset('/admin-assets/css/tailwindcss.css')}}">
+    <link rel="stylesheet" href="{{asset('/admin-assets/css/custom.css')}}">
 </head>
 <body>
     <div id="root"></div>

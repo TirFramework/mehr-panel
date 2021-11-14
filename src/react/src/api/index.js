@@ -47,7 +47,7 @@ const postEdit = async (module, id, body) => {
 };
 
 const getSelect = async (dataUrl,q) => {
-  const { data } = await axios.get(`${dataUrl}&search=${q}`);
+  const { data } = await axios.get(`${dataUrl}&locale=all&search=${q}`);
   return await data;
 };
 

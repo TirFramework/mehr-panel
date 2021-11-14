@@ -47,7 +47,7 @@ const Login = () => {
   const login = (token) => {
     Cookies.set("api_token", token);
     axios.defaults.headers.common = {'Authorization': `Bearer ${token}`}
-    history.push("/admin/dashboard");
+    history.push("/admin/custom/dashboard");
   };
 
   return (

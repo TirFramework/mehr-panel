@@ -1,13 +1,13 @@
-import Dashboard from './pages/Dashboard.js';
+import Custom from './pages/Custom.js';
 import Index from './pages/Index';
 import Create from './pages/Create';
 
 
 const dashboardRoutes = [
   {
-    path: "/dashboard",
-    name: "Dashboard",
-    component: Dashboard,
+    path: "/custom/:pageModule",
+    name: "custom",
+    component: Custom,
     layout: "/admin",
   },
   {

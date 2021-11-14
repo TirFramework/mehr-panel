@@ -1,4 +1,4 @@
-import { lazy, Suspense } from "react";
+import { lazy, memo, Suspense } from "react";
 
 const Icon = (props) => {
   const I = lazy(() => import(`@ant-design/icons/es/icons/${props.type}.js`));
@@ -13,4 +13,4 @@ const DynamicIcon = (props) => {
   );
 };
 
-export default DynamicIcon;
+export default memo(DynamicIcon);

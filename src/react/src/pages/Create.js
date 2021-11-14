@@ -128,7 +128,7 @@ const Create = () => {
       >
         <Card>
           {fields.map((field, index) => (
-            <Field key={index} type={field.type} loading={loading} {...field} />
+            <Field key={index} type={field.type} loading={loading} pageType={pageType} {...field} />
           ))}
         </Card>
 

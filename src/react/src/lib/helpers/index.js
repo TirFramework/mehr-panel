@@ -10,7 +10,7 @@ const separationRules = ({ pageType, rules, creationRules, updateRules }) => {
   if (pageType === "create" && creationRules.length > 0) {
     rules = [...rules, ...creationRules];
   }
-  if (pageType === "update" && updateRules.length > 0) {
+  if (pageType === "edit" && updateRules.length > 0) {
     rules = [...rules, ...updateRules];
   }
 
@@ -73,9 +73,7 @@ const findValue = (string) => {
   return true;
 };
 
-// const diagnosisUseRules = () => {
-//   return false;
-// };
+
 
 const capitalize = (s) => {
   return s.charAt(0).toUpperCase() + s.slice(1);
@@ -90,16 +88,10 @@ const mapErrors = (errors) => {
 };
 
 
-
-
-
-
 const removeBaseUrl = (str) => {
   console.log("🚀 ~ file: index.js ~ line 99 ~ removeBaseUrl ~ Config.apiBaseUrl", Config.apiBaseUrl)
   return str.replace( Config.apiBaseUrl, '')
 }
-
-
 
 const removeNullFromObject = (obj) => {
     for (var propName in obj) {
@@ -111,7 +103,19 @@ const removeNullFromObject = (obj) => {
 }
 
 
+const isRequired = (arr) => {
+  if( arr === null ){
+    return false
+  }
+  for (let i = 0; i < arr.length; i++) {
+    if(Object.keys(arr[i]).find(element => element === 'required')){
+      return true
+    }
+    
+  }
+  return false
+}
 
 
 
-export { separationRules, capitalize, mapErrors, removeBaseUrl, removeNullFromObject };
+export { separationRules, capitalize, mapErrors, removeBaseUrl, removeNullFromObject, isRequired };
