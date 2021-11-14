@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 
-import { Button, Card, Row, Table, Tag, Typography, Popover } from "antd";
-import { EditOutlined, QuestionCircleOutlined } from "@ant-design/icons";
+import { Button, Card, Row, Table, Tag, Typography, Popover, notification } from "antd";
+import { EditOutlined, QuestionCircleOutlined, DeleteOutlined } from "@ant-design/icons";
 import { CSVLink } from "react-csv";
 
 import * as helpers from "../lib/helpers";
@@ -30,14 +30,36 @@ function Index() {
     total: 0,
   });
 
+  
+  const deleteRow = (id)=>{
+    setLoading(true);
+    api.deleteRow(pageModule, id)
+    .then((res) => {
+      // console.log("🚀 ~ file: Create.js ~ line 77 ~ .then ~ res", res)
+      notification["success"]({
+        message: res.message,
+      });
+      getData({ page: pagination.current, result: pagination.pageSize });
+    })
+    .catch((err) => {
+      // console.log("🚀 ~ file: Create.js ~ line 88 ~ onFinish ~ err", err);
+      setLoading(false);
+    });
+  }
+
   const actions = {
     title: "Actions",
     dataIndex: "id",
     fixed: "right",
     render: (id) => (
-      <Link to={`/admin/${pageModule}/${id}/edit`}>
-        <EditOutlined title="Edit" />
-      </Link>
+      <>
+        <Link to={`/admin/${pageModule}/${id}/edit`}>
+          <EditOutlined title="Edit" />
+        </Link>
+        <Link className="ml-4" onClick={()=> deleteRow(id) }>
+          <DeleteOutlined title="Delete" />
+        </Link>
+      </>
     ),
   };
 
@@ -137,9 +159,9 @@ function Index() {
   ];
 
   return (
-    <>
+    <div className={`${pageModule}-index`}>
       <Row justify="space-between" align="bottom" className="mb-4">
-        <Title>{pageModule}</Title>
+        <Title className="capitalize">{pageModule}</Title>
         <Button type="primary">
           <Link to={`/admin/${pageModule}/create`}>Create {pageModule}</Link>
         </Button>
@@ -167,7 +189,7 @@ function Index() {
           )}
         />
       </Card>
-    </>
+    </div>
   );
 }
 

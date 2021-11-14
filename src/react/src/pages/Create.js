@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link, Redirect, useParams } from "react-router-dom";
+import { Link, Redirect, useParams, useHistory } from "react-router-dom";
 import {
   Form,
   Spin,
@@ -29,6 +29,12 @@ const Create = () => {
   const [loading, setLoading] = useState(true);
   const [redirecting, setRedirecting] = useState(false);
 
+  const history = useHistory()
+
+  const goBack = () => {
+    history.goBack()
+  }
+
   const makeField = () => {
     if (pageType === "create") {
       api.getCreateFields(pageModule).then((res) => {
@@ -44,15 +50,16 @@ const Create = () => {
   };
 
   useEffect(() => {
+    setLoading(true);
+    setFields([])
     async function makePage() {
       await makeField();
     }
     makePage();
-  }, []);
+  }, [pageModule, pageId]);
 
   const onFinish = (values) => {
     console.log("Success:", values);
-
     setLoading(true);
       if (pageType === "create") {
         api
@@ -86,7 +93,6 @@ const Create = () => {
         .catch((err) => {
           console.log("🚀 ~ file: Create.js ~ line 88 ~ onFinish ~ err", err)
           setLoading(false);
-          
         });
       }
   };
@@ -104,10 +110,10 @@ const Create = () => {
   }
 
   return (
-    <>
+    <div className={`${pageModule}-${pageType}`}>
       <Breadcrumb>
         <Breadcrumb.Item className="capitalize">{pageModule}</Breadcrumb.Item>
-        <Breadcrumb.Item>Create</Breadcrumb.Item>
+        <Breadcrumb.Item className="capitalize">{pageType}</Breadcrumb.Item>
       </Breadcrumb>
       <Title className="capitalize">
         {pageType} {pageModule}
@@ -133,15 +139,16 @@ const Create = () => {
         </Card>
 
         <Space className="justify-end flex mt-2">
-          <Button>
-            <Link to={`/admin/${pageModule}`}>Cancel</Link>
+          <Button onClick={goBack}>
+            {/* <Link to={`/admin/${pageModule}`}>Cancel</Link> */}
+            Cancel
           </Button>
           <Button type="primary" htmlType="submit" loading={loading}>
             Submit
           </Button>
         </Space>
       </Form>
-    </>
+    </div>
   );
 };
 

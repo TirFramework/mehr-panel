@@ -23,7 +23,7 @@ function App() {
   const [menus, setMenus] = useState();
   const [loading, setLoading] = useState(true);
 
-  console.log("🚀 sidebar");
+  // console.log("🚀 sidebar");
 
   const getMenus = () => {
     // const data = useSidebar();

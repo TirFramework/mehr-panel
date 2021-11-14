@@ -23,7 +23,9 @@ const Text = (props) => {
         initialValue={props.value}
         rules={rules}
         >
-        <InputNumber placeholder={props.options.placeholder} />
+        <InputNumber placeholder={props.options.placeholder} 
+        disabled={props.readonly}
+        className={props.readonly && 'readOnly' } />
       </Form.Item>
     </>
   );

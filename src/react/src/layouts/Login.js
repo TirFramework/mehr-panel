@@ -89,9 +89,9 @@ const Login = () => {
       </div>
 
       <p className="my-7 text-center login-footer">
-        AMAJGROUP
+        -
         <br />
-        Copyright ©2021 Produced by AMAJGROUP Finance Experience Technology
+        Copyright ©2021 Produced by - Finance Experience Technology
         Department
       </p>
     </div>
