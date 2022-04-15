@@ -11,7 +11,7 @@ import {
   Typography,
   Popover,
   notification,
-  Col,
+  Col, Tooltip,
 } from "antd";
 import {
   EditOutlined,
@@ -76,9 +76,9 @@ function Index() {
         <Link to={`/admin/${pageModule}/${id}/edit`}>
           <EditOutlined title="Edit" />
         </Link>
-        <span className="ml-4" onClick={() => deleteRow(id)}>
-          <DeleteOutlined title="Delete" />
-        </span>
+        <Tooltip title="Delete">
+          <Button  className="ml-4" type="link" danger onClick={() => deleteRow(id)} icon={<DeleteOutlined />} />
+        </Tooltip>
       </>
     ),
   };
