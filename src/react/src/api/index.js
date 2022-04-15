@@ -15,12 +15,14 @@ const getCols = async (module) => {
   return await data;
 };
 
-const getRows = async (module, page , result , filters) => {
+const getRows = async (module, page, result, filters, search) => {
   const { data } = await axios.get(`${module}/data`, {
     params: {
       page: page,
       result: result,
       filters,
+      search,
+      locale: 'all',
     },
   });
   return await data;
@@ -32,7 +34,7 @@ const getCreateFields = async (module) => {
 };
 
 const getEditFields = async (module, id) => {
-  const { data } = await axios.get(`${module}/${id}/edit`);
+  const { data } = await axios.get(`${module}/${id}/edit?locale=all`);
   return await data;
 };
 

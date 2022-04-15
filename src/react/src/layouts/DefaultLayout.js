@@ -12,7 +12,6 @@ import routes from "../routes.js";
 import Sidebar from "../blocks/Sidebar";
 
 const { Header, Content } = Layout;
-const { Search } = Input;
 
 const switchRoutes = (
   <Switch>
@@ -58,11 +57,6 @@ function DefaultLayout(props) {
               align="middle"
               className="text-right flex justify-between"
             >
-              <Form>
-                <Form.Item label="site" name="search" className="my-auto">
-                  <Search placeholder="input" style={{ width: 400 }} />
-                </Form.Item>
-              </Form>
               <Dropdown overlay={menu} trigger={["click"]}>
                 <span
                   className="ant-dropdown-link"

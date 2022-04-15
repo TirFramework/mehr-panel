@@ -1,8 +1,23 @@
 import React, { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 
-import { Button, Card, Row, Table, Tag, Typography, Popover, notification } from "antd";
-import { EditOutlined, QuestionCircleOutlined, DeleteOutlined } from "@ant-design/icons";
+import {
+  Button,
+  Card,
+  Row,
+  Table,
+  Input,
+  Tag,
+  Typography,
+  Popover,
+  notification,
+  Col,
+} from "antd";
+import {
+  EditOutlined,
+  QuestionCircleOutlined,
+  DeleteOutlined,
+} from "@ant-design/icons";
 import { CSVLink } from "react-csv";
 
 import * as helpers from "../lib/helpers";
@@ -24,28 +39,32 @@ function Index() {
 
   const [loading, setLoading] = useState(true);
 
+  const [search, setSearch] = useState(null);
+
+  const [filters, setFilters] = useState(null);
+
   const [pagination, setPagination] = useState({
     current: 1,
     pageSize: 15,
     total: 0,
   });
 
-  
-  const deleteRow = (id)=>{
+  const deleteRow = (id) => {
     setLoading(true);
-    api.deleteRow(pageModule, id)
-    .then((res) => {
-      // console.log("🚀 ~ file: Create.js ~ line 77 ~ .then ~ res", res)
-      notification["success"]({
-        message: res.message,
+    api
+      .deleteRow(pageModule, id)
+      .then((res) => {
+        // console.log("🚀 ~ file: Create.js ~ line 77 ~ .then ~ res", res)
+        notification["success"]({
+          message: res.message,
+        });
+        getData({ page: pagination.current, result: pagination.pageSize });
+      })
+      .catch((err) => {
+        // console.log("🚀 ~ file: Create.js ~ line 88 ~ onFinish ~ err", err);
+        setLoading(false);
       });
-      getData({ page: pagination.current, result: pagination.pageSize });
-    })
-    .catch((err) => {
-      // console.log("🚀 ~ file: Create.js ~ line 88 ~ onFinish ~ err", err);
-      setLoading(false);
-    });
-  }
+  };
 
   const actions = {
     title: "Actions",
@@ -56,16 +75,16 @@ function Index() {
         <Link to={`/admin/${pageModule}/${id}/edit`}>
           <EditOutlined title="Edit" />
         </Link>
-        <Link className="ml-4" onClick={()=> deleteRow(id) }>
+        <Link className="ml-4" onClick={() => deleteRow(id)}>
           <DeleteOutlined title="Delete" />
         </Link>
       </>
     ),
   };
 
-  const getData = async ({ page, result, filters = null }) => {
+  const getData = async ({ page, result, filters = null, search = null }) => {
     return api
-      .getRows(pageModule, page, result, filters)
+      .getRows(pageModule, page, result, filters, search)
       .then((res) => {
         setData(res.data);
         setPagination({
@@ -122,49 +141,61 @@ function Index() {
   };
 
   useEffect(() => {
+
+    setData();
+    setSearch();
+    setFilters();
+    setPagination({
+      current: 1,
+      pageSize: 15,
+      total: 0,
+    });
+
+
     (async () => {
+      console.log("🚀 ~ file: Index.js ~ line 144 ~ useEffect ~ useEffect")
       setLoading(true);
-      setData();
       await getColumns();
-      await getData({ page: pagination.current, result: pagination.pageSize });
+      await getData({ page: 1, result: 15 });
     })();
   }, [pageModule]);
 
-  // useEffect(() => {
-  //   getColumns()
-  // }, [data])
-
   const handleTableChange = (pagination, filters, sorter) => {
     filters = helpers.removeNullFromObject(filters);
+    setFilters(filters);
     getData({
       filters: filters,
       page: pagination.current,
       result: pagination.pageSize,
+      search: search,
     });
   };
 
-  const list = [
-    {
-      id: 1,
-      name: "admin",
-      user_id: 1,
-      email: "admin@tir.loc",
-      email_verified_at: null,
-      type: "admin",
-      status: "enabled",
-      created_at: null,
-      updated_at: null,
-      deleted_at: null,
-    },
-  ];
+  const onSearch = (value) => {
+    if (value === "") {
+      value = null;
+    }
+    setSearch(value);
+    getData({
+      filters: filters,
+      page: pagination.current,
+      result: pagination.pageSize,
+      search: value,
+    });
+  };
 
   return (
     <div className={`${pageModule}-index`}>
+      <Title className="capitalize">{pageModule}</Title>
       <Row justify="space-between" align="bottom" className="mb-4">
-        <Title className="capitalize">{pageModule}</Title>
-        <Button type="primary">
-          <Link to={`/admin/${pageModule}/create`}>Create {pageModule}</Link>
-        </Button>
+        <Col className="gutter-row" span={12}>
+          <Input.Search placeholder="Search" onSearch={onSearch} />
+        </Col>
+        <Col className="gutter-row text-right" span={4}>
+          <Button type="primary">
+            <Link to={`/admin/${pageModule}/create`}>Create {pageModule}</Link>
+          </Button>
+        </Col>
       </Row>
       <Card>
         <Table
