@@ -63,7 +63,7 @@ const getSelectValue = async (dataUrl,id) => {
 };
 
 const deleteRow = async (module, id) => {
-  const { data } = await axios.delete(`${module}/${id}`);
+  const { data } = await axios.delete(`${module}/${id}?locale=all`);
   return await data;
 };
 

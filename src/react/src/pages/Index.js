@@ -58,6 +58,7 @@ function Index() {
         notification["success"]({
           message: res.message,
         });
+        //TODO:: pagination problem after delete the item
         getData({ page: pagination.current, result: pagination.pageSize });
       })
       .catch((err) => {
@@ -75,9 +76,9 @@ function Index() {
         <Link to={`/admin/${pageModule}/${id}/edit`}>
           <EditOutlined title="Edit" />
         </Link>
-        <Link className="ml-4" onClick={() => deleteRow(id)}>
+        <span className="ml-4" onClick={() => deleteRow(id)}>
           <DeleteOutlined title="Delete" />
-        </Link>
+        </span>
       </>
     ),
   };
@@ -119,14 +120,13 @@ function Index() {
           if (col.comment?.content !== undefined) {
             col.title = (
               <div>
-                {col.title}{" "}
+                {col.title}
                 <Popover
                   content={col.comment.content}
                   title={col.comment.title}
                 >
-                  {" "}
-                  <QuestionCircleOutlined />{" "}
-                </Popover>{" "}
+                  <QuestionCircleOutlined />
+                </Popover>
               </div>
             );
           }
