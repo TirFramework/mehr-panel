@@ -19,7 +19,7 @@ const separationRules = ({ pageType, rules, creationRules, updateRules }) => {
   // console.log("🚀 ~ file: index.js ~ line 7 ~ pageType", pageType)
 
   // console.log("🚀 ~ file: index.js ~ line 25 ~ rules", rules)
-  
+
   if (rules === '') {
     return null;
   }
@@ -64,11 +64,12 @@ const separationRules = ({ pageType, rules, creationRules, updateRules }) => {
 };
 
 const findValue = (string) => {
-  const regex = /(?<=:)[\w+.-]+/g;
+  const regex = /:\w+/g;
   let arr = string.match(regex);
   if (arr) {
     // console.log("🚀 ~ file: index.js ~ line 60 ~ findValue ~ arr", arr)
-    return string.match(regex)[0];
+    let str = string.match(regex)[0];
+    return str.replace(':', '')
   }
   return true;
 };
@@ -94,12 +95,12 @@ const removeBaseUrl = (str) => {
 }
 
 const removeNullFromObject = (obj) => {
-    for (var propName in obj) {
-      if (obj[propName] === null || obj[propName] === undefined) {
-        delete obj[propName];
-      }
+  for (var propName in obj) {
+    if (obj[propName] === null || obj[propName] === undefined) {
+      delete obj[propName];
     }
-    return obj
+  }
+  return obj
 }
 
 
@@ -111,7 +112,7 @@ const isRequired = (arr) => {
     if(Object.keys(arr[i]).find(element => element === 'required')){
       return true
     }
-    
+
   }
   return false
 }
