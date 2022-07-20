@@ -178,7 +178,7 @@ function Index() {
     setSearch(value);
     getData({
       filters: filters,
-      page: pagination.current,
+      page: 1,
       result: pagination.pageSize,
       search: value,
     });
