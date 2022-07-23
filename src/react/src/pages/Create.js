@@ -38,11 +38,19 @@ const Create = () => {
   const makeField = () => {
     if (pageType === "create") {
       api.getCreateFields(pageModule).then((res) => {
+        //TODO:: make it function
+        res.map((field)=>{
+          field.name = field.name.split('.');
+        })
         setFields(res);
         setLoading(false);
       });
     } else {
       api.getEditFields(pageModule, pageId).then((res) => {
+        //TODO:: make it function
+        res.map((field)=>{
+          field.name = field.name.split('.');
+        })
         setFields(res);
         setLoading(false);
       });
