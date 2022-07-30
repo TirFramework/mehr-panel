@@ -2,7 +2,6 @@
 
 # dependencies
 /.vscode
-package-lock.json
 /node_modules
 /.pnp
 .pnp.js

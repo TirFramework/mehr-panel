@@ -1,4 +1,4 @@
-import React, { useMemo, useState, useRef, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { Empty, Form, Select, Spin } from "antd";
 // import debounce from "lodash/debounce";
 
@@ -46,15 +46,17 @@ const Text = (props) => {
         value: item.value,
       }));
 
-      
       props.data.map((item) =>
         newOption.push({
           label: item.text,
           value: item.value,
         })
-        );
-        
-        console.log("🚀 ~ file: Select.js ~ line 52 ~ api.getSelect ~ newOption", newOption)
+      );
+
+      console.log(
+        "🚀 ~ file: Select.js ~ line 52 ~ api.getSelect ~ newOption",
+        newOption
+      );
       setOptions(newOption);
       setLoading(false);
     });

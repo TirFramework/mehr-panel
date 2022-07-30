@@ -1,14 +1,12 @@
 import { useEffect, useState } from "react";
-import { Link, Redirect, useParams, useHistory } from "react-router-dom";
+import { Redirect, useParams, useHistory } from "react-router-dom";
 import {
   Form,
-  Spin,
   Button,
   Breadcrumb,
   notification,
   Typography,
   Card,
-  Row,
   Space,
 } from "antd";
 
@@ -16,7 +14,7 @@ import * as api from "../api";
 
 import Field from "../components/Field";
 
-import {mapErrors } from '../lib/helpers'
+import { mapErrors } from "../lib/helpers";
 
 const { Title } = Typography;
 
@@ -26,40 +24,37 @@ const Create = () => {
   const { pageId } = useParams();
 
   const [fields, setFields] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState({
+    bootLoad: true,
+    submitLoad: false,
+  });
   const [redirecting, setRedirecting] = useState(false);
 
-  const history = useHistory()
+  const history = useHistory();
 
   const goBack = () => {
-    history.goBack()
-  }
+    history.goBack();
+  };
 
   const makeField = () => {
-    if (pageType === "create") {
-      api.getCreateFields(pageModule).then((res) => {
-        //TODO:: make it function
-        res.map((field)=>{
-          field.name = field.name.split('.');
-        })
-        setFields(res);
-        setLoading(false);
+    api.getCreateOrEditFields(pageModule, pageId).then((res) => {
+      res.map((field) => {
+        field.name = field.name.split(".");
       });
-    } else {
-      api.getEditFields(pageModule, pageId).then((res) => {
-        //TODO:: make it function
-        res.map((field)=>{
-          field.name = field.name.split('.');
-        })
-        setFields(res);
-        setLoading(false);
+      setFields(res);
+      setLoading({
+        ...loading,
+        bootLoad: false,
       });
-    }
+    });
   };
 
   useEffect(() => {
-    setLoading(true);
-    setFields([])
+    setLoading({
+      ...loading,
+      bootLoad: true,
+    });
+    setFields([]);
     async function makePage() {
       await makeField();
     }
@@ -68,48 +63,67 @@ const Create = () => {
 
   const onFinish = (values) => {
     console.log("Success:", values);
-    setLoading(true);
-      if (pageType === "create") {
-        api
+
+    // setLoading(true);
+    // setLoading({
+    //   ...loading,
+    //   submitLoad: true,
+    // });
+    if (pageType === "create") {
+      api
         .postCreate(pageModule, values)
         .then((res) => {
-          console.log("🚀 ~ file: Create.js ~ line 59 ~ .then ~ res", res)
-          setLoading(false);
+          // setLoading(false);
+
+          // setLoading({
+          //   ...loading,
+          //   submitLoad: false,
+          // });
+
           notification["success"]({
             message: res.message,
           });
-          setRedirecting(`/admin/${pageModule}/${res.id}/edit`)
+          setRedirecting(`/admin/${pageModule}/${res.id}/edit`);
         })
         .catch((err) => {
-          setLoading(false);
-          console.log("🚀 ~ file: Create.js ~ line 88 ~ onFinish ~ err", err.response.data.message)
-          
+          // setLoading(false);
+
+          // setLoading({
+          //   ...loading,
+          //   submitLoad: false,
+          // });
           notification["error"]({
             message: mapErrors(err.response.data.message),
           });
         });
-      } else if (pageType === "edit") {
-        api
+    } else if (pageType === "edit") {
+      api
         .postEdit(pageModule, pageId, values)
         .then((res) => {
-          console.log("🚀 ~ file: Create.js ~ line 77 ~ .then ~ res", res)
-          setLoading(false);
+          // setLoading(false);
+
+          // setLoading({
+          //   ...loading,
+          //   submitLoad: false,
+          // });
+
           notification["success"]({
             message: res.message,
           });
         })
         .catch((err) => {
-          console.log("🚀 ~ file: Create.js ~ line 88 ~ onFinish ~ err", err)
-          setLoading(false);
+          // setLoading(false);
+          // setLoading({
+          //   ...loading,
+          //   submitLoad: false,
+          // });
         });
-      }
+    }
   };
 
   const onFinishFailed = (errorInfo) => {
     console.log("Failed:", errorInfo);
   };
-
-
 
   // console.log("🚀 ~ file: Create.js ~ line 96 ~ Create ~ redirecting", redirecting)
 
@@ -142,7 +156,13 @@ const Create = () => {
       >
         <Card>
           {fields.map((field, index) => (
-            <Field key={index} type={field.type} loading={loading} pageType={pageType} {...field} />
+            <Field
+              key={index}
+              type={field.type}
+              loading={loading.bootLoad}
+              pageType={pageType}
+              {...field}
+            />
           ))}
         </Card>
 
@@ -151,7 +171,7 @@ const Create = () => {
             {/* <Link to={`/admin/${pageModule}`}>Cancel</Link> */}
             Cancel
           </Button>
-          <Button type="primary" htmlType="submit" loading={loading}>
+          <Button type="primary" htmlType="submit" loading={loading.submitLoad}>
             Submit
           </Button>
         </Space>

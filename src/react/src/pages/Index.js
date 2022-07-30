@@ -11,7 +11,8 @@ import {
   Typography,
   Popover,
   notification,
-  Col, Tooltip,
+  Col,
+  Tooltip,
 } from "antd";
 import {
   EditOutlined,
@@ -33,21 +34,25 @@ const { Title } = Typography;
 function Index() {
   const { pageModule } = useParams();
 
+  if (!localStorage.getItem(pageModule)) {
+    localStorage.setItem(
+      pageModule,
+      JSON.stringify({
+        current: 1,
+        pageSize: 15,
+        total: 0,
+        search: null,
+        filters: null,
+      })
+    );
+  }
   const [columns, setColumns] = useState();
 
   const [data, setData] = useState();
 
   const [loading, setLoading] = useState(true);
 
-  const [search, setSearch] = useState(null);
-
-  const [filters, setFilters] = useState(null);
-
-  const [pagination, setPagination] = useState({
-    current: 1,
-    pageSize: 15,
-    total: 0,
-  });
+  const [pagination, setPagination] = useState();
 
   const deleteRow = (id) => {
     setLoading(true);
@@ -77,7 +82,13 @@ function Index() {
           <EditOutlined title="Edit" />
         </Link>
         <Tooltip title="Delete">
-          <Button  className="ml-4" type="link" danger onClick={() => deleteRow(id)} icon={<DeleteOutlined />} />
+          <Button
+            className="ml-4"
+            type="link"
+            danger
+            onClick={() => deleteRow(id)}
+            icon={<DeleteOutlined />}
+          />
         </Tooltip>
       </>
     ),
@@ -141,33 +152,35 @@ function Index() {
   };
 
   useEffect(() => {
-
     setData();
-    setSearch();
-    setFilters();
-    setPagination({
-      current: 1,
-      pageSize: 15,
-      total: 0,
-    });
-
-
+    const localStg = JSON.parse(localStorage.getItem(pageModule));
+    setPagination(localStg);
     (async () => {
-      console.log("🚀 ~ file: Index.js ~ line 144 ~ useEffect ~ useEffect")
       setLoading(true);
       await getColumns();
-      await getData({ page: 1, result: 15 });
+      await getData({ page: localStg.current, result: localStg.pageSize });
     })();
   }, [pageModule]);
 
+  useEffect(() => {
+    localStorage.setItem(pageModule, JSON.stringify(pagination));
+    console.log(
+      "🚀 ~ file: Index.js ~ line 172 ~ useEffect ~ pagination",
+      pagination
+    );
+  }, [pageModule, pagination]);
+
   const handleTableChange = (pagination, filters, sorter) => {
     filters = helpers.removeNullFromObject(filters);
-    setFilters(filters);
+    setPagination({
+      ...pagination,
+      filters: filters,
+    });
     getData({
       filters: filters,
       page: pagination.current,
       result: pagination.pageSize,
-      search: search,
+      search: pagination.search,
     });
   };
 
@@ -175,9 +188,13 @@ function Index() {
     if (value === "") {
       value = null;
     }
-    setSearch(value);
+    setPagination({
+      ...pagination,
+      search: value,
+    });
+
     getData({
-      filters: filters,
+      filters: pagination.currentfilters,
       page: 1,
       result: pagination.pageSize,
       search: value,

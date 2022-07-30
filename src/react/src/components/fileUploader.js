@@ -46,7 +46,7 @@ import Cookies from "js-cookie";
 
 import Config from "../constants/config";
 
-const token = Cookies.get('api_token')
+const token = Cookies.get("api_token");
 const type = "DragableUploadList";
 
 const DragableUploadListItem = ({ originNode, moveRow, file, fileList }) => {
@@ -94,15 +94,12 @@ const DragableUploadListItem = ({ originNode, moveRow, file, fileList }) => {
 };
 
 const DragSortingUpload = (props) => {
-  
   const initialValueHandeling = (data) => {
-
     let newData = [];
 
-    if( data === null){
-      return null
+    if (data === null) {
+      return null;
     }
-
 
     if (!Array.isArray(data)) {
       newData.push({
@@ -168,7 +165,7 @@ const DragSortingUpload = (props) => {
           maxCount={props.maxCount}
           onChange={onChange}
           disabled={props.readonly}
-          className={props.readonly && "readOnly"}
+          className={props.readonly ? "readOnly" : " "}
           //   {...props}
           itemRender={(originNode, file, currFileList) => (
             <DragableUploadListItem
@@ -196,25 +193,23 @@ const CustomUpload = (props) => {
     updateRules: props.updateRules,
   });
 
-
-  
   const normFile = (e) => {
     console.log("Upload event:", e);
     // return e.fileList
-    if(e.length === 1){
+    if (e.length === 1) {
       if (e[0].response !== undefined) {
-        return `${e[0].response.path}`
+        return `${e[0].response.path}`;
       }
       if (e[0].value !== undefined) {
-        return `${e[0].value}`
+        return `${e[0].value}`;
       }
     }
     return e.map((item) => {
       if (item.response !== undefined) {
-        return `${item.response.path}`
+        return `${item.response.path}`;
       }
       if (item.value !== undefined) {
-        return `${item.value}`
+        return `${item.value}`;
       }
     });
   };
@@ -228,7 +223,7 @@ const CustomUpload = (props) => {
       getValueFromEvent={normFile}
       // setFieldsValue={fileList}
     >
-      <DragSortingUpload {...props}/>
+      <DragSortingUpload {...props} />
     </Form.Item>
   );
 };
