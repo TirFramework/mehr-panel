@@ -49,7 +49,10 @@ function App() {
   if (loading) return <p>loading...</p>;
 
   return (
-    <Sider className="overflow-auto h-screen fixed left-0">
+    <Sider
+      className="overflow-auto h-screen fixed left-0"
+      style={{ position: "fixed" }}
+    >
       <div className="logo text-xl text-white p-4 bg-black">ADMIN PANEL</div>
       <Menu
         theme="dark"
@@ -59,7 +62,11 @@ function App() {
         mode="inline"
         items={menus.map(({ link, icon, title }) => ({
           icon: <Icon type={icon} />,
-          label: <Link to={link}> {title}</Link>,
+          label: (
+            <Link className="ml-2" to={link}>
+              {title}
+            </Link>
+          ),
         }))}
       />
     </Sider>

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Redirect, useParams, useHistory } from "react-router-dom";
+import { Redirect, useParams, Link } from "react-router-dom";
 import {
   Form,
   Button,
@@ -8,6 +8,8 @@ import {
   Typography,
   Card,
   Space,
+  Row,
+  Col,
 } from "antd";
 
 import * as api from "../api";
@@ -16,120 +18,85 @@ import Field from "../components/Field";
 
 import { mapErrors } from "../lib/helpers";
 
+import { useUrlParams } from "../hooks/useUrlParams";
+import SubmitGroup from "../components/SubmitGroup";
+
 const { Title } = Typography;
 
 const Create = () => {
+  const [form] = Form.useForm();
+
+  const [urlParams, , setUrlParams] = useUrlParams();
+  const pageId = urlParams.id;
+  const editMode = urlParams.editMode;
+
   const { pageModule } = useParams();
   const { pageType } = useParams();
-  const { pageId } = useParams();
+  // const { pageId } = useParams();
 
   const [fields, setFields] = useState([]);
-  const [loading, setLoading] = useState({
-    bootLoad: true,
-    submitLoad: false,
-  });
-  const [redirecting, setRedirecting] = useState(false);
+  const [bootLoad, setBootLoad] = useState(true);
+  const [submitLoad, setSubmitLoad] = useState(true);
 
-  const history = useHistory();
+  // const makeField = () => {};
 
-  const goBack = () => {
-    history.goBack();
-  };
+  useEffect(() => {
+    setBootLoad(true);
 
-  const makeField = () => {
+    setFields([]);
     api.getCreateOrEditFields(pageModule, pageId).then((res) => {
       res.map((field) => {
         field.name = field.name.split(".");
       });
       setFields(res);
-      setLoading({
-        ...loading,
-        bootLoad: false,
-      });
+      setBootLoad(false);
+      setSubmitLoad(false);
     });
-  };
-
-  useEffect(() => {
-    setLoading({
-      ...loading,
-      bootLoad: true,
-    });
-    setFields([]);
-    async function makePage() {
-      await makeField();
-    }
-    makePage();
   }, [pageModule, pageId]);
 
   const onFinish = (values) => {
     console.log("Success:", values);
 
-    // setLoading(true);
-    // setLoading({
-    //   ...loading,
-    //   submitLoad: true,
-    // });
-    if (pageType === "create") {
-      api
-        .postCreate(pageModule, values)
-        .then((res) => {
-          // setLoading(false);
+    setSubmitLoad(true);
 
-          // setLoading({
-          //   ...loading,
-          //   submitLoad: false,
-          // });
+    api
+      .postEditOrCreate(pageModule, pageId, values)
+      .then((res) => {
+        setSubmitLoad(false);
 
-          notification["success"]({
-            message: res.message,
-          });
-          setRedirecting(`/admin/${pageModule}/${res.id}/edit`);
-        })
-        .catch((err) => {
-          // setLoading(false);
-
-          // setLoading({
-          //   ...loading,
-          //   submitLoad: false,
-          // });
-          notification["error"]({
-            message: mapErrors(err.response.data.message),
-          });
+        if (!pageId) {
+          setUrlParams({ id: res.id });
+        }
+        notification["success"]({
+          message: res.message,
         });
-    } else if (pageType === "edit") {
-      api
-        .postEdit(pageModule, pageId, values)
-        .then((res) => {
-          // setLoading(false);
+      })
+      .catch((err) => {
+        setSubmitLoad(false);
 
-          // setLoading({
-          //   ...loading,
-          //   submitLoad: false,
-          // });
-
-          notification["success"]({
-            message: res.message,
+        let mes = [];
+        for (const [key, value] of Object.entries(err.response.data.message)) {
+          value.forEach((val) => {
+            mes.push(val);
           });
-        })
-        .catch((err) => {
-          // setLoading(false);
-          // setLoading({
-          //   ...loading,
-          //   submitLoad: false,
-          // });
+        }
+
+        notification["warning"]({
+          message: "Error !",
+          description: (
+            <ul className="pl-2">
+              {mes.map((val) => (
+                <li>{val}</li>
+              ))}
+            </ul>
+          ),
         });
-    }
+      });
   };
 
   const onFinishFailed = (errorInfo) => {
     console.log("Failed:", errorInfo);
   };
-
-  // console.log("🚀 ~ file: Create.js ~ line 96 ~ Create ~ redirecting", redirecting)
-
-  if (redirecting) {
-    return <Redirect to={redirecting} />;
-  }
 
   return (
     <div className={`${pageModule}-${pageType}`}>
@@ -137,10 +104,19 @@ const Create = () => {
         <Breadcrumb.Item className="capitalize">{pageModule}</Breadcrumb.Item>
         <Breadcrumb.Item className="capitalize">{pageType}</Breadcrumb.Item>
       </Breadcrumb>
-      <Title className="capitalize">
-        {pageType} {pageModule}
-      </Title>
+
+      <Row justify="space-between" align="middle">
+        <Col>
+          <Title className="capitalize">
+            {pageType} {pageModule}
+          </Title>
+        </Col>
+        <Col>
+          <SubmitGroup form={form} loading={submitLoad} />
+        </Col>
+      </Row>
       <Form
+        form={form}
         name="basic"
         labelCol={{
           span: 6,
@@ -154,27 +130,17 @@ const Create = () => {
         onFinish={onFinish}
         onFinishFailed={onFinishFailed}
       >
-        <Card>
-          {fields.map((field, index) => (
-            <Field
-              key={index}
-              type={field.type}
-              loading={loading.bootLoad}
-              pageType={pageType}
-              {...field}
-            />
-          ))}
+        <Card loading={bootLoad}>
+          <Row>
+            {fields.map((field, index) => (
+              <Col key={index} span={field.col} className={field.className}>
+                <Field type={field.type} pageType={pageType} {...field} />
+              </Col>
+            ))}
+          </Row>
         </Card>
 
-        <Space className="justify-end flex mt-2">
-          <Button onClick={goBack}>
-            {/* <Link to={`/admin/${pageModule}`}>Cancel</Link> */}
-            Cancel
-          </Button>
-          <Button type="primary" htmlType="submit" loading={loading.submitLoad}>
-            Submit
-          </Button>
-        </Space>
+        <SubmitGroup form={form} loading={submitLoad} />
       </Form>
     </div>
   );

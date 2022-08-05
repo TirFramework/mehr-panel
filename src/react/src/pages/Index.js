@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from "react";
-import { useParams, Link } from "react-router-dom";
+import React, { useState, useEffect, useCallback } from "react";
+import { useParams, Link, useHistory } from "react-router-dom";
+import { PlusOutlined, StopOutlined } from "@ant-design/icons";
 
 import {
   Button,
@@ -13,6 +14,7 @@ import {
   notification,
   Col,
   Tooltip,
+  Skeleton,
 } from "antd";
 import {
   EditOutlined,
@@ -24,6 +26,7 @@ import { CSVLink } from "react-csv";
 import * as helpers from "../lib/helpers";
 
 import * as api from "../api";
+import useLocalStorage from "../hooks/useLocalStorage";
 
 // const getColumns = async (query) => {
 //   return fetch(`http://localhost:8000/post/index.json`).then((_) => _.json());
@@ -32,7 +35,10 @@ import * as api from "../api";
 const { Title } = Typography;
 
 function Index() {
+  console.log("🚀 ~ Index");
   const { pageModule } = useParams();
+
+  const history = useHistory();
 
   if (!localStorage.getItem(pageModule)) {
     localStorage.setItem(
@@ -50,12 +56,13 @@ function Index() {
 
   const [data, setData] = useState();
 
-  const [loading, setLoading] = useState(true);
+  const [dataLoading, setDataLoading] = useState(true);
+  const [tableLoading, setTableLoading] = useState(true);
 
-  const [pagination, setPagination] = useState();
+  const [pagination, setPagination] = useLocalStorage(pageModule);
 
   const deleteRow = (id) => {
-    setLoading(true);
+    setTableLoading(true);
     api
       .deleteRow(pageModule, id)
       .then((res) => {
@@ -64,11 +71,12 @@ function Index() {
           message: res.message,
         });
         //TODO:: pagination problem after delete the item
-        getData({ page: pagination.current, result: pagination.pageSize });
+        setTableLoading(false);
+        getData(pagination);
       })
       .catch((err) => {
         // console.log("🚀 ~ file: Create.js ~ line 88 ~ onFinish ~ err", err);
-        setLoading(false);
+        setTableLoading(false);
       });
   };
 
@@ -78,7 +86,7 @@ function Index() {
     fixed: "right",
     render: (id) => (
       <>
-        <Link to={`/admin/${pageModule}/${id}/edit`}>
+        <Link to={`/admin/${pageModule}/create-edit?id=${id}`}>
           <EditOutlined title="Edit" />
         </Link>
         <Tooltip title="Delete">
@@ -94,30 +102,20 @@ function Index() {
     ),
   };
 
-  const getData = async ({ page, result, filters = null, search = null }) => {
-    return api
-      .getRows(pageModule, page, result, filters, search)
-      .then((res) => {
-        setData(res.data);
-        setPagination({
-          current: res.current_page,
-          pageSize: res.per_page,
-          total: res.total,
-        });
-        setLoading(false);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
-
-  const getColumns = () => {
+  const getColumns = (params) => {
+    setTableLoading(true);
     api
       .getCols(pageModule)
       .then((res) => {
         let cols = res.cols;
         // loop for detect array
         cols.forEach((col) => {
+          var item;
+          if (params?.filters?.hasOwnProperty(col.dataIndex)) {
+            item = params?.filters[col.dataIndex];
+            col.defaultFilteredValue = item;
+          }
+
           if (col.valueType === "array") {
             col.render = (arr) =>
               arr?.map((item, index) => <Tag key={index}>{item.text}</Tag>);
@@ -142,33 +140,36 @@ function Index() {
             );
           }
         });
-        // add edit to row
         cols.push(actions);
-        setColumns(res.cols);
+
+        setColumns(res);
+        setTableLoading(false);
       })
       .catch((err) => {
         console.log(err);
       });
+    getData(params);
   };
 
   useEffect(() => {
-    setData();
-    const localStg = JSON.parse(localStorage.getItem(pageModule));
-    setPagination(localStg);
-    (async () => {
-      setLoading(true);
-      await getColumns();
-      await getData({ page: localStg.current, result: localStg.pageSize });
-    })();
+    getColumns(pagination);
   }, [pageModule]);
 
-  useEffect(() => {
-    localStorage.setItem(pageModule, JSON.stringify(pagination));
-    console.log(
-      "🚀 ~ file: Index.js ~ line 172 ~ useEffect ~ pagination",
-      pagination
-    );
-  }, [pageModule, pagination]);
+  const getData = useCallback(
+    (params) => {
+      setDataLoading(true);
+      api
+        .getRows(pageModule, params)
+        .then((res) => {
+          setData(res);
+          setDataLoading(false);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    },
+    [pageModule, pagination]
+  );
 
   const handleTableChange = (pagination, filters, sorter) => {
     filters = helpers.removeNullFromObject(filters);
@@ -177,10 +178,8 @@ function Index() {
       filters: filters,
     });
     getData({
+      ...pagination,
       filters: filters,
-      page: pagination.current,
-      result: pagination.pageSize,
-      search: pagination.search,
     });
   };
 
@@ -192,11 +191,8 @@ function Index() {
       ...pagination,
       search: value,
     });
-
     getData({
-      filters: pagination.currentfilters,
-      page: 1,
-      result: pagination.pageSize,
+      ...pagination,
       search: value,
     });
   };
@@ -204,30 +200,93 @@ function Index() {
   return (
     <div className={`${pageModule}-index`}>
       <Title className="capitalize">{pageModule}</Title>
-      <Row justify="space-between" align="bottom" className="mb-4">
+      <Row align="bottom" className="mb-4">
         <Col className="gutter-row" span={12}>
-          <Input.Search placeholder="Search" onSearch={onSearch} />
+          {!tableLoading ? (
+            <Input.Search
+              placeholder="Search"
+              onSearch={onSearch}
+              defaultValue={pagination.search}
+              allowClear
+              enterButton
+              size="large"
+            />
+          ) : (
+            <Skeleton.Input
+              active={true}
+              className="w-full"
+              style={{ width: "100%" }}
+            />
+          )}
         </Col>
-        <Col className="gutter-row text-right" span={4}>
-          <Button type="primary">
-            <Link to={`/admin/${pageModule}/create`}>Create {pageModule}</Link>
-          </Button>
+        <Col className="gutter-row" span={8}>
+          {pagination?.filters && (
+            <>
+              {Object.keys(pagination?.filters).length ? (
+                <Button
+                  icon={<StopOutlined />}
+                  type="default"
+                  onClick={() => {
+                    const newPagination = {
+                      ...pagination,
+                      current: 1,
+                      filters: null,
+                    };
+                    setPagination(newPagination);
+                    getColumns(newPagination);
+                    getData(newPagination);
+                  }}
+                >
+                  Reset
+                </Button>
+              ) : (
+                ""
+              )}
+            </>
+          )}
         </Col>
+        {columns?.actions?.creatable === "allow" && (
+          <Col className="gutter-row text-right" span={4}>
+            <Link to={`/admin/${pageModule}/create-edit`}>
+              <Button
+                type="primary"
+                icon={<PlusOutlined />}
+                loading={tableLoading}
+              >
+                Create {pageModule}
+              </Button>
+            </Link>
+          </Col>
+        )}
       </Row>
-      <Card>
+      <Card loading={tableLoading}>
         <Table
-          columns={columns}
+          columns={columns?.cols}
           rowKey={(record) => record.id}
-          dataSource={data}
-          pagination={pagination}
-          loading={loading}
+          dataSource={data?.data}
+          pagination={{
+            pageSize: pagination?.pageSize,
+            current: pagination?.current,
+            total: data?.total,
+          }}
+          // onRow={(record, rowIndex) => {
+          //   return {
+          //     onClick: (event) => {
+          //       history.push(
+          //         `/admin/${pageModule}/create-edit?id=${record.id}`
+          //       );
+          //     }, // click row
+          //   };
+          // }}
+          // rowClassName={"cursor-pointer	"}
+          loading={dataLoading}
           onChange={handleTableChange}
           footer={() => (
             <>
-              {!loading && (
+              {!dataLoading && (
                 <CSVLink
                   filename={"Expense_Table.csv"}
-                  data={data}
+                  data={data?.data}
                   className="btn btn-primary"
                 >
                   Export to CSV

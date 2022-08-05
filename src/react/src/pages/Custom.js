@@ -3,13 +3,10 @@ import { useParams } from "react-router-dom";
 import { Skeleton } from "antd";
 // import { capitalize } from "../lib/helpers"
 
-const DynamicField = (props) => {
-  const F = lazy(() => import(`./dynamic/${props.type}.js`));
-  return <F {...props} />;
-};
-
 const Field = (props) => {
   const { pageModule } = useParams();
+  const DynamicField = lazy(() => import(`./dynamic/${pageModule}`));
+
   return (
     <Suspense
       fallback={
@@ -18,7 +15,7 @@ const Field = (props) => {
         </div>
       }
     >
-      <DynamicField type={pageModule} {...props} />
+      <DynamicField {...props} />
     </Suspense>
   );
 };

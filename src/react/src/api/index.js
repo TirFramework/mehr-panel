@@ -16,20 +16,33 @@ const getCols = async (module) => {
   return await data;
 };
 
-const getRows = async (module, page, result, filters, search) => {
+const getRows = async (module, props) => {
   const { data } = await axios.get(`${module}/data`, {
     params: {
-      page: page,
-      result: result,
-      filters,
-      search,
+      page: props.current,
+      result: props.pageSize,
+      filters: props.filters,
+      search: props.search,
       locale: "all",
     },
   });
   return await data;
 };
 
-export const getCreateOrEditFields = async (module, id) => {
+// const getRows = async (module, page, result, filters, search) => {
+//   const { data } = await axios.get(`${module}/data`, {
+//     params: {
+//       page: page,
+//       result: result,
+//       filters,
+//       search,
+//       locale: "all",
+//     },
+//   });
+//   return await data;
+// };
+
+export const getCreateOrEditFields = async (module, id = null) => {
   if (id) {
     const { data } = await axios.get(`${module}/${id}/edit?locale=all`);
     return await data;
@@ -39,14 +52,24 @@ export const getCreateOrEditFields = async (module, id) => {
   }
 };
 
-const postCreate = async (module, body) => {
+export const postCreate = async (module, body) => {
   const { data } = await axios.post(`${module}`, body);
   return await data;
 };
 
-const postEdit = async (module, id, body) => {
+export const postEdit = async (module, id, body) => {
   const { data } = await axios.put(`${module}/${id}`, body);
   return await data;
+};
+
+export const postEditOrCreate = async (module, id, body) => {
+  if (id) {
+    const { data } = await axios.put(`${module}/${id}`, body);
+    return await data;
+  } else {
+    const { data } = await axios.post(`${module}`, body);
+    return await data;
+  }
 };
 
 const getSelect = async (dataUrl, q) => {
@@ -86,8 +109,8 @@ export {
   getSidebar,
   getCols,
   getRows,
-  postCreate,
-  postEdit,
+  // postCreate,
+  // postEditOrCreate,
   getSelect,
   getSelectValue,
   deleteRow,
