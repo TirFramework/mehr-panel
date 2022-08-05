@@ -1,7 +1,6 @@
-import Custom from './pages/Custom.js';
-import Index from './pages/Index';
-import Create from './pages/Create';
-
+import Custom from "./pages/Custom.js";
+import Index from "./pages/Index";
+import Create from "./pages/Create";
 
 const dashboardRoutes = [
   {
@@ -11,13 +10,7 @@ const dashboardRoutes = [
     layout: "/admin",
   },
   {
-    path: "/:pageModule/:pageId/:pageType",
-    name: "Edit",
-    component: Create,
-    layout: "/admin",
-  },
-  {
-    path: "/:pageModule/:pageType",
+    path: "/:pageModule/create-edit",
     name: "Create",
     component: Create,
     layout: "/admin",
@@ -27,8 +20,7 @@ const dashboardRoutes = [
     name: "Index",
     component: Index,
     layout: "/admin",
-  }
-
+  },
 ];
 
 export default dashboardRoutes;

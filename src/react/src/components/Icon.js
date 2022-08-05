@@ -1,16 +1,16 @@
-import { lazy, memo, Suspense } from "react";
+import { memo, lazy, Suspense } from "react";
 
-const Icon = (props) => {
-  const I = lazy(() => import(`@ant-design/icons/es/icons/${props.type}.js`));
-  return <I />;
-};
-
-const DynamicIcon = (props) => {
-  return (
-    <Suspense fallback={<div>Loading...</div>}>
-      <Icon type={props.type}/>
-    </Suspense>
+function MyComponent(props) {
+  const OtherComponent = lazy(() =>
+    import(`@ant-design/icons/es/icons/${props.type}`)
   );
-};
+  return (
+    <div>
+      <Suspense fallback={<div>Loading...</div>}>
+        <OtherComponent />
+      </Suspense>
+    </div>
+  );
+}
 
-export default memo(DynamicIcon);
+export default memo(MyComponent);

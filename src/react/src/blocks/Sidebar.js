@@ -1,7 +1,4 @@
-import React, {
-  useEffect,
-  useState,
-} from "react";
+import React, { useEffect, useState } from "react";
 import { Layout, Menu } from "antd";
 
 import { Link } from "react-router-dom";
@@ -27,16 +24,13 @@ function App() {
 
   const getMenus = () => {
     // const data = useSidebar();
-    return(
-      api
-        .getSidebar()
-        .then((res) => {  
-          setMenus(res)
-          setLoading(false);
-        })
-        .catch((err) => {
-        })
-    )
+    return api
+      .getSidebar()
+      .then((res) => {
+        setMenus(res);
+        setLoading(false);
+      })
+      .catch((err) => {});
   };
 
   // makeSidebar();
@@ -52,11 +46,13 @@ function App() {
     setCurrent(e.key);
   };
 
-
   if (loading) return <p>loading...</p>;
 
   return (
-    <Sider className="overflow-auto h-screen fixed left-0">
+    <Sider
+      className="overflow-auto h-screen fixed left-0"
+      style={{ position: "fixed" }}
+    >
       <div className="logo text-xl text-white p-4 bg-black">ADMIN PANEL</div>
       <Menu
         theme="dark"
@@ -64,15 +60,15 @@ function App() {
         onClick={handleClick}
         selectedKeys={[current]}
         mode="inline"
-      >
-        {menus?.map((menu, index) => (
-          <Menu.Item key={index}
-           icon={<Icon type={menu.icon} />}
-           >
-            <Link to={menu.link}>{menu.title}</Link>
-          </Menu.Item>
-        ))}
-      </Menu>
+        items={menus.map(({ link, icon, title }) => ({
+          icon: <Icon type={icon} />,
+          label: (
+            <Link className="ml-2" to={link}>
+              {title}
+            </Link>
+          ),
+        }))}
+      />
     </Sider>
   );
 }

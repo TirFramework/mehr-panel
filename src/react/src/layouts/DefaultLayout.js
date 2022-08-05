@@ -2,7 +2,7 @@ import React from "react";
 import { Switch, Route, Redirect } from "react-router-dom";
 import Cookies from "js-cookie";
 
-import { Avatar, Dropdown, Form, Input, Layout, Menu, Row } from "antd";
+import { Avatar, Dropdown, Layout, Menu, Row } from "antd";
 import { DownOutlined } from "@ant-design/icons";
 
 import { useHistory } from "react-router-dom";

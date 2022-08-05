@@ -1,5 +1,5 @@
-import React, { useMemo, useState, useRef, useEffect } from "react";
-import { Empty, Form, Select, Spin } from "antd";
+import React, { useState, useEffect } from "react";
+import { Form, Select } from "antd";
 // import debounce from "lodash/debounce";
 
 import {
@@ -7,7 +7,6 @@ import {
   // removeBaseUrl
 } from "../lib/helpers";
 import * as api from "../api";
-const { Option } = Select;
 
 const Text = (props) => {
   // const [value, setValue] = useState([]);
@@ -61,10 +60,9 @@ const Text = (props) => {
             mode={props.multiple ? "multiple" : false}
             options={props.data}
             disabled={props.readonly}
-            className={props.readonly && 'readOnly' }
-            allowClear={!props.readonly && true} 
-          >
-          </Select>
+            className={props.readonly && "readOnly"}
+            allowClear={!props.readonly && true}
+          ></Select>
         </Form.Item>
       </>
     );
@@ -87,8 +85,8 @@ const Text = (props) => {
             options={options}
             mode={props.multiple ? "multiple" : false}
             disabled={props.readonly}
-            className={props.readonly && 'readOnly' }
-            allowClear={!props.readonly && true} 
+            className={props.readonly && "readOnly"}
+            allowClear={!props.readonly && true}
           ></Select>
         </Form.Item>
       </>
