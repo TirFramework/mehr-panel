@@ -97,7 +97,7 @@ const uploadImage = async (file) => {
 
   console.log("🚀 ~ file: index.js ~ line 72 ~ uploadImage ~ file", file);
   const { data } = await axios.post(
-    `${Config.apiBaseUrl}/file-manager/upload`,
+    `/file-manager/upload`,
     formData
   );
 

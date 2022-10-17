@@ -1,6 +1,7 @@
 import axios from "axios";
 import Config from "../constants/config";
 import Cookies from "js-cookie";
+import {notification} from "antd";
 
 /**
  * Axios defaults
@@ -23,11 +24,11 @@ axios.interceptors.request.use((config) => {
   // const token = Cookies.get('api_token')
   // config.params = { api_token: token };
   // config.params = { locale: 'Fa' };
-  
+
 
   // console.log("🚀 ~ file: axios.js ~ line 26 ~ axios.interceptors.request.use ~ config", config)
   return config;
-  
+
 },  (error) => {
   // Do something with request error
   return Promise.reject(error);
@@ -36,14 +37,23 @@ axios.interceptors.request.use((config) => {
 
 // Add a response interceptor
 axios.interceptors.response.use((response) => {
-  // console.log("🚀 ~ file: axios.js ~ line 32 ~ axios.interceptors.response.use ~ response", response)
   // Any status code that lie within the range of 2xx cause this function to trigger
   // Do something with response data
   return response;
 }, function (error) {
-// console.log("🚀 ~ file: axios.js ~ line 37 ~ axios.interceptors.response.use ~ error", error)
+  console.log("-> error", error);
+  if( error.response.status === 401 ){
+    Cookies.remove('token');
+    // TODO: Add route path
+    window.location.replace('/admin/login');
+  } else if ( error.response.status === 403 ) {
+    notification["error"]({
+      message: error.message,
+    });
+  }
   // Any status codes that falls outside the range of 2xx cause this function to trigger
   // Do something with response error
+
   return Promise.reject(error);
 });
 
