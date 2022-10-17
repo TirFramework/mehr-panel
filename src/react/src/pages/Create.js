@@ -98,6 +98,17 @@ const Create = () => {
     console.log("Failed:", errorInfo);
   };
 
+  const duplicateField = (index)=>{
+    
+    console.log("🚀 ~ file: Create.js ~ line 104 ~ duplicateField ~ index", index)
+    const newFields = [...fields];
+    const newField = fields[index]
+    newFields.splice(index, 0, newField);
+    console.log("🚀 ~ file: Create.js ~ line 105 ~ duplicateField ~ newFields", newFields)
+    setFields(newFields)
+
+  }
+
   return (
     <div className={`${pageModule}-${pageType}`}>
       <Breadcrumb>
@@ -135,6 +146,11 @@ const Create = () => {
             {fields.map((field, index) => (
               <Col key={index} span={field.col} className={field.className}>
                 <Field type={field.type} pageType={pageType} {...field} />
+                {/* <div onClick={()=>{
+                  duplicateField(index)
+                }}>
+                  duplicateField
+                </div> */}
               </Col>
             ))}
           </Row>
