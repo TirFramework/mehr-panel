@@ -8,7 +8,7 @@ import { Skeleton } from "antd";
 // };
 
 const Field = (props) => {
-  const DynamicField = lazy(() => import(`./field/${props.type}`));
+  const DynamicField = lazy(() => import(`./${props.type}`));
   return (
     <Suspense
       fallback={
