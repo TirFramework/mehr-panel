@@ -1,5 +1,5 @@
 import { memo, lazy, Suspense } from "react";
-import { Skeleton } from "antd";
+import { Card, Form, Input, Skeleton } from "antd";
 // import { capitalize } from "../lib/helpers"
 
 // const DynamicField = (props) => {
@@ -13,7 +13,19 @@ const Field = (props) => {
     <Suspense
       fallback={
         <div>
-          <Skeleton.Input active={true} className="w-full mb-6" />
+          {props.type == "Group" ? (
+            <Card title={props.display}>
+              {props.children.map((field, index) => (
+                <Form.Item label={field.display} key={index}>
+                  <input placeholder="loading..." className="ant-input"/>
+                </Form.Item>
+              ))}
+            </Card>
+          ) : (
+            <Form.Item label={props.display}>
+                <input placeholder="loading..." className="ant-input"/>
+            </Form.Item>
+          )}
         </div>
       }
     >

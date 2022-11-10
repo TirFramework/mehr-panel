@@ -16,10 +16,11 @@ import * as api from "../api";
 
 import Field from "../components/Field";
 
-import { mapErrors } from "../lib/helpers";
+import { decreaseNumberInString, findDuplicateName, increaseNumberInString, mapErrors } from "../lib/helpers";
 
 import { useUrlParams } from "../hooks/useUrlParams";
 import SubmitGroup from "../components/SubmitGroup";
+import FormGroup from "../components/FormGroup";
 
 const { Title } = Typography;
 
@@ -45,9 +46,6 @@ const Create = () => {
 
     setFields([]);
     api.getCreateOrEditFields(pageModule, pageId).then((res) => {
-      res.map((field) => {
-        field.name = field.name.split(".");
-      });
       setFields(res);
       setBootLoad(false);
       setSubmitLoad(false);
@@ -98,16 +96,97 @@ const Create = () => {
     console.log("Failed:", errorInfo);
   };
 
-  const duplicateField = (index)=>{
-    
-    console.log("🚀 ~ file: Create.js ~ line 104 ~ duplicateField ~ index", index)
-    const newFields = [...fields];
-    const newField = fields[index]
-    newFields.splice(index, 0, newField);
-    console.log("🚀 ~ file: Create.js ~ line 105 ~ duplicateField ~ newFields", newFields)
-    setFields(newFields)
+  const duplicateField = (index, fields) => {
+    const newData = [...fields];
 
+    const nameWithNumber = newData[index].name
+    const orginalName = nameWithNumber.replace(new RegExp(/\d+/g), '')
+    const indexofitemClicked = Number(nameWithNumber.match(new RegExp(/\d+/g))[0]);
+
+    const countOfOrginalName = findDuplicateName(newData, orginalName)
+
+    for (let i = 0; i < Number(countOfOrginalName - indexofitemClicked); i++) {
+      // indexOfItemShouldBeChange
+      const I = i + index + 1
+      console.log("🚀 ~ file: Create.js ~ line 113 ~ duplicateField ~ I", I)
+      newData[I] = {
+        ...newData[I],
+        name: increaseNumberInString(newData[I].name),
+        display: increaseNumberInString(newData[I].display),
+        value: form.getFieldValue(newData[I].name),
+      }
+    }
+
+    const newRow = {
+      ...newData[index],
+      name: increaseNumberInString(newData[index].name),
+      display: increaseNumberInString(newData[index].display),
+      value: ''
+    }
+
+
+
+    for (let i = 0; i < Number(countOfOrginalName - indexofitemClicked); i++) {
+      const I = i + index ;
+      if(i === 0 ){
+        form.setFieldValue( increaseNumberInString(newData[index].name), '')
+      }
+      form.setFieldValue(newData[I].name, newData[I].value)
+    }
+
+    newData.splice(index+1, 0, newRow);
+    // setFields(newData);
+    return (newData)
+  };
+
+  const duplicateGrope = (index) => {
+    const newData = [...fields]
+
+    const newGroup = duplicateField(index, fields)
+    
+
+
+    
+    setFields(newGroup);
+  };
+
+  const removeField = (index) => {
+
+    const newData = [...fields];
+
+    const nameWithNumber = newData[index].name
+    const orginalName = nameWithNumber.replace(new RegExp(/\d+/g), '')
+    const indexofitemClicked = nameWithNumber.match(new RegExp(/\d+/g))[0];
+
+    const countOfOrginalName = findDuplicateName(newData, orginalName)
+
+    if(countOfOrginalName <= 1){
+      alert('can not be remove')
+      return
+    }
+
+    for (let i = 0; i < Number(countOfOrginalName - indexofitemClicked); i++) {
+      // indexOfItemShouldBeChange
+      const I = i + index + 1
+      newData[I] = {
+        ...newData[I],
+        name: decreaseNumberInString(newData[I].name),
+        display: decreaseNumberInString(newData[I].display),
+        value: form.getFieldValue(newData[I].name),
+      }
+    }
+
+    newData.splice(index, 1)
+
+    for (let i = 0; i < Number(countOfOrginalName - indexofitemClicked); i++) {
+      const I = i + index ;
+      form.setFieldValue(newData[I].name, newData[I].value)
+    }
+
+    // newData.splice(index+1, 0, newRow);
+    setFields(newData);
   }
+  
 
   return (
     <div className={`${pageModule}-${pageType}`}>
@@ -144,14 +223,7 @@ const Create = () => {
         <Card loading={bootLoad}>
           <Row>
             {fields.map((field, index) => (
-              <Col key={index} span={field.col} className={field.className}>
-                <Field type={field.type} pageType={pageType} {...field} />
-                {/* <div onClick={()=>{
-                  duplicateField(index)
-                }}>
-                  duplicateField
-                </div> */}
-              </Col>
+              <FormGroup key={index} index={index} pageType={pageType} loading={submitLoad} addrow={duplicateGrope} removeRow={removeField} {...field}  />
             ))}
           </Row>
         </Card>

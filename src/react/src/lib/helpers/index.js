@@ -118,5 +118,28 @@ const isRequired = (arr) => {
 }
 
 
+const findDuplicateName = (arry, word) => {
+  let count = 0
+  arry.forEach(obj => {
+    if(obj.name.includes(word)){
+      count++;
+    }
+  });
 
-export { separationRules, capitalize, mapErrors, removeBaseUrl, removeNullFromObject, isRequired };
+  return count
+}
+
+
+const increaseNumberInString = (str) => {
+  return str.replace(new RegExp(/\d+/g), Number(str.match(new RegExp(/\d+/g))[0]) + 1)
+}
+
+
+const decreaseNumberInString = (str) => {
+  return str.replace(new RegExp(/\d+/g), Number(str.match(new RegExp(/\d+/g))[0]) - 1)
+}
+
+
+
+
+export { separationRules, capitalize, mapErrors, removeBaseUrl, removeNullFromObject, isRequired, findDuplicateName, increaseNumberInString, decreaseNumberInString };
