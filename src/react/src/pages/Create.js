@@ -16,7 +16,14 @@ import * as api from "../api";
 
 import Field from "../components/Field";
 
-import { decreaseNumberInString, findDuplicateName, increaseNumberInString, mapErrors } from "../lib/helpers";
+import {
+  decreaseNumberInString,
+  findDuplicateName,
+  findNextName,
+  getLastNumber,
+  increaseNumberInString,
+  mapErrors,
+} from "../lib/helpers";
 
 import { useUrlParams } from "../hooks/useUrlParams";
 import SubmitGroup from "../components/SubmitGroup";
@@ -96,97 +103,80 @@ const Create = () => {
     console.log("Failed:", errorInfo);
   };
 
-  const duplicateField = (index, fields) => {
+  const duplicateField = (index) => {
     const newData = [...fields];
 
-    const nameWithNumber = newData[index].name
-    const orginalName = nameWithNumber.replace(new RegExp(/\d+/g), '')
-    const indexofitemClicked = Number(nameWithNumber.match(new RegExp(/\d+/g))[0]);
+    const nameWithNumber = newData[index].name;
+    const orginalName = nameWithNumber.replace(new RegExp(/\d+/g), "");
+    const indexofitemClicked = Number(
+      nameWithNumber.match(new RegExp(/\d+/g))[0]
+    );
 
-    const countOfOrginalName = findDuplicateName(newData, orginalName)
+    const countOfOrginalName = findDuplicateName(newData, orginalName);
 
     for (let i = 0; i < Number(countOfOrginalName - indexofitemClicked); i++) {
       // indexOfItemShouldBeChange
-      const I = i + index + 1
-      console.log("🚀 ~ file: Create.js ~ line 113 ~ duplicateField ~ I", I)
+      const I = i + index + 1;
+      console.log("🚀 ~ file: Create.js ~ line 113 ~ duplicateField ~ I", I);
       newData[I] = {
         ...newData[I],
         name: increaseNumberInString(newData[I].name),
         display: increaseNumberInString(newData[I].display),
         value: form.getFieldValue(newData[I].name),
-      }
+      };
     }
 
     const newRow = {
       ...newData[index],
       name: increaseNumberInString(newData[index].name),
       display: increaseNumberInString(newData[index].display),
-      value: ''
-    }
-
-
+      value: "",
+    };
 
     for (let i = 0; i < Number(countOfOrginalName - indexofitemClicked); i++) {
-      const I = i + index ;
-      if(i === 0 ){
-        form.setFieldValue( increaseNumberInString(newData[index].name), '')
+      const I = i + index;
+      if (i === 0) {
+        form.setFieldValue(increaseNumberInString(newData[index].name), "");
       }
-      form.setFieldValue(newData[I].name, newData[I].value)
+      form.setFieldValue(newData[I].name, newData[I].value);
     }
 
-    newData.splice(index+1, 0, newRow);
+    newData.splice(index + 1, 0, newRow);
     // setFields(newData);
-    return (newData)
+    return newData;
   };
 
   const duplicateGrope = (index) => {
-    const newData = [...fields]
+    const newData = [...fields];
 
-    const newGroup = duplicateField(index, fields)
-    
+    // this is next name Like Cliked elenent
+    const nextNumberLikeCliked = findNextName(newData, newData[index].name);
 
+    const newRow = {
+      ...newData[index],
+      name: nextNumberLikeCliked,
+      display: nextNumberLikeCliked,
+      value: "",
+    };
 
-    
-    setFields(newGroup);
+    newData.splice(index + 1, 0, newRow);
+    setFields(newData);
   };
 
   const removeField = (index) => {
-
     const newData = [...fields];
 
-    const nameWithNumber = newData[index].name
-    const orginalName = nameWithNumber.replace(new RegExp(/\d+/g), '')
-    const indexofitemClicked = nameWithNumber.match(new RegExp(/\d+/g))[0];
-
-    const countOfOrginalName = findDuplicateName(newData, orginalName)
-
-    if(countOfOrginalName <= 1){
-      alert('can not be remove')
-      return
+    if (getLastNumber(newData[index].name) === 1) {
+      alert("can not remove first row!");
+      return;
     }
+    form.setFieldValue(newData[index].name, "");
 
-    for (let i = 0; i < Number(countOfOrginalName - indexofitemClicked); i++) {
-      // indexOfItemShouldBeChange
-      const I = i + index + 1
-      newData[I] = {
-        ...newData[I],
-        name: decreaseNumberInString(newData[I].name),
-        display: decreaseNumberInString(newData[I].display),
-        value: form.getFieldValue(newData[I].name),
-      }
-    }
-
-    newData.splice(index, 1)
-
-    for (let i = 0; i < Number(countOfOrginalName - indexofitemClicked); i++) {
-      const I = i + index ;
-      form.setFieldValue(newData[I].name, newData[I].value)
-    }
+    newData.splice(index, 1);
 
     // newData.splice(index+1, 0, newRow);
     setFields(newData);
-  }
-  
+  };
 
   return (
     <div className={`${pageModule}-${pageType}`}>
@@ -209,10 +199,10 @@ const Create = () => {
         form={form}
         name="basic"
         labelCol={{
-          span: 6,
+          span: 24,
         }}
         wrapperCol={{
-          span: 18,
+          span: 24,
         }}
         initialValues={{
           remember: true,
@@ -221,9 +211,17 @@ const Create = () => {
         onFinishFailed={onFinishFailed}
       >
         <Card loading={bootLoad}>
-          <Row>
+          <Row gutter={[16, 16]}>
             {fields.map((field, index) => (
-              <FormGroup key={index} index={index} pageType={pageType} loading={submitLoad} addrow={duplicateGrope} removeRow={removeField} {...field}  />
+              <FormGroup
+                key={index}
+                index={index}
+                pageType={pageType}
+                loading={submitLoad}
+                addrow={duplicateGrope}
+                removeRow={removeField}
+                {...field}
+              />
             ))}
           </Row>
         </Card>

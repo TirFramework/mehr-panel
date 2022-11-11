@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Button, Col, Row, Space } from "antd";
-import { PlusOutlined, DragOutlined,CloseOutlined } from '@ant-design/icons';
+import { PlusOutlined, DragOutlined, CloseOutlined } from "@ant-design/icons";
 
 import Field from "./Field";
 import { getNumberName } from "../lib/helpers";
@@ -18,37 +18,36 @@ const FormGroup = (props) => {
     <>
       {props.additional ? (
         <>
-            <Row className="w-full">
+          <Row className="w-full">
+            <Col flex="auto">
+              <Col span={24} className={props.className}>
+                <Row>
                   <Col flex="auto">
-                    <Col span={props.col} className={props.className}>
-                      <Row>
-                      <Col flex="auto">
-                      <DragOutlined />
-
-                        <Field {...props} />
-                      </Col>
-
-                        <Button
-                          shape="circle" 
-                          disabled={props.loading}
-                          icon={<PlusOutlined />}
-                          onClick={() => {
-                            props.addrow(props.index);
-                          }}
-                        />
-                        <Button
-                          icon={<CloseOutlined />}
-                          type="text"
-                          disabled={props.loading}
-                          onClick={() => {
-                            props.removeRow(props.index);
-                          }}
-                          danger 
-                        />
-                      </Row>
-                    </Col>
+                    <DragOutlined />
+                    <Field {...props} />
                   </Col>
-            </Row>
+
+                  <Button
+                    shape="circle"
+                    disabled={props.loading}
+                    icon={<PlusOutlined />}
+                    onClick={() => {
+                      props.addrow(props.index);
+                    }}
+                  />
+                  <Button
+                    icon={<CloseOutlined />}
+                    type="text"
+                    disabled={props.loading}
+                    onClick={() => {
+                      props.removeRow(props.index);
+                    }}
+                    danger
+                  />
+                </Row>
+              </Col>
+            </Col>
+          </Row>
         </>
       ) : (
         <>
