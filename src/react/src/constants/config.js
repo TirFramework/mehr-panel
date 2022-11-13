@@ -1,6 +1,6 @@
 const Config = {
-    apiBaseUrl: "http://localhost:8000/api/v1/admin",
-    storage: "http://localhost:8000/storage",
+    apiBaseUrl: "http://127.0.0.1:8000/api/v1/admin",
+    storage: "http://127.0.0.1:8000/storage",
 }
 
 export default Config;

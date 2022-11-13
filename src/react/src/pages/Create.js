@@ -20,9 +20,11 @@ import {
   decreaseNumberInString,
   findDuplicateName,
   findNextName,
+  fixNumber,
   getLastNumber,
   increaseNumberInString,
   mapErrors,
+  removeLastNumberFromString,
 } from "../lib/helpers";
 
 import { useUrlParams } from "../hooks/useUrlParams";
@@ -61,6 +63,8 @@ const Create = () => {
 
   const onFinish = (values) => {
     console.log("Success:", values);
+
+    values = fixNumber(values);
 
     setSubmitLoad(true);
 
@@ -152,14 +156,31 @@ const Create = () => {
     // this is next name Like Cliked elenent
     const nextNumberLikeCliked = findNextName(newData, newData[index].name);
 
+    let children = [];
+    if (newData[index].type === "Group") {
+      newData[index].children.forEach((child) => {
+        const ChildNameWithOutNumber = removeLastNumberFromString(child.name);
+        children.push({
+          ...child,
+          name: ChildNameWithOutNumber + nextNumberLikeCliked,
+          display: ChildNameWithOutNumber + nextNumberLikeCliked,
+          value: "",
+        });
+      });
+    }
+
+    const nameWithOutNumber = removeLastNumberFromString(newData[index].name);
+
     const newRow = {
       ...newData[index],
-      name: nextNumberLikeCliked,
-      display: nextNumberLikeCliked,
+      children: children,
+      name: nameWithOutNumber + nextNumberLikeCliked,
+      display: nameWithOutNumber + nextNumberLikeCliked,
       value: "",
     };
 
     newData.splice(index + 1, 0, newRow);
+
     setFields(newData);
   };
 
@@ -172,6 +193,11 @@ const Create = () => {
     }
     form.setFieldValue(newData[index].name, "");
 
+    if (newData[index].type === "Group") {
+      newData[index].children.forEach((child) => {
+        form.setFieldValue(child.name, "");
+      });
+    }
     newData.splice(index, 1);
 
     // newData.splice(index+1, 0, newRow);

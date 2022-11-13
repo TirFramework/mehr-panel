@@ -23,7 +23,6 @@ const FormGroup = (props) => {
               <Col span={24} className={props.className}>
                 <Row>
                   <Col flex="auto">
-                    <DragOutlined />
                     <Field {...props} />
                   </Col>
 
