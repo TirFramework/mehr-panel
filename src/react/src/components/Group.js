@@ -1,18 +1,17 @@
 import { memo, lazy, Suspense } from "react";
-import { Col, Skeleton } from "antd";
+import { Card, Col, Row, Skeleton } from "antd";
 
-import Field from "../components/Field";
-
+import FormGroup from "./FormGroup";
 
 const Group = (props) => {
   return (
-    <>
-      {props.children.map((field, index) => (
-        <Col key={index} span={field.col} className={field.className}>
-          <Field type={field.type} {...field} /> 
-        </Col>
-      ))}
-    </>
+    <Card title={props.display}>
+      <Row gutter={[16, 16]}>
+        {props.children.map((field, index) => (
+          <FormGroup key={index} {...field} />
+        ))}
+      </Row>
+    </Card>
   );
 };
 

@@ -1,7 +1,5 @@
 import Config from "../../constants/config";
 
-
-
 const separationRules = ({ pageType, rules, creationRules, updateRules }) => {
   let newRules = [];
 
@@ -20,7 +18,7 @@ const separationRules = ({ pageType, rules, creationRules, updateRules }) => {
 
   // console.log("🚀 ~ file: index.js ~ line 25 ~ rules", rules)
 
-  if (rules === '') {
+  if (rules === "") {
     return null;
   }
   if (rules?.length === 0) {
@@ -69,12 +67,10 @@ const findValue = (string) => {
   if (arr) {
     // console.log("🚀 ~ file: index.js ~ line 60 ~ findValue ~ arr", arr)
     let str = string.match(regex)[0];
-    return str.replace(':', '')
+    return str.replace(":", "");
   }
   return true;
 };
-
-
 
 const capitalize = (s) => {
   return s.charAt(0).toUpperCase() + s.slice(1);
@@ -88,11 +84,13 @@ const mapErrors = (errors) => {
   return errs;
 };
 
-
 const removeBaseUrl = (str) => {
-  console.log("🚀 ~ file: index.js ~ line 99 ~ removeBaseUrl ~ Config.apiBaseUrl", Config.apiBaseUrl)
-  return str.replace( Config.apiBaseUrl, '')
-}
+  console.log(
+    "🚀 ~ file: index.js ~ line 99 ~ removeBaseUrl ~ Config.apiBaseUrl",
+    Config.apiBaseUrl
+  );
+  return str.replace(Config.apiBaseUrl, "");
+};
 
 const removeNullFromObject = (obj) => {
   for (var propName in obj) {
@@ -100,23 +98,111 @@ const removeNullFromObject = (obj) => {
       delete obj[propName];
     }
   }
-  return obj
-}
-
+  return obj;
+};
 
 const isRequired = (arr) => {
-  if( arr === null ){
-    return false
+  if (arr === null) {
+    return false;
   }
   for (let i = 0; i < arr.length; i++) {
-    if(Object.keys(arr[i]).find(element => element === 'required')){
-      return true
+    if (Object.keys(arr[i]).find((element) => element === "required")) {
+      return true;
     }
-
   }
-  return false
-}
+  return false;
+};
 
+const findDuplicateName = (arry, word) => {
+  let count = 0;
+  arry.forEach((obj) => {
+    if (obj.name.includes(word)) {
+      count++;
+    }
+  });
 
+  return count;
+};
 
-export { separationRules, capitalize, mapErrors, removeBaseUrl, removeNullFromObject, isRequired };
+const increaseNumberInString = (str) => {
+  return str.replace(
+    new RegExp(/\d+/g),
+    Number(str.match(new RegExp(/\d+/g))[0]) + 1
+  );
+};
+
+const decreaseNumberInString = (str) => {
+  return str.replace(
+    new RegExp(/\d+/g),
+    Number(str.match(new RegExp(/\d+/g))[0]) - 1
+  );
+};
+
+const re = new RegExp(/\d+(\.\d+)*$/g);
+
+const removeLastNumberFromString = (str) => str.replace(re, "");
+
+const ifExistNumberFromString = (str) => str.match(re);
+
+const getLastNumber = (str) => Number(str.match(re));
+
+const findNextName = (arry, word) => {
+  const NameWithOutNumber = removeLastNumberFromString(word);
+  const NameOnlyNumber = getLastNumber(word);
+
+  let nextIndex = null;
+
+  arry.forEach((obj) => {
+    if (nextIndex === null) {
+      if (obj.name.includes(NameWithOutNumber)) {
+        const nextNumber = getLastNumber(obj.name);
+        if (nextNumber > NameOnlyNumber) {
+          nextIndex = (nextNumber - NameOnlyNumber) / 2 + NameOnlyNumber;
+        }
+      }
+    }
+  });
+
+  if (nextIndex === null) {
+    nextIndex = NameOnlyNumber + 1;
+  }
+
+  return nextIndex;
+};
+
+const fixNumber = (obj) => {
+  const counts = {};
+  const newObj = {};
+
+  Object.keys(obj).forEach((key) => {
+    if (ifExistNumberFromString(key)) {
+      const keyWithOuthNumber = removeLastNumberFromString(key);
+      if (counts[keyWithOuthNumber]) {
+        counts[keyWithOuthNumber] += 1;
+      } else {
+        counts[keyWithOuthNumber] = 1;
+      }
+      newObj[keyWithOuthNumber + counts[keyWithOuthNumber]] = obj[key];
+    } else {
+      newObj[key] = obj[key];
+    }
+  });
+
+  return newObj;
+};
+
+export {
+  separationRules,
+  capitalize,
+  mapErrors,
+  removeBaseUrl,
+  removeNullFromObject,
+  isRequired,
+  findDuplicateName,
+  increaseNumberInString,
+  decreaseNumberInString,
+  removeLastNumberFromString,
+  findNextName,
+  getLastNumber,
+  fixNumber,
+};

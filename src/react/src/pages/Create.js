@@ -16,10 +16,20 @@ import * as api from "../api";
 
 import Field from "../components/Field";
 
-import { mapErrors } from "../lib/helpers";
+import {
+  decreaseNumberInString,
+  findDuplicateName,
+  findNextName,
+  fixNumber,
+  getLastNumber,
+  increaseNumberInString,
+  mapErrors,
+  removeLastNumberFromString,
+} from "../lib/helpers";
 
 import { useUrlParams } from "../hooks/useUrlParams";
 import SubmitGroup from "../components/SubmitGroup";
+import FormGroup from "../components/FormGroup";
 
 const { Title } = Typography;
 
@@ -45,9 +55,6 @@ const Create = () => {
 
     setFields([]);
     api.getCreateOrEditFields(pageModule, pageId).then((res) => {
-      res.map((field) => {
-        field.name = field.name.split(".");
-      });
       setFields(res);
       setBootLoad(false);
       setSubmitLoad(false);
@@ -56,6 +63,8 @@ const Create = () => {
 
   const onFinish = (values) => {
     console.log("Success:", values);
+
+    values = fixNumber(values);
 
     setSubmitLoad(true);
 
@@ -98,16 +107,59 @@ const Create = () => {
     console.log("Failed:", errorInfo);
   };
 
-  const duplicateField = (index)=>{
-    
-    console.log("🚀 ~ file: Create.js ~ line 104 ~ duplicateField ~ index", index)
-    const newFields = [...fields];
-    const newField = fields[index]
-    newFields.splice(index, 0, newField);
-    console.log("🚀 ~ file: Create.js ~ line 105 ~ duplicateField ~ newFields", newFields)
-    setFields(newFields)
+  const duplicateGrope = (index) => {
+    const newData = [...fields];
 
-  }
+    // this is next name Like Cliked elenent
+    const nextNumberLikeCliked = findNextName(newData, newData[index].name);
+
+    let children = [];
+    if (newData[index].type === "Group") {
+      newData[index].children.forEach((child) => {
+        const ChildNameWithOutNumber = removeLastNumberFromString(child.name);
+        children.push({
+          ...child,
+          name: ChildNameWithOutNumber + nextNumberLikeCliked,
+          display: ChildNameWithOutNumber + nextNumberLikeCliked,
+          value: "",
+        });
+      });
+    }
+
+    const nameWithOutNumber = removeLastNumberFromString(newData[index].name);
+
+    const newRow = {
+      ...newData[index],
+      children: children,
+      name: nameWithOutNumber + nextNumberLikeCliked,
+      display: nameWithOutNumber + nextNumberLikeCliked,
+      value: "",
+    };
+
+    newData.splice(index + 1, 0, newRow);
+
+    setFields(newData);
+  };
+
+  const removeField = (index) => {
+    const newData = [...fields];
+
+    if (getLastNumber(newData[index].name) === 1) {
+      alert("can not remove first row!");
+      return;
+    }
+    form.setFieldValue(newData[index].name, "");
+
+    if (newData[index].type === "Group") {
+      newData[index].children.forEach((child) => {
+        form.setFieldValue(child.name, "");
+      });
+    }
+    newData.splice(index, 1);
+
+    // newData.splice(index+1, 0, newRow);
+    setFields(newData);
+  };
 
   return (
     <div className={`${pageModule}-${pageType}`}>
@@ -130,10 +182,10 @@ const Create = () => {
         form={form}
         name="basic"
         labelCol={{
-          span: 6,
+          span: 24,
         }}
         wrapperCol={{
-          span: 18,
+          span: 24,
         }}
         initialValues={{
           remember: true,
@@ -142,16 +194,17 @@ const Create = () => {
         onFinishFailed={onFinishFailed}
       >
         <Card loading={bootLoad}>
-          <Row>
+          <Row gutter={[16, 16]}>
             {fields.map((field, index) => (
-              <Col key={index} span={field.col} className={field.className}>
-                <Field type={field.type} pageType={pageType} {...field} />
-                {/* <div onClick={()=>{
-                  duplicateField(index)
-                }}>
-                  duplicateField
-                </div> */}
-              </Col>
+              <FormGroup
+                key={index}
+                index={index}
+                pageType={pageType}
+                loading={submitLoad}
+                addrow={duplicateGrope}
+                removeRow={removeField}
+                {...field}
+              />
             ))}
           </Row>
         </Card>
