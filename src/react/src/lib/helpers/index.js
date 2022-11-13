@@ -140,12 +140,11 @@ const decreaseNumberInString = (str) => {
 
 const re = new RegExp(/\d+(\.\d+)*$/g);
 
-const removeLastNumberFromString = (str) =>
-  str.replace(new RegExp(/\d+(\.\d+)*$/g), "");
+const removeLastNumberFromString = (str) => str.replace(re, "");
 
 const ifExistNumberFromString = (str) => str.match(re);
 
-const getLastNumber = (str) => Number(str.match(new RegExp(/\d+(\.\d+)*$/g)));
+const getLastNumber = (str) => Number(str.match(re));
 
 const findNextName = (arry, word) => {
   const NameWithOutNumber = removeLastNumberFromString(word);
@@ -172,8 +171,6 @@ const findNextName = (arry, word) => {
 };
 
 const fixNumber = (obj) => {
-  console.log("🚀 ~ file: index.js ~ line 182 ~ fixNumber ~ obj", obj);
-
   const counts = {};
   const newObj = {};
 

@@ -107,49 +107,6 @@ const Create = () => {
     console.log("Failed:", errorInfo);
   };
 
-  const duplicateField = (index) => {
-    const newData = [...fields];
-
-    const nameWithNumber = newData[index].name;
-    const orginalName = nameWithNumber.replace(new RegExp(/\d+/g), "");
-    const indexofitemClicked = Number(
-      nameWithNumber.match(new RegExp(/\d+/g))[0]
-    );
-
-    const countOfOrginalName = findDuplicateName(newData, orginalName);
-
-    for (let i = 0; i < Number(countOfOrginalName - indexofitemClicked); i++) {
-      // indexOfItemShouldBeChange
-      const I = i + index + 1;
-      console.log("🚀 ~ file: Create.js ~ line 113 ~ duplicateField ~ I", I);
-      newData[I] = {
-        ...newData[I],
-        name: increaseNumberInString(newData[I].name),
-        display: increaseNumberInString(newData[I].display),
-        value: form.getFieldValue(newData[I].name),
-      };
-    }
-
-    const newRow = {
-      ...newData[index],
-      name: increaseNumberInString(newData[index].name),
-      display: increaseNumberInString(newData[index].display),
-      value: "",
-    };
-
-    for (let i = 0; i < Number(countOfOrginalName - indexofitemClicked); i++) {
-      const I = i + index;
-      if (i === 0) {
-        form.setFieldValue(increaseNumberInString(newData[index].name), "");
-      }
-      form.setFieldValue(newData[I].name, newData[I].value);
-    }
-
-    newData.splice(index + 1, 0, newRow);
-    // setFields(newData);
-    return newData;
-  };
-
   const duplicateGrope = (index) => {
     const newData = [...fields];
 
