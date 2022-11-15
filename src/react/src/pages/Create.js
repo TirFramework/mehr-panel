@@ -125,7 +125,6 @@ const Create = () => {
         children.push({
           ...child,
           name: ChildNameWithOutNumber + nextNumberLikeCliked,
-          display: ChildNameWithOutNumber + nextNumberLikeCliked,
           value: "",
         });
       });
@@ -137,7 +136,6 @@ const Create = () => {
       ...newData[index],
       children: children,
       name: nameWithOutNumber + nextNumberLikeCliked,
-      display: nameWithOutNumber + nextNumberLikeCliked,
       value: "",
     };
 
