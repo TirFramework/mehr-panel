@@ -55,6 +55,15 @@ const Create = () => {
 
     setFields([]);
     api.getCreateOrEditFields(pageModule, pageId).then((res) => {
+      res.map((field) => {
+        field.name = field.name.split(".");
+        if (field.children) {
+          field.children.map((child) => {
+            child.name = child.name.split(".");
+          });
+        }
+      });
+
       setFields(res);
       setBootLoad(false);
       setSubmitLoad(false);
@@ -63,12 +72,6 @@ const Create = () => {
 
   const onFinish = (values) => {
     console.log("Success:", values);
-
-
-    values.map((field) => {
-      field.name = field.name.split(".");
-    });
-
 
     setSubmitLoad(true);
 
@@ -113,6 +116,11 @@ const Create = () => {
 
   const duplicateGrope = (index) => {
     const newData = [...fields];
+
+    console.log(
+      "🚀 ~ file: Create.js ~ line 122 ~ duplicateGrope ~ newData[index].name",
+      newData[index].name
+    );
 
     // this is next name Like Cliked elenent
     const nextNumberLikeCliked = findNextName(newData, newData[index].name);
