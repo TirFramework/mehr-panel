@@ -4,12 +4,11 @@ import { separationRules } from "../lib/helpers";
 
 const { TextArea } = Input;
 
-
 const Text = (props) => {
-// console.log("🚀 ~ file: text.js ~ line 6 ~ Text ~ data", data)
-// console.log("🚀 ~ ---------------------------------------------------")
-// console.log("🚀 ~ file: text.js ~ line 15 ~ Text ~ data.display", data.display)
-// console.log("🚀 ~ file: text.js ~ line 6 ~ Text ~ data", data)
+  // console.log("🚀 ~ file: text.js ~ line 6 ~ Text ~ data", data)
+  // console.log("🚀 ~ ---------------------------------------------------")
+  // console.log("🚀 ~ file: text.js ~ line 15 ~ Text ~ data.display", data.display)
+  // console.log("🚀 ~ file: text.js ~ line 6 ~ Text ~ data", data)
 
   const rules = separationRules({
     pageType: props.pageType,
@@ -27,7 +26,7 @@ const Text = (props) => {
         name={props.name}
         initialValue={props.value}
         rules={rules}
-        >
+      >
         <TextArea placeholder={props.options.placeholder} />
       </Form.Item>
     </>

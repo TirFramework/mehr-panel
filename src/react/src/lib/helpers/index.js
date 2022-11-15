@@ -191,6 +191,93 @@ const fixNumber = (obj) => {
   return newObj;
 };
 
+export const stringToObject = (obj) => {
+  let newObj = {};
+
+  Object.keys(obj).forEach((item) => {
+    const arr = item.split(".");
+    const value = obj[item];
+
+    if (arr.length === 1) {
+      newObj = {
+        ...newObj,
+        [arr[0]]: value,
+      };
+    }
+
+    if (arr.length === 2) {
+      let level2 = {};
+
+      if (newObj[arr[0]]) {
+        level2 = newObj[arr[0]];
+      }
+
+      newObj = {
+        ...newObj,
+        [arr[0]]: {
+          ...level2,
+          [arr[1]]: value,
+        },
+      };
+    }
+
+    if (arr.length === 3) {
+      let level2 = {};
+      let level3 = {};
+
+      if (newObj[arr[0]]) {
+        level2 = newObj[arr[0]];
+        if (newObj[arr[0]][arr[1]]) {
+          level3 = newObj[arr[0]][arr[1]];
+        }
+      }
+
+      newObj = {
+        ...newObj,
+        [arr[0]]: {
+          ...level2,
+          [arr[1]]: {
+            ...level3,
+            [arr[2]]: value,
+          },
+        },
+      };
+    }
+
+    if (arr.length === 4) {
+      let level2 = {};
+      let level3 = {};
+      let level4 = {};
+
+      if (newObj[arr[0]]) {
+        level2 = newObj[arr[0]];
+        if (newObj[arr[0]][arr[1]]) {
+          level3 = newObj[arr[0]][arr[1]];
+          if (newObj[arr[0]][arr[1]][arr[2]]) {
+            level4 = newObj[arr[0]][arr[1]][arr[2]];
+          }
+        }
+      }
+
+      newObj = {
+        ...newObj,
+        [arr[0]]: {
+          ...level2,
+          [arr[1]]: {
+            ...level3,
+            [arr[2]]: {
+              ...level4,
+              [arr[3]]: value,
+            },
+          },
+        },
+      };
+    }
+  });
+
+  return newObj;
+};
+
 export {
   separationRules,
   capitalize,

@@ -25,6 +25,7 @@ import {
   increaseNumberInString,
   mapErrors,
   removeLastNumberFromString,
+  stringToObject,
 } from "../lib/helpers";
 
 import { useUrlParams } from "../hooks/useUrlParams";
@@ -65,6 +66,10 @@ const Create = () => {
     console.log("Success:", values);
 
     values = fixNumber(values);
+
+    values = stringToObject(values);
+
+    console.log("After fix :", values);
 
     setSubmitLoad(true);
 
@@ -120,7 +125,6 @@ const Create = () => {
         children.push({
           ...child,
           name: ChildNameWithOutNumber + nextNumberLikeCliked,
-          display: ChildNameWithOutNumber + nextNumberLikeCliked,
           value: "",
         });
       });
@@ -132,7 +136,6 @@ const Create = () => {
       ...newData[index],
       children: children,
       name: nameWithOutNumber + nextNumberLikeCliked,
-      display: nameWithOutNumber + nextNumberLikeCliked,
       value: "",
     };
 
