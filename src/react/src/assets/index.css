@@ -25,3 +25,17 @@
 .readOnly .ant-upload-disabled.ant-upload-select {
   display: none;
 }
+
+label.ant-form-item-required {
+  font-size: 9px !important;
+  padding: 0 5px !important;
+  background: #fff;
+  position: absolute;
+  top: -11px;
+  left: 10px;
+}
+
+.ant-form-item-label {
+  z-index: 1;
+  position: relative;
+}
