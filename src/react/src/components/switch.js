@@ -10,11 +10,12 @@ const Text = (props) => {
     updateRules: props.updateRules,
   });
 
+  console.log("🚀 ~ file: switch.js ~ line 18 ~ Text ~ props.name", props.name);
   return (
     <>
       <Form.Item
         label={props.display}
-        name={props.name.split("+")}
+        name={props.name}
         initialValue={props.value}
         valuePropName="checked"
         rules={rules}

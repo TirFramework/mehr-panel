@@ -19,14 +19,14 @@ const Text = (props) => {
     <>
       <Form.Item
         label={props.display}
-        name={props.name.split("+")}
+        name={props.name}
         initialValue={props.value}
         rules={rules}
       >
         <InputNumber
           placeholder={props.options.placeholder}
           disabled={props.readonly}
-          className={props.readonly && "readOnly"}
+          className={`${props.readonly && "readOnly"} w-full`}
         />
       </Form.Item>
     </>

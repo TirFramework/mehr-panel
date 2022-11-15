@@ -73,7 +73,7 @@ const Text = (props) => {
     return (
       <>
         <Form.Item
-          name={props.name.split("+")}
+          name={props.name}
           label={props.display}
           initialValue={props.value}
           rules={rules}
@@ -102,7 +102,7 @@ const Text = (props) => {
     return (
       <>
         <Form.Item
-          name={props.name.split("+")}
+          name={props.name}
           label={props.display}
           initialValue={props.value}
           rules={rules}

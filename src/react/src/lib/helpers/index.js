@@ -140,20 +140,13 @@ const decreaseNumberInString = (str) => {
 
 const re = new RegExp(/\d+(\.\d+)*$/g);
 
-const removeLastNumberFromString = (str) => {
-  console.log(
-    "🚀 ~ file: index.js ~ line 144 ~ removeLastNumberFromString ~ str",
-    str
-  );
-  return str.replace(re, "");
-};
+const removeLastNumberFromString = (str) => str.replace(re, "");
 
 const ifExistNumberFromString = (str) => str.match(re);
 
 const getLastNumber = (str) => Number(str.match(re));
 
 const findNextName = (arry, word) => {
-  console.log("🚀 ~ file: index.js ~ line 150 ~ findNextName ~ word", word);
   const NameWithOutNumber = removeLastNumberFromString(word);
   const NameOnlyNumber = getLastNumber(word);
 
@@ -192,6 +185,93 @@ const fixNumber = (obj) => {
       newObj[keyWithOuthNumber + counts[keyWithOuthNumber]] = obj[key];
     } else {
       newObj[key] = obj[key];
+    }
+  });
+
+  return newObj;
+};
+
+export const stringToObject = (obj) => {
+  let newObj = {};
+
+  Object.keys(obj).forEach((item) => {
+    const arr = item.split(".");
+    const value = obj[item];
+
+    if (arr.length === 1) {
+      newObj = {
+        ...newObj,
+        [arr[0]]: value,
+      };
+    }
+
+    if (arr.length === 2) {
+      let level2 = {};
+
+      if (newObj[arr[0]]) {
+        level2 = newObj[arr[0]];
+      }
+
+      newObj = {
+        ...newObj,
+        [arr[0]]: {
+          ...level2,
+          [arr[1]]: value,
+        },
+      };
+    }
+
+    if (arr.length === 3) {
+      let level2 = {};
+      let level3 = {};
+
+      if (newObj[arr[0]]) {
+        level2 = newObj[arr[0]];
+        if (newObj[arr[0]][arr[1]]) {
+          level3 = newObj[arr[0]][arr[1]];
+        }
+      }
+
+      newObj = {
+        ...newObj,
+        [arr[0]]: {
+          ...level2,
+          [arr[1]]: {
+            ...level3,
+            [arr[2]]: value,
+          },
+        },
+      };
+    }
+
+    if (arr.length === 4) {
+      let level2 = {};
+      let level3 = {};
+      let level4 = {};
+
+      if (newObj[arr[0]]) {
+        level2 = newObj[arr[0]];
+        if (newObj[arr[0]][arr[1]]) {
+          level3 = newObj[arr[0]][arr[1]];
+          if (newObj[arr[0]][arr[1]][arr[2]]) {
+            level4 = newObj[arr[0]][arr[1]][arr[2]];
+          }
+        }
+      }
+
+      newObj = {
+        ...newObj,
+        [arr[0]]: {
+          ...level2,
+          [arr[1]]: {
+            ...level3,
+            [arr[2]]: {
+              ...level4,
+              [arr[3]]: value,
+            },
+          },
+        },
+      };
     }
   });
 

@@ -176,7 +176,9 @@ const DragSortingUpload = (props) => {
             />
           )}
         >
-          <Button icon={<UploadOutlined />}>Click to upload</Button>
+          <Button icon={<UploadOutlined />}>
+            Click to upload file for {props.display}
+          </Button>
         </Upload>
       </DndProvider>
     </>
@@ -215,8 +217,7 @@ const CustomUpload = (props) => {
   };
   return (
     <Form.Item
-      name={props.name.split("+")}
-      label={props.display}
+      name={props.name}
       // valuePropName="fileList"
       initialValue={props.value}
       rules={rules}
@@ -296,7 +297,7 @@ export default CustomUpload;
 
 //   return (
 //     <Form.Item
-//       name={props.name.split("+")}
+//       name={props.name}
 //       label={props.display}
 //       // valuePropName="path"
 //       // valuePropName="fileList"

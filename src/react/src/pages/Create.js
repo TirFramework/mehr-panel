@@ -25,6 +25,7 @@ import {
   increaseNumberInString,
   mapErrors,
   removeLastNumberFromString,
+  stringToObject,
 } from "../lib/helpers";
 
 import { useUrlParams } from "../hooks/useUrlParams";
@@ -55,15 +56,6 @@ const Create = () => {
 
     setFields([]);
     api.getCreateOrEditFields(pageModule, pageId).then((res) => {
-      res.map((field) => {
-        field.name = field.name.replace(".", "+");
-        if (field.children) {
-          field.children.map((child) => {
-            child.name = child.name.replace(".", "+");
-          });
-        }
-      });
-
       setFields(res);
       setBootLoad(false);
       setSubmitLoad(false);
@@ -74,6 +66,10 @@ const Create = () => {
     console.log("Success:", values);
 
     values = fixNumber(values);
+
+    values = stringToObject(values);
+
+    console.log("After fix :", values);
 
     setSubmitLoad(true);
 
@@ -119,9 +115,6 @@ const Create = () => {
   const duplicateGrope = (index) => {
     const newData = [...fields];
 
-    if (typeof newData[index].name === Array) {
-      newData[index].name.join(".");
-    }
     // this is next name Like Cliked elenent
     const nextNumberLikeCliked = findNextName(newData, newData[index].name);
 
@@ -149,10 +142,6 @@ const Create = () => {
     };
 
     newData.splice(index + 1, 0, newRow);
-    console.log(
-      "🚀 ~ file: Create.js ~ line 143 ~ duplicateGrope ~ newData",
-      newData
-    );
 
     setFields(newData);
   };

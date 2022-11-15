@@ -30,22 +30,11 @@ const Text = (props) => {
     <>
       {console.log("rulse", rules)}
       {!editing ? (
-        <div className="ant-row ant-form-item">
-          <div className="ant-col ant-col-6 ant-form-item-label">
-            <label title={props.name}>{props.name}:</label>
-          </div>
-          <div className="ant-col ant-col-18">
-            <Button type="primary" onClick={editingHandel}>
-              Editing
-            </Button>
-          </div>
-        </div>
+        <Button type="primary" onClick={editingHandel}>
+          Change Password
+        </Button>
       ) : (
-        <Form.Item
-          label={props.display}
-          name={props.name.split("+")}
-          rules={rules}
-        >
+        <Form.Item label={props.display} name={props.name} rules={rules}>
           <Input.Password
             placeholder={props.options.placeholder}
             iconRender={(visible) =>
