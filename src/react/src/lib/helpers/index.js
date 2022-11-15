@@ -140,13 +140,20 @@ const decreaseNumberInString = (str) => {
 
 const re = new RegExp(/\d+(\.\d+)*$/g);
 
-const removeLastNumberFromString = (str) => str.replace(re, "");
+const removeLastNumberFromString = (str) => {
+  console.log(
+    "🚀 ~ file: index.js ~ line 144 ~ removeLastNumberFromString ~ str",
+    str
+  );
+  return str.replace(re, "");
+};
 
 const ifExistNumberFromString = (str) => str.match(re);
 
 const getLastNumber = (str) => Number(str.match(re));
 
 const findNextName = (arry, word) => {
+  console.log("🚀 ~ file: index.js ~ line 150 ~ findNextName ~ word", word);
   const NameWithOutNumber = removeLastNumberFromString(word);
   const NameOnlyNumber = getLastNumber(word);
 

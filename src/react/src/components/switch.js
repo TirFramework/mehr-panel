@@ -14,11 +14,11 @@ const Text = (props) => {
     <>
       <Form.Item
         label={props.display}
-        name={props.name}
+        name={props.name.split("+")}
         initialValue={props.value}
         valuePropName="checked"
         rules={rules}
-        >
+      >
         <Switch />
       </Form.Item>
     </>

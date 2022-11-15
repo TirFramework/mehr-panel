@@ -17,28 +17,33 @@ const Text = (props) => {
     updateRules: props.updateRules,
   });
 
-  const [editing, setEditing] = useState( isRequired(rules) );
-  console.log("🚀 ~ file: Password.js ~ line 21 ~ Text ~ isRequired(rules)", isRequired(rules))
-  
-  const editingHandel = ()=>{
-    setEditing(true)
-  }
+  const [editing, setEditing] = useState(isRequired(rules));
+  console.log(
+    "🚀 ~ file: Password.js ~ line 21 ~ Text ~ isRequired(rules)",
+    isRequired(rules)
+  );
+
+  const editingHandel = () => {
+    setEditing(true);
+  };
   return (
     <>
-    {console.log('rulse', rules)}
+      {console.log("rulse", rules)}
       {!editing ? (
-        <div className="ant-row ant-form-item" >
-            <div className="ant-col ant-col-6 ant-form-item-label">
-                <label title={props.name}>{props.name}:</label>
-            </div>
-            <div className="ant-col ant-col-18">
-              <Button type="primary" onClick={editingHandel}>Editing</Button>
-            </div>
+        <div className="ant-row ant-form-item">
+          <div className="ant-col ant-col-6 ant-form-item-label">
+            <label title={props.name}>{props.name}:</label>
+          </div>
+          <div className="ant-col ant-col-18">
+            <Button type="primary" onClick={editingHandel}>
+              Editing
+            </Button>
+          </div>
         </div>
       ) : (
         <Form.Item
           label={props.display}
-          name={props.name}
+          name={props.name.split("+")}
           rules={rules}
         >
           <Input.Password

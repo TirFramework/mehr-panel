@@ -137,7 +137,7 @@
 // //   return (
 // //     <Form.Item
 // //       label={props.display}
-// //       name={props.name}
+// //       name={props.name.split("+")}
 // //       initialValue={props.value}
 // //       rules={rules}
 // //     >
@@ -270,7 +270,7 @@
 //   return (
 //     <Form.Item
 //       label={props.display}
-//       name={props.name}
+//       name={props.name.split("+")}
 //       initialValue={editorState}
 //       rules={rules}
 //       normalize={(val) => {
@@ -307,7 +307,7 @@ export default function App(props) {
     <>
       <Form.Item
         label={props.display}
-        name={props.name}
+        name={props.name.split("+")}
         initialValue={props.value}
         rules={rules}
       >

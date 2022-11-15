@@ -215,7 +215,7 @@ const CustomUpload = (props) => {
   };
   return (
     <Form.Item
-      name={props.name}
+      name={props.name.split("+")}
       label={props.display}
       // valuePropName="fileList"
       initialValue={props.value}
@@ -296,7 +296,7 @@ export default CustomUpload;
 
 //   return (
 //     <Form.Item
-//       name={props.name}
+//       name={props.name.split("+")}
 //       label={props.display}
 //       // valuePropName="path"
 //       // valuePropName="fileList"
