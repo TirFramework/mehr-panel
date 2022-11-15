@@ -64,7 +64,11 @@ const Create = () => {
   const onFinish = (values) => {
     console.log("Success:", values);
 
-    values = fixNumber(values);
+
+    values.map((field) => {
+      field.name = field.name.split(".");
+    });
+
 
     setSubmitLoad(true);
 

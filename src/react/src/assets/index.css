@@ -25,8 +25,3 @@
 .readOnly .ant-upload-disabled.ant-upload-select {
   display: none;
 }
-
-.ql-container {
-  max-height: 750px;
-  overflow: auto;
-}
