@@ -1,14 +1,22 @@
 import { memo, lazy, Suspense } from "react";
+import { QuestionCircleFilled } from "@ant-design/icons";
 
 function MyComponent(props) {
-  const OtherComponent = lazy(() =>
-    import(`@ant-design/icons/es/icons/${props.type}`)
-  );
+  let OtherComponent;
+  if (!process.env.NODE_ENV === "development") {
+    OtherComponent = lazy(() =>
+      import(`@ant-design/icons/es/icons/${props.type}`)
+    );
+  }
   return (
     <div>
-      <Suspense fallback={<div>Loading...</div>}>
-        <OtherComponent />
-      </Suspense>
+      {!process.env.NODE_ENV === "development" ? (
+        <Suspense fallback={<div>Loading...</div>}>
+          <OtherComponent />
+        </Suspense>
+      ) : (
+        <QuestionCircleFilled />
+      )}
     </div>
   );
 }
