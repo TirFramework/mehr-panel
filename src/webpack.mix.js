@@ -1,4 +1,4 @@
-const mix = require('laravel-mix');
+const mix = require("laravel-mix");
 
 /*
  |--------------------------------------------------------------------------
@@ -11,19 +11,20 @@ const mix = require('laravel-mix');
  |
  */
 
-mix.js('resources/js/index.js', '/public/../../admin-assets/js')
-    .react()
-    .postCss('resources/css/tailwindcss.css', '/public/../../admin-assets/css', [
-        require('tailwindcss'),
-    ])
-    .less('resources/less/app.less', '/public/../../admin-assets/css',
-        {
-            lessOptions: {
-                modifyVars: {
-                    // 'primary-color': '#00ff00',
-                },
-                javascriptEnabled: true,
-            } ,
-        }).version();
+mix
+  .js("resources/js/index.js", "/public/../../admin-assets/js")
+  .react()
+  .postCss("resources/css/tailwindcss.css", "/public/../../admin-assets/css", [
+    require("tailwindcss"),
+  ])
+  .less("resources/less/app.less", "/public/../../admin-assets/css", {
+    lessOptions: {
+      modifyVars: {
+        // 'primary-color': '#00ff00',
+      },
+      javascriptEnabled: true,
+    },
+  })
+  .version();
 
-mix.browserSync('http://monarch.loc');
+mix.browserSync("localhost:8000");
