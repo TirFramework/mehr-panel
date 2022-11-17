@@ -11,6 +11,11 @@ const getSidebar = async () => {
   return data;
 };
 
+export const getGeneral = async () => {
+  const { data } = await axios.get(`/mehr-panel`);
+  return data;
+};
+
 const getCols = async (module) => {
   const { data } = await axios.get(`${module}`);
   return await data;

@@ -1,6 +1,6 @@
 <?php
 
-namespace Tir\mehrPanel\Controllers;
+namespace Tir\MehrPanel\Controllers;
 
 use App\Http\Controllers\Controller;
 

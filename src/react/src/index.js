@@ -10,7 +10,7 @@ import PrivateRoute from "./PrivateRoute.js";
 import DefaultLayout from "./layouts/DefaultLayout.js";
 import Login from "./layouts/Login.js";
 
-import "antd/dist/antd.css"; // or 'antd/dist/antd.less'
+import "antd/dist/antd.min.css"; // or 'antd/dist/antd.less'
 import "./assets/index.css";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));

@@ -32,9 +32,10 @@ class MehrPanelServiceProvider extends ServiceProvider
         // $this->loadTranslationsFrom(__DIR__ . '/Resources/Lang/', 'first-panel');
 
         $this->publishes([
-            __DIR__ . '/react/src' => base_path('resources/js/'),
+            __DIR__ . '/react/src' => base_path('resources/js/admin/'),
             __DIR__ . '/package.json' => base_path('package.json'),
             __DIR__ . '/webpack.mix.js' => base_path('webpack.mix.js'),
+            __DIR__ . '/public' => base_path('public'),
 
         ], 'mehr-panel');
     }

@@ -18,9 +18,20 @@ const { Sider } = Layout;
 function App() {
   const [current, setCurrent] = useState();
   const [menus, setMenus] = useState();
+  const [general, setGeneral] = useState();
   const [loading, setLoading] = useState(true);
 
   // console.log("🚀 sidebar");
+
+  const makeGeneral = () => {
+    return api
+      .getGeneral()
+      .then((res) => {
+        setGeneral(res);
+        setLoading(false);
+      })
+      .catch((err) => {});
+  };
 
   const getMenus = () => {
     // const data = useSidebar();
@@ -38,6 +49,7 @@ function App() {
   useEffect(() => {
     async function makeSidebar() {
       await getMenus();
+      await makeGeneral();
     }
     makeSidebar();
   }, []);
@@ -53,7 +65,9 @@ function App() {
       className="overflow-auto h-screen fixed left-0"
       style={{ position: "fixed" }}
     >
-      <div className="logo text-xl text-white p-4 bg-black">ADMIN PANEL</div>
+      <div className="logo text-xl text-white p-4 bg-black">
+        {general?.name}
+      </div>
       <Menu
         theme="dark"
         defaultSelectedKeys={["0"]}

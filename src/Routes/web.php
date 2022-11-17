@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use Tir\mehrPanel\Controllers\AdminPanelController;
+use Tir\MehrPanel\Controllers\AdminPanelController;
 
 
 /*
