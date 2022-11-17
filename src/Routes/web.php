@@ -1,6 +1,8 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Tir\mehrPanel\Controllers\AdminPanelController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -29,6 +31,6 @@ Route::group(['middleware' => 'auth:api', 'prefix' => 'api/v1'], function () {
 
     //Add admin prefix and middleware for admin area to user module
     Route::group(['prefix' => 'admin', 'middleware' => 'IsAdmin'], function () {
-        Route::get('/mehr-panel', [AdminPanelController::class, 'admin.panel']);
+        Route::get('/mehr-panel', [AdminPanelController::class, 'general']);
     });
 });
