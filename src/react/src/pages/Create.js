@@ -177,16 +177,6 @@ const Create = () => {
         <Breadcrumb.Item className="capitalize">{pageType}</Breadcrumb.Item>
       </Breadcrumb>
 
-      <Row justify="space-between" align="middle">
-        <Col>
-          <Title className="capitalize">
-            {pageType} {pageModule}
-          </Title>
-        </Col>
-        <Col>
-          <SubmitGroup form={form} loading={submitLoad} />
-        </Col>
-      </Row>
       <Form
         form={form}
         name="basic"
@@ -202,6 +192,16 @@ const Create = () => {
         onFinish={onFinish}
         onFinishFailed={onFinishFailed}
       >
+        <Row justify="space-between" align="middle">
+          <Col>
+            <Title className="capitalize">
+              {pageType} {pageModule}
+            </Title>
+          </Col>
+          <Col>
+            <SubmitGroup form={form} loading={submitLoad} />
+          </Col>
+        </Row>
         <Card loading={bootLoad}>
           <Row gutter={[16, 16]}>
             {fields.map((field, index) => (
