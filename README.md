@@ -1,6 +1,6 @@
 # first-adminpanel
 
-TODO:edit document manual first-panel
+TODO:edit document manual mehr-panel
 
 1- publish assets
 php artisan vendor:publish --tag=mehr-panel --force
