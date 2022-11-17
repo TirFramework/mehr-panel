@@ -25,17 +25,17 @@ class MehrPanelServiceProvider extends ServiceProvider
     public function boot()
     {
 
-        $this->loadRoutesFrom(__DIR__.'/Routes/web.php');
+        $this->loadRoutesFrom(__DIR__ . '/Routes/web.php');
 
-        $this->loadViewsFrom(__DIR__.'/Resources/Views', 'mehr-panel');
+        $this->loadViewsFrom(__DIR__ . '/Resources/Views', 'mehr-panel');
 
         // $this->loadTranslationsFrom(__DIR__ . '/Resources/Lang/', 'first-panel');
 
         $this->publishes([
             __DIR__ . '/react/src' => base_path('resources/js/'),
+            __DIR__ . '/package.json' => base_path('package.json'),
+            __DIR__ . '/webpack.mix.js' => base_path('webpack.mix.js'),
+
         ], 'mehr-panel');
-
-
     }
-
 }

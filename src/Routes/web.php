@@ -1,5 +1,7 @@
 <?php
 
+use Illuminate\Support\Facades\Route;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -16,9 +18,17 @@ Route::group(['middleware' => 'web'], function () {
     //add admin prefix and middleware for admin area to product package
     Route::group(['prefix' => 'admin'], function () {
         Route::view('/{path?}', 'mehr-panel::dashboard')
-         ->where('path', '.*')
-         ->name('react');
+            ->where('path', '.*')
+            ->name('react');
     });
 });
 
 
+// Add api middleware for use Laravel feature
+Route::group(['middleware' => 'auth:api', 'prefix' => 'api/v1'], function () {
+
+    //Add admin prefix and middleware for admin area to user module
+    Route::group(['prefix' => 'admin', 'middleware' => 'IsAdmin'], function () {
+        Route::get('/mehr-panel', [AdminPanelController::class, 'admin.panel']);
+    });
+});
