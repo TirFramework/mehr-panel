@@ -138,16 +138,18 @@ const decreaseNumberInString = (str) => {
   );
 };
 
-const re = new RegExp(/\d+(\.\d+)*$/g);
+const re = new RegExp(/(\d+)(?!.*\d)/g);
 
-const removeLastNumberFromString = (str) => str.replace(re, "");
+const replaceLastNumberFromString = (str, newCaracter = "") =>
+  str.replace(re, newCaracter);
 
 const ifExistNumberFromString = (str) => str.match(re);
 
 const getLastNumber = (str) => Number(str.match(re));
 
 const findNextName = (arry, word) => {
-  const NameWithOutNumber = removeLastNumberFromString(word);
+  console.log("🚀 ~ file: index.js ~ line 150 ~ findNextName ~ word", word);
+  const NameWithOutNumber = replaceLastNumberFromString(word);
   const NameOnlyNumber = getLastNumber(word);
 
   let nextIndex = null;
@@ -176,13 +178,15 @@ const fixNumber = (obj) => {
 
   Object.keys(obj).forEach((key) => {
     if (ifExistNumberFromString(key)) {
-      const keyWithOuthNumber = removeLastNumberFromString(key);
+      const keyWithOuthNumber = replaceLastNumberFromString(key);
       if (counts[keyWithOuthNumber]) {
         counts[keyWithOuthNumber] += 1;
       } else {
         counts[keyWithOuthNumber] = 1;
       }
-      newObj[keyWithOuthNumber + counts[keyWithOuthNumber]] = obj[key];
+
+      newObj[replaceLastNumberFromString(key, counts[keyWithOuthNumber])] =
+        obj[key];
     } else {
       newObj[key] = obj[key];
     }
@@ -288,7 +292,7 @@ export {
   findDuplicateName,
   increaseNumberInString,
   decreaseNumberInString,
-  removeLastNumberFromString,
+  replaceLastNumberFromString,
   findNextName,
   getLastNumber,
   fixNumber,

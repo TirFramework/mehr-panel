@@ -24,7 +24,7 @@ import {
   getLastNumber,
   increaseNumberInString,
   mapErrors,
-  removeLastNumberFromString,
+  replaceLastNumberFromString,
   stringToObject,
 } from "../lib/helpers";
 
@@ -66,6 +66,7 @@ const Create = () => {
     console.log("Success:", values);
 
     values = fixNumber(values);
+    console.log("After ronded :", values);
 
     values = stringToObject(values);
 
@@ -121,21 +122,26 @@ const Create = () => {
     let children = [];
     if (newData[index].type === "Group") {
       newData[index].children.forEach((child) => {
-        const ChildNameWithOutNumber = removeLastNumberFromString(child.name);
+        const ChildNameWithOutNumber = replaceLastNumberFromString(
+          child.name,
+          nextNumberLikeCliked
+        );
         children.push({
           ...child,
-          name: ChildNameWithOutNumber + nextNumberLikeCliked,
+          name: ChildNameWithOutNumber,
+          display: ChildNameWithOutNumber,
           value: "",
         });
       });
     }
 
-    const nameWithOutNumber = removeLastNumberFromString(newData[index].name);
+    const nameWithOutNumber = replaceLastNumberFromString(newData[index].name);
 
     const newRow = {
       ...newData[index],
       children: children,
       name: nameWithOutNumber + nextNumberLikeCliked,
+      display: nameWithOutNumber + nextNumberLikeCliked,
       value: "",
     };
 

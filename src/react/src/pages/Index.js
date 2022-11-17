@@ -245,7 +245,7 @@ function Index() {
             </>
           )}
         </Col>
-        {columns?.actions?.create === "allow" && (
+        {columns?.actions?.create && (
           <Col className="gutter-row text-right" span={4}>
             <Link to={`/admin/${pageModule}/create-edit`}>
               <Button
