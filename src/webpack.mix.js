@@ -14,11 +14,11 @@ const mix = require("laravel-mix");
 mix
   .js("resources/admin/src/index.js", "/public/../../admin-assets/js")
   .react()
-  .postCss(
-    "resources/admin/src/assets/tailwindcss.css",
-    "/public/../../admin-assets/css",
-    [require("tailwindcss")]
-  )
+  // .postCss(
+  //   "resources/admin/src/assets/tailwindcss.css",
+  //   "/public/../../admin-assets/css",
+  //   [require("tailwindcss")]
+  // )
   //   .less("resources/less/app.less", "/public/../../admin-assets/css", {
   //     lessOptions: {
   //       modifyVars: {

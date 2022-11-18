@@ -35,6 +35,7 @@ class MehrPanelServiceProvider extends ServiceProvider
             __DIR__ . '/react' => base_path('resources/admin/'),
             __DIR__ . '/package.json' => base_path('package.json'),
             __DIR__ . '/webpack.mix.js' => base_path('webpack.mix.js'),
+            __DIR__ . '/tailwind.config.js' => base_path('tailwind.config.js'),
             __DIR__ . '/public' => base_path('public'),
 
         ], 'mehr-panel');
