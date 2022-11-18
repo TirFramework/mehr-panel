@@ -19,7 +19,6 @@ const Login = () => {
     api
       .postLogin(values)
       .then((res) => {
-        console.log("🚀 ~ file: Login.js ~ line 26 ~ .then ~ res", res);
         setLoading(false);
         notification["success"]({
           message: "You have successfully logged",
@@ -27,7 +26,6 @@ const Login = () => {
         login(res.api_token);
       })
       .catch((err) => {
-        console.log("🚀 ~ file: Login.js ~ line 33 ~ onFinish ~ err", err);
         setLoading(false);
         notification["error"]({
           message: "problem",

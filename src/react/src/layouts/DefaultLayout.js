@@ -57,13 +57,14 @@ function DefaultLayout(props) {
               align="middle"
               className="text-right flex justify-between"
             >
+              <div></div>
               <Dropdown overlay={menu} trigger={["click"]}>
                 <span
                   className="ant-dropdown-link"
                   onClick={(e) => e.preventDefault()}
                 >
                   <Avatar className="mr-2">U</Avatar>
-                  Click me <DownOutlined />
+                  Profile <DownOutlined />
                 </span>
               </Dropdown>
             </Row>
