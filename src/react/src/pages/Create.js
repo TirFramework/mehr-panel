@@ -114,6 +114,10 @@ const Create = () => {
   };
 
   const duplicateGrope = (index) => {
+    console.log(
+      "🚀 ~ file: Create.js ~ line 117 ~ duplicateGrope ~ index",
+      index
+    );
     const newData = [...fields];
     let name;
     let isGrpup;
@@ -142,7 +146,7 @@ const Create = () => {
         children.push({
           ...child,
           name: ChildNameWithOutNumber,
-          // display: ChildNameWithOutNumber,
+          display: ChildNameWithOutNumber,
           value: "",
         });
       });
@@ -162,7 +166,7 @@ const Create = () => {
       ...otherFilde,
       children: children,
       name: nameWithOutNumber + nextNumberLikeCliked,
-      // display: nameWithOutNumber + nextNumberLikeCliked,
+      display: nameWithOutNumber + nextNumberLikeCliked,
       value: "",
     };
 

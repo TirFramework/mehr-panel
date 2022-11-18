@@ -138,7 +138,7 @@ const decreaseNumberInString = (str) => {
   );
 };
 
-const re = new RegExp(/(\d+)(?!.*\d)/g);
+const re = new RegExp(/(\d(\.\d+)?)(?!.*\d)/g);
 
 const replaceLastNumberFromString = (str, newCaracter = "") =>
   str.replace(re, newCaracter);
@@ -148,9 +148,12 @@ const ifExistNumberFromString = (str) => str.match(re);
 const getLastNumber = (str) => Number(str.match(re));
 
 const findNextName = (arry, word) => {
-  console.log("🚀 ~ file: index.js ~ line 150 ~ findNextName ~ word", word);
   const NameWithOutNumber = replaceLastNumberFromString(word);
   const NameOnlyNumber = getLastNumber(word);
+  console.log(
+    "🚀 ~ file: index.js ~ line 153 ~ findNextName ~ NameOnlyNumber",
+    NameOnlyNumber
+  );
 
   let nextIndex = null;
 
@@ -158,6 +161,10 @@ const findNextName = (arry, word) => {
     if (nextIndex === null) {
       if (obj.name.includes(NameWithOutNumber)) {
         const nextNumber = getLastNumber(obj.name);
+        console.log(
+          "🚀 ~ file: index.js ~ line 168 ~ arry.forEach ~ nextNumber",
+          nextNumber
+        );
         if (nextNumber > NameOnlyNumber) {
           nextIndex = (nextNumber - NameOnlyNumber) / 2 + NameOnlyNumber;
         }
