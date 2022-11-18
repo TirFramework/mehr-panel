@@ -8,7 +8,14 @@ const Group = (props) => {
     <Card title={props.display} className="group">
       <Row gutter={[16, 16]}>
         {props.children.map((field, index) => (
-          <FormGroup key={index} {...field} />
+          <FormGroup
+            addrow={props.addrow}
+            removeRow={props.removeRow}
+            loading={props.loading}
+            index={[props.index, index]}
+            key={index}
+            {...field}
+          />
         ))}
       </Row>
     </Card>

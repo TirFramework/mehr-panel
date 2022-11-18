@@ -53,7 +53,13 @@ const FormGroup = (props) => {
       ) : (
         <>
           <Col span={props.col} className={props.className}>
-            <Field {...props} />
+            <Field
+              addrow={props.addrow}
+              removeRow={props.removeRow}
+              loading={props.loading}
+              index={props.index}
+              {...props}
+            />
           </Col>
         </>
       )}

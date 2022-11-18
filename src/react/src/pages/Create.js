@@ -115,12 +115,25 @@ const Create = () => {
 
   const duplicateGrope = (index) => {
     const newData = [...fields];
+    let name;
+    let isGrpup;
+    let thisData;
 
-    // this is next name Like Cliked elenent
-    const nextNumberLikeCliked = findNextName(newData, newData[index].name);
+    if (typeof index === "string") {
+      name = name;
+      isGrpup = newData[index].type === "Group";
+      thisData = newData[index];
+    } else {
+      name = newData[index[0]].children[index[1]].name;
+      isGrpup = newData[index[0]].children[index[1]].type === "Group";
+      thisData = newData[index[0]].children;
+    }
+
+    const nextNumberLikeCliked = findNextName(thisData, name);
 
     let children = [];
-    if (newData[index].type === "Group") {
+
+    if (isGrpup) {
       newData[index].children.forEach((child) => {
         const ChildNameWithOutNumber = replaceLastNumberFromString(
           child.name,
@@ -129,23 +142,35 @@ const Create = () => {
         children.push({
           ...child,
           name: ChildNameWithOutNumber,
-          display: ChildNameWithOutNumber,
+          // display: ChildNameWithOutNumber,
           value: "",
         });
       });
     }
 
-    const nameWithOutNumber = replaceLastNumberFromString(newData[index].name);
+    const nameWithOutNumber = replaceLastNumberFromString(name);
+
+    let otherFilde = {};
+
+    if (typeof index === "string") {
+      otherFilde = newData[index[0]].children[index[1]];
+    } else {
+      otherFilde = newData[index[0]].children[index[1]];
+    }
 
     const newRow = {
-      ...newData[index],
+      ...otherFilde,
       children: children,
       name: nameWithOutNumber + nextNumberLikeCliked,
-      display: nameWithOutNumber + nextNumberLikeCliked,
+      // display: nameWithOutNumber + nextNumberLikeCliked,
       value: "",
     };
 
-    newData.splice(index + 1, 0, newRow);
+    if (typeof index === "string") {
+      newData.splice(index + 1, 0, newRow);
+    } else {
+      newData[index[0]].children.splice(index[1] + 1, 0, newRow);
+    }
 
     setFields(newData);
   };
@@ -153,18 +178,34 @@ const Create = () => {
   const removeField = (index) => {
     const newData = [...fields];
 
-    if (getLastNumber(newData[index].name) === 1) {
+    let name;
+    let isGrpup;
+
+    if (typeof index === "string") {
+      name = name;
+      isGrpup = newData[index].type === "Group";
+    } else {
+      name = newData[index[0]].children[index[1]].name;
+      isGrpup = newData[index[0]].children[index[1]].type === "Group";
+    }
+
+    if (getLastNumber(name) === 1) {
       alert("can not remove first row!");
       return;
     }
-    form.setFieldValue(newData[index].name, "");
+    form.setFieldValue(name, "");
 
-    if (newData[index].type === "Group") {
+    if (isGrpup) {
       newData[index].children.forEach((child) => {
         form.setFieldValue(child.name, "");
       });
     }
-    newData.splice(index, 1);
+
+    if (typeof index === "string") {
+      newData.splice(index, 1);
+    } else {
+      newData[index[0]].children.splice(index[1], 1);
+    }
 
     // newData.splice(index+1, 0, newRow);
     setFields(newData);
