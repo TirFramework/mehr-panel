@@ -237,7 +237,7 @@ const Create = () => {
         onFinish={onFinish}
         onFinishFailed={onFinishFailed}
       >
-        <Row justify="space-between" align="middle">
+        <Row justify="space-between" align="middle" className="header-page">
           <Col>
             <Title className="capitalize">
               {pageType} {pageModule}
