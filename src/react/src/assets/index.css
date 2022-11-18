@@ -27,7 +27,7 @@
 }
 
 .ant-form-item-label label {
-  font-size: 9px !important;
+  font-size: 11px !important;
   padding: 0 5px !important;
   background: #fff;
   line-height: 1;
@@ -37,7 +37,7 @@
 .ant-form-item-label {
   z-index: 1;
   position: absolute;
-  top: -16px;
+  top: -12px;
   left: 20px;
   padding-bottom: 0 !important;
 }
