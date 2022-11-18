@@ -51,7 +51,7 @@ function DefaultLayout(props) {
       <Sidebar />
       <Layout className="site-layout" style={{ marginLeft: 200 }}>
         <div className="flex flex-col h-screen">
-          <Header className="bg-white px-4">
+          <Header className="px-4">
             <Row
               justify="space-between"
               align="middle"
@@ -63,8 +63,9 @@ function DefaultLayout(props) {
                   className="ant-dropdown-link"
                   onClick={(e) => e.preventDefault()}
                 >
-                  <Avatar className="mr-2">U</Avatar>
-                  Profile <DownOutlined />
+                  <Avatar>U</Avatar>
+                  <span className="text-white mx-2">Profile</span>
+                  <DownOutlined className="text-white" />
                 </span>
               </Dropdown>
             </Row>
