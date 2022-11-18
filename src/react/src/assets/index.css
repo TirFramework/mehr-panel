@@ -96,8 +96,9 @@
   top: -22px;
   z-index: 9;
   background-color: #f0f2f5;
+  height: 50px;
 }
 
-.ant-typography {
+.header-page .ant-typography {
   margin-bottom: 0;
 }
