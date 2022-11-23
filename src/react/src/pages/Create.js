@@ -182,7 +182,7 @@ const Create = () => {
     let isGrpup;
 
     if (typeof index === "number") {
-      name = name;
+      name = newData[index].name;
       isGrpup = newData[index].type === "Group";
     } else {
       name = newData[index[0]].children[index[1]].name;
