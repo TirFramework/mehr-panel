@@ -114,19 +114,15 @@ const Create = () => {
   };
 
   const duplicateGrope = (index) => {
-    console.log(
-      "🚀 ~ file: Create.js ~ line 117 ~ duplicateGrope ~ index",
-      index
-    );
     const newData = [...fields];
     let name;
     let isGrpup;
     let thisData;
 
-    if (typeof index === "string") {
-      name = name;
+    if (typeof index === "number") {
+      name = newData[index].name;
       isGrpup = newData[index].type === "Group";
-      thisData = newData[index];
+      thisData = newData;
     } else {
       name = newData[index[0]].children[index[1]].name;
       isGrpup = newData[index[0]].children[index[1]].type === "Group";
@@ -146,7 +142,7 @@ const Create = () => {
         children.push({
           ...child,
           name: ChildNameWithOutNumber,
-          display: ChildNameWithOutNumber,
+          // display: ChildNameWithOutNumber,
           value: "",
         });
       });
@@ -156,8 +152,8 @@ const Create = () => {
 
     let otherFilde = {};
 
-    if (typeof index === "string") {
-      otherFilde = newData[index[0]].children[index[1]];
+    if (typeof index === "number") {
+      otherFilde = newData[index];
     } else {
       otherFilde = newData[index[0]].children[index[1]];
     }
@@ -166,11 +162,11 @@ const Create = () => {
       ...otherFilde,
       children: children,
       name: nameWithOutNumber + nextNumberLikeCliked,
-      display: nameWithOutNumber + nextNumberLikeCliked,
+      // display: nameWithOutNumber + nextNumberLikeCliked,
       value: "",
     };
 
-    if (typeof index === "string") {
+    if (typeof index === "number") {
       newData.splice(index + 1, 0, newRow);
     } else {
       newData[index[0]].children.splice(index[1] + 1, 0, newRow);
@@ -185,7 +181,7 @@ const Create = () => {
     let name;
     let isGrpup;
 
-    if (typeof index === "string") {
+    if (typeof index === "number") {
       name = name;
       isGrpup = newData[index].type === "Group";
     } else {
@@ -205,7 +201,7 @@ const Create = () => {
       });
     }
 
-    if (typeof index === "string") {
+    if (typeof index === "number") {
       newData.splice(index, 1);
     } else {
       newData[index[0]].children.splice(index[1], 1);

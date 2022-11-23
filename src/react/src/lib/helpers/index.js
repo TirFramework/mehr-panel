@@ -150,10 +150,6 @@ const getLastNumber = (str) => Number(str.match(re));
 const findNextName = (arry, word) => {
   const NameWithOutNumber = replaceLastNumberFromString(word);
   const NameOnlyNumber = getLastNumber(word);
-  console.log(
-    "🚀 ~ file: index.js ~ line 153 ~ findNextName ~ NameOnlyNumber",
-    NameOnlyNumber
-  );
 
   let nextIndex = null;
 
