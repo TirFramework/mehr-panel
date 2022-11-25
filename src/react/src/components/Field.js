@@ -1,7 +1,7 @@
 import { memo, lazy, Suspense } from "react";
 import { Card, Form, Input, Skeleton } from "antd";
 import Group from "./Group";
-import Text from "./text";
+import Text from "./Text";
 // import { capitalize } from "../lib/helpers"
 
 // const DynamicField = (props) => {
