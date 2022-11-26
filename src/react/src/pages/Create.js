@@ -1,29 +1,22 @@
 import { useEffect, useState } from "react";
-import { Redirect, useParams, Link } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import {
   Form,
-  Button,
   Breadcrumb,
   notification,
   Typography,
   Card,
-  Space,
   Row,
   Col,
 } from "antd";
 
 import * as api from "../api";
 
-import Field from "../components/Field";
-
 import {
-  decreaseNumberInString,
-  findDuplicateName,
   findNextName,
   fixNumber,
   getLastNumber,
-  increaseNumberInString,
-  mapErrors,
+  onFinish,
   replaceLastNumberFromString,
   stringToObject,
 } from "../lib/helpers";
@@ -62,58 +55,15 @@ const Create = () => {
     });
   }, [pageModule, pageId]);
 
-  const onFinish = (values) => {
-    console.log("Success:", values);
-
-    values = fixNumber(values);
-    console.log("After ronded :", values);
-
-    values = stringToObject(values);
-
-    console.log("After fix :", values);
-
-    setSubmitLoad(true);
-
-    api
-      .postEditOrCreate(pageModule, pageId, values)
-      .then((res) => {
-        setSubmitLoad(false);
-
-        if (!pageId) {
-          setUrlParams({ id: res.id });
-        }
-        notification["success"]({
-          message: res.message,
-        });
-      })
-      .catch((err) => {
-        setSubmitLoad(false);
-
-        let mes = [];
-        for (const [key, value] of Object.entries(err.response.data.message)) {
-          value.forEach((val) => {
-            mes.push(val);
-          });
-        }
-
-        notification["warning"]({
-          message: "Error !",
-          description: (
-            <ul className="pl-2">
-              {mes.map((val) => (
-                <li>{val}</li>
-              ))}
-            </ul>
-          ),
-        });
-      });
-  };
-
   const onFinishFailed = (errorInfo) => {
     console.log("Failed:", errorInfo);
   };
 
   const duplicateGrope = (index) => {
+    console.log(
+      "🚀 ~ file: Create.js ~ line 109 ~ duplicateGrope ~ index",
+      index
+    );
     const newData = [...fields];
     let name;
     let isGrpup;
@@ -230,7 +180,15 @@ const Create = () => {
         initialValues={{
           remember: true,
         }}
-        onFinish={onFinish}
+        onFinish={(value) => {
+          onFinish({
+            values: value,
+            setSubmitLoad: setSubmitLoad,
+            pageModule: pageModule,
+            pageId: pageId,
+            setUrlParams: setUrlParams,
+          });
+        }}
         onFinishFailed={onFinishFailed}
       >
         <Row justify="space-between" align="middle" className="header-page">
@@ -246,15 +204,37 @@ const Create = () => {
         <Card loading={bootLoad}>
           <Row gutter={[16, 16]}>
             {fields.map((field, index) => (
-              <FormGroup
-                key={index}
-                index={index}
-                pageType={pageType}
-                loading={submitLoad}
-                addrow={duplicateGrope}
-                removeRow={removeField}
-                {...field}
-              />
+              <>
+                {field.layout === "left" ? (
+                  <Col span={12}>
+                    <Row gutter={[16, 16]}>
+                      <FormGroup
+                        key={index}
+                        index={index}
+                        pageType={pageType}
+                        loading={submitLoad}
+                        addrow={duplicateGrope}
+                        removeRow={removeField}
+                        {...field}
+                      />
+                    </Row>
+                  </Col>
+                ) : (
+                  <Col span={12}>
+                    <Row gutter={[16, 16]}>
+                      <FormGroup
+                        key={index}
+                        index={index}
+                        pageType={pageType}
+                        loading={submitLoad}
+                        addrow={duplicateGrope}
+                        removeRow={removeField}
+                        {...field}
+                      />
+                    </Row>
+                  </Col>
+                )}
+              </>
             ))}
           </Row>
         </Card>
