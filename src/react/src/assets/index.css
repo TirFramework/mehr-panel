@@ -102,3 +102,11 @@
 .header-page .ant-typography {
   margin-bottom: 0;
 }
+
+.ant-form-item {
+  position: relative;
+}
+
+.main-card {
+  min-height: calc(100vh - 220px);
+}

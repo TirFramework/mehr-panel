@@ -1,7 +1,35 @@
 import { notification } from "antd";
-import { fixNumber, stringToObject } from ".";
+import { replaceLastNumberFromString, stringToObject } from ".";
 
 import * as api from "../../api";
+import { ifExistNumberFromString } from "./duplicate";
+
+export const fixNumber = (obj) => {
+  const counts = {};
+  const newObj = {};
+
+  Object.keys(obj).forEach((key) => {
+    if (ifExistNumberFromString(key)) {
+      const keyWithOuthNumber = replaceLastNumberFromString(key);
+      console.log(
+        "🚀 ~ file: onFinish.js ~ line 14 ~ Object.keys ~ keyWithOuthNumber",
+        keyWithOuthNumber
+      );
+      if (counts[keyWithOuthNumber]) {
+        counts[keyWithOuthNumber] += 1;
+      } else {
+        counts[keyWithOuthNumber] = 1;
+      }
+
+      newObj[replaceLastNumberFromString(key, counts[keyWithOuthNumber])] =
+        obj[key];
+    } else {
+      newObj[key] = obj[key];
+    }
+  });
+
+  return newObj;
+};
 
 export const onFinish = ({
   values,

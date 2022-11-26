@@ -16,53 +16,15 @@ const FormGroup = (props) => {
 
   return (
     <>
-      {props.additional ? (
-        <>
-          <Row className="w-full additional">
-            <Col flex="auto">
-              <Col span={24} className={props.className}>
-                <Row align="bottom">
-                  <Col flex="auto">
-                    <Field {...props} />
-                    <Button
-                      icon={<CloseOutlined />}
-                      type="text"
-                      className="remove-btn"
-                      disabled={props.loading}
-                      onClick={() => {
-                        props.removeRow(props.index);
-                      }}
-                      danger
-                    />
-                  </Col>
-
-                  <Button
-                    shape="circle"
-                    className="add-btn"
-                    disabled={props.loading}
-                    icon={<PlusOutlined />}
-                    onClick={() => {
-                      props.addrow(props.index);
-                    }}
-                  />
-                </Row>
-              </Col>
-            </Col>
-          </Row>
-        </>
-      ) : (
-        <>
-          <Col span={props.col} className={props.className}>
-            <Field
-              addrow={props.addrow}
-              removeRow={props.removeRow}
-              loading={props.loading}
-              index={props.index}
-              {...props}
-            />
-          </Col>
-        </>
-      )}
+      <Col span={props.col} className={props.className}>
+        <Field
+          addrow={props.addrow}
+          removeRow={props.removeRow}
+          loading={props.loading}
+          index={props.index}
+          {...props}
+        />
+      </Col>
     </>
   );
 };

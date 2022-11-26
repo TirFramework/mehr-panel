@@ -2,7 +2,6 @@ import Config from "../../constants/config";
 
 export { onFinish } from "./onFinish";
 export {
-  fixNumber,
   replaceLastNumberFromString,
   findNextName,
   getLastNumber,

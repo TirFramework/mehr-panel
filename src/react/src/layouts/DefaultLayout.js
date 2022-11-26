@@ -70,7 +70,7 @@ function DefaultLayout(props) {
               </Dropdown>
             </Row>
           </Header>
-          <Content className="overflow-auto p-4">{switchRoutes}</Content>
+          <Content className="overflow-scroll p-4">{switchRoutes}</Content>
           {/* <Footer/> */}
         </div>
       </Layout>

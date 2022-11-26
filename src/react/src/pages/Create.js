@@ -46,7 +46,6 @@ const Create = () => {
 
   useEffect(() => {
     setBootLoad(true);
-
     setFields([]);
     api.getCreateOrEditFields(pageModule, pageId).then((res) => {
       setFields(res);
@@ -57,108 +56,6 @@ const Create = () => {
 
   const onFinishFailed = (errorInfo) => {
     console.log("Failed:", errorInfo);
-  };
-
-  const duplicateGrope = (index) => {
-    console.log(
-      "🚀 ~ file: Create.js ~ line 109 ~ duplicateGrope ~ index",
-      index
-    );
-    const newData = [...fields];
-    let name;
-    let isGrpup;
-    let thisData;
-
-    if (typeof index === "number") {
-      name = newData[index].name;
-      isGrpup = newData[index].type === "Group";
-      thisData = newData;
-    } else {
-      name = newData[index[0]].children[index[1]].name;
-      isGrpup = newData[index[0]].children[index[1]].type === "Group";
-      thisData = newData[index[0]].children;
-    }
-
-    const nextNumberLikeCliked = findNextName(thisData, name);
-
-    let children = [];
-
-    if (isGrpup) {
-      newData[index].children.forEach((child) => {
-        const ChildNameWithOutNumber = replaceLastNumberFromString(
-          child.name,
-          nextNumberLikeCliked
-        );
-        children.push({
-          ...child,
-          name: ChildNameWithOutNumber,
-          // display: ChildNameWithOutNumber,
-          value: "",
-        });
-      });
-    }
-
-    const nameWithOutNumber = replaceLastNumberFromString(name);
-
-    let otherFilde = {};
-
-    if (typeof index === "number") {
-      otherFilde = newData[index];
-    } else {
-      otherFilde = newData[index[0]].children[index[1]];
-    }
-
-    const newRow = {
-      ...otherFilde,
-      children: children,
-      name: nameWithOutNumber + nextNumberLikeCliked,
-      // display: nameWithOutNumber + nextNumberLikeCliked,
-      value: "",
-    };
-
-    if (typeof index === "number") {
-      newData.splice(index + 1, 0, newRow);
-    } else {
-      newData[index[0]].children.splice(index[1] + 1, 0, newRow);
-    }
-
-    setFields(newData);
-  };
-
-  const removeField = (index) => {
-    const newData = [...fields];
-
-    let name;
-    let isGrpup;
-
-    if (typeof index === "number") {
-      name = newData[index].name;
-      isGrpup = newData[index].type === "Group";
-    } else {
-      name = newData[index[0]].children[index[1]].name;
-      isGrpup = newData[index[0]].children[index[1]].type === "Group";
-    }
-
-    if (getLastNumber(name) === 1) {
-      alert("can not remove first row!");
-      return;
-    }
-    form.setFieldValue(name, "");
-
-    if (isGrpup) {
-      newData[index].children.forEach((child) => {
-        form.setFieldValue(child.name, "");
-      });
-    }
-
-    if (typeof index === "number") {
-      newData.splice(index, 1);
-    } else {
-      newData[index[0]].children.splice(index[1], 1);
-    }
-
-    // newData.splice(index+1, 0, newRow);
-    setFields(newData);
   };
 
   return (
@@ -201,40 +98,16 @@ const Create = () => {
             <SubmitGroup form={form} loading={submitLoad} />
           </Col>
         </Row>
-        <Card loading={bootLoad}>
+        <Card className="main-card" loading={bootLoad}>
           <Row gutter={[16, 16]}>
             {fields.map((field, index) => (
-              <>
-                {field.layout === "left" ? (
-                  <Col span={12}>
-                    <Row gutter={[16, 16]}>
-                      <FormGroup
-                        key={index}
-                        index={index}
-                        pageType={pageType}
-                        loading={submitLoad}
-                        addrow={duplicateGrope}
-                        removeRow={removeField}
-                        {...field}
-                      />
-                    </Row>
-                  </Col>
-                ) : (
-                  <Col span={12}>
-                    <Row gutter={[16, 16]}>
-                      <FormGroup
-                        key={index}
-                        index={index}
-                        pageType={pageType}
-                        loading={submitLoad}
-                        addrow={duplicateGrope}
-                        removeRow={removeField}
-                        {...field}
-                      />
-                    </Row>
-                  </Col>
-                )}
-              </>
+              <FormGroup
+                key={index}
+                index={index}
+                pageType={pageType}
+                loading={submitLoad}
+                {...field}
+              />
             ))}
           </Row>
         </Card>
