@@ -2,7 +2,7 @@ import { Form, Input } from "antd";
 
 import { separationRules } from "../lib/helpers";
 
-const { TextArea } = Input;
+const { TextArea: Textarea } = Input;
 
 const Text = (props) => {
   // console.log("🚀 ~ file: text.js ~ line 6 ~ Text ~ data", data)
@@ -27,7 +27,7 @@ const Text = (props) => {
         initialValue={props.value}
         rules={rules}
       >
-        <TextArea placeholder={props.options.placeholder} />
+        <Textarea placeholder={props.options.placeholder} />
       </Form.Item>
     </>
   );
