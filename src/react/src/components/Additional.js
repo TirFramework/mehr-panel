@@ -43,7 +43,7 @@ const Additional = (props) => {
         newData[index] = {
           ...item,
           name: replaceLastNumberFromString(item.name, new Date().getTime()),
-          // display: replaceLastNumberFromString(item.name, new Date().getTime()),
+          // display: replaceLastNumberFromString(item.display, index),
           value: "",
         };
       }

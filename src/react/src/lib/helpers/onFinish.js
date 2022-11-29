@@ -11,14 +11,10 @@ export const fixNumber = (obj) => {
   Object.keys(obj).forEach((key) => {
     if (ifExistNumberFromString(key)) {
       const keyWithOuthNumber = replaceLastNumberFromString(key);
-      console.log(
-        "🚀 ~ file: onFinish.js ~ line 14 ~ Object.keys ~ keyWithOuthNumber",
-        keyWithOuthNumber
-      );
-      if (counts[keyWithOuthNumber]) {
+      if (counts[keyWithOuthNumber] === 0) {
         counts[keyWithOuthNumber] += 1;
       } else {
-        counts[keyWithOuthNumber] = 1;
+        counts[keyWithOuthNumber] = 0;
       }
 
       newObj[replaceLastNumberFromString(key, counts[keyWithOuthNumber])] =
@@ -38,14 +34,14 @@ export const onFinish = ({
   pageId,
   setUrlParams,
 }) => {
-  console.log("Success:", values);
+  // console.log("Success:", values);
 
   values = fixNumber(values);
-  console.log("After ronded :", values);
+  // console.log("After ronded :", values);
 
   values = stringToObject(values);
 
-  console.log("After fix :", values);
+  // console.log("After fix :", values);
 
   setSubmitLoad(true);
 
