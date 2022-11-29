@@ -1,48 +1,26 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import {
-  Form,
-  Breadcrumb,
-  notification,
-  Typography,
-  Card,
-  Row,
-  Col,
-} from "antd";
+import { Form, Breadcrumb, Typography, Card, Row, Col } from "antd";
 
 import * as api from "../api";
-
-import {
-  findNextName,
-  fixNumber,
-  getLastNumber,
-  onFinish,
-  replaceLastNumberFromString,
-  stringToObject,
-} from "../lib/helpers";
-
+import { onFinish } from "../lib/helpers";
 import { useUrlParams } from "../hooks/useUrlParams";
 import SubmitGroup from "../components/SubmitGroup";
 import FormGroup from "../components/FormGroup";
-
-const { Title } = Typography;
 
 const Create = () => {
   const [form] = Form.useForm();
 
   const [urlParams, , setUrlParams] = useUrlParams();
   const pageId = urlParams.id;
-  const editMode = urlParams.editMode;
+  // const editMode = urlParams.editMode;
 
   const { pageModule } = useParams();
   const { pageType } = useParams();
-  // const { pageId } = useParams();
 
   const [fields, setFields] = useState([]);
   const [bootLoad, setBootLoad] = useState(true);
   const [submitLoad, setSubmitLoad] = useState(true);
-
-  // const makeField = () => {};
 
   useEffect(() => {
     setBootLoad(true);
@@ -90,9 +68,9 @@ const Create = () => {
       >
         <Row justify="space-between" align="middle" className="header-page">
           <Col>
-            <Title className="capitalize">
+            <Typography.Title className="capitalize">
               {pageType} {pageModule}
-            </Title>
+            </Typography.Title>
           </Col>
           <Col>
             <SubmitGroup form={form} loading={submitLoad} />

@@ -5,7 +5,7 @@ import { Skeleton } from "antd";
 
 const Field = (props) => {
   const { pageModule } = useParams();
-  const DynamicField = lazy(() => import(`./dynamic/${pageModule}`));
+  const DynamicField = lazy(() => import(`../dynamic-pages/${pageModule}`));
 
   return (
     <Suspense

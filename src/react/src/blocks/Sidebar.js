@@ -58,31 +58,35 @@ function App() {
     setCurrent(e.key);
   };
 
-  if (loading) return <p>loading...</p>;
-
   return (
     <Sider
       className="overflow-auto h-screen fixed left-0"
       style={{ position: "fixed" }}
     >
-      <div className="logo text-xl text-white p-4 bg-black">
-        {general?.name}
-      </div>
-      <Menu
-        theme="dark"
-        defaultSelectedKeys={["0"]}
-        onClick={handleClick}
-        selectedKeys={[current]}
-        mode="inline"
-        items={menus.map(({ link, icon, title }) => ({
-          icon: <Icon type={icon} />,
-          label: (
-            <Link className="ml-2" to={link}>
-              {title}
-            </Link>
-          ),
-        }))}
-      />
+      {loading ? (
+        <>loading ....</>
+      ) : (
+        <>
+          <div className="logo text-xl text-white p-4 bg-black">
+            {general?.name}
+          </div>
+          <Menu
+            theme="dark"
+            defaultSelectedKeys={["0"]}
+            onClick={handleClick}
+            selectedKeys={[current]}
+            mode="inline"
+            items={menus.map(({ link, icon, title }) => ({
+              icon: <Icon type={icon} />,
+              label: (
+                <Link className="ml-2" to={link}>
+                  {title}
+                </Link>
+              ),
+            }))}
+          />
+        </>
+      )}
     </Sider>
   );
 }
