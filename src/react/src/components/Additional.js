@@ -34,12 +34,19 @@ const Additional = (props) => {
   const changeName = (arry) => {
     const newData = [...arry];
     newData.forEach((item, index) => {
-      newData[index] = {
-        ...item,
-        name: replaceLastNumberFromString(item.name, new Date().getTime()),
-        // display: replaceLastNumberFromString(item.name, new Date().getTime()),
-        value: "",
-      };
+      if (item.children) {
+        newData[index] = {
+          ...item,
+          children: changeName(item.children),
+        };
+      } else {
+        newData[index] = {
+          ...item,
+          name: replaceLastNumberFromString(item.name, new Date().getTime()),
+          // display: replaceLastNumberFromString(item.name, new Date().getTime()),
+          value: "",
+        };
+      }
     });
     return newData;
   };
@@ -71,11 +78,13 @@ const Additional = (props) => {
         // shape="circle"
         className="w-full"
         disabled={props.loading}
-        icon={<PlusOutlined />}
+        icon={!props.display && <PlusOutlined />}
         onClick={() => {
           duplicate();
         }}
-      />
+      >
+        {props.display}
+      </Button>
     </>
   );
 };
