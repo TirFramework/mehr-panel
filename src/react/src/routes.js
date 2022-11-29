@@ -4,6 +4,18 @@ import Create from "./pages/Create";
 
 const dashboardRoutes = [
   {
+    path: "/overwrite-index/:pageModule",
+    name: "custom",
+    component: Custom,
+    layout: "/admin",
+  },
+  {
+    path: "/overwrite-create/:pageModule",
+    name: "custom",
+    component: Custom,
+    layout: "/admin",
+  },
+  {
     path: "/custom/:pageModule",
     name: "custom",
     component: Custom,
