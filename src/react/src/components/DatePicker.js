@@ -1,21 +1,29 @@
 
 import { Form, DatePicker } from "antd";
+import {separationRules} from "../lib/helpers";
 
-const Text = (data) => {
+const Text = (props) => {
+
+const rules = separationRules({
+    pageType: props.pageType,
+    rules: props.rules,
+    creationRules: props.creationRules,
+    updateRules: props.updateRules,
+});
+
   return (
     <>
       <Form.Item
-        label={data.label}
-        name={data.name}
-        initialValue={data.val}
-        rules={[
-          {
-            required: true,
-            // message: "Please input your username!",
-          },
-        ]}
+        label={props.label}
+        name={props.name}
+        initialValue={props.value}
+        rules={rules}
       >
-        <DatePicker />
+        <DatePicker
+            placeholder={props.options.placeholder}
+            disabled={props.readonly}
+            className={`${props.readonly && "readOnly"} w-full`}
+        />
       </Form.Item>
     </>
   );
