@@ -57,6 +57,7 @@ const Text = (props) => {
           rules={rules}
         >
           <Select
+            showSearch
             mode={props.multiple ? "multiple" : false}
             options={props.data}
             disabled={props.readonly}

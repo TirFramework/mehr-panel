@@ -1,38 +1,41 @@
-
 import { Form, DatePicker } from "antd";
-import {separationRules} from "../lib/helpers";
+import { separationRules } from "../lib/helpers";
+import dayjs from "dayjs";
+import customParseFormat from "dayjs/plugin/customParseFormat";
+
+dayjs.extend(customParseFormat);
 
 const Text = (props) => {
+  const dateFormat = props.options?.dateFormat
+    ? props.options.dateFormat
+    : "YYYY-MM-DD";
 
-    const rules = separationRules({
-        pageType: props.pageType,
-        rules: props.rules,
-        creationRules: props.creationRules,
-        updateRules: props.updateRules,
-    });
+  const rules = separationRules({
+    pageType: props.pageType,
+    rules: props.rules,
+    creationRules: props.creationRules,
+    updateRules: props.updateRules,
+  });
 
-    const dateFormat = 'YYYY-MM-DD';
-
-
-    return (
-        <>
-            <Form.Item
-                label={props.label}
-                name={props.name}
-                initialValue={props.value}
-                rules={rules}
-            >
-                <DatePicker
-                    format={dateFormat}
-                    placeholder={props.options.placeholder}
-                    disabled={props.readonly}
-                    className={`${props.readonly && "readOnly"} w-full`}
-                    style={{ width: '100%' }}
-                />
-            </Form.Item>
-
-        </>
-    );
+  return (
+    <>
+      <Form.Item
+        label={props.label}
+        name={props.name}
+        initialValue={dayjs(props.value, dateFormat)}
+        rules={rules}
+        format={dateFormat}
+      >
+        <DatePicker
+          format={dateFormat}
+          placeholder={props.options.placeholder}
+          disabled={props.readonly}
+          className={`${props.readonly && "readOnly"} w-full`}
+          style={{ width: "100%" }}
+        />
+      </Form.Item>
+    </>
+  );
 };
 
 export default Text;
