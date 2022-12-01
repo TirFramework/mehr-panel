@@ -11,3 +11,5 @@ php artisan vendor:publish --tag=mehr-panel-customize
 2- npm i
 
 3- npm run prod
+
+create custom.scss in /admin/assets/
