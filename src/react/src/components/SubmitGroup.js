@@ -21,7 +21,7 @@ const SubmitGroup = (params) => {
         Cancel
       </Button>
       <Button type="primary" htmlType="submit" loading={params.loading}>
-        Submit
+        {pageId ? "Update" : "Create"}
       </Button>
     </Space>
   );

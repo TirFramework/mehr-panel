@@ -73,7 +73,7 @@ const Create = () => {
             </Typography.Title>
           </Col>
           <Col>
-            <SubmitGroup form={form} loading={submitLoad} />
+            <SubmitGroup form={form} loading={submitLoad} pageId={pageId} />
           </Col>
         </Row>
         <Card className="main-card" loading={bootLoad}>
