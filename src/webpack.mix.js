@@ -12,6 +12,7 @@ const mix = require("laravel-mix");
  */
 
 mix
+  .sass('"resources/admin/src/assets/custom.scss", "/public/../../admin-assets/css")
   .js("resources/admin/src/index.js", "/public/../../admin-assets/js")
   .react()
   // .postCss(
