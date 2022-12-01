@@ -1,18 +1,16 @@
 module.exports = {
-  content: [
+  purge: [
     "./storage/framework/views/*.php",
     "./resources/**/*.blade.php",
     "./resources/**/*.js",
     "./resources/**/*.vue",
   ],
+  darkMode: false, // or 'media' or 'class'
   theme: {
-    extend: {
-      colors: {
-        green: colors.emerald,
-        yellow: colors.amber,
-        purple: colors.violet,
-      },
-    },
+    extend: {},
+  },
+  variants: {
+    extend: {},
   },
   plugins: [],
 };
