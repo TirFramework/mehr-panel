@@ -37,7 +37,7 @@ const Create = () => {
   };
 
   return (
-    <div className={`${pageModule}-${pageType}`}>
+    <div className={`page page-${pageModule} ${pageModule}-${pageId} ${pageId?'edit':'create'}`}>
       <Breadcrumb>
         <Breadcrumb.Item className="capitalize">{pageModule}</Breadcrumb.Item>
         <Breadcrumb.Item className="capitalize">{pageType}</Breadcrumb.Item>
@@ -69,7 +69,7 @@ const Create = () => {
         <Row justify="space-between" align="middle" className="header-page">
           <Col>
             <Typography.Title className="capitalize">
-              {pageType} {pageModule}
+              {pageModule}
             </Typography.Title>
           </Col>
           <Col>

@@ -5,9 +5,9 @@ const Text = (data) => {
   return (
     <>
       <Form.Item
-        label={data.label}
+        label={data.display}
         name={data.name}
-        initialValue={data.val}
+        initialValue={data.value}
         rules={[
           {
             required: true,

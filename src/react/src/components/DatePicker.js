@@ -20,7 +20,7 @@ const Text = (props) => {
   return (
     <>
       <Form.Item
-        label={props.label}
+        label={props.display}
         name={props.name}
         initialValue={
           props.value ? dayjs(props.value, dateFormat) : props.value
