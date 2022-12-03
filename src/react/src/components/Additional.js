@@ -52,6 +52,7 @@ const Additional = (props) => {
   };
   return (
     <>
+    <div className={props.class}>
       {fields.map((child, index) => (
         <Row
           gutter={[16, 16]}
@@ -73,6 +74,7 @@ const Additional = (props) => {
           />
         </Row>
       ))}
+    </div>
 
       <Button
         // shape="circle"

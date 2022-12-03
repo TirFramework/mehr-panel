@@ -118,7 +118,7 @@ function Index() {
 
           if (col.valueType === "array") {
             col.render = (arr) =>
-              arr?.map((item, index) => <Tag key={index}>{item.text}</Tag>);
+              arr?.map((item, index) => <Tag key={index}>{item}</Tag>);
           } else if (col.valueType === "object") {
             col.render = (arr) => arr?.text;
           }
