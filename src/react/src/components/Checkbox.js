@@ -14,6 +14,7 @@ const Text = (props) => {
         label={props.display}
         name={props.name}
         initialValue={props.value}
+        valuePropName="checked"
         rules={rules}
         labelCol={{
           flex: "none",

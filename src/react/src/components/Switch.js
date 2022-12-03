@@ -19,6 +19,12 @@ const Text = (props) => {
         initialValue={props.value}
         valuePropName="checked"
         rules={rules}
+        labelCol={{
+          flex: "none",
+        }}
+        wrapperCol={{
+          flex: "auto",
+        }}
       >
         <Switch />
       </Form.Item>
