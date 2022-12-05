@@ -25,6 +25,7 @@
   display: none;
 }
 
+.modern .formGroup-Textarea .ant-form-item-label label,
 .modern .formGroup-DatePicker .ant-form-item-label label,
 .modern .formGroup-Select .ant-form-item-label label,
 .modern .formGroup-Text .ant-form-item-label label {
@@ -35,6 +36,7 @@
   height: auto;
 }
 
+.modern .formGroup-Textarea .ant-form-item-label,
 .modern .formGroup-DatePicker .ant-form-item-label,
 .modern .formGroup-Select .ant-form-item-label,
 .modern .formGroup-Text .ant-form-item-label {

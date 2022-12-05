@@ -16,7 +16,10 @@ const FormGroup = (props) => {
 
   return (
     <>
-      <Col span={props.col} className={props.className}>
+      <Col
+        span={props.col}
+        className={`${props.className} formGroup formGroup-${props.type}`}
+      >
         <Field
           addrow={props.addrow}
           removeRow={props.removeRow}
