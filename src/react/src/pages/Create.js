@@ -37,7 +37,11 @@ const Create = () => {
   };
 
   return (
-    <div className={`page page-${pageModule} ${pageModule}-${pageId} ${pageId?'edit':'create'}`}>
+    <div
+      className={`page page-${pageModule} ${pageModule}-${pageId} ${
+        pageId ? "edit" : "create"
+      }`}
+    >
       <Breadcrumb>
         <Breadcrumb.Item className="capitalize">{pageModule}</Breadcrumb.Item>
         <Breadcrumb.Item className="capitalize">{pageType}</Breadcrumb.Item>
@@ -55,6 +59,7 @@ const Create = () => {
         initialValues={{
           remember: true,
         }}
+        className="modern"
         onFinish={(value) => {
           onFinish({
             values: value,
