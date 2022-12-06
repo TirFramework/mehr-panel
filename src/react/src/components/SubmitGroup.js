@@ -1,28 +1,30 @@
 import { Button, Space } from "antd";
-import { Link, useHistory, useParams } from "react-router-dom";
-import { useUrlParams } from "../hooks/useUrlParams";
+// import { Link, useHistory, useParams } from "react-router-dom";
+// import { useUrlParams } from "../hooks/useUrlParams";
+import Field from "./Field";
 
-const SubmitGroup = (params) => {
-  const [urlParams, , setUrlParams] = useUrlParams();
-  const pageId = urlParams.id;
-  const editMode = urlParams.editMode;
-  const { pageModule } = useParams();
+const SubmitGroup = (props) => {
+  // const [urlParams, , setUrlParams] = useUrlParams();
+  // const pageId = urlParams.id;
+  // const editMode = urlParams.editMode;
+  // const { pageModule } = useParams();
 
-  const history = useHistory();
+  // const history = useHistory();
 
-  const goBack = () => {
-    history.goBack();
-  };
+  // const goBack = () => {
+  //   history.goBack();
+  // };
 
   return (
     <Space className="justify-end flex mt-2">
-      <Button onClick={goBack}>
-        {/* <Link to={`/admin/${pageModule}`}>Cancel</Link> */}
-        Cancel
-      </Button>
-      <Button type="primary" htmlType="submit" loading={params.loading}>
-        {pageId ? "Update" : "Create"}
-      </Button>
+      {props.buttons.map((btn, index) => (
+        <Field
+          key={`btn-${index}`}
+          type={btn.action}
+          loading={props.loading}
+          {...props}
+        />
+      ))}
     </Space>
   );
   // return (

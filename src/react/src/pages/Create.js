@@ -18,15 +18,15 @@ const Create = () => {
   const { pageModule } = useParams();
   const { pageType } = useParams();
 
-  const [fields, setFields] = useState([]);
+  const [data, setData] = useState([]);
   const [bootLoad, setBootLoad] = useState(true);
   const [submitLoad, setSubmitLoad] = useState(true);
 
   useEffect(() => {
     setBootLoad(true);
-    setFields([]);
+    setData([]);
     api.getCreateOrEditFields(pageModule, pageId).then((res) => {
-      setFields(res);
+      setData(res);
       setBootLoad(false);
       setSubmitLoad(false);
     });
@@ -78,12 +78,17 @@ const Create = () => {
             </Typography.Title>
           </Col>
           <Col>
-            <SubmitGroup form={form} loading={submitLoad} pageId={pageId} />
+            <SubmitGroup
+              buttons={data.buttons}
+              form={form}
+              loading={submitLoad}
+              pageId={pageId}
+            />
           </Col>
         </Row>
         <Card className="main-card" loading={bootLoad}>
           <Row gutter={[16, 16]}>
-            {fields.map((field, index) => (
+            {data.fields.map((field, index) => (
               <FormGroup
                 key={index}
                 index={index}
