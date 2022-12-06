@@ -10,7 +10,6 @@ const Text = (props) => {
     updateRules: props.updateRules,
   });
 
-  console.log("🚀 ~ file: switch.js ~ line 18 ~ Text ~ props.name", props.name);
   return (
     <>
       <Form.Item
@@ -19,6 +18,7 @@ const Text = (props) => {
         initialValue={props.value}
         valuePropName="checked"
         rules={rules}
+        onChange={props.onChange}
         labelCol={{
           flex: "none",
         }}

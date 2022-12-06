@@ -25,28 +25,6 @@
   display: none;
 }
 
-.modern .formGroup-Textarea .ant-form-item-label label,
-.modern .formGroup-DatePicker .ant-form-item-label label,
-.modern .formGroup-Select .ant-form-item-label label,
-.modern .formGroup-Text .ant-form-item-label label {
-  font-size: 11px !important;
-  padding: 0 5px !important;
-  background: #fff;
-  line-height: 1;
-  height: auto;
-}
-
-.modern .formGroup-Textarea .ant-form-item-label,
-.modern .formGroup-DatePicker .ant-form-item-label,
-.modern .formGroup-Select .ant-form-item-label,
-.modern .formGroup-Text .ant-form-item-label {
-  z-index: 1;
-  position: absolute;
-  top: -12px;
-  left: 10px;
-  padding-bottom: 0 !important;
-}
-
 .remove-btn {
   position: absolute;
   right: 0;

@@ -59,7 +59,7 @@ const Create = () => {
         initialValues={{
           remember: true,
         }}
-        className="modern"
+        className="from"
         onFinish={(value) => {
           onFinish({
             values: value,
