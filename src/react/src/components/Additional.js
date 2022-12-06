@@ -52,29 +52,29 @@ const Additional = (props) => {
   };
   return (
     <>
-    <div className={props.class}>
-      {fields.map((child, index) => (
-        <Row
-          gutter={[16, 16]}
-          className="relative"
-          key={`additional-group-${index}`}
-        >
-          {child.map((f, i) => (
-            <FormGroup key={`additional-field-${i}`} {...f} />
-          ))}
-          <Button
-            icon={<CloseOutlined />}
-            type="text"
-            className="remove-btn"
-            disabled={props.loading}
-            onClick={() => {
-              removeRow(index);
-            }}
-            danger
-          />
-        </Row>
-      ))}
-    </div>
+      <div className={props.class}>
+        {fields.map((child, index) => (
+          <Row
+            gutter={[16, 16]}
+            className="relative"
+            key={`additional-group-${index}`}
+          >
+            <Button
+              icon={<CloseOutlined />}
+              type="text"
+              className="remove-btn"
+              disabled={props.loading}
+              onClick={() => {
+                removeRow(index);
+              }}
+              danger
+            />
+            {child.map((f, i) => (
+              <FormGroup key={`additional-field-${i}`} {...f} />
+            ))}
+          </Row>
+        ))}
+      </div>
 
       <Button
         // shape="circle"
