@@ -59,7 +59,7 @@ const Create = () => {
         initialValues={{
           remember: true,
         }}
-        className="from"
+        className="form"
         onFinish={(value) => {
           onFinish({
             values: value,
