@@ -18,7 +18,6 @@ const Text = (props) => {
         initialValue={props.value}
         valuePropName="checked"
         rules={rules}
-        onChange={props.onChange}
         labelCol={{
           flex: "none",
         }}
@@ -26,7 +25,11 @@ const Text = (props) => {
           flex: "auto",
         }}
       >
-        <Switch />
+        <Switch
+          onChange={props.onChange}
+          disabled={props.readonly}
+          className={props.readonly && "readOnly"}
+        />
       </Form.Item>
     </>
   );

@@ -24,6 +24,7 @@ const Text = (props) => {
         }}
       >
         <Checkbox
+          onChange={props.onChange}
           disabled={props.readonly}
           className={props.readonly && "readOnly"}
         />
