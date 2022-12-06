@@ -11,7 +11,7 @@ export const fixNumber = (obj) => {
   Object.keys(obj).forEach((key) => {
     if (ifExistNumberFromString(key)) {
       const keyWithOuthNumber = replaceLastNumberFromString(key);
-      if (counts[keyWithOuthNumber] === 0) {
+      if (counts[keyWithOuthNumber] !== undefined) {
         counts[keyWithOuthNumber] += 1;
       } else {
         counts[keyWithOuthNumber] = 0;
