@@ -1,7 +1,7 @@
 let apiBaseUrl = "";
 let storage = "";
 if (process.env.NODE_ENV === "development") {
-  apiBaseUrl = "/api/v1/admin";
+  apiBaseUrl = "http://localhost:8001/api/v1/admin";
   storage = "/storage";
 } else {
   apiBaseUrl = "/api/v1/admin";

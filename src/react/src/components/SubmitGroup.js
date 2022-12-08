@@ -17,12 +17,12 @@ const SubmitGroup = (props) => {
 
   return (
     <Space className="justify-end flex mt-2">
-      {props.buttons.map((btn, index) => (
+      {props.buttons?.map((btn, index) => (
         <Field
+          {...btn}
           key={`btn-${index}`}
           type={btn.action}
           loading={props.loading}
-          {...props}
         />
       ))}
     </Space>

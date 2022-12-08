@@ -79,7 +79,7 @@ const Create = () => {
           </Col>
           <Col>
             <SubmitGroup
-              buttons={data.buttons}
+              buttons={data?.buttons}
               form={form}
               loading={submitLoad}
               pageId={pageId}
@@ -88,7 +88,7 @@ const Create = () => {
         </Row>
         <Card className="main-card" loading={bootLoad}>
           <Row gutter={[16, 16]}>
-            {data.fields.map((field, index) => (
+            {data.fields?.map((field, index) => (
               <FormGroup
                 key={index}
                 index={index}
@@ -100,7 +100,12 @@ const Create = () => {
           </Row>
         </Card>
 
-        <SubmitGroup form={form} loading={submitLoad} />
+        <SubmitGroup
+          buttons={data?.buttons}
+          form={form}
+          loading={submitLoad}
+          pageId={pageId}
+        />
       </Form>
     </div>
   );
