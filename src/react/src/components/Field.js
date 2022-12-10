@@ -1,5 +1,7 @@
 import { memo, lazy, Suspense } from "react";
 import { Card, Form, Input, Skeleton } from "antd";
+import Submit from "./Submit";
+import Cancel from "./Cancel";
 import Group from "./Group";
 import Text from "./Text";
 // import { capitalize } from "../lib/helpers"
@@ -33,10 +35,17 @@ const Field = (props) => {
     >
       {props.type === "Group" ? (
         <Group {...props} />
+      ) : props.type === "Cancel" ? (
+        <Cancel {...props} />
+      ) : props.type === "Submit" ? (
+        <Submit {...props} />
       ) : props.type === "text" ? (
         <Text {...props} />
       ) : (
-        <DynamicField type={props.type} {...props} />
+        // <DynamicField type={props.type} {...props} />
+        <Form.Item label={props.display}>
+          <button loading={true} />
+        </Form.Item>
       )}
     </Suspense>
   );
