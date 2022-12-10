@@ -171,14 +171,19 @@ function Index() {
     [pageModule, pagination]
   );
 
-  const handleTableChange = (pagination, filters, sorter) => {
+  const handleTableChange = (p, filters, sorter) => {
+    console.log("🚀 ~ file: Index.js:175 ~ handleTableChange ~ p", p);
     filters = helpers.removeNullFromObject(filters);
     setPagination({
       ...pagination,
+      current: p.current,
+      pageSize: p.pageSize,
       filters: filters,
     });
     getData({
       ...pagination,
+      current: p.current,
+      pageSize: p.pageSize,
       filters: filters,
     });
   };
