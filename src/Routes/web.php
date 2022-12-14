@@ -26,11 +26,6 @@ Route::group(['middleware' => 'web'], function () {
 });
 
 
-// Add api middleware for use Laravel feature
-Route::group(['middleware' => 'auth:api', 'prefix' => 'api/v1'], function () {
 
-    //Add admin prefix and middleware for admin area to user module
-    Route::group(['prefix' => 'admin', 'middleware' => 'IsAdmin'], function () {
-        Route::get('/mehr-panel', [AdminPanelController::class, 'general']);
-    });
-});
+//Add admin prefix and middleware for admin area to user module
+Route::get('api/v1/admin/mehr-panel', [AdminPanelController::class, 'general'])->middleware(config('crud.middlewares'));
