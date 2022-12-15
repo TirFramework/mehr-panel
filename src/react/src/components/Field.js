@@ -39,7 +39,7 @@ const Field = (props) => {
         <Cancel {...props} />
       ) : props.type === "Submit" ? (
         <Submit {...props} />
-      ) : props.type === "text" ? (
+      ) : props.type === "Text" ? (
         <Text {...props} />
       ) : (
         // <DynamicField type={props.type} {...props} />
