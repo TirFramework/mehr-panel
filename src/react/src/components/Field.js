@@ -42,10 +42,7 @@ const Field = (props) => {
       ) : props.type === "Text" ? (
         <Text {...props} />
       ) : (
-        // <DynamicField type={props.type} {...props} />
-        <Form.Item label={props.display}>
-          <button loading={true} />
-        </Form.Item>
+        <DynamicField type={props.type} {...props} />
       )}
     </Suspense>
   );
