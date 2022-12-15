@@ -5,7 +5,7 @@ const Submit = (props) => {
   const { pageModule } = useParams();
   return (
     <Button type="primary" htmlType="submit" loading={props.loading}>
-      {props.pageId ? "Update" : "Create"}
+      {props.pageId ? "Update" : "Save"}
     </Button>
   );
 };
