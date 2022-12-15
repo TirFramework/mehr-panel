@@ -84,9 +84,9 @@ function Index() {
     title: "Actions",
     dataIndex: "id",
     fixed: "right",
-    render: (id) => (
+    render: (id, data) => (
       <>
-        <Link to={`/admin/${pageModule}/create-edit?id=${id}`}>
+        <Link to={`/admin/${pageModule}/create-edit?id=${data.id || data._id}`}>
           <EditOutlined title="Edit" />
         </Link>
         <Tooltip title="Delete">
@@ -124,6 +124,21 @@ function Index() {
           }
           if (col.filters !== undefined) {
             col.filters?.map((item) => (item.text = item.label));
+          }
+          if (col.dataSet.length !== 0) {
+            col.render = (data) => {
+              if (typeof data === "object") {
+                return (
+                  <>
+                    {data.map((item, index) => (
+                      <Tag key={index}>{col.dataSet[item]}</Tag>
+                    ))}
+                  </>
+                );
+              } else {
+                return <>{col.dataSet[data]}</>;
+              }
+            };
           }
 
           if (col.comment?.content !== undefined) {
