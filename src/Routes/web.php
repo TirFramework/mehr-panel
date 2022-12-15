@@ -24,8 +24,3 @@ Route::group(['middleware' => 'web'], function () {
             ->name('react');
     });
 });
-
-
-
-//Add admin prefix and middleware for admin area to user module
-Route::get('api/v1/admin/mehr-panel', [AdminPanelController::class, 'general'])->middleware(config('crud.middlewares'));
