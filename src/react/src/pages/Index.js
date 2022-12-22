@@ -124,6 +124,9 @@ function Index() {
           }
           if (col.filters !== undefined) {
             col.filters?.map((item) => (item.text = item.label));
+
+            col.filterSearch= col.filters.length > 10;
+
           }
           if (col.dataSet.length !== 0) {
             col.render = (data) => {
