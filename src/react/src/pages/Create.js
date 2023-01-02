@@ -36,7 +36,8 @@ const Create = () => {
     console.log("Failed:", errorInfo);
   };
 
-  return (
+    let required;
+    return (
     <div
       className={`page page-${pageModule} ${pageModule}-${pageId} ${
         pageId ? "edit" : "create"
@@ -49,6 +50,7 @@ const Create = () => {
 
       <Form
         form={form}
+        validateMessages={ data.validationMsg }
         name="basic"
         labelCol={{
           span: 24,
