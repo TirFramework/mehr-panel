@@ -12,6 +12,7 @@
     "axios": "^0.27.2",
     "immutability-helper": "^3.1.1",
     "js-cookie": "^3.0.1",
+    "moment": "^2.29.4",
     "react": "^18.2.0",
     "react-csv": "^2.2.2",
     "react-dnd": "^16.0.1",
@@ -50,10 +51,10 @@
   },
   "devDependencies": {
     "autoprefixer": "^10.4.8",
-    "laravel-mix": "^6.0.6",
-    "less-loader": "^10.0.1",
     "browser-sync": "^2.27.4",
     "browser-sync-webpack-plugin": "^2.2.2",
+    "laravel-mix": "^6.0.6",
+    "less-loader": "^10.0.1",
     "lodash": "^4.17.19",
     "postcss": "^8.4.14",
     "tailwindcss": "^3.1.7"
