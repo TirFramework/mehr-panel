@@ -45,6 +45,8 @@ const Text = (props) => {
     if (props.dataUrl) {
       getOptions();
     }
+    // props.data.sort((a, b) => a.label.localeCompare(b.label));
+//vehicle.sort(compareFn:(a :vehicle, b :vehicle) => a.type.localeCompare(b.type));
   }, [props]);
 
   if (!props.dataUrl) {
@@ -58,8 +60,11 @@ const Text = (props) => {
         >
           <Select
             showSearch
+            filterOption={(input, option) =>
+                option.label.toLowerCase().indexOf(input.toLowerCase()) >= 0
+            }
             mode={props.multiple ? "multiple" : false}
-            options={props.data}
+            options={props.data.sort((a, b) => a.label.localeCompare(b.label))}
             disabled={props.readonly}
             className={props.readonly && "readOnly"}
             allowClear={!props.readonly && true}
@@ -80,6 +85,9 @@ const Text = (props) => {
             // onSearch={(q) => getOptions(q)}
             showSearch
             loading={loading}
+            filterOption={(input, option) =>
+                option.label.toLowerCase().indexOf(input.toLowerCase()) >= 0
+            }
             // notFoundContent={loading ? <Spin size="small" /> : <Empty imageStyle={{ height: 250 }} />}
             // filterOption={false}
             optionFilterProp="label"
