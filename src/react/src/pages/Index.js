@@ -94,7 +94,7 @@ function Index() {
                         className="ml-4"
                         type="link"
                         danger
-                        onClick={() => deleteRow(id)}
+                        onClick={() => deleteRow(data.id || data._id)}
                         icon={<DeleteOutlined />}
                     />
                 </Tooltip>
