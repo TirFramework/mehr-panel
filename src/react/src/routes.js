@@ -10,7 +10,7 @@ const dashboardRoutes = [
     layout: "/admin",
   },
   {
-    path: "/overwrite-create/:pageModule",
+    path: "/c/:pageModule/create-edit",
     name: "custom",
     component: Custom,
     layout: "/admin",

@@ -111,6 +111,9 @@ function Index() {
                 // loop for detect array
                 cols.forEach((col) => {
                     var item;
+
+                    col.dataIndex = col.dataIndex.split('.');
+
                     if (params?.filters?.hasOwnProperty(col.dataIndex)) {
                         item = params?.filters[col.dataIndex];
                         col.defaultFilteredValue = item;
@@ -179,6 +182,12 @@ function Index() {
             api
                 .getRows(pageModule, params)
                 .then((res) => {
+                    if(!res.data.length){
+                        setPagination({
+                            ...pagination,
+                            current : 1
+                        })
+                    }
                     setData(res);
                     setDataLoading(false);
                 })
