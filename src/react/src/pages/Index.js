@@ -235,10 +235,9 @@ function Index() {
             search: value,
         });
     };
-
     return (
         <div className={`${pageModule}-index`}>
-            <Title className="capitalize">{pageModule}</Title>
+            <Title className="capitalize">{columns?.configs?.module_title}</Title>
             <Row align="bottom" className="mb-4">
                 <Col className="gutter-row" span={12}>
                     {!tableLoading ? (

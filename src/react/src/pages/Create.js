@@ -11,14 +11,13 @@ const Create = () => {
 
   const { pageModule } = useParams();
   const { pageType } = useParams();
-
     return (
     <div
       className={`page page-${pageModule} ${pageModule}-${pageId} ${
         pageId ? "edit" : "create"
       }`}
     >
-        <Header/>
+        {/*<Header/>*/}
         <Form/>
     </div>
   );

@@ -12,8 +12,8 @@ axios.defaults.baseURL = Config.apiBaseUrl;
 axios.defaults.headers.common["Content-Type"] = "application/json";
 axios.defaults.headers.common.Accept = "application/json";
 
-// const token = Cookies.get("api_token");
-// axios.defaults.headers.common = { Authorization: `Bearer ${token}` };
+const token = Cookies.get("api_token");
+axios.defaults.headers.common = { Authorization: `Bearer ${token}` };
 
 axios.defaults.timeout = 5000;
 
@@ -38,7 +38,7 @@ axios.interceptors.response.use(
     if (error.response.status === 401) {
       // TODO: Add route path
       Cookies.remove('token');
-      window.location.replace('/admin/login');
+     window.location.replace('/admin/login');
     } else if (error.response.status === 403) {
       notification["error"]({
         message: error.message,
