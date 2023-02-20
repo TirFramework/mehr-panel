@@ -131,21 +131,28 @@ function Index() {
                         col.filterSearch= col.filters.length > 10;
 
                     }
+
                     if (col.dataSet.length !== 0) {
                         col.render = (data) => {
-                            if (typeof data === "object") {
-                                return (
-                                    <>
-                                        {data.map((item, index) => (
-                                            <Tag key={index}>{col.dataSet[item]}</Tag>
-                                        ))}
-                                    </>
-                                );
-                            } else {
-                                return <>{col.dataSet[data]}</>;
-                            }
+                          if (typeof data === "object" && data) {
+                            return (
+                              <>
+                                {data.map(function (item, index){
+                                    if(col.dataKey){
+                                        item = item[col.dataKey ]
+                                    }
+                                    return (
+                                    <Tag key={index}>{ col.dataSet[item]}</Tag>
+                                    )
+                                })}
+                              </>
+                            );
+                          } else {
+                            return <>{col.dataSet[data]}</>;
+                          }
                         };
-                    }
+                      }
+            
 
                     if (col.comment?.content !== undefined) {
                         col.title = (
