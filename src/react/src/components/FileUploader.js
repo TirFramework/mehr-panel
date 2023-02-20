@@ -50,183 +50,181 @@ const token = Cookies.get("api_token");
 const type = "DragableUploadList";
 
 const DragableUploadListItem = ({ originNode, moveRow, file, fileList }) => {
-  const ref = React.useRef();
-  const index = fileList.indexOf(file);
-  const [{ isOver, dropClassName }, drop] = useDrop({
-    accept: type,
-    collect: (monitor) => {
-      const { index: dragIndex } = monitor.getItem() || {};
-      if (dragIndex === index) {
-        return {};
-      }
-      return {
-        isOver: monitor.isOver(),
-        dropClassName:
-          dragIndex < index ? " drop-over-downward" : " drop-over-upward",
-      };
-    },
-    drop: (item) => {
-      moveRow(item.index, index);
-    },
-  });
-  const [, drag] = useDrag({
-    type,
-    item: { index },
-    collect: (monitor) => ({
-      isDragging: monitor.isDragging(),
-    }),
-  });
-  drop(drag(ref));
-  const errorNode = (
-    <Tooltip title="Upload Error">{originNode.props.children}</Tooltip>
-  );
-  return (
-    <div
-      ref={ref}
-      className={`ant-upload-draggable-list-item ${
-        isOver ? dropClassName : ""
-      }`}
-      style={{ cursor: "move" }}
-    >
-      {file.status === "error" ? errorNode : originNode}
-    </div>
-  );
+    const ref = React.useRef();
+    const index = fileList.indexOf(file);
+    const [{ isOver, dropClassName }, drop] = useDrop({
+        accept: type,
+        collect: (monitor) => {
+            const { index: dragIndex } = monitor.getItem() || {};
+            if (dragIndex === index) {
+                return {};
+            }
+            return {
+                isOver: monitor.isOver(),
+                dropClassName:
+                    dragIndex < index ? " drop-over-downward" : " drop-over-upward",
+            };
+        },
+        drop: (item) => {
+            moveRow(item.index, index);
+        },
+    });
+    const [, drag] = useDrag({
+        type,
+        item: { index },
+        collect: (monitor) => ({
+            isDragging: monitor.isDragging(),
+        }),
+    });
+    drop(drag(ref));
+    const errorNode = (
+        <Tooltip title="Upload Error">{originNode.props.children}</Tooltip>
+    );
+    return (
+        <div
+            ref={ref}
+            className={`ant-upload-draggable-list-item ${
+                isOver ? dropClassName : ""
+            }`}
+            style={{ cursor: "move" }}
+        >
+            {file.status === "error" ? errorNode : originNode}
+        </div>
+    );
 };
 
 const DragSortingUpload = (props) => {
-  const initialValueHandeling = (data) => {
-    let newData = [];
+    const initialValueHandeling = (data) => {
+        let newData = [];
+        if (data === undefined || data === null) {
+            return null;
+        }
+        if (!Array.isArray(data)) {
+            newData.push({
+                uid: 1,
+                name: data,
+                value: `${data}`,
+                url: `${props.basePath}/${data}`,
+            });
+        } else {
+            newData = data.map((item, index) => ({
+                uid: index,
+                name: item,
+                value: `${item}`,
+                url: `${props.basePath}/${item}`,
+            }));
+        }
+        console.log(
+            "🚀 ~ file: FileUploader.js ~ line 251 ~ change ~ newData",
+            newData
+        );
+        return newData;
+    };
 
-    if (data === null) {
-      return null;
-    }
+    const [fileList, setFileList] = useState(initialValueHandeling(props.value));
 
-    if (!Array.isArray(data)) {
-      newData.push({
-        uid: 1,
-        name: data,
-        value: `${data}`,
-        url: `${Config.storage}/${data}`,
-      });
-    } else {
-      newData = data.map((item, index) => ({
-        uid: index,
-        name: item,
-        value: `${item}`,
-        url: `${Config.storage}/${item}`,
-      }));
-    }
-    console.log(
-      "🚀 ~ file: FileUploader.js ~ line 251 ~ change ~ newData",
-      newData
+    const moveRow = useCallback(
+        (dragIndex, hoverIndex) => {
+            const dragRow = fileList[dragIndex];
+            setFileList(
+                update(fileList, {
+                    $splice: [
+                        [dragIndex, 1],
+                        [hoverIndex, 0, dragRow],
+                    ],
+                })
+            );
+            props.onChange(
+                update(fileList, {
+                    $splice: [
+                        [dragIndex, 1],
+                        [hoverIndex, 0, dragRow],
+                    ],
+                })
+            );
+        },
+        [fileList]
     );
-    return newData;
-  };
 
-  const [fileList, setFileList] = useState(initialValueHandeling(props.value));
+    const onChange = ({ fileList: newFileList }) => {
+        setFileList(newFileList);
+        props.onChange(newFileList);
+    };
 
-  const moveRow = useCallback(
-    (dragIndex, hoverIndex) => {
-      const dragRow = fileList[dragIndex];
-      setFileList(
-        update(fileList, {
-          $splice: [
-            [dragIndex, 1],
-            [hoverIndex, 0, dragRow],
-          ],
-        })
-      );
-      props.onChange(
-        update(fileList, {
-          $splice: [
-            [dragIndex, 1],
-            [hoverIndex, 0, dragRow],
-          ],
-        })
-      );
-    },
-    [fileList]
-  );
-
-  const onChange = ({ fileList: newFileList }) => {
-    setFileList(newFileList);
-    props.onChange(newFileList);
-  };
-
-  return (
-    <>
-      <DndProvider backend={HTML5Backend}>
-        <Upload
-          action={`${Config.apiBaseUrl}/file-manager/upload`}
-          headers={{ Authorization: `Bearer ${token}` }}
-          // defaultFileList={initialValueHandeling(props.value)}
-          fileList={fileList}
-          listType="picture"
-          maxCount={props.maxCount}
-          onChange={onChange}
-          disabled={props.readonly}
-          className={props.readonly ? "readOnly" : " "}
-          //   {...props}
-          itemRender={(originNode, file, currFileList) => (
-            <DragableUploadListItem
-              originNode={originNode}
-              file={file}
-              fileList={currFileList}
-              moveRow={moveRow}
-            />
-          )}
-        >
-          <Button icon={<UploadOutlined />}>
-            Click to upload file for {props.display}
-          </Button>
-        </Upload>
-      </DndProvider>
-    </>
-  );
+    return (
+        <>
+            <DndProvider backend={HTML5Backend}>
+                <Upload
+                    action={props.postUrl}
+                    headers={{ Authorization: `Bearer ${token}` }}
+                    // defaultFileList={initialValueHandeling(props.value)}
+                    fileList={fileList}
+                    listType="picture"
+                    maxCount={props.maxCount}
+                    onChange={onChange}
+                    disabled={props.readonly}
+                    className={props.readonly ? "readOnly" : " "}
+                    //   {...props}
+                    itemRender={(originNode, file, currFileList) => (
+                        <DragableUploadListItem
+                            originNode={originNode}
+                            file={file}
+                            fileList={currFileList}
+                            moveRow={moveRow}
+                        />
+                    )}
+                >
+                    <Button icon={<UploadOutlined />}>
+                        Click to upload file for {props.display}
+                    </Button>
+                </Upload>
+            </DndProvider>
+        </>
+    );
 };
 
 const CustomUpload = (props) => {
-  console.log("🚀 ~ file: Upload.js ~ line 148 ~ CustomUpload ~ props", props);
+    console.log("🚀 ~ file: Upload.js ~ line 148 ~ CustomUpload ~ props", props);
 
-  const rules = separationRules({
-    pageType: props.pageType,
-    rules: props.rules,
-    creationRules: props.creationRules,
-    updateRules: props.updateRules,
-  });
-
-  const normFile = (e) => {
-    console.log("Upload event:", e);
-    // return e.fileList
-    if (e.length === 1) {
-      if (e[0].response !== undefined) {
-        return `${e[0].response.path}`;
-      }
-      if (e[0].value !== undefined) {
-        return `${e[0].value}`;
-      }
-    }
-    return e.map((item) => {
-      if (item.response !== undefined) {
-        return `${item.response.path}`;
-      }
-      if (item.value !== undefined) {
-        return `${item.value}`;
-      }
+    const rules = separationRules({
+        pageType: props.pageType,
+        rules: props.rules,
+        creationRules: props.creationRules,
+        updateRules: props.updateRules,
     });
-  };
-  return (
-    <Form.Item
-      name={props.name}
-      // valuePropName="fileList"
-      initialValue={props.value}
-      rules={rules}
-      getValueFromEvent={normFile}
-      // setFieldsValue={fileList}
-    >
-      <DragSortingUpload {...props} />
-    </Form.Item>
-  );
+
+    const normFile = (e) => {
+        console.log("Upload event:", e);
+        // return e.fileList
+        if (e.length === 1) {
+            if (e[0].response !== undefined) {
+                return `${e[0].response.path}`;
+            }
+            if (e[0].value !== undefined) {
+                return `${e[0].value}`;
+            }
+        }
+        return e.map((item) => {
+            if (item.response !== undefined) {
+                return `${item.response.path}`;
+            }
+            if (item.value !== undefined) {
+                return `${item.value}`;
+            }
+        });
+    };
+    return (
+        <Form.Item
+            name={props.name}
+            // valuePropName="fileList"
+            initialValue={props.value}
+            rules={rules}
+            getValueFromEvent={normFile}
+            // setFieldsValue={fileList}
+        >
+            <DragSortingUpload {...props} />
+        </Form.Item>
+    );
 };
 export default CustomUpload;
 

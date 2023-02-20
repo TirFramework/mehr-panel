@@ -52,7 +52,7 @@ const Additional = (props) => {
   };
   return (
     <>
-      <div className={props.class}>
+      <div className={props.className}>
         {fields.map((child, index) => (
           <Row
             gutter={[16, 16]}

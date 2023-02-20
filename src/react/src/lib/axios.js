@@ -12,29 +12,20 @@ axios.defaults.baseURL = Config.apiBaseUrl;
 axios.defaults.headers.common["Content-Type"] = "application/json";
 axios.defaults.headers.common.Accept = "application/json";
 
-const token = Cookies.get("api_token");
-axios.defaults.headers.common = { Authorization: `Bearer ${token}` };
+// const token = Cookies.get("api_token");
+// axios.defaults.headers.common = { Authorization: `Bearer ${token}` };
 
 axios.defaults.timeout = 5000;
 
 // Add a request interceptor
 axios.interceptors.request.use(
-  (config) => {
-    // Do something before request is sent
-
-    // const token = Cookies.get('api_token')
-    // config.params = { api_token: token };
-    // config.params = { locale: 'Fa' };
-
-    // console.log("🚀 ~ file: axios.js ~ line 26 ~ axios.interceptors.request.use ~ config", config)
-    return config;
-  },
-  (error) => {
-    // Do something with request error
-    return Promise.reject(error);
-  }
+    async (inputConfig) => {
+        return inputConfig;
+    },
+    (error) => {
+        throw error;
+    }
 );
-
 // Add a response interceptor
 axios.interceptors.response.use(
   (response) => {
@@ -45,9 +36,9 @@ axios.interceptors.response.use(
   function (error) {
     console.log("-> error", error);
     if (error.response.status === 401) {
-      // Cookies.remove('token');
       // TODO: Add route path
-      // window.location.replace('/admin/login');
+      Cookies.remove('token');
+      window.location.replace('/admin/login');
     } else if (error.response.status === 403) {
       notification["error"]({
         message: error.message,

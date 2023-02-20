@@ -1,14 +1,16 @@
 import { Form, DatePicker } from "antd";
 import { separationRules } from "../lib/helpers";
-import dayjs from "dayjs";
-import customParseFormat from "dayjs/plugin/customParseFormat";
+import moment from "moment"
 
-dayjs.extend(customParseFormat);
 
 const Text = (props) => {
-  const dateFormat = props.options?.dateFormat
+  const dateFormat = props.options.dateFormat
     ? props.options.dateFormat
     : "YYYY-MM-DD";
+
+  const picker = props.options.picker
+    ? props.options.picker
+    : "day";
 
   const rules = separationRules({
     pageType: props.pageType,
@@ -23,7 +25,7 @@ const Text = (props) => {
         label={props.display}
         name={props.name}
         initialValue={
-          props.value ? dayjs(props.value, dateFormat) : props.value
+          props.value ? moment.utc(props.value, dateFormat) : props.value
         }
         rules={rules}
         format={dateFormat}
@@ -32,6 +34,7 @@ const Text = (props) => {
           format={dateFormat}
           placeholder={props.options.placeholder}
           disabled={props.readonly}
+          picker={picker}
           className={`${props.readonly && "readOnly"} w-full`}
           style={{ width: "100%" }}
         />
