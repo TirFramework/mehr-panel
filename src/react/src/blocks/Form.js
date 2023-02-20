@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { Prompt, useLocation, useParams } from "react-router-dom";
 import { Form, Typography, Card, Row, Col } from "antd";
 
 import * as api from "../api";
@@ -7,6 +7,7 @@ import { onFinish } from "../lib/helpers";
 import { useUrlParams } from "../hooks/useUrlParams";
 import SubmitGroup from "../components/SubmitGroup";
 import FormGroup from "../components/FormGroup";
+import Header from "./Header";
 
 const CreateForm = () => {
   const [form] = Form.useForm();
@@ -21,8 +22,10 @@ const CreateForm = () => {
   const [data, setData] = useState([]);
   const [bootLoad, setBootLoad] = useState(true);
   const [submitLoad, setSubmitLoad] = useState(true);
+  const [isTouched, setIsTouched] = useState(false);
 
-  useEffect(() => {
+    useEffect(() => {
+    setIsTouched(false);
     setBootLoad(true);
     setData([]);
     api.getCreateOrEditFields(pageModule, pageId).then((res) => {
@@ -36,9 +39,45 @@ const CreateForm = () => {
     console.log("Failed:", errorInfo);
   };
 
+    const promptMessage =
+        'You have unsaved changes, are you sure you want to leave?';
+
+    const location = useLocation();
+
+    useEffect(() => {
+        if (isTouched) {
+            // eslint-disable-next-line consistent-return
+            window.onbeforeunload = event => {
+                const e = event || window.event;
+                // Cancel the event
+                e.preventDefault();
+                if (e) {
+                    e.returnValue = ''; // Legacy method for cross browser support
+                }
+                return ''; // Legacy method for cross browser support
+            };
+        } else {
+            window.onbeforeunload = () => {
+            };
+        }
+    }, [isTouched]);
     let required;
     return (
     <>
+        <Header pageTitle = {data.configs?.module_title} />
+        <Prompt
+            message={(nextLocation) => {
+                // navigation prompt should only happen when pathname is about to change
+                // not on urlParams change or location.search change
+                if (
+                    nextLocation.pathname !== location.pathname &&
+                    isTouched
+                ){
+                    return promptMessage;
+                }
+                return true;
+            }}
+        />
       <Form
         form={form}
         validateMessages={ data.validationMsg }
@@ -52,6 +91,10 @@ const CreateForm = () => {
         initialValues={{
           remember: true,
         }}
+        onFieldsChange={() => {
+            // add your additionaly logic here
+            setIsTouched(true);
+        }}
         className="form"
         onFinish={(value) => {
           onFinish({
@@ -61,6 +104,7 @@ const CreateForm = () => {
             pageId: pageId,
             setUrlParams: setUrlParams,
           });
+            setIsTouched(false);
         }}
         onFinishFailed={onFinishFailed}
       >

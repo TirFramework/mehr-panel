@@ -96,6 +96,7 @@ const DragableUploadListItem = ({ originNode, moveRow, file, fileList }) => {
 const DragSortingUpload = (props) => {
     const initialValueHandeling = (data) => {
         let newData = [];
+        console.log(data);
         if (data === undefined || data === null) {
             return null;
         }

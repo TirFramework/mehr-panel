@@ -27,7 +27,7 @@ const Text = (props) => {
         initialValue={props.value}
         rules={rules}
       >
-        <Textarea placeholder={props.options.placeholder} />
+        <Textarea placeholder={props.options.placeholder} rows={props.row} />
       </Form.Item>
     </>
   );
