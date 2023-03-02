@@ -1,6 +1,6 @@
-import React, { useState, useEffect, useCallback } from "react";
-import { useParams, Link, useHistory } from "react-router-dom";
-import { PlusOutlined, StopOutlined } from "@ant-design/icons";
+import React, {useState, useEffect, useCallback} from "react";
+import {useParams, Link, useHistory} from "react-router-dom";
+import {PlusOutlined, StopOutlined} from "@ant-design/icons";
 
 import {
     Button,
@@ -21,22 +21,23 @@ import {
     QuestionCircleOutlined,
     DeleteOutlined,
 } from "@ant-design/icons";
-import { CSVLink } from "react-csv";
+import {CSVLink} from "react-csv";
 
 import * as helpers from "../lib/helpers";
 
 import * as api from "../api";
 import useLocalStorage from "../hooks/useLocalStorage";
+import moment from "moment";
 
 // const getColumns = async (query) => {
 //   return fetch(`http://localhost:8000/post/index.json`).then((_) => _.json());
 // }
 
-const { Title } = Typography;
+const {Title} = Typography;
 
 function Index() {
     console.log("🚀 ~ Index");
-    const { pageModule } = useParams();
+    const {pageModule} = useParams();
 
     const history = useHistory();
 
@@ -87,7 +88,7 @@ function Index() {
         render: (id, data) => (
             <>
                 <Link to={`/admin/${pageModule}/create-edit?id=${data.id || data._id}`}>
-                    <EditOutlined title="Edit" />
+                    <EditOutlined title="Edit"/>
                 </Link>
                 <Tooltip title="Delete">
                     <Button
@@ -95,7 +96,7 @@ function Index() {
                         type="link"
                         danger
                         onClick={() => deleteRow(data.id || data._id)}
-                        icon={<DeleteOutlined />}
+                        icon={<DeleteOutlined/>}
                     />
                 </Tooltip>
             </>
@@ -119,6 +120,12 @@ function Index() {
                         col.defaultFilteredValue = item;
                     }
 
+                    if (col.type === 'DatePicker') {
+                        col.render = (value) => {
+                            return  moment.utc(value).format(col.field.options.dateFormat);
+                        }
+                    }
+
                     if (col.valueType === "array") {
                         col.render = (arr) =>
                             arr?.map((item, index) => <Tag key={index}>{item}</Tag>);
@@ -128,31 +135,31 @@ function Index() {
                     if (col.filters !== undefined) {
                         col.filters?.map((item) => (item.text = item.label));
 
-                        col.filterSearch= col.filters.length > 10;
+                        col.filterSearch = col.filters.length > 10;
 
                     }
 
                     if (col.dataSet.length !== 0) {
                         col.render = (data) => {
-                          if (typeof data === "object" && data) {
-                            return (
-                              <>
-                                {data.map(function (item, index){
-                                    if(col.dataKey){
-                                        item = item[col.dataKey ]
-                                    }
-                                    return (
-                                    <Tag key={index}>{ col.dataSet[item]}</Tag>
-                                    )
-                                })}
-                              </>
-                            );
-                          } else {
-                            return <>{col.dataSet[data]}</>;
-                          }
+                            if (typeof data === "object" && data) {
+                                return (
+                                    <>
+                                        {data.map(function (item, index) {
+                                            if (col.dataKey) {
+                                                item = item[col.dataKey]
+                                            }
+                                            return (
+                                                <Tag key={index}>{col.dataSet[item]}</Tag>
+                                            )
+                                        })}
+                                    </>
+                                );
+                            } else {
+                                return <>{col.dataSet[data]}</>;
+                            }
                         };
-                      }
-            
+                    }
+
 
                     if (col.comment?.content !== undefined) {
                         col.title = (
@@ -162,7 +169,7 @@ function Index() {
                                     content={col.comment.content}
                                     title={col.comment.title}
                                 >
-                                    <QuestionCircleOutlined />
+                                    <QuestionCircleOutlined/>
                                 </Popover>
                             </div>
                         );
@@ -189,10 +196,10 @@ function Index() {
             api
                 .getRows(pageModule, params)
                 .then((res) => {
-                    if(!res.data.length){
+                    if (!res.data.length) {
                         setPagination({
                             ...pagination,
-                            current : 1
+                            current: 1
                         })
                     }
                     setData(res);
@@ -253,7 +260,7 @@ function Index() {
                         <Skeleton.Input
                             active={true}
                             className="w-full"
-                            style={{ width: "100%" }}
+                            style={{width: "100%"}}
                         />
                     )}
                 </Col>
@@ -262,7 +269,7 @@ function Index() {
                         <>
                             {Object.keys(pagination?.filters).length ? (
                                 <Button
-                                    icon={<StopOutlined />}
+                                    icon={<StopOutlined/>}
                                     type="default"
                                     onClick={() => {
                                         const newPagination = {
@@ -288,7 +295,7 @@ function Index() {
                         <Link to={`/admin/${pageModule}/create-edit`}>
                             <Button
                                 type="primary"
-                                icon={<PlusOutlined />}
+                                icon={<PlusOutlined/>}
                                 loading={tableLoading}
                             >
                                 Create {pageModule}
