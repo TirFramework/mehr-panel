@@ -39,7 +39,7 @@ export const onFinish = ({
   values = fixNumber(values);
   // console.log("After ronded :", values);
 
-  values = stringToObject(values);
+  // values = stringToObject(values);
 
   // console.log("After fix :", values);
 
