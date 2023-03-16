@@ -1,17 +1,14 @@
 import React from "react";
 import { Switch, Route, Redirect } from "react-router-dom";
-import Cookies from "js-cookie";
 
-import { Avatar, Dropdown, Layout, Menu, Row } from "antd";
-import { DownOutlined } from "@ant-design/icons";
-
-import { useHistory } from "react-router-dom";
+import { Layout } from "antd";
 
 import routes from "../routes.js";
 
 import Sidebar from "../blocks/Sidebar";
+import TopHeader from "../blocks/TopHeader.js";
 
-const { Header, Content } = Layout;
+const { Content } = Layout;
 
 const switchRoutes = (
   <Switch>
@@ -33,43 +30,13 @@ const switchRoutes = (
 
 function DefaultLayout(props) {
   console.log("🚀 layout");
-  let history = useHistory();
-
-  const logout = () => {
-    Cookies.remove("api_token");
-    history.push("/admin/login");
-  };
-
-  const menu = (
-    <Menu>
-      <Menu.Item onClick={logout}>logout</Menu.Item>
-    </Menu>
-  );
 
   return (
     <div>
       <Sidebar />
       <Layout className="site-layout" style={{ marginLeft: 200 }}>
         <div className="flex flex-col h-screen">
-          <Header className="px-4">
-            <Row
-              justify="space-between"
-              align="middle"
-              className="text-right flex justify-between"
-            >
-              <div></div>
-              <Dropdown overlay={menu} trigger={["click"]}>
-                <span
-                  className="ant-dropdown-link"
-                  onClick={(e) => e.preventDefault()}
-                >
-                  <Avatar>U</Avatar>
-                  <span className="text-white mx-2">Profile</span>
-                  <DownOutlined className="text-white" />
-                </span>
-              </Dropdown>
-            </Row>
-          </Header>
+          <TopHeader />
           <Content className="overflow-scroll p-4">{switchRoutes}</Content>
           {/* <Footer/> */}
         </div>
