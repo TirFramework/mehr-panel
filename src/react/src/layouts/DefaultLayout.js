@@ -30,9 +30,9 @@ const switchRoutes = (
 
 function DefaultLayout(props) {
   return (
-    <div>
+    <div className="flex">
       <Sidebar />
-      <Layout className="site-layout" style={{ marginLeft: 200 }}>
+      <Layout className="site-layout">
         <div className="flex flex-col h-screen">
           <TopHeader />
           <Content className="overflow-scroll p-4">{switchRoutes}</Content>

@@ -79,8 +79,9 @@
   position: sticky;
   top: -22px;
   z-index: 9;
-  background-color: #f0f2f5;
+  /* background-color: #f0f2f5; */
   height: 50px;
+  margin-top: -75px;
 }
 
 .header-page .ant-typography {

@@ -1,14 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Layout, Menu } from "antd";
-
 import { Link } from "react-router-dom";
-
-// import { useSidebar } from "../hooks";
-
-// import { PieChartOutlined, DesktopOutlined, UserOutlined } from '@ant-design/icons';
-
 import Icon from "../components/Icon";
-// import SubMenu from "antd/lib/menu/SubMenu";
 
 import * as api from "../api";
 
@@ -32,7 +25,6 @@ function App() {
   };
 
   const getMenus = () => {
-    // const data = useSidebar();
     return api
       .getSidebar()
       .then((res) => {
@@ -41,8 +33,6 @@ function App() {
       })
       .catch((err) => {});
   };
-
-  // makeSidebar();
 
   useEffect(() => {
     async function makeSidebar() {
@@ -57,10 +47,7 @@ function App() {
   };
 
   return (
-    <Sider
-      className="overflow-auto h-screen fixed left-0"
-      style={{ position: "fixed" }}
-    >
+    <Sider collapsible>
       {loading ? (
         <>loading ....</>
       ) : (
