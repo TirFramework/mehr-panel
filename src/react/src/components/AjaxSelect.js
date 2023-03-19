@@ -1,5 +1,5 @@
 import React from "react";
-import {Form, Select, Spin } from "antd";
+import { Form, Select, Spin } from "antd";
 import debounce from "lodash/debounce";
 
 function DebounceSelect({ fetchOptions, debounceTimeout = 800, ...props }) {
@@ -38,7 +38,6 @@ function DebounceSelect({ fetchOptions, debounceTimeout = 800, ...props }) {
 } // Usage of DebounceSelect
 
 async function fetchUserList(username) {
-  console.log("fetching user", username);
   return fetch("https://randomuser.me/api/?results=10")
     .then((response) => response.json())
     .then((body) =>
@@ -52,10 +51,7 @@ async function fetchUserList(username) {
 const Text = (data) => {
   const [value, setValue] = React.useState([]);
   return (
-    <Form.Item
-      name={data.name}
-      label={data.label}
-    >
+    <Form.Item name={data.name} label={data.label}>
       <DebounceSelect
         mode="multiple"
         value={value}

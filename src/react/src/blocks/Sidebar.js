@@ -21,8 +21,6 @@ function App() {
   const [general, setGeneral] = useState();
   const [loading, setLoading] = useState(true);
 
-  // console.log("🚀 sidebar");
-
   const makeGeneral = () => {
     return api
       .getGeneral()

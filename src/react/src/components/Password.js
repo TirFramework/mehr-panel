@@ -18,17 +18,12 @@ const Text = (props) => {
   });
 
   const [editing, setEditing] = useState(isRequired(rules));
-  console.log(
-    "🚀 ~ file: Password.js ~ line 21 ~ Text ~ isRequired(rules)",
-    isRequired(rules)
-  );
 
   const editingHandel = () => {
     setEditing(true);
   };
   return (
     <>
-      {console.log("rulse", rules)}
       {!editing ? (
         <Button type="primary" onClick={editingHandel}>
           Change Password

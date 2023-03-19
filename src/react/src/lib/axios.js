@@ -19,12 +19,12 @@ axios.defaults.timeout = 5000;
 
 // Add a request interceptor
 axios.interceptors.request.use(
-    async (inputConfig) => {
-        return inputConfig;
-    },
-    (error) => {
-        throw error;
-    }
+  async (inputConfig) => {
+    return inputConfig;
+  },
+  (error) => {
+    throw error;
+  }
 );
 // Add a response interceptor
 axios.interceptors.response.use(
@@ -34,11 +34,10 @@ axios.interceptors.response.use(
     return response;
   },
   function (error) {
-    console.log("-> error", error);
     if (error.response.status === 401) {
       // TODO: Add route path
-      Cookies.remove('token');
-     window.location.replace('/admin/login');
+      Cookies.remove("token");
+      window.location.replace("/admin/login");
     } else if (error.response.status === 403) {
       notification["error"]({
         message: error.message,

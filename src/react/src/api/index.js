@@ -420,8 +420,6 @@ const deleteRow = async (module, id) => {
 const uploadImage = async (file) => {
   const formData = new FormData();
   formData.append("file", file);
-
-  console.log("🚀 ~ file: index.js ~ line 72 ~ uploadImage ~ file", file);
   const { data } = await axios.post(`/file-manager/upload`, formData);
 
   return await data;

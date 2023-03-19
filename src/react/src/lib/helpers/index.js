@@ -92,10 +92,6 @@ const mapErrors = (errors) => {
 };
 
 const removeBaseUrl = (str) => {
-  console.log(
-    "🚀 ~ file: index.js ~ line 99 ~ removeBaseUrl ~ Config.apiBaseUrl",
-    Config.apiBaseUrl
-  );
   return str.replace(Config.apiBaseUrl, "");
 };
 

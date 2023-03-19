@@ -14,8 +14,6 @@ const Login = () => {
   let history = useHistory();
   const [loading, setLoading] = useState(false);
   const onFinish = (values) => {
-    console.log("Success:", values);
-
     api
       .postLogin(values)
       .then((res) => {

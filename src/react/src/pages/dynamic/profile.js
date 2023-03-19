@@ -63,15 +63,8 @@ const Create = () => {
   }, [pageModule, pageId]);
 
   const onFinish = (values) => {
-    console.log("Success:", values);
-
     values = fixNumber(values);
-    console.log("After ronded :", values);
-
     values = stringToObject(values);
-
-    console.log("After fix :", values);
-
     setSubmitLoad(true);
 
     api

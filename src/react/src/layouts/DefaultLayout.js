@@ -29,8 +29,6 @@ const switchRoutes = (
 );
 
 function DefaultLayout(props) {
-  console.log("🚀 layout");
-
   return (
     <div>
       <Sidebar />

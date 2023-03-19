@@ -16,10 +16,7 @@ export const findNextName = (arry, word) => {
     if (nextIndex === null) {
       if (obj.name.includes(NameWithOutNumber)) {
         const nextNumber = getLastNumber(obj.name);
-        console.log(
-          "🚀 ~ file: index.js ~ line 168 ~ arry.forEach ~ nextNumber",
-          nextNumber
-        );
+
         if (nextNumber > NameOnlyNumber) {
           nextIndex = (nextNumber - NameOnlyNumber) / 2 + NameOnlyNumber;
         }

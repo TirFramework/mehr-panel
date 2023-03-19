@@ -26,7 +26,6 @@ const Additional = (props) => {
     const newRow = changeName(templateFilde);
 
     data.push(newRow);
-    console.log("🚀 ~ file: Additional.js ~ line 12 ~ duplicate ~ data", data);
 
     setFields(data);
   };

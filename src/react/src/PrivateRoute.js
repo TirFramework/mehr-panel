@@ -8,8 +8,6 @@ const PrivateRoute = ({ component, ...rest }) => {
   let history = useHistory();
   let auth = Cookies.get("api_token");
 
-//   console.log( "🚀 ~ file: PrivateRoute.js ~ line 9 ~ PrivateRoute ~ auth", auth );
-
   if (auth === undefined) {
     history.push("/admin/login");
   }
