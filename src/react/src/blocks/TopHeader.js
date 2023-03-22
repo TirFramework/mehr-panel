@@ -1,7 +1,7 @@
 import { useParams } from "react-router-dom";
-import { Avatar, Dropdown, Layout, Row, Typography, Menu } from "antd";
+import { Avatar, Dropdown, Layout, Row, Typography, Menu, Button } from "antd";
 import { useHistory } from "react-router-dom";
-import { DownOutlined } from "@ant-design/icons";
+import { LogoutOutlined } from "@ant-design/icons";
 import Cookies from "js-cookie";
 
 const { Header } = Layout;
@@ -25,19 +25,10 @@ const TopHeader = (props) => {
         <Row
           justify="space-between"
           align="middle"
-          className="text-right flex justify-between"
+          className="text-right flex justify-between align-middle h-full"
         >
           <div></div>
-          <Dropdown overlay={menu} trigger={["click"]}>
-            <span
-              className="ant-dropdown-link"
-              onClick={(e) => e.preventDefault()}
-            >
-              <Avatar>U</Avatar>
-              <span className="text-white mx-2">Profile</span>
-              <DownOutlined className="text-white" />
-            </span>
-          </Dropdown>
+          <Button shape="circle" icon={<LogoutOutlined />} />
         </Row>
       </Header>
     </>

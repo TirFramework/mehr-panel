@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { useParams, Link, useHistory } from "react-router-dom";
-import { PlusOutlined, StopOutlined } from "@ant-design/icons";
+import { PlusOutlined, ClearOutlined } from "@ant-design/icons";
 
 import {
   Button,
@@ -81,14 +81,18 @@ function Index() {
   };
 
   const actions = {
-    title: "Actions",
+    title: "",
     dataIndex: "id",
-    fixed: "right",
+    align: "right",
     render: (id, data) => (
       <>
-        <Link to={`/admin/${pageModule}/create-edit?id=${data.id || data._id}`}>
-          <EditOutlined title="Edit" />
-        </Link>
+        <Tooltip title="Edit">
+          <Link
+            to={`/admin/${pageModule}/create-edit?id=${data.id || data._id}`}
+          >
+            <EditOutlined title="Edit" />
+          </Link>
+        </Tooltip>
         <Tooltip title="Delete">
           <Button
             className="ml-4"
@@ -238,12 +242,12 @@ function Index() {
   };
   return (
     <div className={`${pageModule}-index`}>
-      <Title className="capitalize">{columns?.configs?.module_title}</Title>
+      <Title>{columns?.configs?.module_title}</Title>
       <Row align="bottom" className="mb-4">
         <Col className="gutter-row" span={12}>
           {!tableLoading ? (
             <Input.Search
-              placeholder="Search"
+              placeholder=""
               onSearch={onSearch}
               defaultValue={pagination.search}
               allowClear
@@ -259,29 +263,24 @@ function Index() {
           )}
         </Col>
         <Col className="gutter-row" span={8}>
-          {pagination?.filters && (
-            <>
-              {Object.keys(pagination?.filters).length ? (
-                <Button
-                  icon={<StopOutlined />}
-                  type="default"
-                  onClick={() => {
-                    const newPagination = {
-                      ...pagination,
-                      current: 1,
-                      filters: null,
-                    };
-                    setPagination(newPagination);
-                    getColumns(newPagination);
-                    getData(newPagination);
-                  }}
-                >
-                  Reset
-                </Button>
-              ) : (
-                ""
-              )}
-            </>
+          {(pagination?.filters || pagination.search) && (
+            <Button
+              icon={<ClearOutlined />}
+              type="primary"
+              size="large"
+              danger
+              onClick={() => {
+                const newPagination = {
+                  ...pagination,
+                  current: 1,
+                  filters: null,
+                  search: null,
+                };
+                setPagination(newPagination);
+                getColumns(newPagination);
+                getData(newPagination);
+              }}
+            ></Button>
           )}
         </Col>
         {columns?.actions?.create && (
@@ -292,7 +291,7 @@ function Index() {
                 icon={<PlusOutlined />}
                 loading={tableLoading}
               >
-                Create {pageModule}
+                {columns?.configs?.module_title}
               </Button>
             </Link>
           </Col>
