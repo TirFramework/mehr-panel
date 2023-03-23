@@ -28,7 +28,7 @@ const TopHeader = (props) => {
           className="text-right flex justify-between align-middle h-full"
         >
           <div></div>
-          <Button shape="circle" icon={<LogoutOutlined />} />
+          <Button onClick={logout} shape="circle" icon={<LogoutOutlined />} />
         </Row>
       </Header>
     </>
