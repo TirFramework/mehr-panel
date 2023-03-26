@@ -13,6 +13,7 @@ const Group = (props) => {
             removeRow={props.removeRow}
             loading={props.loading}
             index={[props.index, index]}
+            pageType={props.pageType}
             key={index}
             {...field}
           />

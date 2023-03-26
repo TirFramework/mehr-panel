@@ -122,7 +122,7 @@ const CreateForm = () => {
               <FormGroup
                 key={index}
                 index={index}
-                pageType={pageType}
+                pageType={!!pageId ? "edit" : "create"}
                 loading={submitLoad}
                 {...field}
               />
