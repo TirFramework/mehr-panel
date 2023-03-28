@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Button, Col, Row } from "antd";
+import { Button, Col, Form, Input, Row } from "antd";
 import Field from "./Field";
 import { PlusOutlined, DragOutlined, CloseOutlined } from "@ant-design/icons";
 import { findNextName, replaceLastNumberFromString } from "../lib/helpers";
@@ -52,27 +52,33 @@ const Additional = (props) => {
   return (
     <>
       <div className={props.className}>
-        {fields.map((child, index) => (
-          <Row
-            gutter={[16, 16]}
-            className="relative"
-            key={`additional-group-${index}`}
-          >
-            <Button
-              icon={<CloseOutlined />}
-              type="text"
-              className="remove-btn"
-              disabled={props.loading}
-              onClick={() => {
-                removeRow(index);
-              }}
-              danger
-            />
-            {child.map((f, i) => (
-              <FormGroup key={`additional-field-${i}`} {...f} />
+        {fields.length > 0 ? (
+          <>
+            {fields.map((child, index) => (
+              <Row
+                gutter={[16, 16]}
+                className="relative"
+                key={`additional-group-${index}`}
+              >
+                <Button
+                  icon={<CloseOutlined />}
+                  type="text"
+                  className="remove-btn"
+                  disabled={props.loading}
+                  onClick={() => {
+                    removeRow(index);
+                  }}
+                  danger
+                />
+                {child.map((f, i) => (
+                  <FormGroup key={`additional-field-${i}`} {...f} />
+                ))}
+              </Row>
             ))}
-          </Row>
-        ))}
+          </>
+        ) : (
+          <Form.Item name={props.name} initialValue={[]} />
+        )}
       </div>
 
       <Button
