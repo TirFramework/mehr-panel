@@ -12,7 +12,7 @@ const Slug = (props) => {
     updateRules: props.updateRules,
   });
 
-  const [editing, setEditing] = useState(props.pageType === "crate");
+  const [editing, setEditing] = useState(props.pageType === "create");
 
   const editingHandel = () => {
     setEditing(true);
