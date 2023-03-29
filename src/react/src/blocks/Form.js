@@ -79,6 +79,7 @@ const CreateForm = () => {
         form={form}
         validateMessages={data.validationMsg}
         name="basic"
+        scrollToFirstError={true}
         labelCol={{
           span: 24,
         }}

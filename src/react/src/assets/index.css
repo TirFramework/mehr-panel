@@ -95,3 +95,7 @@
 .main-card {
   min-height: calc(100vh - 220px);
 }
+.ant-layout-sider {
+  height: 100vh;
+  overflow: auto;
+}
