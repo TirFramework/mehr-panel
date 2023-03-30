@@ -417,10 +417,10 @@ const deleteRow = async (module, id) => {
   return await data;
 };
 
-const uploadImage = async (file) => {
+export const uploadImage = async (path, file) => {
   const formData = new FormData();
   formData.append("file", file);
-  const { data } = await axios.post(`/file-manager/upload`, formData);
+  const { data } = await axios.post(path, formData);
 
   return await data;
 };
@@ -435,5 +435,4 @@ export {
   getSelect,
   getSelectValue,
   deleteRow,
-  uploadImage,
 };

@@ -19,7 +19,11 @@ export default function App(props) {
         initialValue={props.value}
         rules={rules}
       >
-        <AntdTinymce initialValue={props.value} />
+        <AntdTinymce
+          initialValue={props.value}
+          uploadUrl={props.uploadUrl}
+          basePath={props.basePath}
+        />
       </Form.Item>
     </>
   );
