@@ -37,7 +37,7 @@ export default function Editor({ value, onChange, ...props }) {
         automatic_uploads: true,
         relative_urls: false,
         remove_script_host: false,
-        convert_urls: true,
+        convert_urls: false,
         file_picker_types: "image",
         file_picker_callback: function (cb, value, meta) {
           var input = document.createElement("input");
@@ -60,7 +60,7 @@ export default function Editor({ value, onChange, ...props }) {
               api
                 .uploadImage(props.uploadUrl, file)
                 .then((res) => {
-                  cb(`${res.path}`);
+                  cb(`${props.basePath}${res.path}`);
                 })
                 .catch((err) => {
                   console.log(
