@@ -20,6 +20,7 @@ export default function App(props) {
         rules={rules}
       >
         <AntdTinymce
+          {...props}
           initialValue={props.value}
           uploadUrl={props.uploadUrl}
           basePath={props.basePath}

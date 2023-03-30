@@ -5,57 +5,46 @@ import * as api from "../api";
 import Config from "../constants/config";
 
 // apiKey for TinyMCE
-let apiKey = "o4q336rx7k6aue62ztwgu91ba47gkw9dnogxhz1bfnvmzefo";
+let apiKey = Config.tinyemcApiKey;
+export default function Editor({ value, onChange, ...props }) {
+  return (
+    <TinymceReact
+      // {...props}
+      // value={value}
+      apiKey={apiKey}
+      initialValue={value}
+      init={{
+        plugins: [
+          "lists",
+          "link",
+          "charmap",
+          "preview",
+          "anchor",
+          "searchreplace",
+          "visualblocks",
+          "code",
+          "fullscreen",
+          "media",
+          "table",
+          "code",
+          "help",
+          "wordcount",
+          "image",
+        ],
 
-class Editor extends React.Component {
-  render() {
-    const { value, onChange, ...props } = this.props;
+        toolbar: `undo redo formatselect | image bold italic backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat | help code`,
+        image_title: true,
+        automatic_uploads: true,
+        relative_urls: false,
+        remove_script_host: false,
+        convert_urls: true,
+        file_picker_types: "image",
+        file_picker_callback: function (cb, value, meta) {
+          var input = document.createElement("input");
+          input.setAttribute("type", "file");
+          input.setAttribute("accept", "image/*");
 
-    return (
-      <TinymceReact
-        // {...props}
-        apiKey={apiKey}
-        initialValue={value}
-        init={{
-          plugins: [
-            "lists",
-            "link",
-            "charmap",
-            "preview",
-            "anchor",
-            "searchreplace",
-            "visualblocks",
-            "code",
-            "fullscreen",
-            "media",
-            "table",
-            "code",
-            "help",
-            "wordcount",
-            "image",
-          ],
-
-          toolbar: `
-          undo redo formatselect
-          |
-          image bold italic backcolor 
-          |
-          alignleft aligncenter alignright alignjustify 
-          |
-          bullist numlist outdent indent 
-          |
-          removeformat 
-          |
-          help code`,
-          image_title: true,
-          automatic_uploads: true,
-          file_picker_types: "image",
-          file_picker_callback: function (cb, value, meta) {
-            var input = document.createElement("input");
-            input.setAttribute("type", "file");
-            input.setAttribute("accept", "image/*");
-
-            /*
+          /*
               Note: In modern browsers input[type="file"] is functional without
               even adding it to the DOM, but that might not be the case in some older
               or quirky browsers like IE, so you might want to add it to the DOM
@@ -63,38 +52,38 @@ class Editor extends React.Component {
               once you do not need it anymore.
             */
 
-            input.onchange = function () {
-              var file = this.files[0];
+          input.onchange = function () {
+            var file = this.files[0];
 
-              var reader = new FileReader();
-              reader.onload = function () {
-                api
-                  .uploadImage(props.uploadUrl, file)
-                  .then((res) => {
-                    cb(`${props.basePath}${res.path}`);
-                  })
-                  .catch((err) => {
-                    console.log(
-                      "🚀 ~ file: Dashboard.js ~ line 95 ~ Index ~ err",
-                      err
-                    );
-                  });
+            var reader = new FileReader();
+            reader.onload = function () {
+              api
+                .uploadImage(props.uploadUrl, file)
+                .then((res) => {
+                  cb(`${res.path}`);
+                })
+                .catch((err) => {
+                  console.log(
+                    "🚀 ~ file: Dashboard.js ~ line 95 ~ Index ~ err",
+                    err
+                  );
+                });
 
-                /* call the callback and populate the Title field with the file name */
-              };
-              reader.readAsDataURL(file);
+              /* call the callback and populate the Title field with the file name */
             };
+            reader.readAsDataURL(file);
+          };
 
-            input.click();
-          },
-          height: 500,
-        }}
-        onChange={(e) => {
-          onChange(e.target.getContent());
-        }}
-      />
-    );
-  }
+          input.click();
+        },
+        height: props.height || 500,
+      }}
+      // onChange={(e) => {
+      //   onChange(e.target.getContent());
+      // }}
+      onBlur={(e) => {
+        onChange(e.target.getContent());
+      }}
+    />
+  );
 }
-
-export default Editor;
