@@ -8,7 +8,7 @@ const Date = (props) => {
       format={props.dateFormat}
       placeholder={props.options.placeholder}
       disabled={props.readonly}
-      value={moment(props.value, props.dateFormat)}
+      value={props.value ? moment(props.value, props.dateFormat) : props.value}
       picker={props.options.picker || ""}
       className={`${props.readonly && "readOnly"} w-full`}
       style={{ width: "100%" }}
