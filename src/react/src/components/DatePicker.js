@@ -3,18 +3,23 @@ import { separationRules } from "../lib/helpers";
 import moment from "moment";
 
 const Date = (props) => {
+  const options = {
+    style: { width: "100%" },
+  };
+  if (props.options.picker) {
+    options.picker = props.options.picker;
+  }
   return (
     <DatePicker
       format={props.dateFormat}
       placeholder={props.options.placeholder}
       disabled={props.readonly}
       value={props.value ? moment(props.value, props.dateFormat) : props.value}
-      picker={props.options.picker || ""}
       className={`${props.readonly && "readOnly"} w-full`}
-      style={{ width: "100%" }}
       onChange={(e, v) => {
         props.onChange(v);
       }}
+      {...options}
     />
   );
 };
