@@ -9,8 +9,9 @@ import SubmitGroup from "../components/SubmitGroup";
 import FormGroup from "../components/FormGroup";
 import Header from "./Header";
 
-const CreateForm = () => {
+const CreateForm = (props) => {
   const [form] = Form.useForm();
+  const type = props.type;
 
   const [urlParams, , setUrlParams] = useUrlParams();
   const pageId = urlParams.id;
@@ -28,12 +29,23 @@ const CreateForm = () => {
     setIsTouched(false);
     setBootLoad(true);
     setData([]);
-    api.getCreateOrEditFields(pageModule, pageId).then((res) => {
-      setData(res);
-      setBootLoad(false);
-      setSubmitLoad(false);
-      form.resetFields();
-    });
+
+
+    if(type === 'detail'){
+        api.getDetailFields(pageModule,pageId).then((res) => {
+          setData(res);
+          setBootLoad(false);
+          setSubmitLoad(false);
+          form.resetFields();
+        });
+    }else{
+      api.getCreateOrEditFields(pageModule, pageId).then((res) => {
+        setData(res);
+        setBootLoad(false);
+        setSubmitLoad(false);
+        form.resetFields();
+      });
+      }
   }, [pageModule, pageId]);
 
   const onFinishFailed = (errorInfo) => {

@@ -8,21 +8,12 @@ import * as api from "../api";
 const { Sider } = Layout;
 // const { SubMenu } = Menu;
 
-function App() {
+function App(props) {
   const [current, setCurrent] = useState();
   const [menus, setMenus] = useState();
   const [general, setGeneral] = useState();
   const [loading, setLoading] = useState(true);
 
-  const makeGeneral = () => {
-    return api
-      .getGeneral()
-      .then((res) => {
-        setGeneral(res);
-        setLoading(false);
-      })
-      .catch((err) => {});
-  };
 
   const getMenus = () => {
     return api
@@ -37,7 +28,6 @@ function App() {
   useEffect(() => {
     async function makeSidebar() {
       await getMenus();
-      await makeGeneral();
     }
     makeSidebar();
   }, []);
@@ -53,7 +43,7 @@ function App() {
       ) : (
         <>
           <div className="logo text-xl text-white p-4 bg-black">
-            {general?.name}
+            {props?.name}
           </div>
           <Menu
             theme="dark"

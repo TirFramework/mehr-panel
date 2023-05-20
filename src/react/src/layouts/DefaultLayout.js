@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Switch, Route, Redirect } from "react-router-dom";
 
 import { Layout } from "antd";
@@ -7,8 +7,10 @@ import routes from "../routes.js";
 
 import Sidebar from "../blocks/Sidebar";
 import TopHeader from "../blocks/TopHeader.js";
+import * as api from "../api";
 
 const { Content } = Layout;
+
 
 const switchRoutes = (
   <Switch>
@@ -29,12 +31,34 @@ const switchRoutes = (
 );
 
 function DefaultLayout(props) {
-  return (
+
+const [general, setGeneral] = useState();
+// const [loading, setLoading] = useState(true);
+
+
+const makeGeneral = () => {
+    return api
+        .getGeneral()
+        .then((res) => {
+            setGeneral(res);
+            // setLoading(false);
+        })
+        .catch((err) => {});
+};
+
+    useEffect(() => {
+        async function makeHeader() {
+            await makeGeneral();
+        }
+        makeHeader();
+    }, []);
+
+    return (
     <div className="flex">
-      <Sidebar />
+      <Sidebar name={general?.name}/>
       <Layout className="site-layout">
         <div className="flex flex-col h-screen">
-          <TopHeader />
+          <TopHeader username={general?.username}/>
           <Content className="overflow-scroll p-4">{switchRoutes}</Content>
           {/* <Footer/> */}
         </div>

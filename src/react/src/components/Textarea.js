@@ -5,10 +5,6 @@ import { separationRules } from "../lib/helpers";
 const { TextArea: Textarea } = Input;
 
 const Text = (props) => {
-  // console.log("🚀 ~ file: text.js ~ line 6 ~ Text ~ data", data)
-  // console.log("🚀 ~ ---------------------------------------------------")
-  // console.log("🚀 ~ file: text.js ~ line 15 ~ Text ~ data.display", data.display)
-  // console.log("🚀 ~ file: text.js ~ line 6 ~ Text ~ data", data)
 
   const rules = separationRules({
     pageType: props.pageType,
@@ -27,7 +23,12 @@ const Text = (props) => {
         initialValue={props.value}
         rules={rules}
       >
-        <Textarea placeholder={props.options.placeholder} rows={props.row} />
+        <Textarea
+            disabled={props.readonly}
+            placeholder={props.options.placeholder}
+            rows={props.row}
+            className={props.readonly && "readOnly"}
+        />
       </Form.Item>
     </>
   );

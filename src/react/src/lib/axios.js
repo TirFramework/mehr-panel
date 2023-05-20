@@ -2,6 +2,7 @@ import axios from "axios";
 import Config from "../constants/config";
 import Cookies from "js-cookie";
 import { notification } from "antd";
+import ErrorHandler from "./helpers/ErrorHandler";
 
 /**
  * Axios defaults
@@ -12,15 +13,21 @@ axios.defaults.baseURL = Config.apiBaseUrl;
 axios.defaults.headers.common["Content-Type"] = "application/json";
 axios.defaults.headers.common.Accept = "application/json";
 
+
 const token = Cookies.get("api_token");
-axios.defaults.headers.common.Authorization = `Bearer ${token}`;
+axios.defaults.headers.common = { Authorization: `Bearer ${token}` };
 
 axios.defaults.timeout = 5000;
 
 // Add a request interceptor
 axios.interceptors.request.use(
   async (inputConfig) => {
-    return inputConfig;
+      // if(token  inputConfig.url === '/login') {
+      //   return inputConfig;
+      // }
+
+        return inputConfig;
+
   },
   (error) => {
     throw error;
@@ -34,15 +41,7 @@ axios.interceptors.response.use(
     return response;
   },
   function (error) {
-    if (error.response.status === 401) {
-      // TODO: Add route path
-      Cookies.remove("token");
-      window.location.replace("/admin/login");
-    } else if (error.response.status === 403) {
-      notification["error"]({
-        message: error.message,
-      });
-    }
+      ErrorHandler(error);
     // Any status codes that falls outside the range of 2xx cause this function to trigger
     // Do something with response error
 

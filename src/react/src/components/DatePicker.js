@@ -10,7 +10,7 @@ const Text = (props) => {
 
   const picker = props.options.picker
     ? props.options.picker
-    : "day";
+    : "date";
 
   const rules = separationRules({
     pageType: props.pageType,

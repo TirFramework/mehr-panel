@@ -1,6 +1,5 @@
-import { Button, notification } from "antd";
+import { notification } from "antd";
 import { replaceLastNumberFromString, stringToObject } from ".";
-import { CloseCircleOutlined } from "@ant-design/icons";
 
 import * as api from "../../api";
 import { ifExistNumberFromString } from "./duplicate";
@@ -59,53 +58,6 @@ export const onFinish = ({
       });
     })
     .catch((err) => {
-      console.log("🚀 ~ file: onFinish.js:62 ~ err:", err);
       setSubmitLoad(false);
-
-      let mes = [];
-
-      if (err.response.data === undefined) {
-        mes.push(
-          "Failed to load response data: No data found for resource with given identifier."
-        );
-      } else {
-        if (typeof err.response.data.message === "string") {
-          mes.push(err.response.data.message);
-        } else {
-          for (const [key, value] of Object.entries(
-            err.response.data.message
-          )) {
-            value.forEach((val) => {
-              mes.push(val);
-            });
-          }
-        }
-      }
-
-      const key = `open${Date.now()}`;
-      notification["error"]({
-        message: "Error !",
-
-        placement: "top",
-        duration: 0,
-        style: {
-          background: "#ffa39e",
-        },
-        icon: <CloseCircleOutlined />,
-        btn: (
-          <Button size="small" onClick={() => notification.close(key)}>
-            Confirm
-          </Button>
-        ),
-        key: key,
-
-        description: (
-          <ul className="pl-2">
-            {mes.map((val) => (
-              <li>{val}</li>
-            ))}
-          </ul>
-        ),
-      });
     });
 };

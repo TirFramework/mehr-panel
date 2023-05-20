@@ -1,8 +1,9 @@
 import { useParams } from "react-router-dom";
-import { Avatar, Dropdown, Layout, Row, Typography, Menu, Button } from "antd";
+import {Avatar, Dropdown, Layout, Row, Typography, Menu, Button, Col} from "antd";
 import { useHistory } from "react-router-dom";
 import { LogoutOutlined } from "@ant-design/icons";
 import Cookies from "js-cookie";
+import * as api from "../api";
 
 const { Header } = Layout;
 
@@ -10,8 +11,10 @@ const TopHeader = (props) => {
   let history = useHistory();
 
   const logout = () => {
-    Cookies.remove("api_token");
-    history.push("/admin/login");
+      api.postLogout().then(() => {
+            Cookies.remove("api_token");
+            history.push("/admin/login");
+      });
   };
 
   const menu = (
@@ -23,12 +26,17 @@ const TopHeader = (props) => {
     <>
       <Header className="px-4">
         <Row
-          justify="space-between"
+          justify="end"
+          gutter={16}
           align="middle"
-          className="text-right flex justify-between align-middle h-full"
+          className="text-right flex align-middle h-full"
         >
-          <div></div>
-          <Button onClick={logout} shape="circle" icon={<LogoutOutlined />} />
+            <Col>
+                <div className="text-right username sentry-unmask">{props.username}</div>
+            </Col>
+            <Col>
+                <Button shape="circle" onClick={logout} icon={<LogoutOutlined />} />
+            </Col>
         </Row>
       </Header>
     </>

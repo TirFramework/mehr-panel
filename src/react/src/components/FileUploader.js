@@ -46,11 +46,10 @@ import Cookies from "js-cookie";
 
 import Config from "../constants/config";
 
-const token = Cookies.get("api_token");
 const type = "DragableUploadList";
 
 const DragableUploadListItem = ({ originNode, moveRow, file, fileList }) => {
-  const ref = React.useRef();
+    const ref = React.useRef();
   const index = fileList.indexOf(file);
   const [{ isOver, dropClassName }, drop] = useDrop({
     accept: type,
@@ -146,6 +145,8 @@ const DragSortingUpload = (props) => {
     setFileList(newFileList);
     props.onChange(newFileList);
   };
+
+  const token = Cookies.get("api_token");
 
   return (
     <>
