@@ -99,3 +99,15 @@
   height: 100vh;
   overflow: auto;
 }
+
+.formGroup-Additional > div > .ant-row {
+    border: 1px solid #eeeeee;
+    padding: 24px;
+    border-radius: 5px;
+    margin: 0 0 8px 0 !important;
+}
+
+.ant-layout-header .username{
+    color: #fff;
+
+}
