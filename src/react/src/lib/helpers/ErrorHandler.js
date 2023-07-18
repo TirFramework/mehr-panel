@@ -16,7 +16,6 @@ const ErrorHandler = async (error) => {
             });
         }
     }
-
     notification["warning"]({
         message: error.response.data.title,
         description: mes.length > 0 ? (
@@ -26,6 +25,7 @@ const ErrorHandler = async (error) => {
                 ))}
             </ul>
         ) : null,
+        duration: error.response.data.duration === 'undefined' ? 10 : error.response.data.duration,
     });
 
 
