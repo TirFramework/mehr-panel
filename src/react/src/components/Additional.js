@@ -43,7 +43,9 @@ const Additional = (props) => {
                     ...item,
                     name: replaceLastNumberFromString(item.name, new Date().getTime()),
                     // display: replaceLastNumberFromString(item.display, index),
+                    value: null,
                 };
+                delete newData[index].value;
             }
         });
         return newData;
