@@ -138,7 +138,9 @@ function Index() {
 
                     if (col.type === "DatePicker") {
                         col.render = (value) => {
-                            return moment.utc(value).format(col.field.options.dateFormat);
+                            if(value){
+                                return moment(value).format(col.field.options.dateFormat);
+                            }
                         };
                     }
 
