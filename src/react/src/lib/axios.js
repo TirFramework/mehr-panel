@@ -15,7 +15,7 @@ axios.defaults.headers.common.Accept = "application/json";
 
 
 const token = Cookies.get("api_token");
-axios.defaults.headers.common = { Authorization: `Bearer ${token}` };
+axios.defaults.headers.common = { Authorization: `Bearer ${token}` , Accept: "application/json" };
 
 axios.defaults.timeout = 5000;
 
