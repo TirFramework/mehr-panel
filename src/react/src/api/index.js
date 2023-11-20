@@ -34,6 +34,7 @@ const getRows = async (module, props) => {
       result: props.pageSize,
       filters: props.filters,
       search: props.search,
+      sorter: props.sorter,
       locale: "all",
     },
   });

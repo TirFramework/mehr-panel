@@ -15,6 +15,7 @@ import {
     Col,
     Tooltip,
     Skeleton,
+    Select
 } from "antd";
 import {
     EditOutlined,
@@ -49,6 +50,7 @@ function Index() {
                 total: 0,
                 search: null,
                 filters: null,
+                sorter: null,
             })
         );
     }
@@ -60,6 +62,10 @@ function Index() {
     const [tableLoading, setTableLoading] = useState(true);
 
     const [pagination, setPagination] = useLocalStorage(pageModule);
+
+    const [activeColumn, setActiveColumn] = useState([]);
+
+    const [columnList, setColumnList] = useState([]);
 
     const deleteRow = (id) => {
         setTableLoading(true);
@@ -125,6 +131,14 @@ function Index() {
             .getCols(pageModule)
             .then((res) => {
                 let cols = res.cols;
+
+                setColumnList(
+                    cols.map((value)=>{
+                    return ({ label: value.fieldName, value: value.fieldName });
+                    })
+                );
+
+
                 // loop for detect array
                 cols.forEach((col) => {
                     var item;
@@ -139,7 +153,11 @@ function Index() {
                     if (col.type === "DatePicker") {
                         col.render = (value) => {
                             if(value){
-                                return moment(value).format(col.field.options.dateFormat);
+                                return moment(value).format(
+                                    (!col.field.options?.showTime?.length)
+                                        ? col.field.options.dateFormat
+                                        : col.field.options.dateFormat + ' ' + col.field.options?.showTime
+                                );
                             }
                         };
                     }
@@ -188,6 +206,13 @@ function Index() {
                             </div>
                         );
                     }
+                    col.sorter = col.field.sortable;
+                    if(activeColumn.length > 0){
+                        if(!activeColumn.includes(col.fieldName)) {
+                            col.className = 'hidden'
+                        }
+                    }
+
                 });
                 cols.push(actions(res.configs.actions));
 
@@ -200,9 +225,24 @@ function Index() {
         getData(params);
     };
 
+    const  handleChangeColumns = (activeCols) => {
+        setTableLoading(true);
+        setActiveColumn(activeCols);
+        // getData(pagination);
+
+        // getColumns(pagination);
+        console.log('activeCols', activeCols);
+        console.log('columnList', columnList);
+        console.log('columnList', activeCols);
+        setTableLoading(false);
+
+
+
+    }
+
     useEffect(() => {
         getColumns(pagination);
-    }, [pageModule]);
+    }, [pageModule, activeColumn]);
 
     const getData = useCallback(
         (params) => {
@@ -228,17 +268,24 @@ function Index() {
 
     const handleTableChange = (p, filters, sorter) => {
         filters = helpers.removeNullFromObject(filters);
+        const orderBy = {
+            field: sorter?.column?.fieldName,
+            order:sorter.order
+        }
+
         setPagination({
             ...pagination,
             current: p.current,
             pageSize: p.pageSize,
             filters: filters,
+            sorter: orderBy,
         });
         getData({
             ...pagination,
             current: p.current,
             pageSize: p.pageSize,
             filters: filters,
+            sorter: orderBy,
         });
     };
 
@@ -249,12 +296,15 @@ function Index() {
         setPagination({
             ...pagination,
             search: value,
+            current: 1,
         });
         getData({
             ...pagination,
             search: value,
+            current: 1,
         });
     };
+
 
     return (
         <div className={`${pageModule}-index`}>
@@ -278,8 +328,8 @@ function Index() {
                         />
                     )}
                 </Col>
-                <Col className="gutter-row" span={8}>
-                    {(pagination?.filters || pagination.search) && (
+                <Col className="gutter-row" span={2}>
+                    {(pagination?.filters || pagination.search || pagination.sorter) && (
                         <Button
                             icon={<ClearOutlined/>}
                             type="primary"
@@ -291,6 +341,7 @@ function Index() {
                                     current: 1,
                                     filters: null,
                                     search: null,
+                                    sorter: null,
                                 };
                                 setPagination(newPagination);
                                 getColumns(newPagination);
@@ -298,6 +349,19 @@ function Index() {
                             }}
                         ></Button>
                     )}
+                </Col>
+                <Col className="gutter-row" span={6}>
+                    <Select
+                        mode="multiple"
+                        allowClear
+                        style={{
+                            width: '100%',
+                        }}
+                        placeholder="Please select"
+                        // defaultValue={['a10', 'c12']}
+                        onChange={handleChangeColumns}
+                        options={columnList}
+                    />
                 </Col>
                 {columns?.actions?.create && (
                     <Col className="gutter-row text-right" span={4}>
@@ -321,7 +385,12 @@ function Index() {
                     pagination={{
                         pageSize: pagination?.pageSize,
                         current: pagination?.current,
+                        pageSizeOptions: ["15", "30", "50", "100", "500"],
                         total: data?.total,
+                        showTotal: (total)=>(
+                            <Button>Total: {data?.total}</Button>
+                        ),
+
                     }}
                     // onRow={(record, rowIndex) => {
                     //   return {
