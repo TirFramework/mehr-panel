@@ -113,7 +113,6 @@ function Index() {
   return (
     <div className={`${pageModule}-index page-index`}>
       <Title>{columns?.configs?.module_title}</Title>
-      {pagination.search}
       {columnsQuery.isLoading ? (
         <>
           <Skeleton.Input
