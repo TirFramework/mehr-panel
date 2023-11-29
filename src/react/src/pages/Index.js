@@ -49,6 +49,7 @@ function Index() {
   const { pageModule } = useParams();
   if (!localStorage.getItem(pageModule)) {
     localStorage.setItem(pageModule, JSON.stringify(defaultFIlter));
+  }
   const [pagination, setPagination] = useLocalStorage(pageModule);
 
   //   const [activeColumn, setActiveColumn] = useState([]);
