@@ -1,11 +1,11 @@
 import Config from "../constants/config";
 import axios from "../lib/axios";
+import { getColsNormalize } from "../lib/utils";
 
-const postLogout = async () =>{
-    const { data } = await axios.post(`/logout`);
-    return data;
-}
-
+const postLogout = async () => {
+  const { data } = await axios.post(`/logout`);
+  return data;
+};
 
 const postLogin = async (body) => {
   const { data } = await axios.post(`/login`, body);
@@ -22,9 +22,18 @@ export const getGeneral = async () => {
   return data;
 };
 
-const getCols = async (module) => {
-  const { data } = await axios.get(`${module}`);
-  return await data;
+// const getCols = async (module) => {
+//   const { data } = await axios.get(`${module}`);
+//   return await data;
+// };
+
+export const getCols = async (pageModule, filter) => {
+  const res = await axios({
+    method: "get",
+    url: `${pageModule}`,
+  });
+
+  return getColsNormalize(res.data, filter, pageModule);
 };
 
 const getRows = async (module, props) => {
@@ -37,6 +46,13 @@ const getRows = async (module, props) => {
       sorter: props.sorter,
       locale: "all",
     },
+  });
+  return await data;
+};
+
+export const getData = async (pageModule, params) => {
+  const { data } = await axios.get(`${pageModule}/data`, {
+    params: params,
   });
   return await data;
 };
@@ -55,13 +71,11 @@ const getRows = async (module, props) => {
 // };
 
 export const getDetailFields = async (module, id) => {
-    const { data } = await axios.get(`${module}/${id}`);
-    return await data;
-}
-
+  const { data } = await axios.get(`${module}/${id}`);
+  return await data;
+};
 
 export const getCreateOrEditFields = async (module, id = null) => {
-
   if (id) {
     const { data } = await axios.get(`${module}/${id}/edit?locale=all`);
     return await data;
@@ -122,7 +136,7 @@ export {
   postLogin,
   postLogout,
   getSidebar,
-  getCols,
+  // getCols,
   getRows,
   // postCreate,
   // postEditOrCreate,

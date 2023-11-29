@@ -95,9 +95,29 @@
 .main-card {
   min-height: calc(100vh - 220px);
 }
+.ant-layout {
+  overflow: hidden;
+}
+.ant-table-container {
+  overflow: auto;
+}
 .ant-layout-sider {
   height: 100vh;
   overflow: auto;
+}
+.page-index {
+  display: flex;
+  flex-direction: column;
+  /* flex-wrap: wrap; */
+  height: 100%;
+}
+
+.page-index .ant-card {
+  flex-grow: 1;
+}
+
+.page-index > * {
+  width: 100%;
 }
 
 .formGroup-Additional > div > .ant-row {
@@ -107,15 +127,13 @@
   margin: 0 0 8px 0 !important;
 }
 
-.ant-layout-header .username{
+.ant-layout-header .username {
   color: #fff;
-
 }
 
 .ant-notification-notice-warning {
   background: #ffe6b5;
 }
-
 
 .login-page {
   display: flex;
@@ -151,7 +169,7 @@
 
 .login-form p.form-title {
   color: #333333;
-  font-family: 'Josefin Sans', sans-serif;
+  font-family: "Josefin Sans", sans-serif;
   font-size: 42px;
   font-weight: bold;
   line-height: 1;
@@ -193,7 +211,7 @@
 }
 
 .illustration-wrapper img {
-  display: block;
+  display: none;
   width: 100%;
 }
 
