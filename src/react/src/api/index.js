@@ -2,17 +2,17 @@ import Config from "../constants/config";
 import axios from "../lib/axios";
 import { getColsNormalize } from "../lib/utils";
 
-const postLogout = async () => {
+export const postLogout = async () => {
   const { data } = await axios.post(`/logout`);
   return data;
 };
 
-const postLogin = async (body) => {
+export const postLogin = async (body) => {
   const { data } = await axios.post(`/login`, body);
   return data;
 };
 
-const getSidebar = async () => {
+export const getSidebar = async () => {
   const { data } = await axios.get(`/sidebar`);
   return data;
 };
@@ -22,21 +22,7 @@ export const getGeneral = async () => {
   return data;
 };
 
-// const getCols = async (module) => {
-//   const { data } = await axios.get(`${module}`);
-//   return await data;
-// };
-
-export const getCols = async (pageModule, filter) => {
-  const res = await axios({
-    method: "get",
-    url: `${pageModule}`,
-  });
-
-  return getColsNormalize(res.data, filter, pageModule);
-};
-
-const getRows = async (module, props) => {
+export const getRows = async (module, props) => {
   const { data } = await axios.get(`${module}/data`, {
     params: {
       page: props.current,
@@ -49,26 +35,6 @@ const getRows = async (module, props) => {
   });
   return await data;
 };
-
-export const getData = async (pageModule, params) => {
-  const { data } = await axios.get(`${pageModule}/data`, {
-    params: params,
-  });
-  return await data;
-};
-
-// const getRows = async (module, page, result, filters, search) => {
-//   const { data } = await axios.get(`${module}/data`, {
-//     params: {
-//       page: page,
-//       result: result,
-//       filters,
-//       search,
-//       locale: "all",
-//     },
-//   });
-//   return await data;
-// };
 
 export const getDetailFields = async (module, id) => {
   const { data } = await axios.get(`${module}/${id}`);
@@ -105,12 +71,12 @@ export const postEditOrCreate = async (module, id, body) => {
   }
 };
 
-const getSelect = async (dataUrl, q) => {
+export const getSelect = async (dataUrl, q) => {
   const { data } = await axios.get(`${dataUrl}&locale=all&search=${q}`);
   return await data;
 };
 
-const getSelectValue = async (dataUrl, id) => {
+export const getSelectValue = async (dataUrl, id) => {
   const { data } = await axios.get(dataUrl, {
     params: {
       id: id,
@@ -119,12 +85,7 @@ const getSelectValue = async (dataUrl, id) => {
   return await data;
 };
 
-const deleteRow = async (module, id) => {
-  const { data } = await axios.delete(`${module}/${id}?locale=all`);
-  return await data;
-};
-
-const uploadImage = async (file) => {
+export const uploadImage = async (file) => {
   const formData = new FormData();
   formData.append("file", file);
   const { data } = await axios.post(`/file-manager/upload`, formData);
@@ -132,16 +93,27 @@ const uploadImage = async (file) => {
   return await data;
 };
 
-export {
-  postLogin,
-  postLogout,
-  getSidebar,
-  // getCols,
-  getRows,
-  // postCreate,
-  // postEditOrCreate,
-  getSelect,
-  getSelectValue,
-  deleteRow,
-  uploadImage,
+export const getCols = async (pageModule, filter) => {
+  const res = await axios({
+    method: "get",
+    url: `${pageModule}`,
+  });
+
+  return getColsNormalize(res.data, filter, pageModule);
+};
+
+export const getData = async (pageModule, params) => {
+  const res = await axios.get(`${pageModule}/data`, {
+    params: params,
+  });
+  return res.data;
+};
+
+export const deleteRow = async ({ pageModule, id }) => {
+  const res = await axios({
+    method: "delete",
+    url: `${pageModule}/${id}`,
+  });
+
+  return res.data;
 };

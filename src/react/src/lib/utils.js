@@ -8,6 +8,9 @@ import {
 } from "@ant-design/icons";
 
 import { useParams, Link, useHistory } from "react-router-dom";
+import { useDeleteRow } from "../Request";
+import useLocalStorage from "../hooks/useLocalStorage";
+import { useQueryClient } from "react-query";
 
 export const getColsNormalize = (res, params, pageModule) => {
   console.log("🚀 ~ file: utils.js:2 ~ getColsNormalize ~ filter:", params);
@@ -384,22 +387,49 @@ const actions = (moduleActions, pageModule) => {
               <EditOutlined title="Edit" />
             </Link>
           )}
-          {deleteAction && (
-            <Button
-              className={"ml-4"}
-              type="link"
-              danger
-              onClick={() => deleteRow(data.id || data._id)}
-              icon={<DeleteOutlined />}
-            />
-          )}
+          {deleteAction && <DeleteRow id={data.id || data._id} />}
         </>
       );
     },
   };
 };
 
-const deleteRow = (id) => {
+const DeleteRow = ({ id }) => {
+  const { pageModule } = useParams();
+  useDeleteRow(pageModule, id);
+
+  const deleteRow = useDeleteRow();
+
+  const [pagination, setPagination] = useLocalStorage(pageModule);
+  const queryClient = useQueryClient();
+
+  return (
+    <Button
+      className={"ml-4"}
+      type="link"
+      danger
+      loading={deleteRow.isLoading}
+      onClick={() => {
+        deleteRow.mutate(
+          { pageModule, id },
+          {
+            onSuccess: () => {
+              queryClient.setQueryData(
+                [`index-data-${pageModule}`, pagination],
+                (oldData) => {
+                  const newData = oldData.data.filter(
+                    (item) => item._id !== id
+                  );
+                  return { ...oldData, data: newData };
+                }
+              );
+            },
+          }
+        );
+      }}
+      icon={<DeleteOutlined />}
+    />
+  );
   // setTableLoading(true);
   // api
   //   .deleteRow(pageModule, id)
@@ -416,4 +446,14 @@ const deleteRow = (id) => {
   //     // console.log("🚀 ~ file: Create.js ~ line 88 ~ onFinish ~ err", err);
   //     setTableLoading(false);
   //   });
+};
+
+export const indexOfInObject = (arr, obj, val) => {
+  let result = -1;
+  arr.forEach((element, index) => {
+    if (element[obj] === val) {
+      result = index;
+    }
+  });
+  return result;
 };
