@@ -11,7 +11,6 @@ import * as api from "../api";
 
 const { Content } = Layout;
 
-
 const switchRoutes = (
   <Switch>
     {routes.map((prop, key) => {
@@ -31,35 +30,33 @@ const switchRoutes = (
 );
 
 function DefaultLayout(props) {
+  const [general, setGeneral] = useState();
+  // const [loading, setLoading] = useState(true);
 
-const [general, setGeneral] = useState();
-// const [loading, setLoading] = useState(true);
-
-
-const makeGeneral = () => {
+  const makeGeneral = () => {
     return api
-        .getGeneral()
-        .then((res) => {
-            setGeneral(res);
-            // setLoading(false);
-        })
-        .catch((err) => {});
-};
+      .getGeneral()
+      .then((res) => {
+        setGeneral(res);
+        // setLoading(false);
+      })
+      .catch((err) => {});
+  };
 
-    useEffect(() => {
-        async function makeHeader() {
-            await makeGeneral();
-        }
-        makeHeader();
-    }, []);
+  useEffect(() => {
+    async function makeHeader() {
+      await makeGeneral();
+    }
+    makeHeader();
+  }, []);
 
-    return (
+  return (
     <div className="flex">
-      <Sidebar name={general?.name}/>
+      <Sidebar name={general?.name} />
       <Layout className="site-layout">
         <div className="flex flex-col h-screen">
-          <TopHeader username={general?.username}/>
-          <Content className="overflow-scroll p-4">{switchRoutes}</Content>
+          <TopHeader username={general?.username} />
+          <Content className="mp-main p-4">{switchRoutes}</Content>
           {/* <Footer/> */}
         </div>
       </Layout>

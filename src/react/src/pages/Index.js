@@ -29,39 +29,36 @@ import * as helpers from "../lib/helpers";
 import * as api from "../api";
 import useLocalStorage from "../hooks/useLocalStorage";
 import { useGetColumns, useGetData } from "../Request";
-
-// const getColumns = async (query) => {
-//   return fetch(`http://localhost:8000/post/index.json`).then((_) => _.json());
-// }
+import { defaultFIlter } from "../constants/config";
+import { useQueryClient } from "react-query";
 
 const { Title } = Typography;
 
-const defaultFIlter = {
-  current: 1,
-  pageSize: 15,
-  total: 0,
-  search: null,
-  filters: null,
-  sorter: null,
-};
-
 function Index() {
   const { pageModule } = useParams();
-  if (!localStorage.getItem(pageModule)) {
-    localStorage.setItem(pageModule, JSON.stringify(defaultFIlter));
-  }
   const [pagination, setPagination] = useLocalStorage(pageModule);
+  console.log(
+    `🚀 ~ file: Index.js:40 ~ Index ~ pagination: ${pageModule}`,
+    pagination
+  );
 
-  //   const [activeColumn, setActiveColumn] = useState([]);
+  useEffect(() => {}, [pageModule]);
 
-  //   const [columnList, setColumnList] = useState([]);
+  const [column, setColumn] = useState([]);
 
-  const { data: columns, ...columnsQuery } = useGetColumns(
+  const { data: pageData, ...pageDataQuery } = useGetColumns(
     pageModule,
     pagination,
     {
       onSuccess: (res) => {
         //   console.log("🚀 ~ file: Index.js:136 ~ Index ~ res:", res);
+        res.cols.forEach(() => {
+          const newData = [...res.cols];
+          newData.forEach((col) => {
+            col.filteredValue = pagination.filters[col.fieldName] || null;
+          });
+          setColumn(newData);
+        });
       },
     }
   );
@@ -85,18 +82,26 @@ function Index() {
 
   const handleTableChange = (p, filters, sorter) => {
     filters = helpers.removeNullFromObject(filters);
-    const orderBy = {
-      field: sorter?.column?.fieldName,
-      order: sorter.order,
-    };
+    // const orderBy = {
+    //   field: sorter?.column?.fieldName,
+    //   order: sorter.order,
+    // };
 
     setPagination({
       ...pagination,
       current: p.current,
       pageSize: p.pageSize,
       filters: filters,
-      sorter: orderBy,
+      // sorter: orderBy,
     });
+
+    const newData = [...column];
+
+    newData.forEach((col) => {
+      col.filteredValue = filters[col.fieldName] || null;
+    });
+
+    setColumn(newData);
   };
 
   const onSearch = (value) => {
@@ -112,8 +117,8 @@ function Index() {
 
   return (
     <div className={`${pageModule}-index page-index`}>
-      <Title>{columns?.configs?.module_title}</Title>
-      {columnsQuery.isLoading ? (
+      <Title>{pageData?.configs?.module_title}</Title>
+      {pageDataQuery.isLoading ? (
         <>
           <Skeleton.Input
             active={true}
@@ -141,9 +146,8 @@ function Index() {
             />
           </Col>
           <Col className="gutter-row" span={2}>
-            {(pagination?.filters ||
-              pagination.search ||
-              pagination.sorter) && (
+            {(Object.keys(pagination?.filters).length > 0 ||
+              pagination.search) && (
               <Button
                 icon={<ClearOutlined />}
                 type="primary"
@@ -151,6 +155,12 @@ function Index() {
                 danger
                 onClick={() => {
                   setPagination(defaultFIlter);
+                  const newData = [...column];
+                  newData.forEach((col) => {
+                    col.filteredValue = null;
+                  });
+
+                  setColumn(newData);
                 }}
               />
             )}
@@ -168,24 +178,25 @@ function Index() {
               options={columnList}
             /> */}
           </Col>
-          {columns?.actions?.create && (
+          {pageData?.actions?.create && (
             <Col className="gutter-row text-right" span={4}>
               <Link to={`/admin/${pageModule}/create-edit`}>
                 <Button
                   type="primary"
                   icon={<PlusOutlined />}
-                  loading={columnsQuery.isLoading}
+                  loading={pageDataQuery.isLoading}
                 >
-                  {columns?.configs?.module_title}
+                  {pageData?.configs?.module_title}
                 </Button>
               </Link>
             </Col>
           )}
         </Row>
       )}
-      <Card loading={columnsQuery.isLoading}>
+      <Card loading={pageDataQuery.isLoading} className="index-page__card">
         <Table
-          columns={columns?.cols}
+          scroll={{ y: "calc(100vh - 400px)" }}
+          columns={column}
           rowKey={(record) => record.id || record._id}
           dataSource={indexData?.data}
           pagination={{
@@ -199,7 +210,7 @@ function Index() {
           onChange={handleTableChange}
           footer={() => (
             <>
-              {!dataQuery.isLoading && (
+              {!dataQuery.isLoading && indexData?.data && (
                 <CSVLink
                   filename={"Expense_Table.csv"}
                   data={indexData?.data}

@@ -1,15 +1,14 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { defaultFIlter } from "../constants/config";
 
-function useLocalStorage(key, initialValue) {
-  const [storedValue, setStoredValue] = useState(() => {
-    try {
-      const item = window.localStorage.getItem(key);
+function useLocalStorage(key) {
+  console.log("🚀 ~ file: useLocalStorage.js:5 ~ useLocalStorage ~ key:", key);
+  const [storedValue, setStoredValue] = useState({});
 
-      return item ? JSON.parse(item) : initialValue;
-    } catch (error) {
-      return initialValue;
-    }
-  });
+  useEffect(() => {
+    const item = window.localStorage.getItem(key);
+    setStoredValue(item ? JSON.parse(item) : defaultFIlter);
+  }, [key]);
 
   const setValue = (value) => {
     try {
@@ -21,6 +20,12 @@ function useLocalStorage(key, initialValue) {
       window.localStorage.setItem(key, JSON.stringify(valueToStore));
     } catch (error) {}
   };
+
+  console.log(
+    "🚀 ~ file: useLocalStorage.js:15 ~ const[storedValue,setStoredValue]=useState ~ storedValue:",
+    storedValue
+  );
+
   return [storedValue, setValue];
 }
 

@@ -11,24 +11,24 @@ import { useParams, Link, useHistory } from "react-router-dom";
 import { useDeleteRow } from "../Request";
 import useLocalStorage from "../hooks/useLocalStorage";
 import { useQueryClient } from "react-query";
+import Config from "../constants/config";
 
 export const getColsNormalize = (res, params, pageModule) => {
-  console.log("🚀 ~ file: utils.js:2 ~ getColsNormalize ~ filter:", params);
   let cols = res.cols;
 
   //   // loop for detect array
-  cols.forEach((col) => {
-    console.log("🚀 ~ file: utils.js:75 ~ cols.forEach ~ col:", col);
-
+  cols.forEach((col, index) => {
     // var item;
 
-    // ----------------------------------------
-    // set default filter
-    if (params?.filters?.hasOwnProperty(col.dataIndex)) {
-      const item = params?.filters[col.dataIndex];
-      col.defaultFilteredValue = item;
-    }
-    // ----------------------------------------
+    // col.key = `row__${index}-${col.dataKey}`;
+
+    // // ----------------------------------------
+    // // set default filter
+    // if (params?.filters?.hasOwnProperty(col.dataIndex)) {
+    //   const item = params?.filters[col.dataIndex];
+    //   col.filteredValue = item;
+    // }
+    // // ----------------------------------------
 
     // ----------------------------------------
     // convert to array
@@ -105,6 +105,7 @@ export const getColsNormalize = (res, params, pageModule) => {
     // }
   });
   cols.push(actions(res.configs.actions, pageModule));
+  console.log("🚀 ~ file: utils.js:106 ~ getColsNormalize ~ res:", res);
   return res;
 };
 
@@ -113,7 +114,7 @@ const actions = (moduleActions, pageModule) => {
   const editAction = moduleActions.edit;
   const deleteAction = moduleActions.destroy;
   return {
-    title: "",
+    title: "Actions",
     dataIndex: "id",
     align: "right",
     fixed: "right",
@@ -123,7 +124,9 @@ const actions = (moduleActions, pageModule) => {
         <>
           {showAction && (
             <Link
-              to={`/admin/${pageModule}/detail?id=${data.id || data._id}`}
+              to={`/admin/${pageModule}/detail?id=${
+                data[Config.interactionCharacter]
+              }`}
               className="ant-btn ant-btn-link ant-btn-icon-only ml-4 showBtn"
               style={{ color: "#00921c" }}
             >
@@ -133,13 +136,15 @@ const actions = (moduleActions, pageModule) => {
 
           {editAction && (
             <Link
-              to={`/admin/${pageModule}/create-edit?id=${data.id || data._id}`}
+              to={`/admin/${pageModule}/create-edit?id=${
+                data[Config.interactionCharacter]
+              }`}
               className="ant-btn ant-btn-link ant-btn-icon-only ml-4 editBtn"
             >
               <EditOutlined title="Edit" />
             </Link>
           )}
-          {deleteAction && <DeleteRow id={data.id || data._id} />}
+          {deleteAction && <DeleteRow id={data[Config.interactionCharacter]} />}
         </>
       );
     },
@@ -170,7 +175,7 @@ const DeleteRow = ({ id }) => {
                 [`index-data-${pageModule}`, pagination],
                 (oldData) => {
                   const newData = oldData.data.filter(
-                    (item) => item._id !== id
+                    (item) => item[Config.interactionCharacter] !== id
                   );
                   return { ...oldData, data: newData };
                 }

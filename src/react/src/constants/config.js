@@ -8,6 +8,19 @@ const Config = {
     process.env.REACT_APP_API_STORAGE ||
     "/storage",
   tinyemcApiKey: process.env.MIX_APP_TINYEMC || process.env.REACT_APP_TINYEMC,
+  interactionCharacter:
+    process.env.MIX_APP_INTERACTION_CHARACTER ||
+    process.env.REACT_APP_INTERACTION_CHARACTER ||
+    "id",
 };
 
 export default Config;
+
+export const defaultFIlter = {
+  current: 1,
+  pageSize: 15,
+  total: 0,
+  search: null,
+  filters: {},
+  sorter: null,
+};
