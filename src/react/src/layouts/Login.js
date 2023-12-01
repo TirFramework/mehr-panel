@@ -1,13 +1,14 @@
 import { useState } from "react";
 import Cookies from "js-cookie";
 import axios from "../lib/axios";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { Form, Input, Button, notification } from "antd";
 import { LockOutlined, UserOutlined } from "@ant-design/icons";
 import * as api from "../api";
 
 const Login = () => {
-  let history = useHistory();
+  const navigate = useNavigate();
+
   const [loading, setLoading] = useState(false);
   const onFinish = (values) => {
     localStorage.clear();
@@ -33,7 +34,7 @@ const Login = () => {
   const login = (token) => {
     Cookies.set("api_token", token);
     axios.defaults.headers.common = { Authorization: `Bearer ${token}` };
-    history.push("/admin/custom/dashboard");
+    navigate("/admin/custom/dashboard");
   };
 
   return (

@@ -1,10 +1,9 @@
 import { useEffect, useState } from "react";
-import { Prompt, useLocation, useParams } from "react-router-dom";
+import { useSearchParams, useLocation, useParams } from "react-router-dom";
 import { Form, Typography, Card, Row, Col } from "antd";
 
 import * as api from "../api";
 import { onFinish } from "../lib/helpers";
-import { useUrlParams } from "../hooks/useUrlParams";
 import SubmitGroup from "../components/SubmitGroup";
 import FormGroup from "../components/FormGroup";
 import Header from "./Header";
@@ -13,8 +12,9 @@ const CreateForm = (props) => {
   const [form] = Form.useForm();
   const type = props.type;
 
-  const [urlParams, , setUrlParams] = useUrlParams();
-  const pageId = urlParams.id;
+  const [urlParams, setUrlParams] = useSearchParams();
+  const pageId = urlParams.get("id");
+
   // const editMode = urlParams.editMode;
 
   const { pageModule } = useParams();
@@ -30,22 +30,21 @@ const CreateForm = (props) => {
     setBootLoad(true);
     setData([]);
 
-
-    if(type === 'detail'){
-        api.getDetailFields(pageModule,pageId).then((res) => {
-          setData(res);
-          setBootLoad(false);
-          setSubmitLoad(false);
-          form.resetFields();
-        });
-    }else{
+    if (type === "detail") {
+      api.getDetailFields(pageModule, pageId).then((res) => {
+        setData(res);
+        setBootLoad(false);
+        setSubmitLoad(false);
+        form.resetFields();
+      });
+    } else {
       api.getCreateOrEditFields(pageModule, pageId).then((res) => {
         setData(res);
         setBootLoad(false);
         setSubmitLoad(false);
         form.resetFields();
       });
-      }
+    }
   }, [pageModule, pageId]);
 
   const onFinishFailed = (errorInfo) => {
@@ -77,7 +76,7 @@ const CreateForm = (props) => {
   return (
     <>
       <Header pageTitle={data.configs?.module_title} />
-      <Prompt
+      <usePrompt
         message={(nextLocation) => {
           // navigation prompt should only happen when pathname is about to change
           // not on urlParams change or location.search change

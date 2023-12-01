@@ -1,7 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { QueryClient, QueryClientProvider } from "react-query";
-import { BrowserRouter, Route, Switch } from "react-router-dom";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 
 // import reportWebVitals from "./reportWebVitals";
 
@@ -14,6 +14,7 @@ import Login from "./layouts/Login.js";
 import "./assets/tailwindbasic.css";
 import "antd/dist/antd.min.css"; // or 'antd/dist/antd.less'
 import "./assets/index.css";
+import dashboardRoutes from "./routes.js";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 
@@ -35,11 +36,24 @@ const queryClient = new QueryClient({
 root.render(
   <QueryClientProvider client={queryClient}>
     <BrowserRouter>
-      <Switch>
-        <Route path="/admin/login" component={Login} />
-        <PrivateRoute path="/admin" component={DefaultLayout} />
-        {/* <Redirect from="/" to="/admin/login" /> */}
-      </Switch>
+      <Routes>
+        <Route
+          path={"/admin/login"}
+          element={<Login />}
+          key={`Login`}
+          title={`Login`}
+        />
+        <Route element={<PrivateRoute />}>
+          {dashboardRoutes.map((privateAuthRoute, index) => (
+            <Route
+              path={privateAuthRoute.path}
+              element={privateAuthRoute.component}
+              key={`${privateAuthRoute.path}-${index}`}
+              title={`${privateAuthRoute.path}-${index}`}
+            />
+          ))}
+        </Route>
+      </Routes>
     </BrowserRouter>
   </QueryClientProvider>
 );

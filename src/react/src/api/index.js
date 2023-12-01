@@ -102,9 +102,14 @@ export const getCols = async (pageModule, filter) => {
   return getColsNormalize(res.data, filter, pageModule);
 };
 
-export const getData = async (pageModule, params) => {
+export const getData = async (pageModule, { key, ...params }) => {
   const res = await axios.get(`${pageModule}/data`, {
-    params: params,
+    params: {
+      page: params.current,
+      result: params.pageSize,
+      filters: params.filters,
+      search: params.search,
+    },
   });
   return res.data;
 };

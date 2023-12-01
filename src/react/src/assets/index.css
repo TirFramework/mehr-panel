@@ -231,11 +231,39 @@
 .mp-main {
   overflow: auto;
 }
+.ant-form-item {
+  margin-bottom: 0;
+}
 
+.index-page__card .ant-form-item-label {
+  display: none !important;
+}
 .index-page__card .ant-card-body {
   padding: 0;
 }
 
 .index-page__card .ant-pagination {
   padding: 0 20px;
+}
+
+.index-page__card .ant-table-body {
+  overflow-y: scroll !important;
+  height: calc(100vh - 400px) !important;
+}
+
+.ant-btn > span {
+  vertical-align: middle;
+}
+
+.isFetching {
+  position: fixed;
+  top: 78px;
+  right: 16px;
+}
+.action-td .ant-btn {
+  min-width: 32px;
+}
+.action-td {
+  display: flex;
+  flex-wrap: nowrap;
 }

@@ -1,5 +1,5 @@
 import { useMutation, useQuery } from "react-query";
-import { deleteRow, getCols, getData } from "../api";
+import { deleteRow, getCols, getData, getSidebar } from "../api";
 import { notification } from "antd";
 
 export const useGetData = (pageModule, filter, options) => {
@@ -32,4 +32,10 @@ export const useDeleteRow = () => {
   });
 
   return mutation;
+};
+
+export const useSidebar = () => {
+  const query = useQuery([`sidebar`], () => getSidebar());
+
+  return query;
 };

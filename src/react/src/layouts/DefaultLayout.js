@@ -1,35 +1,20 @@
 import React, { useEffect, useState } from "react";
-import { Switch, Route, Redirect } from "react-router-dom";
+import { Switch, Route, Redirect, Outlet } from "react-router-dom";
 
-import { Layout } from "antd";
+import { Layout, Spin } from "antd";
 
 import routes from "../routes.js";
-
+import { LoadingOutlined } from "@ant-design/icons";
 import Sidebar from "../blocks/Sidebar";
 import TopHeader from "../blocks/TopHeader.js";
 import * as api from "../api";
+import { useIsFetching } from "react-query";
 
 const { Content } = Layout;
 
-const switchRoutes = (
-  <Switch>
-    {routes.map((prop, key) => {
-      if (prop.layout === "/admin") {
-        return (
-          <Route
-            path={prop.layout + prop.path}
-            component={prop.component}
-            key={key}
-          />
-        );
-      }
-      return null;
-    })}
-    <Redirect from="/admin" to="/admin/custom/dashboard" />
-  </Switch>
-);
-
 function DefaultLayout(props) {
+  const isFetching = useIsFetching();
+
   const [general, setGeneral] = useState();
   // const [loading, setLoading] = useState(true);
 
@@ -52,11 +37,22 @@ function DefaultLayout(props) {
 
   return (
     <div className="flex">
+      {isFetching ? (
+        <Spin
+          className="isFetching"
+          indicator={<LoadingOutlined style={{ fontSize: 24 }} spin />}
+        />
+      ) : (
+        ""
+      )}
+
       <Sidebar name={general?.name} />
       <Layout className="site-layout">
         <div className="flex flex-col h-screen">
           <TopHeader username={general?.username} />
-          <Content className="mp-main p-4">{switchRoutes}</Content>
+          <Content className="mp-main p-4">
+            <Outlet />
+          </Content>
           {/* <Footer/> */}
         </div>
       </Layout>

@@ -3,7 +3,6 @@ import { Form, Input } from "antd";
 import { separationRules } from "../lib/helpers";
 
 const Text = (props) => {
-
   const rules = separationRules({
     pageType: props.pageType,
     rules: props.rules,

@@ -1,65 +1,35 @@
-import { Button, Popover, Tag } from "antd";
+import { Button, Popover, Tag, Form } from "antd";
 import dayjs from "dayjs";
 import {
   EditOutlined,
   EyeOutlined,
   QuestionCircleOutlined,
   DeleteOutlined,
+  CloseOutlined,
+  FormOutlined,
 } from "@ant-design/icons";
 
-import { useParams, Link, useHistory } from "react-router-dom";
+import {
+  useParams,
+  Link,
+  useNavigate,
+  useSearchParams,
+} from "react-router-dom";
 import { useDeleteRow } from "../Request";
 import useLocalStorage from "../hooks/useLocalStorage";
 import { useQueryClient } from "react-query";
 import Config from "../constants/config";
+import Field from "../components/Field";
 
 export const getColsNormalize = (res, params, pageModule) => {
   let cols = res.cols;
 
   //   // loop for detect array
   cols.forEach((col, index) => {
-    // var item;
-
-    // col.key = `row__${index}-${col.dataKey}`;
-
-    // // ----------------------------------------
-    // // set default filter
-    // if (params?.filters?.hasOwnProperty(col.dataIndex)) {
-    //   const item = params?.filters[col.dataIndex];
-    //   col.filteredValue = item;
-    // }
-    // // ----------------------------------------
-
     // ----------------------------------------
     // convert to array
     col.dataIndex = col.dataIndex.split(".");
     // ----------------------------------------
-
-    // ----------------------------------------
-    // handle date
-    if (col.type === "DatePicker") {
-      col.render = (value) => {
-        if (value) {
-          return dayjs(value).format(
-            !col.field.options?.showTime?.length
-              ? col.field.options.dateFormat
-              : col.field.options.dateFormat + " " + col.field.options?.showTime
-          );
-        }
-      };
-    }
-    // ----------------------------------------
-
-    // ----------------------------------------
-    // handle array
-    if (col.valueType === "array") {
-      col.render = (arr) =>
-        arr?.map((item, index) => <Tag key={index}>{item}</Tag>);
-    } else if (col.valueType === "object") {
-      col.render = (arr) => arr?.text;
-    }
-    // ----------------------------------------
-
     // -----------------------------------
     // add data for filter
     if (col.filters !== undefined) {
@@ -68,24 +38,17 @@ export const getColsNormalize = (res, params, pageModule) => {
     }
     // -----------------------------------
 
-    if (col.dataSet.length !== 0) {
-      col.render = (data) => {
-        if (typeof data === "object" && data) {
-          return (
-            <>
-              {data.map(function (item, index) {
-                if (col.dataKey) {
-                  item = item[col.dataKey];
-                }
-                return <Tag key={index}>{col.dataSet[item]}</Tag>;
-              })}
-            </>
-          );
-        } else {
-          return <>{col.dataSet[data]}</>;
-        }
-      };
-    }
+    col.render = (value, data, rowIndex) => {
+      return (
+        <Render
+          value={value}
+          item={col}
+          data={data}
+          rowIndex={rowIndex}
+          id={data[Config.interactionCharacter]}
+        />
+      );
+    };
 
     if (col.comment?.content !== undefined) {
       col.title = (
@@ -105,7 +68,6 @@ export const getColsNormalize = (res, params, pageModule) => {
     // }
   });
   cols.push(actions(res.configs.actions, pageModule));
-  console.log("🚀 ~ file: utils.js:106 ~ getColsNormalize ~ res:", res);
   return res;
 };
 
@@ -115,45 +77,80 @@ const actions = (moduleActions, pageModule) => {
   const deleteAction = moduleActions.destroy;
   return {
     title: "Actions",
-    dataIndex: "id",
-    align: "right",
+    dataIndex: Config.interactionCharacter,
+    align: "center",
     fixed: "right",
-    width: 200,
-    render: (id, data) => {
+    width: 160,
+    render: (id) => {
       return (
         <>
-          {showAction && (
-            <Link
-              to={`/admin/${pageModule}/detail?id=${
-                data[Config.interactionCharacter]
-              }`}
-              className="ant-btn ant-btn-link ant-btn-icon-only ml-4 showBtn"
-              style={{ color: "#00921c" }}
-            >
-              <EyeOutlined title="Edit" />
-            </Link>
-          )}
+          <div className="action-td">
+            {showAction && <DetailRow id={id} />}
 
-          {editAction && (
-            <Link
-              to={`/admin/${pageModule}/create-edit?id=${
-                data[Config.interactionCharacter]
-              }`}
-              className="ant-btn ant-btn-link ant-btn-icon-only ml-4 editBtn"
-            >
-              <EditOutlined title="Edit" />
-            </Link>
-          )}
-          {deleteAction && <DeleteRow id={data[Config.interactionCharacter]} />}
+            {editAction && <InlineEdit id={id} />}
+
+            {editAction && <EditRow id={id} />}
+
+            {deleteAction && <DeleteRow id={id} />}
+          </div>
         </>
       );
     },
   };
 };
 
+const DetailRow = ({ id }) => {
+  const { pageModule } = useParams();
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  let pageId = searchParams.get("id");
+
+  return (
+    <>
+      {pageId == id ? (
+        <></>
+      ) : (
+        <Button
+          type="link"
+          disabled={!!pageId}
+          onClick={() => {
+            navigate(`/admin/${pageModule}/detail?id=${id}`);
+          }}
+          icon={<EyeOutlined />}
+        />
+      )}
+    </>
+  );
+};
+const EditRow = ({ id }) => {
+  const { pageModule } = useParams();
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  let pageId = searchParams.get("id");
+
+  return (
+    <>
+      {pageId == id ? (
+        <></>
+      ) : (
+        <Button
+          type="link"
+          style={{ color: "#000" }}
+          onClick={() => {
+            navigate(`/admin/${pageModule}/create-edit?id=${id}`);
+          }}
+          icon={<FormOutlined />}
+        />
+      )}
+    </>
+  );
+};
 const DeleteRow = ({ id }) => {
   const { pageModule } = useParams();
   useDeleteRow(pageModule, id);
+
+  const [searchParams] = useSearchParams();
+  let pageId = searchParams.get("id");
 
   const deleteRow = useDeleteRow();
 
@@ -161,56 +158,132 @@ const DeleteRow = ({ id }) => {
   const queryClient = useQueryClient();
 
   return (
-    <Button
-      className={"ml-4"}
-      type="link"
-      danger
-      loading={deleteRow.isLoading}
-      onClick={() => {
-        deleteRow.mutate(
-          { pageModule, id },
-          {
-            onSuccess: () => {
-              queryClient.setQueryData(
-                [`index-data-${pageModule}`, pagination],
-                (oldData) => {
-                  const newData = oldData.data.filter(
-                    (item) => item[Config.interactionCharacter] !== id
+    <>
+      {pageId == id ? (
+        <></>
+      ) : (
+        <Button
+          type="link"
+          danger
+          loading={deleteRow.isLoading}
+          onClick={() => {
+            deleteRow.mutate(
+              { pageModule, id },
+              {
+                onSuccess: () => {
+                  queryClient.setQueryData(
+                    [`index-data-${pageModule}`, pagination],
+                    (oldData) => {
+                      const basic = { ...oldData };
+                      const newData = oldData.data.filter(
+                        (item) => item[Config.interactionCharacter] !== id
+                      );
+                      basic.total = oldData.total - 1;
+                      return { ...basic, data: newData };
+                    }
                   );
-                  return { ...oldData, data: newData };
-                }
-              );
-            },
-          }
-        );
-      }}
-      icon={<DeleteOutlined />}
-    />
+                },
+              }
+            );
+          }}
+          icon={<DeleteOutlined />}
+        />
+      )}
+    </>
   );
-  // setTableLoading(true);
-  // api
-  //   .deleteRow(pageModule, id)
-  //   .then((res) => {
-  //     // console.log("🚀 ~ file: Create.js ~ line 77 ~ .then ~ res", res)
-  //     notification["success"]({
-  //       message: res.message,
-  //     });
-  //     //TODO:: pagination problem after delete the item
-  //     setTableLoading(false);
-  //     getData(pagination);
-  //   })
-  //   .catch((err) => {
-  //     // console.log("🚀 ~ file: Create.js ~ line 88 ~ onFinish ~ err", err);
-  //     setTableLoading(false);
-  //   });
 };
 
-export const indexOfInObject = (arr, obj, val) => {
+const InlineEdit = ({ id }) => {
+  const [urlParams, setUrlParams] = useSearchParams();
+  let pageId = urlParams.get("id");
+
+  return (
+    <>
+      {pageId == id ? (
+        <Button
+          type="link"
+          htmlType="submit"
+          onClick={() => {
+            setUrlParams(``);
+          }}
+          // icon={<CloseOutlined />}
+        >
+          Cancel
+        </Button>
+      ) : (
+        <>
+          <Button
+            onClick={() => {
+              setUrlParams(`id=${id}`);
+            }}
+            type="link"
+            icon={<EditOutlined />}
+          />
+        </>
+      )}
+    </>
+  );
+};
+
+export const indexOfInObject = (arr, obj, val, label) => {
   let result = -1;
   arr.forEach((element, index) => {
     if (element[obj] === val) {
       result = index;
     }
   });
-  return result;
+
+  if (label) {
+    if (result !== -1) {
+      return arr[result][label];
+    } else {
+      return "";
+    }
+  } else {
+    return result;
+  }
+};
+
+const Render = ({ item, value, rowIndex, data, id }) => {
+  const [searchParams] = useSearchParams();
+  let pageId = searchParams.get("id");
+
+  if (id == pageId) {
+    return <Field value={value} {...item.field} />;
+  } else {
+    if (item.type === "DatePicker") {
+      return dayjs(value).format(
+        !item.field.options?.showTime?.length
+          ? item.field.options.dateFormat
+          : item.field.options.dateFormat + " " + item.field.options?.showTime
+      );
+    } else if (item.valueType === "array") {
+      return (
+        <>
+          {value?.map((value, index) => (
+            <Tag key={index}>
+              <Render value={value} item={item} />
+            </Tag>
+          ))}
+        </>
+      );
+    } else if (item.dataSet.length !== 0) {
+      if (typeof value === "object" && value) {
+        return (
+          <>
+            {value.map((item, index) => {
+              if (item.dataKey) {
+                item = item[item.dataKey];
+              }
+              return <Tag key={index}>{item.dataSet[item]}</Tag>;
+            })}
+          </>
+        );
+      } else {
+        return <>{item.dataSet[value]}</>;
+      }
+    } else {
+      return <div>{value}</div>;
+    }
+  }
 };

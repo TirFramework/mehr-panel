@@ -4,6 +4,7 @@ import Submit from "./Submit";
 import Cancel from "./Cancel";
 import Group from "./Group";
 import Text from "./Text";
+import { useSearchParams } from "react-router-dom";
 // import { capitalize } from "../lib/helpers"
 
 // const DynamicField = (props) => {
@@ -39,10 +40,12 @@ const Field = (props) => {
         <Cancel {...props} />
       ) : props.type === "Submit" ? (
         <Submit {...props} />
-      ) : props.type === "Text" ? (
-        <Text {...props} />
       ) : (
-        <DynamicField type={props.type} {...props} />
+        <DynamicField
+          type={props.type}
+          {...props}
+          // showInIndex={props.id != pageId}
+        />
       )}
     </Suspense>
   );
