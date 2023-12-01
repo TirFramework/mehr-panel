@@ -117,8 +117,7 @@ const CreateForm = (props) => {
         }}
         onFinishFailed={onFinishFailed}
       >
-        <Row justify="space-between" align="middle" className="header-page">
-          <Col></Col>
+        <Row justify="end" align="middle" className="header-page">
           <Col>
             <SubmitGroup
               buttons={data?.buttons}

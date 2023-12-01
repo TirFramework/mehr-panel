@@ -11,12 +11,14 @@ import {
   Tag,
   Form,
   Typography,
-  Popover,
-  notification,
+  CheckboxGroup,
+  Modal,
   Col,
   Select,
   Skeleton,
   Space,
+  Checkbox,
+  Divider,
 } from "antd";
 import {
   EditOutlined,
@@ -39,6 +41,7 @@ const { Title } = Typography;
 function Index() {
   const { pageModule } = useParams();
   const [pagination, setPagination] = useLocalStorage(pageModule);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const [column, setColumn] = useState([]);
 
@@ -69,12 +72,12 @@ function Index() {
     }
   );
 
-  useEffect(() => {
-    // Your code using the updated pagination value
-    console.log("🚀 ~ file: Index.js:74 ~ Index ~ pagination:", pagination);
-  }, [pagination]);
+  // useEffect(() => {
+  //   // Your code using the updated pagination value
+  //   console.log("🚀 ~ file: Index.js:74 ~ Index ~ pagination:", pagination);
+  // }, [pagination]);
 
-  console.log("🚀 ~ file: Index.js:68 ~ Index ~ indexData:", indexData);
+  // console.log("🚀 ~ file: Index.js:68 ~ Index ~ indexData:", indexData);
 
   // debugger;
 
@@ -89,7 +92,7 @@ function Index() {
     // setTableLoading(false);
   };
 
-  const handleTableChange = (p, filters, sorter) => {
+  const handleChangeTable = (p, filters, sorter) => {
     filters = helpers.removeNullFromObject(filters);
     // const orderBy = {
     //   field: sorter?.column?.fieldName,
@@ -103,14 +106,12 @@ function Index() {
       filters: filters,
       // sorter: orderBy,
     });
-
-    const newData = [...column];
-
-    newData.forEach((col) => {
-      col.filteredValue = filters[col.fieldName] || null;
+    setColumn((prevColumns) => {
+      return prevColumns.map((col) => ({
+        ...col,
+        filteredValue: filters[col.fieldName] || null,
+      }));
     });
-
-    setColumn(newData);
   };
 
   const onSearch = (value) => {
@@ -124,7 +125,6 @@ function Index() {
     });
   };
 
-  const [submitLoad, setSubmitLoad] = useState(false);
   const [urlParams, setUrlParams] = useSearchParams();
 
   let pageId = urlParams.get("id");
@@ -135,20 +135,13 @@ function Index() {
     form
       .validateFields()
       .then((values) => {
-        helpers.onFinish({
-          values: values,
-          setSubmitLoad: setSubmitLoad,
-          pageModule: pageModule,
-          pageId: pageId,
-          // setUrlParams: setUrlParams,
-        });
         setUrlParams("");
       })
       .catch((errorInfo) => {
-        console.log(
-          "🚀 ~ file: Index.js:299 ~ handleFormSubmit ~ errorInfo:",
-          errorInfo
-        );
+        // console.log(
+        //   "🚀 ~ file: Index.js:299 ~ handleFormSubmit ~ errorInfo:",
+        //   errorInfo
+        // );
       });
   };
 
@@ -158,10 +151,10 @@ function Index() {
         form={form}
         component={false}
         onFinish={(value) => {
-          console.log("🚀 ~ file: Index.js:295 ~ EditableRow ~ value:", value);
+          // console.log("🚀 ~ file: Index.js:295 ~ EditableRow ~ value:", value);
         }}
         onFinishFailed={(value) => {
-          console.log("🚀 ~ file: Index.js:315 ~ EditableRow ~ value:", value);
+          // console.log("🚀 ~ file: Index.js:315 ~ EditableRow ~ value:", value);
         }}
         // disabled={!(pageId === restProps["data-row-key"])}
       >
@@ -191,6 +184,14 @@ function Index() {
                     value={pagination.search}
                     onSearch={onSearch}
                   />
+                  {/* <Button
+                    type="primary"
+                    onClick={() => {
+                      setIsModalOpen(true);
+                    }}
+                  >
+                    Open Modal
+                  </Button> */}
                 </>
                 <>
                   {(helpers.notEmpty(pagination?.filters) ||
@@ -206,7 +207,6 @@ function Index() {
                         newData.forEach((col) => {
                           col.filteredValue = null;
                         });
-
                         setColumn(newData);
                       }}
                     />
@@ -237,7 +237,6 @@ function Index() {
                         htmlType="submit"
                         size="large"
                         onClick={() => {
-                          console.log("aaaaaaaaa");
                           handleFormSubmit();
                         }}
                       >
@@ -289,7 +288,7 @@ function Index() {
             //   },
             // }}
             loading={dataQuery.isLoading || dataQuery.isFetching}
-            onChange={handleTableChange}
+            onChange={handleChangeTable}
             footer={() => (
               <>
                 {!dataQuery.isLoading && indexData?.data && (
@@ -306,6 +305,29 @@ function Index() {
           />
         </Card>
       </Form>
+
+      {/* <Modal title="Basic Modal" open={isModalOpen}>
+        <>
+          <Checkbox
+            indeterminate={indeterminate}
+            onChange={onCheckAllChange}
+            checked={checkAll}
+          >
+            Check all
+          </Checkbox>
+          <Divider />
+          <CheckboxGroup
+            options={column.map((item) => {
+              console.log(
+                "🚀 ~ file: Index.js:319 ~ options={column.map ~ item:",
+                item
+              );
+            })}
+            // value={checkedList}
+            onChange={() => {}}
+          />
+        </>
+      </Modal> */}
     </div>
   );
 }
