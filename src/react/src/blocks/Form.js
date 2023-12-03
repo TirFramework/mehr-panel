@@ -7,6 +7,7 @@ import { onFinish } from "../lib/helpers";
 import SubmitGroup from "../components/SubmitGroup";
 import FormGroup from "../components/FormGroup";
 import Header from "./Header";
+import { useMyContext } from "../context/MyContext";
 
 const CreateForm = (props) => {
   const [form] = Form.useForm();
@@ -24,6 +25,8 @@ const CreateForm = (props) => {
   const [bootLoad, setBootLoad] = useState(true);
   const [submitLoad, setSubmitLoad] = useState(true);
   const [isTouched, setIsTouched] = useState(false);
+
+  const { myState, updateMyState } = useMyContext();
 
   useEffect(() => {
     setIsTouched(false);
@@ -108,7 +111,7 @@ const CreateForm = (props) => {
         onFinish={(value) => {
           onFinish({
             values: value,
-            setSubmitLoad: setSubmitLoad,
+            setSubmitLoad: updateMyState,
             pageModule: pageModule,
             pageId: pageId,
             setUrlParams: setUrlParams,
@@ -119,12 +122,7 @@ const CreateForm = (props) => {
       >
         <Row justify="end" align="middle" className="header-page">
           <Col>
-            <SubmitGroup
-              buttons={data?.buttons}
-              form={form}
-              loading={submitLoad}
-              pageId={pageId}
-            />
+            <SubmitGroup buttons={data?.buttons} form={form} pageId={pageId} />
           </Col>
         </Row>
         <Card className="main-card" loading={bootLoad}>
@@ -141,12 +139,7 @@ const CreateForm = (props) => {
           </Row>
         </Card>
 
-        <SubmitGroup
-          buttons={data?.buttons}
-          form={form}
-          loading={submitLoad}
-          pageId={pageId}
-        />
+        <SubmitGroup buttons={data?.buttons} form={form} pageId={pageId} />
       </Form>
     </>
   );

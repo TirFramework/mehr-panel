@@ -11,7 +11,6 @@ import {
   Tag,
   Form,
   Typography,
-  CheckboxGroup,
   Modal,
   Col,
   Select,
@@ -20,10 +19,12 @@ import {
   Checkbox,
   Divider,
 } from "antd";
+
 import {
   EditOutlined,
   QuestionCircleOutlined,
   DeleteOutlined,
+  ExportOutlined,
 } from "@ant-design/icons";
 import { CSVLink } from "react-csv";
 
@@ -35,13 +36,16 @@ import { useGetColumns, useGetData } from "../Request";
 import { defaultFIlter } from "../constants/config";
 import { useQueryClient } from "react-query";
 import Search from "../blocks/Search";
+import CustomCol from "../blocks/CustomCol";
 
 const { Title } = Typography;
 
 function Index() {
   const { pageModule } = useParams();
-  const [pagination, setPagination] = useLocalStorage(pageModule);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [pagination, setPagination] = useLocalStorage(pageModule, {
+    ...defaultFIlter,
+    key: pageModule,
+  });
 
   const [column, setColumn] = useState([]);
 
@@ -50,13 +54,24 @@ function Index() {
     pagination,
     {
       onSuccess: (res) => {
-        //   console.log("🚀 ~ file: Index.js:136 ~ Index ~ res:", res);
-        res.cols.forEach(() => {
-          const newData = [...res.cols];
-          newData.forEach((col) => {
-            col.filteredValue = pagination.filters[col.fieldName] || null;
+        setColumn((prevCols) => {
+          const newData = res.cols.map((col) => {
+            return {
+              ...col,
+              filteredValue: pagination.filters[col.fieldName] || null,
+            };
           });
-          setColumn(newData);
+          const activeCols = JSON.parse(
+            window.localStorage.getItem(`cols-${pageModule}`)
+          );
+
+          if (activeCols) {
+            const filteredList = newData.filter((item) =>
+              activeCols.includes(item.title)
+            );
+            return filteredList;
+          }
+          return newData;
         });
       },
     }
@@ -65,46 +80,24 @@ function Index() {
     pagination?.key || pageModule,
     pagination,
     {
-      onSuccess: (res) => {
-        //   console.log("🚀 ~ file: Index.js:136 ~ Index ~ res:", res);
-      },
       enabled: !!pagination?.key,
     }
   );
 
-  // useEffect(() => {
-  //   // Your code using the updated pagination value
-  //   console.log("🚀 ~ file: Index.js:74 ~ Index ~ pagination:", pagination);
-  // }, [pagination]);
-
-  // console.log("🚀 ~ file: Index.js:68 ~ Index ~ indexData:", indexData);
-
-  // debugger;
-
-  const handleChangeColumns = (activeCols) => {
-    // setTableLoading(true);
-    // setActiveColumn(activeCols);
-    // getData(pagination);
-    // getColumns(pagination);
-    // console.log("activeCols", activeCols);
-    // console.log("columnList", columnList);
-    // console.log("columnList", activeCols);
-    // setTableLoading(false);
-  };
-
   const handleChangeTable = (p, filters, sorter) => {
     filters = helpers.removeNullFromObject(filters);
-    // const orderBy = {
-    //   field: sorter?.column?.fieldName,
-    //   order: sorter.order,
-    // };
+    const orderBy = {
+      field: sorter?.column?.fieldName,
+      order: sorter.order,
+    };
 
     setPagination({
       ...pagination,
       current: p.current,
       pageSize: p.pageSize,
       filters: filters,
-      // sorter: orderBy,
+      key: pageModule,
+      sorter: orderBy,
     });
     setColumn((prevColumns) => {
       return prevColumns.map((col) => ({
@@ -122,6 +115,7 @@ function Index() {
       ...pagination,
       search: value,
       current: 1,
+      key: pageModule,
     });
   };
 
@@ -137,12 +131,7 @@ function Index() {
       .then((values) => {
         setUrlParams("");
       })
-      .catch((errorInfo) => {
-        // console.log(
-        //   "🚀 ~ file: Index.js:299 ~ handleFormSubmit ~ errorInfo:",
-        //   errorInfo
-        // );
-      });
+      .catch((errorInfo) => {});
   };
 
   return (
@@ -184,14 +173,13 @@ function Index() {
                     value={pagination.search}
                     onSearch={onSearch}
                   />
-                  {/* <Button
-                    type="primary"
-                    onClick={() => {
-                      setIsModalOpen(true);
+
+                  <CustomCol
+                    column={pageData?.cols}
+                    onChange={(newCol) => {
+                      setColumn(newCol);
                     }}
-                  >
-                    Open Modal
-                  </Button> */}
+                  />
                 </>
                 <>
                   {(helpers.notEmpty(pagination?.filters) ||
@@ -202,7 +190,7 @@ function Index() {
                       size="large"
                       danger
                       onClick={() => {
-                        setPagination(defaultFIlter);
+                        setPagination({ ...defaultFIlter, key: pageModule });
                         const newData = [...column];
                         newData.forEach((col) => {
                           col.filteredValue = null;
@@ -212,19 +200,6 @@ function Index() {
                     />
                   )}
                 </>
-                {/* <>
-                  <Select
-                    mode="multiple"
-                    allowClear
-                    style={{
-                      width: "100%",
-                    }}
-                    placeholder="Please select"
-                    // defaultValue={['a10', 'c12']}
-                    onChange={handleChangeColumns}
-                    options={column}
-                  />
-                </> */}
               </Space>
             </Col>
             <Col className="gutter-row text-right">
@@ -263,16 +238,38 @@ function Index() {
         )}
         <Card loading={pageDataQuery.isLoading} className="index-page__card">
           <Table
-            scroll={{ y: "calc(100vh - 400px)" }}
+            scroll={{ y: "calc(100vh - 340px)" }}
             columns={column}
             rowKey={(record) => record.id || record._id}
             dataSource={indexData?.data}
+            noDataContent={
+              helpers.notEmpty(pagination?.filters) || pagination.search
+                ? "remove filter "
+                : "nodata"
+            }
             pagination={{
               pageSize: pagination?.pageSize,
               current: pagination?.current,
               pageSizeOptions: ["15", "30", "50", "100", "500"],
               total: indexData?.total,
-              showTotal: (total) => <Button>Total: {indexData?.total}</Button>,
+              showTotal: (total) => (
+                <>
+                  <Row justify={"space-between"}>
+                    <Col>
+                      <CSVLink
+                        filename={"Expense_Table.csv"}
+                        data={indexData?.data}
+                        className="btn btn-primary"
+                      >
+                        <div icon={<ExportOutlined />}> Export to CSV</div>
+                      </CSVLink>
+                    </Col>
+                    <Col>
+                      <Button>Total: {indexData?.total}</Button>
+                    </Col>
+                  </Row>
+                </>
+              ),
             }}
             // components={{
             //   body: {
@@ -289,45 +286,22 @@ function Index() {
             // }}
             loading={dataQuery.isLoading || dataQuery.isFetching}
             onChange={handleChangeTable}
-            footer={() => (
-              <>
-                {!dataQuery.isLoading && indexData?.data && (
-                  <CSVLink
-                    filename={"Expense_Table.csv"}
-                    data={indexData?.data}
-                    className="btn btn-primary"
-                  >
-                    Export to CSV
-                  </CSVLink>
-                )}
-              </>
-            )}
+            // footer={() => (
+            //   <>
+            //     {!dataQuery.isLoading && indexData?.data && (
+            //       <CSVLink
+            //         filename={"Expense_Table.csv"}
+            //         data={indexData?.data}
+            //         className="btn btn-primary"
+            //       >
+            //         Export to CSV
+            //       </CSVLink>
+            //     )}
+            //   </>
+            // )}
           />
         </Card>
       </Form>
-
-      {/* <Modal title="Basic Modal" open={isModalOpen}>
-        <>
-          <Checkbox
-            indeterminate={indeterminate}
-            onChange={onCheckAllChange}
-            checked={checkAll}
-          >
-            Check all
-          </Checkbox>
-          <Divider />
-          <CheckboxGroup
-            options={column.map((item) => {
-              console.log(
-                "🚀 ~ file: Index.js:319 ~ options={column.map ~ item:",
-                item
-              );
-            })}
-            // value={checkedList}
-            onChange={() => {}}
-          />
-        </>
-      </Modal> */}
     </div>
   );
 }

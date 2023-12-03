@@ -247,8 +247,9 @@ export const indexOfInObject = (arr, obj, val, label) => {
 const Render = ({ item, value, rowIndex, data, id }) => {
   const [searchParams] = useSearchParams();
   let pageId = searchParams.get("id");
+  console.log("🚀 ~ file: utils.js:250 ~ Render ~ pageId:", pageId);
 
-  if (id == pageId) {
+  if (id == pageId && pageId && id) {
     return <Field value={value} {...item.field} />;
   } else {
     if (item.type === "DatePicker") {
@@ -257,6 +258,18 @@ const Render = ({ item, value, rowIndex, data, id }) => {
           ? item.field.options.dateFormat
           : item.field.options.dateFormat + " " + item.field.options?.showTime
       );
+    } else if (item.dataSet.length !== 0) {
+      if (typeof value === "object" && value) {
+        return (
+          <>
+            {value.map((val, index) => (
+              <Tag key={index}>{item.dataSet[val.id]}</Tag>
+            ))}
+          </>
+        );
+      } else {
+        return <>{item.dataSet[value]}</>;
+      }
     } else if (item.valueType === "array") {
       return (
         <>
@@ -267,21 +280,6 @@ const Render = ({ item, value, rowIndex, data, id }) => {
           ))}
         </>
       );
-    } else if (item.dataSet.length !== 0) {
-      if (typeof value === "object" && value) {
-        return (
-          <>
-            {value.map((item, index) => {
-              if (item.dataKey) {
-                item = item[item.dataKey];
-              }
-              return <Tag key={index}>{item.dataSet[item]}</Tag>;
-            })}
-          </>
-        );
-      } else {
-        return <>{item.dataSet[value]}</>;
-      }
     } else {
       return <div>{value}</div>;
     }

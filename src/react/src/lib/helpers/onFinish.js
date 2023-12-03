@@ -1,4 +1,4 @@
-import { notification, message  } from "antd";
+import { notification, message } from "antd";
 import { replaceLastNumberFromString, stringToObject } from ".";
 
 import * as api from "../../api";
@@ -18,7 +18,7 @@ export const fixNumber = (obj) => {
       }
 
       newObj[replaceLastNumberFromString(key, counts[keyWithOuthNumber])] =
-          obj[key];
+        obj[key];
     } else {
       newObj[key] = obj[key];
     }
@@ -28,12 +28,12 @@ export const fixNumber = (obj) => {
 };
 
 export const onFinish = ({
-                           values,
-                           setSubmitLoad,
-                           pageModule,
-                           pageId,
-                           setUrlParams,
-                         }) => {
+  values,
+  setSubmitLoad,
+  pageModule,
+  pageId,
+  setUrlParams,
+}) => {
   // console.log("Success:", values);
 
   values = fixNumber(values);
@@ -46,16 +46,16 @@ export const onFinish = ({
   setSubmitLoad(true);
 
   api
-      .postEditOrCreate(pageModule, pageId, values)
-      .then((res) => {
-        setSubmitLoad(false);
+    .postEditOrCreate(pageModule, pageId, values)
+    .then((res) => {
+      setSubmitLoad(false);
 
-        if (!pageId) {
-          setUrlParams({ id: res.id });
-        }
-        message.success(res.message);
-      })
-      .catch((err) => {
-        setSubmitLoad(false);
-      });
+      if (!pageId) {
+        setUrlParams({ id: res.id });
+      }
+      message.success(res.message);
+    })
+    .catch((err) => {
+      setSubmitLoad(false);
+    });
 };

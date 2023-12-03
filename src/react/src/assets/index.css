@@ -248,7 +248,7 @@
 
 .index-page__card .ant-table-body {
   overflow-y: scroll !important;
-  height: calc(100vh - 400px) !important;
+  height: calc(100vh - 340px) !important;
 }
 
 .ant-btn > span {
@@ -266,4 +266,8 @@
 .action-td {
   display: flex;
   flex-wrap: nowrap;
+}
+
+.index-page__card .ant-pagination-total-text {
+  flex-grow: 1;
 }

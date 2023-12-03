@@ -1,6 +1,7 @@
 import { useParams, useSearchParams } from "react-router-dom";
 
 import Form from "../blocks/Form";
+import { MyProvider } from "../context/MyContext";
 
 const Create = () => {
   const [urlParams] = useSearchParams();
@@ -13,8 +14,10 @@ const Create = () => {
         pageId ? "edit" : "create"
       }`}
     >
-      {/*<Header/>*/}
-      <Form />
+      <MyProvider>
+        {/*<Header/>*/}
+        <Form />
+      </MyProvider>
     </div>
   );
 };

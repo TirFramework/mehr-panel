@@ -2,8 +2,11 @@ import { Button, Space } from "antd";
 // import { Link, useHistory, useParams } from "react-router-dom";
 // import { useUrlParams } from "../hooks/useUrlParams";
 import Field from "./Field";
+import { useMyContext } from "../context/MyContext";
 
 const SubmitGroup = (props) => {
+  const { myState } = useMyContext();
+
   // const [urlParams, , setUrlParams] = useUrlParams();
   // const pageId = urlParams.id;
   // const editMode = urlParams.editMode;
@@ -22,7 +25,7 @@ const SubmitGroup = (props) => {
           {...btn}
           key={`btn-${index}`}
           type={btn.action}
-          loading={props.loading}
+          loading={myState}
         />
       ))}
     </Space>
