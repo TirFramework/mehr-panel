@@ -5,14 +5,13 @@ import { useNavigate } from "react-router-dom";
 import { Form, Input, Button, notification } from "antd";
 import { LockOutlined, UserOutlined } from "@ant-design/icons";
 import * as api from "../api";
+import Config from "../constants/config";
 
 const Login = () => {
   const navigate = useNavigate();
 
   const [loading, setLoading] = useState(false);
   const onFinish = (values) => {
-    localStorage.clear();
-
     api
       .postLogin(values)
       .then((res) => {
@@ -34,6 +33,12 @@ const Login = () => {
   const login = (token) => {
     Cookies.set("api_token", token);
     axios.defaults.headers.common = { Authorization: `Bearer ${token}` };
+    const version = window.localStorage.getItem("version");
+
+    if (version !== Config.panelVersion) {
+      localStorage.clear();
+      window.localStorage.setItem("version", Config.panelVersion);
+    }
     navigate("/admin/custom/dashboard");
   };
 

@@ -51,7 +51,7 @@ export const onFinish = ({
       setSubmitLoad(false);
 
       if (!pageId) {
-        setUrlParams({ id: res.id });
+        setUrlParams({ newId: res.id });
       }
       message.success(res.message);
     })

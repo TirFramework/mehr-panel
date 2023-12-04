@@ -63,10 +63,10 @@ export default function Editor({ value, onChange, ...props }) {
                   cb(`${props.basePath}${res.path}`);
                 })
                 .catch((err) => {
-                  console.log(
-                    "🚀 ~ file: Dashboard.js ~ line 95 ~ Index ~ err",
-                    err
-                  );
+                  // console.log(
+                  //   "🚀 ~ file: Dashboard.js ~ line 95 ~ Index ~ err",
+                  //   err
+                  // );
                 });
 
               /* call the callback and populate the Title field with the file name */

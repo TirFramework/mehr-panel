@@ -1,6 +1,6 @@
-import Config from "../constants/config";
 import axios from "../lib/axios";
 import { getColsNormalize } from "../lib/utils";
+import qs from "qs";
 
 export const postLogout = async () => {
   const { data } = await axios.post(`/logout`);
@@ -30,7 +30,6 @@ export const getRows = async (module, props) => {
       filters: props.filters,
       search: props.search,
       sorter: props.sorter,
-      locale: "all",
     },
   });
   return await data;
@@ -109,6 +108,7 @@ export const getData = async (pageModule, { key, ...params }) => {
       result: params.pageSize,
       filters: params.filters,
       search: params.search,
+      sorter: params.sorter,
     },
   });
   return res.data;

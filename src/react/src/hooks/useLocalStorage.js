@@ -1,9 +1,7 @@
 import { useEffect, useState } from "react";
 
 function useLocalStorage(key, defaultFIlter) {
-  const [storedValue, setStoredValue] = useState({
-    ...defaultFIlter,
-  });
+  const [storedValue, setStoredValue] = useState({});
 
   useEffect(() => {
     const item = window.localStorage.getItem(key);

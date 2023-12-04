@@ -37,6 +37,7 @@ import { defaultFIlter } from "../constants/config";
 import { useQueryClient } from "react-query";
 import Search from "../blocks/Search";
 import CustomCol from "../blocks/CustomCol";
+import Export from "../blocks/Export";
 
 const { Title } = Typography;
 
@@ -59,6 +60,10 @@ function Index() {
             return {
               ...col,
               filteredValue: pagination.filters[col.fieldName] || null,
+              defaultSortOrder:
+                pagination.sorter?.field === col.fieldName
+                  ? pagination.sorter.order
+                  : null,
             };
           });
           const activeCols = JSON.parse(
@@ -85,6 +90,7 @@ function Index() {
   );
 
   const handleChangeTable = (p, filters, sorter) => {
+    console.log("🚀 ~ file: Index.js:93 ~ handleChangeTable ~ sorter:", sorter);
     filters = helpers.removeNullFromObject(filters);
     const orderBy = {
       field: sorter?.column?.fieldName,
@@ -103,6 +109,8 @@ function Index() {
       return prevColumns.map((col) => ({
         ...col,
         filteredValue: filters[col.fieldName] || null,
+        sortOrder:
+          sorter?.column?.fieldName === col.fieldName ? sorter.order : null,
       }));
     });
   };
@@ -176,7 +184,7 @@ function Index() {
                 <>
                   <Search
                     loading={dataQuery.isLoading}
-                    value={pagination.search}
+                    value={pagination?.search}
                     onSearch={onSearch}
                   />
 
@@ -189,7 +197,8 @@ function Index() {
                 </>
                 <>
                   {(helpers.notEmpty(pagination?.filters) ||
-                    pagination.search) && (
+                    pagination.search ||
+                    helpers.notEmpty(pagination?.sorter)) && (
                     <Button
                       icon={<ClearOutlined />}
                       type="primary"
@@ -200,6 +209,7 @@ function Index() {
                         const newData = [...column];
                         newData.forEach((col) => {
                           col.filteredValue = null;
+                          col.sortOrder = {};
                         });
                         setColumn(newData);
                       }}
@@ -218,7 +228,8 @@ function Index() {
                         htmlType="submit"
                         size="large"
                         onClick={() => {
-                          handleFormSubmit();
+                          // handleFormSubmit();
+                          alert("comig soon!");
                         }}
                       >
                         Submit
@@ -249,7 +260,7 @@ function Index() {
             rowKey={(record) => record.id || record._id}
             dataSource={indexData?.data}
             noDataContent={
-              helpers.notEmpty(pagination?.filters) || pagination.search
+              helpers.notEmpty(pagination?.filters) || pagination?.search
                 ? "remove filter "
                 : "nodata"
             }
@@ -262,13 +273,10 @@ function Index() {
                 <>
                   <Row justify={"space-between"}>
                     <Col>
-                      <CSVLink
-                        filename={"Expense_Table.csv"}
+                      <Export
+                        loading={dataQuery.isLoading || dataQuery.isFetching}
                         data={indexData?.data}
-                        className="btn btn-primary"
-                      >
-                        <div icon={<ExportOutlined />}> Export to CSV</div>
-                      </CSVLink>
+                      />
                     </Col>
                     <Col>
                       <Button>Total: {indexData?.total}</Button>

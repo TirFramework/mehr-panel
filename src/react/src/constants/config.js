@@ -8,6 +8,7 @@ const Config = {
     process.env.REACT_APP_API_STORAGE ||
     "/storage",
   tinyemcApiKey: process.env.MIX_APP_TINYEMC || process.env.REACT_APP_TINYEMC,
+  panelVersion: "2.4",
   interactionCharacter:
     process.env.MIX_APP_INTERACTION_CHARACTER ||
     process.env.REACT_APP_INTERACTION_CHARACTER ||
@@ -22,5 +23,5 @@ export const defaultFIlter = {
   total: 0,
   search: null,
   filters: {},
-  sorter: null,
+  sorter: {},
 };

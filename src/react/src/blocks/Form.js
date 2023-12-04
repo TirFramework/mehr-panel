@@ -15,6 +15,7 @@ const CreateForm = (props) => {
 
   const [urlParams, setUrlParams] = useSearchParams();
   const pageId = urlParams.get("id");
+  let newId = urlParams.get("newId");
 
   // const editMode = urlParams.editMode;
 
@@ -41,12 +42,17 @@ const CreateForm = (props) => {
         form.resetFields();
       });
     } else {
-      api.getCreateOrEditFields(pageModule, pageId).then((res) => {
-        setData(res);
-        setBootLoad(false);
-        setSubmitLoad(false);
-        form.resetFields();
-      });
+      api
+        .getCreateOrEditFields(
+          pageModule,
+          pageId || new URLSearchParams(window.location.search).get("newId")
+        )
+        .then((res) => {
+          setData(res);
+          setBootLoad(false);
+          setSubmitLoad(false);
+          form.resetFields();
+        });
     }
   }, [pageModule, pageId]);
 
@@ -113,7 +119,7 @@ const CreateForm = (props) => {
             values: value,
             setSubmitLoad: updateMyState,
             pageModule: pageModule,
-            pageId: pageId,
+            pageId: pageId || newId,
             setUrlParams: setUrlParams,
           });
           setIsTouched(false);
@@ -125,7 +131,7 @@ const CreateForm = (props) => {
             <SubmitGroup buttons={data?.buttons} form={form} pageId={pageId} />
           </Col>
         </Row>
-        <Card className="main-card" loading={bootLoad}>
+        <Card className="create-edit__card" loading={bootLoad}>
           <Row gutter={[16, 16]}>
             {data.fields?.map((field, index) => (
               <FormGroup

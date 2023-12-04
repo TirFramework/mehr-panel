@@ -20,6 +20,7 @@ import useLocalStorage from "../hooks/useLocalStorage";
 import { useQueryClient } from "react-query";
 import Config from "../constants/config";
 import Field from "../components/Field";
+import { defaultFIlter } from "../constants/config";
 
 export const getColsNormalize = (res, params, pageModule) => {
   let cols = res.cols;
@@ -30,6 +31,17 @@ export const getColsNormalize = (res, params, pageModule) => {
     // convert to array
     col.dataIndex = col.dataIndex.split(".");
     // ----------------------------------------
+    // -----------------------------------
+    // add data for filter
+    // col.sorter = true;
+    // -----------------------------------
+    // -----------------------------------
+    // add data for filter
+    if (col.filters !== undefined) {
+      col.filters?.map((item) => (item.text = item.label));
+      col.filterSearch = col.filters.length > 10;
+    }
+    // -----------------------------------
     // -----------------------------------
     // add data for filter
     if (col.filters !== undefined) {
@@ -135,7 +147,6 @@ const EditRow = ({ id }) => {
       ) : (
         <Button
           type="link"
-          style={{ color: "#000" }}
           onClick={() => {
             navigate(`/admin/${pageModule}/create-edit?id=${id}`);
           }}
@@ -154,7 +165,10 @@ const DeleteRow = ({ id }) => {
 
   const deleteRow = useDeleteRow();
 
-  const [pagination, setPagination] = useLocalStorage(pageModule);
+  const [pagination, setPagination] = useLocalStorage(pageModule, {
+    ...defaultFIlter,
+    key: pageModule,
+  });
   const queryClient = useQueryClient();
 
   return (
@@ -247,7 +261,6 @@ export const indexOfInObject = (arr, obj, val, label) => {
 const Render = ({ item, value, rowIndex, data, id }) => {
   const [searchParams] = useSearchParams();
   let pageId = searchParams.get("id");
-  console.log("🚀 ~ file: utils.js:250 ~ Render ~ pageId:", pageId);
 
   if (id == pageId && pageId && id) {
     return <Field value={value} {...item.field} />;

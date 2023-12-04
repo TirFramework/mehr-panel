@@ -1,5 +1,8 @@
 body {
   margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji",
+    "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
 }
 * {
   box-sizing: border-box;
@@ -50,6 +53,7 @@ body {
 .page-index__title {
   margin-top: 0;
   margin-bottom: 16px !important;
+  text-transform: capitalize;
 }
 .ant-upload-draggable-list-item {
   border-top: 2px dashed rgba(0, 0, 0, 0);
@@ -121,9 +125,9 @@ body {
   background: #fff;
 }
 
-.group .ant-card-body {
+/* .group .ant-card-body {
   padding-bottom: 0;
-}
+} */
 
 .header-page {
   position: sticky;
@@ -142,9 +146,6 @@ body {
   position: relative;
 }
 
-.main-card {
-  min-height: calc(100vh - 220px);
-}
 .ant-layout {
   overflow: hidden;
 }
@@ -305,10 +306,6 @@ body {
   height: calc(100vh - 340px) !important;
 }
 
-.ant-btn > span {
-  vertical-align: middle;
-}
-
 .isFetching {
   position: fixed;
   top: 78px;
@@ -324,4 +321,21 @@ body {
 
 .index-page__card .ant-pagination-total-text {
   flex-grow: 1;
+}
+
+.create-edit__title {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+.create-edit__header {
+  padding-bottom: 16px;
+}
+.create-edit__card {
+  min-height: calc(100vh - 224px);
+  margin-bottom: 16px;
+}
+.toggle-theme {
+  position: fixed;
+  right: 0;
+  top: 12px;
 }

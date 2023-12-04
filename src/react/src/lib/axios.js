@@ -1,7 +1,6 @@
 import axios from "axios";
 import Config from "../constants/config";
 import Cookies from "js-cookie";
-import { notification } from "antd";
 import ErrorHandler from "./helpers/ErrorHandler";
 
 /**
@@ -13,21 +12,38 @@ axios.defaults.baseURL = Config.apiBaseUrl;
 axios.defaults.headers.common["Content-Type"] = "application/json";
 axios.defaults.headers.common.Accept = "application/json";
 
-
 const token = Cookies.get("api_token");
-axios.defaults.headers.common = { Authorization: `Bearer ${token}` , Accept: "application/json" };
+axios.defaults.headers.common = {
+  Authorization: `Bearer ${token}`,
+  Accept: "application/json",
+};
 
-axios.defaults.timeout = 5000;
+axios.defaults.paramsSerializer = (params) => {
+  const oldData = { ...params };
+  const newData = {};
+
+  Object.keys(oldData).forEach((key) => {
+    if (oldData[key] !== null) {
+      if (typeof oldData[key] === "object") {
+        newData[key] = JSON.stringify(oldData[key]);
+      } else {
+        newData[key] = oldData[key];
+      }
+    }
+  });
+  return new URLSearchParams(newData).toString();
+};
+
+axios.defaults.timeout = 10000;
 
 // Add a request interceptor
 axios.interceptors.request.use(
   async (inputConfig) => {
-      // if(token  inputConfig.url === '/login') {
-      //   return inputConfig;
-      // }
+    // if(token  inputConfig.url === '/login') {
+    //   return inputConfig;
+    // }
 
-        return inputConfig;
-
+    return inputConfig;
   },
   (error) => {
     throw error;
@@ -41,7 +57,7 @@ axios.interceptors.response.use(
     return response;
   },
   function (error) {
-      ErrorHandler(error);
+    ErrorHandler(error);
     // Any status codes that falls outside the range of 2xx cause this function to trigger
     // Do something with response error
 

@@ -1,4 +1,4 @@
-import { Button, Checkbox, Divider, Modal } from "antd";
+import { Button, Checkbox, Col, Divider, Modal, Row } from "antd";
 import { useState } from "react";
 import { SettingOutlined } from "@ant-design/icons";
 import useLocalStorage from "../hooks/useLocalStorage";
@@ -34,15 +34,15 @@ function CustomCol({ column, onChange }) {
           onCancel={() => {
             setIsModalOpen(false);
           }}
-          onOk={() => {
-            const filteredList = column.filter((item) =>
-              Object.values(columnList).includes(item.title)
-            );
-            onChange(filteredList);
-            setIsModalOpen(false);
-          }}
+          title={""}
+          closable={false}
+          footer={""}
+          onOk={() => {}}
         >
           <>
+            <>Customaze columns</>
+            <Divider />
+
             <Checkbox
               indeterminate={
                 !!Object.values(columnList).length &&
@@ -63,6 +63,24 @@ function CustomCol({ column, onChange }) {
                 setColumnList(list);
               }}
             />
+            <Divider />
+
+            <Row justify={"center"}>
+              <Col>
+                <Button
+                  type="primary"
+                  onClick={() => {
+                    const filteredList = column.filter((item) =>
+                      Object.values(columnList).includes(item.title)
+                    );
+                    onChange(filteredList);
+                    setIsModalOpen(false);
+                  }}
+                >
+                  Ok
+                </Button>
+              </Col>
+            </Row>
           </>
         </Modal>
       )}
