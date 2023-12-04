@@ -147,7 +147,9 @@ function Index() {
         }}
         // disabled={!(pageId === restProps["data-row-key"])}
       >
-        <Title>{pageData?.configs?.module_title}</Title>
+        <Title className="page-index__title">
+          {pageData?.configs?.module_title}
+        </Title>
         {pageDataQuery.isLoading ? (
           <>
             <Skeleton.Input
@@ -164,7 +166,11 @@ function Index() {
             />
           </>
         ) : (
-          <Row align="bottom" className="mb-4" justify={"space-between"}>
+          <Row
+            align="bottom"
+            className="page-index__header"
+            justify={"space-between"}
+          >
             <Col className="gutter-row">
               <Space>
                 <>

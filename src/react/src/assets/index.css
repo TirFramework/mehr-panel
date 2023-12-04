@@ -1,6 +1,56 @@
-@tailwind components;
-@tailwind utilities;
+body {
+  margin: 0;
+}
+* {
+  box-sizing: border-box;
+}
+.flex {
+  display: flex;
+}
+.flex-col {
+  flex-direction: column;
+}
+.h-screen {
+  height: 100vh;
+}
+.ant-layout-content {
+  padding: 16px;
+}
+.logo {
+  height: 64px;
+  display: flex;
+  align-items: center;
+  padding: 16px;
+  font-size: 22px;
+  overflow: hidden;
+}
+.ant-layout-sider {
+  background: #001629;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+}
+.ant-layout-sider .ant-menu {
+  flex-grow: 1;
+}
+.ant-layout-sider-children {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
 
+.ant-menu .ant-menu-item .anticon {
+  margin-right: 16px !important;
+}
+
+.ant-layout-sider-trigger {
+  padding: 16px;
+}
+
+.page-index__title {
+  margin-top: 0;
+  margin-bottom: 16px !important;
+}
 .ant-upload-draggable-list-item {
   border-top: 2px dashed rgba(0, 0, 0, 0);
   border-bottom: 2px dashed rgba(0, 0, 0, 0);
@@ -120,6 +170,10 @@
   width: 100%;
 }
 
+.page-index__header {
+  margin-bottom: 16px;
+}
+
 .formGroup-Additional > div > .ant-row {
   border: 1px solid #eeeeee;
   padding: 24px;
@@ -185,7 +239,7 @@
 }
 
 .login-form .ant-input-affix-wrapper {
-  padding: 12px 15px;
+  padding: 12px 16px;
 }
 
 .login-form_username {
