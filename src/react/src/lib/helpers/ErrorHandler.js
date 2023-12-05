@@ -12,10 +12,14 @@ const ErrorHandler = async (error) => {
   }
 
   if (error.response.data.message) {
-    for (const [key, value] of Object.entries(error.response.data.message)) {
-      value.forEach((val) => {
-        mes.push(val);
-      });
+    if (typeof error.response.data.message === "object") {
+      for (const [key, value] of Object.entries(error.response.data.message)) {
+        value.forEach((val) => {
+          mes.push(val);
+        });
+      }
+    } else {
+      mes.push(error.response.data.message);
     }
     notification["warning"]({
       message: error.response.data.title,

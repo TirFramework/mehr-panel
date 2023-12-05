@@ -47,9 +47,9 @@ export const getColsNormalize = (res, params, pageModule) => {
     // add data for filter
     // col.sorter = true;
 
-    col.filterDropdown = (props) => {
-      return <FilterDate {...props} />;
-    };
+    // col.filterDropdown = (props) => {
+    //   return <FilterDate {...props} />;
+    // };
 
     // col.filterIcon = (filtered) => (
     //   <SearchOutlined style={{ color: filtered ? "#1677ff" : undefined }} />

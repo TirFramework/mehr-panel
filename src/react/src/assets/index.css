@@ -195,9 +195,9 @@ body {
   color: #fff;
 }
 
-.ant-notification-notice-warning {
+/* .ant-notification-notice-warning {
   background: #ffe6b5;
-}
+} */
 
 .login-page {
   display: flex;
@@ -342,4 +342,8 @@ body {
   margin: 8px;
   width: auto;
   min-width: fit-content;
+}
+
+.index-page__card .ant-empty {
+  height: calc(100vh - 437px);
 }
