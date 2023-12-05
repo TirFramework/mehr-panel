@@ -33,6 +33,7 @@ export const onFinish = ({
   pageModule,
   pageId,
   setUrlParams,
+  afterSubmit = () => {},
 }) => {
   // console.log("Success:", values);
 
@@ -53,6 +54,7 @@ export const onFinish = ({
       if (!pageId) {
         setUrlParams({ newId: res.id });
       }
+      afterSubmit();
       message.success(res.message);
     })
     .catch((err) => {

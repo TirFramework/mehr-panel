@@ -347,3 +347,19 @@ body {
 .index-page__card .ant-empty {
   height: calc(100vh - 437px);
 }
+.table-row__save {
+  position: absolute;
+  right: 16px;
+  z-index: 10;
+  top: 50%;
+  transform: translateY(-50%);
+}
+.table-row {
+  position: relative;
+}
+.ant-table-cell .ant-form-item {
+  margin-bottom: 0;
+}
+.menu__parent {
+  margin-left: 16px;
+}

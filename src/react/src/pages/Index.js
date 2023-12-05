@@ -1,59 +1,61 @@
-import React, { useState, useEffect, useCallback } from "react";
-import { useParams, Link, useSearchParams } from "react-router-dom";
-import { PlusOutlined, ClearOutlined, EyeOutlined } from "@ant-design/icons";
+import React, { useState } from "react";
+import {
+  useParams,
+  Link,
+  useSearchParams,
+  useNavigate,
+} from "react-router-dom";
+import { PlusOutlined, ClearOutlined } from "@ant-design/icons";
 
 import {
   Button,
   Card,
   Row,
   Table,
-  Input,
-  Tag,
   Form,
   Typography,
-  Modal,
   Col,
-  Select,
   Skeleton,
   Space,
-  Checkbox,
-  Divider,
-  DatePicker,
-  Slider,
   Spin,
+  Input,
+  Popconfirm,
 } from "antd";
-
 import {
   EditOutlined,
+  EyeOutlined,
   QuestionCircleOutlined,
   DeleteOutlined,
-  ExportOutlined,
+  CloseOutlined,
+  FormOutlined,
+  SearchOutlined,
 } from "@ant-design/icons";
-import { CSVLink } from "react-csv";
-
 import * as helpers from "../lib/helpers";
 
-import * as api from "../api";
 import useLocalStorage from "../hooks/useLocalStorage";
-import { useGetColumns, useGetData } from "../Request";
-import { defaultFIlter } from "../constants/config";
-import { useQueryClient } from "react-query";
+import { useDeleteRow, useGetColumns, useGetData } from "../Request";
+import Config, { defaultFilter } from "../constants/config";
 import Search from "../blocks/Search";
 import CustomCol from "../blocks/CustomCol";
 import Export from "../blocks/Export";
-import dayjs from "dayjs";
+import { useQueryClient } from "react-query";
 
 const { Title } = Typography;
 
 function Index() {
+  const [form] = Form.useForm();
+
   const { pageModule } = useParams();
+  const [urlParams, setUrlParams] = useSearchParams();
+  const pageId = urlParams.get("id");
+
   const [pagination, setPagination] = useLocalStorage(pageModule, {
-    ...defaultFIlter,
+    ...defaultFilter,
     key: pageModule,
   });
 
   const [column, setColumn] = useState([]);
-  const [selectedKeys, setSelectedKeys] = useState([30, 50]);
+  const isEditing = (record) => record.key === pageId;
 
   const { data: pageData, ...pageDataQuery } = useGetColumns(
     pageModule,
@@ -81,6 +83,9 @@ function Index() {
             );
             return filteredList;
           }
+
+          newData.push(actions(res.configs.actions, pageModule, form));
+
           return newData;
         });
       },
@@ -136,32 +141,26 @@ function Index() {
     });
   };
 
-  const [urlParams, setUrlParams] = useSearchParams();
-
-  let pageId = urlParams.get("id");
-
-  const [form] = Form.useForm();
-
-  const handleFormSubmit = () => {
-    form
-      .validateFields()
-      .then((values) => {
-        setUrlParams("");
-      })
-      .catch((errorInfo) => {});
-  };
+  const mergedColumns = column.map((col) => {
+    if (!col.editable) {
+      return col;
+    }
+    return {
+      ...col,
+      onCell: (record) => ({
+        record,
+        inputType: col.dataIndex === "age" ? "number" : "text",
+        dataIndex: col.dataIndex,
+        title: col.title,
+        editing: isEditing(record),
+      }),
+    };
+  });
 
   return (
     <div className={`${pageModule}-index page-index`}>
       <Form
         form={form}
-        component={false}
-        onFinish={(value) => {
-          // console.log("🚀 ~ file: Index.js:295 ~ EditableRow ~ value:", value);
-        }}
-        onFinishFailed={(value) => {
-          // console.log("🚀 ~ file: Index.js:315 ~ EditableRow ~ value:", value);
-        }}
         // disabled={!(pageId === restProps["data-row-key"])}
       >
         {pageDataQuery.isLoading ? (
@@ -222,7 +221,7 @@ function Index() {
                         size="large"
                         danger
                         onClick={() => {
-                          setPagination({ ...defaultFIlter, key: pageModule });
+                          setPagination({ ...defaultFilter, key: pageModule });
                           const newData = [...column];
                           newData.forEach((col) => {
                             col.filteredValue = null;
@@ -237,23 +236,6 @@ function Index() {
               </Col>
               <Col className="gutter-row text-right">
                 <Space>
-                  <>
-                    {pageId && (
-                      <Form.Item>
-                        <Button
-                          type="primary"
-                          htmlType="submit"
-                          size="large"
-                          onClick={() => {
-                            // handleFormSubmit();
-                            alert("comig soon!");
-                          }}
-                        >
-                          Submit
-                        </Button>
-                      </Form.Item>
-                    )}
-                  </>
                   {pageData?.actions?.create && (
                     <Link to={`/admin/${pageModule}/create-edit`}>
                       <Button
@@ -310,7 +292,7 @@ function Index() {
             <Table
               tableLayout={"auto"}
               scroll={{ y: "calc(100vh - 340px)" }}
-              columns={column}
+              columns={mergedColumns}
               rowKey={(record) => record.id || record._id}
               dataSource={indexData?.data}
               noDataContent={
@@ -321,7 +303,7 @@ function Index() {
               pagination={{
                 pageSize: pagination?.pageSize,
                 current: pagination?.current,
-                pageSizeOptions: ["15", "30", "50", "100", "500"],
+                pageSizeOptions: ["10", "15", "30", "50", "100", "500"],
                 total: indexData?.total,
                 showTotal: (total) => (
                   <>
@@ -339,34 +321,8 @@ function Index() {
                   </>
                 ),
               }}
-              // components={{
-              //   body: {
-              //     row: ({ children, ...restProps }) => {
-              //       return <EditableRow children={children} {...restProps} />;
-              //     },
-              //   },
-              // }}
-
-              // components={{
-              //   body: {
-              //     cell: EditableCell,
-              //   },
-              // }}
               loading={dataQuery.isLoading || dataQuery.isFetching}
               onChange={handleChangeTable}
-              // footer={() => (
-              //   <>
-              //     {!dataQuery.isLoading && indexData?.data && (
-              //       <CSVLink
-              //         filename={"Expense_Table.csv"}
-              //         data={indexData?.data}
-              //         className="btn btn-primary"
-              //       >
-              //         Export to CSV
-              //       </CSVLink>
-              //     )}
-              //   </>
-              // )}
             />
           )}
         </Card>
@@ -376,3 +332,198 @@ function Index() {
 }
 
 export default Index;
+
+const actions = (moduleActions, pageModule, form) => {
+  const showAction = moduleActions.show;
+  const editAction = moduleActions.edit;
+  const deleteAction = moduleActions.destroy;
+  return {
+    title: "Actions",
+    dataIndex: Config.interactionCharacter,
+    align: "center",
+    fixed: "right",
+    width: 160,
+    render: (id, data) => {
+      return (
+        <>
+          <div className="action-td">
+            {showAction && <DetailRow id={id} />}
+
+            {editAction && <InlineEdit id={id} form={form} data={data} />}
+
+            {editAction && <EditRow id={id} />}
+
+            {deleteAction && <DeleteRow id={id} />}
+          </div>
+        </>
+      );
+    },
+  };
+};
+
+const DetailRow = ({ id }) => {
+  const { pageModule } = useParams();
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  let pageId = searchParams.get("id");
+
+  return (
+    <>
+      {pageId == id ? (
+        <></>
+      ) : (
+        <Button
+          type="link"
+          // disabled={!!pageId}
+          onClick={() => {
+            navigate(`/admin/${pageModule}/detail?id=${id}`);
+          }}
+          icon={<EyeOutlined />}
+        />
+      )}
+    </>
+  );
+};
+const EditRow = ({ id }) => {
+  const { pageModule } = useParams();
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  let pageId = searchParams.get("id");
+
+  return (
+    <>
+      {pageId == id ? (
+        <></>
+      ) : (
+        <Button
+          type="link"
+          onClick={() => {
+            navigate(`/admin/${pageModule}/create-edit?id=${id}`);
+          }}
+          icon={<FormOutlined />}
+        />
+      )}
+    </>
+  );
+};
+const DeleteRow = ({ id }) => {
+  const { pageModule } = useParams();
+  useDeleteRow(pageModule, id);
+
+  const [searchParams] = useSearchParams();
+  let pageId = searchParams.get("id");
+
+  const deleteRow = useDeleteRow();
+
+  const [pagination, setPagination] = useLocalStorage(pageModule, {
+    ...defaultFilter,
+    key: pageModule,
+  });
+  const queryClient = useQueryClient();
+
+  return (
+    <>
+      {pageId == id ? (
+        <></>
+      ) : (
+        <Popconfirm
+          title="Sure to delete?"
+          onConfirm={() => {
+            deleteRow.mutate(
+              { pageModule, id },
+              {
+                onSuccess: () => {
+                  queryClient.setQueryData(
+                    [`index-data-${pageModule}`, pagination],
+                    (oldData) => {
+                      const basic = { ...oldData };
+                      const newData = oldData.data.filter(
+                        (item) => item[Config.interactionCharacter] !== id
+                      );
+                      basic.total = oldData.total - 1;
+                      return { ...basic, data: newData };
+                    }
+                  );
+                },
+              }
+            );
+          }}
+        >
+          <Button
+            type="link"
+            danger
+            loading={deleteRow.isLoading}
+            icon={<DeleteOutlined />}
+          />
+        </Popconfirm>
+      )}
+    </>
+  );
+};
+
+const InlineEdit = ({ id, form, data }) => {
+  console.log("🚀 ~ file: Index.js:588 ~ InlineEdit ~ data:", data);
+  const [urlParams, setUrlParams] = useSearchParams();
+  let pageId = urlParams.get("id");
+  const [saveLoading, setSaveLoading] = useState(false);
+  const { pageModule } = useParams();
+
+  const handleFormSubmit = () => {
+    form
+      .validateFields()
+      .then((values) => {
+        // setUrlParams("");
+        helpers.onFinish({
+          values: values,
+          setSubmitLoad: setSaveLoading,
+          pageModule: pageModule,
+          pageId: pageId,
+          setUrlParams: () => {},
+          afterSubmit: () => {
+            setUrlParams("");
+          },
+        });
+      })
+      .catch((errorInfo) => {});
+  };
+  return (
+    <>
+      {pageId == id ? (
+        <>
+          <Button
+            type="link"
+            htmlType="submit"
+            onClick={() => {
+              handleFormSubmit();
+            }}
+            loading={saveLoading}
+            // icon={<CloseOutlined />}
+          >
+            Save
+          </Button>
+          <Popconfirm
+            title="Sure to cancel?"
+            onConfirm={() => {
+              setUrlParams(``);
+            }}
+          >
+            <Button type="link">Cancel</Button>
+          </Popconfirm>
+        </>
+      ) : (
+        <>
+          <Button
+            onClick={() => {
+              form.setFieldsValue({
+                ...data,
+              });
+              setUrlParams(`id=${id}`);
+            }}
+            type="link"
+            icon={<EditOutlined />}
+          />
+        </>
+      )}
+    </>
+  );
+};

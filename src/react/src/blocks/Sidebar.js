@@ -15,6 +15,19 @@ function App(props) {
 
   const { pageModule } = useParams();
 
+  const openKeys = (menus) => {
+    let r;
+    menus.forEach((item) => {
+      if (item.children) {
+        item.children.forEach((element) => {
+          if (element.name === pageModule) {
+            r = item.name;
+          }
+        });
+      }
+    });
+    return r;
+  };
   return (
     <Sider
       collapsible
@@ -33,15 +46,34 @@ function App(props) {
             theme="dark"
             defaultSelectedKeys={["0"]}
             selectedKeys={pageModule}
+            openKeys={openKeys(menus)}
             mode="inline"
-            items={menus.map(({ link, icon, title, name }) => ({
+            items={menus.map(({ link, icon, title, name, children = [] }) => ({
               icon: <Icon type={icon} />,
               key: name,
               label: (
-                <Link className="ml-2" to={link}>
-                  {title}
-                </Link>
+                <>
+                  {children.length === 0 ? (
+                    <Link className="ml-2" to={link}>
+                      {title}
+                    </Link>
+                  ) : (
+                    <span className="menu__parent">{title}</span>
+                  )}
+                </>
               ),
+              children:
+                children.length === 0
+                  ? null
+                  : children.map(({ link, icon, title, name }) => ({
+                      icon: <Icon type={icon} />,
+                      key: name,
+                      label: (
+                        <Link className="ml-2" to={link}>
+                          {title}
+                        </Link>
+                      ),
+                    })),
             }))}
           />
         </>

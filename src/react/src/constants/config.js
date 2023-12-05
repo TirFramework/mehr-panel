@@ -17,7 +17,7 @@ const Config = {
 
 export default Config;
 
-export const defaultFIlter = {
+export const defaultFilter = {
   current: 1,
   pageSize: 15,
   total: 0,

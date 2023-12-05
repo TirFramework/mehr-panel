@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 
-function useLocalStorage(key, defaultFIlter) {
+function useLocalStorage(key, defaultFilter) {
   const [storedValue, setStoredValue] = useState({});
 
   useEffect(() => {
     const item = window.localStorage.getItem(key);
-    setStoredValue(item ? JSON.parse(item) : { ...defaultFIlter });
+    setStoredValue(item ? JSON.parse(item) : { ...defaultFilter });
   }, [key]);
 
   const setValue = (value) => {
