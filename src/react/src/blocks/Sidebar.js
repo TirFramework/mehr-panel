@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Layout, Menu } from "antd";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import Icon from "../components/Icon";
 import { useSidebar } from "../Request";
 import useLocalStorage from "../hooks/useLocalStorage";
@@ -12,6 +12,8 @@ function App(props) {
   const [isCollapsible, setIsCollapsible] = useLocalStorage("collapsible", {
     status: false,
   });
+
+  const { pageModule } = useParams();
 
   return (
     <Sider
@@ -30,11 +32,11 @@ function App(props) {
           <Menu
             theme="dark"
             defaultSelectedKeys={["0"]}
-            selectedKeys={window.location.pathname}
+            selectedKeys={pageModule}
             mode="inline"
-            items={menus.map(({ link, icon, title }) => ({
+            items={menus.map(({ link, icon, title, name }) => ({
               icon: <Icon type={icon} />,
-              key: link,
+              key: name,
               label: (
                 <Link className="ml-2" to={link}>
                   {title}

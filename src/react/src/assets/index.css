@@ -297,3 +297,49 @@ body {
 .top-header {
   padding: 0 82px 0 16px;
 }
+
+.loading-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  flex-direction: column;
+}
+
+.loading-container__text {
+  /* margin-top: 32px; */
+  opacity: 0.8;
+}
+.table-loading {
+}
+.table-loading .ant-skeleton {
+  display: block;
+}
+.table-loading__header {
+}
+.table-loading__footer {
+  padding: 16px;
+  display: flex;
+  justify-content: space-between;
+}
+.table-loading__body {
+  overflow-y: scroll;
+  flex-grow: 1;
+  width: 100%;
+  height: calc(100vh - 340px);
+  display: flex;
+  justify-content: center;
+  /* align-items: center; */
+  padding-top: 135px;
+  padding-left: 16px;
+  opacity: 0.7;
+}
+
+.custom-filter {
+  padding: 8px;
+}
+.custom-filter .ant-divider {
+  margin: 8px;
+  width: auto;
+  min-width: fit-content;
+}

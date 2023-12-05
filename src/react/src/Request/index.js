@@ -5,6 +5,7 @@ import {
   getCreateOrEditFields,
   getData,
   getFields,
+  getGeneral,
   getSidebar,
 } from "../api";
 import { notification } from "antd";
@@ -52,5 +53,10 @@ export const useFieldsQuery = ({ pageModule, id, type }) => {
     getFields(pageModule, id, type)
   );
 
+  return query;
+};
+
+export const useGeneralQuery = () => {
+  const query = useQuery([`general`], () => getGeneral());
   return query;
 };

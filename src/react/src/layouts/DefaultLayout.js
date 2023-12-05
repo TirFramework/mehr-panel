@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Switch, Route, Redirect, Outlet } from "react-router-dom";
 
-import { Layout, Spin } from "antd";
+import { Layout, Spin, Typography } from "antd";
 
 import routes from "../routes.js";
 import { LoadingOutlined } from "@ant-design/icons";
@@ -9,31 +9,14 @@ import Sidebar from "../blocks/Sidebar";
 import TopHeader from "../blocks/TopHeader.js";
 import * as api from "../api";
 import { useIsFetching } from "react-query";
+import { useGeneralQuery } from "../Request/index.js";
 
 const { Content } = Layout;
 
 function DefaultLayout(props) {
   const isFetching = useIsFetching();
 
-  const [general, setGeneral] = useState();
-  // const [loading, setLoading] = useState(true);
-
-  const makeGeneral = () => {
-    return api
-      .getGeneral()
-      .then((res) => {
-        setGeneral(res);
-        // setLoading(false);
-      })
-      .catch((err) => {});
-  };
-
-  useEffect(() => {
-    async function makeHeader() {
-      await makeGeneral();
-    }
-    makeHeader();
-  }, []);
+  const { data, ...generalQuery } = useGeneralQuery();
 
   return (
     <div className="flex">
@@ -46,15 +29,29 @@ function DefaultLayout(props) {
         ""
       )}
 
-      <Layout>
-        <TopHeader name={general?.name} username={general?.username} />
+      {generalQuery.isLoading ? (
+        <>
+          <Layout>
+            <Layout.Content className="loading-container">
+              <Spin size="large" />
+
+              <Typography.Title level={3} className="loading-container__text">
+                Loading
+              </Typography.Title>
+            </Layout.Content>
+          </Layout>
+        </>
+      ) : (
         <Layout>
-          <Sidebar />
-          <Layout.Content>
-            <Outlet />
-          </Layout.Content>
+          <TopHeader name={data?.name} username={data?.username} />
+          <Layout>
+            <Sidebar />
+            <Layout.Content>
+              <Outlet />
+            </Layout.Content>
+          </Layout>
         </Layout>
-      </Layout>
+      )}
     </div>
   );
 }

@@ -20,6 +20,7 @@ import {
   Divider,
   DatePicker,
   Slider,
+  Spin,
 } from "antd";
 
 import {
@@ -94,11 +95,11 @@ function Index() {
   );
 
   const handleChangeTable = (p, filters, sorter) => {
-    console.log(
-      "🚀 ~ file: Index.js:93 ~ handleChangeTable ~ filters:",
-      filters
-    );
-    console.log("🚀 ~ file: Index.js:93 ~ handleChangeTable ~ sorter:", sorter);
+    // console.log(
+    //   "🚀 ~ file: Index.js:93 ~ handleChangeTable ~ filters:",
+    //   filters
+    // );
+    // console.log("🚀 ~ file: Index.js:93 ~ handleChangeTable ~ sorter:", sorter);
     filters = helpers.removeNullFromObject(filters);
     const orderBy = {
       field: sorter?.column?.fieldName,
@@ -270,67 +271,104 @@ function Index() {
             </Row>
           </>
         )}
-        <Card loading={pageDataQuery.isLoading} className="index-page__card">
-          <Table
-            scroll={{ y: "calc(100vh - 340px)" }}
-            columns={column}
-            rowKey={(record) => record.id || record._id}
-            dataSource={indexData?.data}
-            noDataContent={
-              helpers.notEmpty(pagination?.filters) || pagination?.search
-                ? "remove filter "
-                : "nodata"
-            }
-            pagination={{
-              pageSize: pagination?.pageSize,
-              current: pagination?.current,
-              pageSizeOptions: ["15", "30", "50", "100", "500"],
-              total: indexData?.total,
-              showTotal: (total) => (
-                <>
-                  <Row justify={"space-between"}>
-                    <Col>
-                      <Export
-                        loading={dataQuery.isLoading || dataQuery.isFetching}
-                        data={indexData?.data}
-                      />
-                    </Col>
-                    <Col>
-                      <Button>Total: {indexData?.total}</Button>
-                    </Col>
-                  </Row>
-                </>
-              ),
-            }}
-            // components={{
-            //   body: {
-            //     row: ({ children, ...restProps }) => {
-            //       return <EditableRow children={children} {...restProps} />;
-            //     },
-            //   },
-            // }}
+        <Card className="index-page__card">
+          {pageDataQuery.isLoading ? (
+            <div className="table-loading">
+              <div className="table-loading__header">
+                <Skeleton.Input
+                  active={true}
+                  size="large"
+                  style={{
+                    width: "100%",
+                    height: "55px",
+                  }}
+                />
+              </div>
+              <div className="table-loading__body">
+                <Spin />
+              </div>
+              <div className="table-loading__footer">
+                <Skeleton.Input
+                  active={true}
+                  size="large"
+                  style={{
+                    width: "100px",
+                    height: "32px",
+                  }}
+                />
+                <Skeleton.Input
+                  active={true}
+                  size="large"
+                  style={{
+                    width: "400px",
+                    height: "32px",
+                  }}
+                />
+              </div>
+            </div>
+          ) : (
+            <Table
+              tableLayout={"auto"}
+              scroll={{ y: "calc(100vh - 340px)" }}
+              columns={column}
+              rowKey={(record) => record.id || record._id}
+              dataSource={indexData?.data}
+              noDataContent={
+                helpers.notEmpty(pagination?.filters) || pagination?.search
+                  ? "remove filter "
+                  : "nodata"
+              }
+              pagination={{
+                pageSize: pagination?.pageSize,
+                current: pagination?.current,
+                pageSizeOptions: ["15", "30", "50", "100", "500"],
+                total: indexData?.total,
+                showTotal: (total) => (
+                  <>
+                    <Row justify={"space-between"}>
+                      <Col>
+                        <Export
+                          loading={dataQuery.isLoading || dataQuery.isFetching}
+                          data={indexData?.data}
+                        />
+                      </Col>
+                      <Col>
+                        <Button>Total: {indexData?.total}</Button>
+                      </Col>
+                    </Row>
+                  </>
+                ),
+              }}
+              // components={{
+              //   body: {
+              //     row: ({ children, ...restProps }) => {
+              //       return <EditableRow children={children} {...restProps} />;
+              //     },
+              //   },
+              // }}
 
-            // components={{
-            //   body: {
-            //     cell: EditableCell,
-            //   },
-            // }}
-            loading={dataQuery.isLoading || dataQuery.isFetching}
-            onChange={handleChangeTable}
-            // footer={() => (
-            //   <>
-            //     {!dataQuery.isLoading && indexData?.data && (
-            //       <CSVLink
-            //         filename={"Expense_Table.csv"}
-            //         data={indexData?.data}
-            //         className="btn btn-primary"
-            //       >
-            //         Export to CSV
-            //       </CSVLink>
-            //     )}
-            //   </>
-            // )}
-          />
+              // components={{
+              //   body: {
+              //     cell: EditableCell,
+              //   },
+              // }}
+              loading={dataQuery.isLoading || dataQuery.isFetching}
+              onChange={handleChangeTable}
+              // footer={() => (
+              //   <>
+              //     {!dataQuery.isLoading && indexData?.data && (
+              //       <CSVLink
+              //         filename={"Expense_Table.csv"}
+              //         data={indexData?.data}
+              //         className="btn btn-primary"
+              //       >
+              //         Export to CSV
+              //       </CSVLink>
+              //     )}
+              //   </>
+              // )}
+            />
+          )}
         </Card>
       </Form>
     </div>

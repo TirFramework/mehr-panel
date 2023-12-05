@@ -10,7 +10,7 @@ function FilterDate({
   filters,
 }) {
   return (
-    <div style={{ padding: 8 }}>
+    <div className="custom-filter">
       {/* <>
          <DatePicker.RangePicker
           // format={"DD-MM-YY"}
@@ -43,7 +43,6 @@ function FilterDate({
           }}
           value={selectedKeys.length > 0 ? selectedKeys : [0, 2000]}
           onChange={(val) => {
-            console.log("🚀 ~ file: FilterDate.js:40 ~ val:", val);
             setSelectedKeys(val);
           }}
         />
@@ -54,12 +53,13 @@ function FilterDate({
           placeholder="Search"
           size="small"
           onChange={(e) => {
-            console.log("🚀 ~ file: FilterDate.js:40 ~ val:", e.target.value);
             setSelectedKeys(e.target.value);
           }}
         />
       </> */}
-      <Divider style={{ margin: "8px" }} />
+      <div>
+        <Divider style={{ margin: "8px" }} />
+      </div>
       <Row justify={"space-between"}>
         <Col>
           <Button

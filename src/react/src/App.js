@@ -35,17 +35,8 @@ function App() {
               mode: !isDarkMode.mode,
             });
           }}
-        >
-          {isDarkMode ? (
-            <>
-              <BulbOutlined />
-            </>
-          ) : (
-            <>
-              <BulbFilled />
-            </>
-          )}
-        </Button>
+          icon={isDarkMode.mode ? <BulbOutlined /> : <BulbFilled />}
+        />
         <Routes>
           <Route
             path={"/admin/login"}
