@@ -21,7 +21,7 @@ mix
   .react()
   .postCss(
     "resources/admin/src/assets/tailwindcss.css",
-    "publicadmin-assets/css",
+    "public/admin-assets/css",
     [require("tailwindcss")]
   )
   //   .less("resources/less/app.less", "/public/../../admin-assets/css", {

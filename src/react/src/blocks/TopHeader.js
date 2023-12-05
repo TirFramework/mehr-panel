@@ -34,22 +34,20 @@ const TopHeader = ({ username, name }) => {
   );
   return (
     <>
-      <Header className="px-4">
+      <Header className="top-header">
         <Row justify="space-between" gutter={16} align="middle">
           <Col>
             <Typography.Title level={2} className="logo">
               <a href="/" target="_blank">
-                <Space>
-                  {name}
-                  <small>
-                    <ExportOutlined />
-                  </small>
-                </Space>
+                {name}
+                <small>
+                  <ExportOutlined />
+                </small>
               </a>
             </Typography.Title>
           </Col>
           <Col>
-            <div className="text-right username sentry-unmask">{username}</div>
+            <div className="username">{username}</div>
             <Button onClick={logout} icon={<LogoutOutlined />}>
               Logout
             </Button>

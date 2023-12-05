@@ -25,6 +25,11 @@ body {
 .logo a {
   color: #fff !important;
 }
+.logo small {
+  font-size: 50%;
+  vertical-align: top;
+  margin-left: 8px;
+}
 .ant-layout-sider {
   /* background: #001629; */
   /* color: #fff; */
@@ -277,7 +282,7 @@ body {
 }
 .toggle-theme {
   position: fixed;
-  right: 0;
+  right: 16px;
   top: 12px;
 }
 .login-page__footer {
@@ -285,4 +290,7 @@ body {
   bottom: 16px;
   width: 100%;
   text-align: center;
+}
+.top-header {
+  padding: 0 82px 0 16px;
 }
