@@ -18,6 +18,8 @@ import {
   Space,
   Checkbox,
   Divider,
+  DatePicker,
+  Slider,
 } from "antd";
 
 import {
@@ -38,6 +40,7 @@ import { useQueryClient } from "react-query";
 import Search from "../blocks/Search";
 import CustomCol from "../blocks/CustomCol";
 import Export from "../blocks/Export";
+import dayjs from "dayjs";
 
 const { Title } = Typography;
 
@@ -49,6 +52,7 @@ function Index() {
   });
 
   const [column, setColumn] = useState([]);
+  const [selectedKeys, setSelectedKeys] = useState([30, 50]);
 
   const { data: pageData, ...pageDataQuery } = useGetColumns(
     pageModule,
@@ -90,6 +94,10 @@ function Index() {
   );
 
   const handleChangeTable = (p, filters, sorter) => {
+    console.log(
+      "🚀 ~ file: Index.js:93 ~ handleChangeTable ~ filters:",
+      filters
+    );
     console.log("🚀 ~ file: Index.js:93 ~ handleChangeTable ~ sorter:", sorter);
     filters = helpers.removeNullFromObject(filters);
     const orderBy = {
@@ -155,103 +163,112 @@ function Index() {
         }}
         // disabled={!(pageId === restProps["data-row-key"])}
       >
-        <Title className="page-index__title">
-          {pageData?.configs?.module_title}
-        </Title>
         {pageDataQuery.isLoading ? (
           <>
-            <Skeleton.Input
-              active={true}
-              size="large"
-              className="w-full"
-              style={{ width: "200px", height: "40px", marginBottom: "16px" }}
-            />
-            <Skeleton.Input
-              active={true}
-              size="large"
-              className="w-full"
-              style={{ width: "100%", height: "40px", marginBottom: "16px" }}
-            />
+            <div>
+              <Skeleton.Input
+                active={true}
+                size="large"
+                style={{ width: "200px", height: "40px", marginBottom: "16px" }}
+              />
+            </div>
+            <div>
+              <Skeleton.Input
+                active={true}
+                size="large"
+                style={{
+                  width: "calc(100vw - 350px)",
+                  height: "46px",
+                  marginBottom: "16px",
+                }}
+              />
+            </div>
           </>
         ) : (
-          <Row
-            align="bottom"
-            className="page-index__header"
-            justify={"space-between"}
-          >
-            <Col className="gutter-row">
-              <Space>
-                <>
-                  <Search
-                    loading={dataQuery.isLoading}
-                    value={pagination?.search}
-                    onSearch={onSearch}
-                  />
+          <>
+            <Title className="page-index__title">
+              {pageData?.configs?.module_title}
+            </Title>
 
-                  <CustomCol
-                    column={pageData?.cols}
-                    onChange={(newCol) => {
-                      setColumn(newCol);
-                    }}
-                  />
-                </>
-                <>
-                  {(helpers.notEmpty(pagination?.filters) ||
-                    pagination.search ||
-                    helpers.notEmpty(pagination?.sorter)) && (
-                    <Button
-                      icon={<ClearOutlined />}
-                      type="primary"
-                      size="large"
-                      danger
-                      onClick={() => {
-                        setPagination({ ...defaultFIlter, key: pageModule });
-                        const newData = [...column];
-                        newData.forEach((col) => {
-                          col.filteredValue = null;
-                          col.sortOrder = {};
-                        });
-                        setColumn(newData);
+            <Row
+              align="bottom"
+              className="page-index__header"
+              justify={"space-between"}
+            >
+              <Col className="gutter-row">
+                <Space>
+                  <>
+                    <Search
+                      loading={dataQuery.isLoading}
+                      value={pagination?.search}
+                      onSearch={onSearch}
+                    />
+
+                    <CustomCol
+                      column={pageData?.cols}
+                      onChange={(newCol) => {
+                        setColumn(newCol);
                       }}
                     />
-                  )}
-                </>
-              </Space>
-            </Col>
-            <Col className="gutter-row text-right">
-              <Space>
-                <>
-                  {pageId && (
-                    <Form.Item>
+                  </>
+                  <>
+                    {(helpers.notEmpty(pagination?.filters) ||
+                      pagination.search ||
+                      helpers.notEmpty(pagination?.sorter)) && (
                       <Button
+                        icon={<ClearOutlined />}
                         type="primary"
-                        htmlType="submit"
                         size="large"
+                        danger
                         onClick={() => {
-                          // handleFormSubmit();
-                          alert("comig soon!");
+                          setPagination({ ...defaultFIlter, key: pageModule });
+                          const newData = [...column];
+                          newData.forEach((col) => {
+                            col.filteredValue = null;
+                            col.sortOrder = {};
+                          });
+                          setColumn(newData);
                         }}
+                      />
+                    )}
+                  </>
+                </Space>
+              </Col>
+              <Col className="gutter-row text-right">
+                <Space>
+                  <>
+                    {pageId && (
+                      <Form.Item>
+                        <Button
+                          type="primary"
+                          htmlType="submit"
+                          size="large"
+                          onClick={() => {
+                            // handleFormSubmit();
+                            alert("comig soon!");
+                          }}
+                        >
+                          Submit
+                        </Button>
+                      </Form.Item>
+                    )}
+                  </>
+                  {pageData?.actions?.create && (
+                    <Link to={`/admin/${pageModule}/create-edit`}>
+                      <Button
+                        size="large"
+                        type="primary"
+                        icon={<PlusOutlined />}
+                        loading={pageDataQuery.isLoading}
                       >
-                        Submit
+                        {pageData?.configs?.module_title}
                       </Button>
-                    </Form.Item>
+                    </Link>
                   )}
-                </>
-                {pageData?.actions?.create && (
-                  <Link to={`/admin/${pageModule}/create-edit`}>
-                    <Button
-                      size="large"
-                      type="primary"
-                      icon={<PlusOutlined />}
-                      loading={pageDataQuery.isLoading}
-                    >
-                      {pageData?.configs?.module_title}
-                    </Button>
-                  </Link>
-                )}
-              </Space>
-            </Col>
-          </Row>
+                </Space>
+              </Col>
+            </Row>
+          </>
         )}
         <Card loading={pageDataQuery.isLoading} className="index-page__card">
           <Table

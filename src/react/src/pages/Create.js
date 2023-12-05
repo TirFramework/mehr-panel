@@ -16,7 +16,7 @@ const Create = () => {
     >
       <MyProvider>
         {/*<Header/>*/}
-        <Form />
+        <Form type={"create-edit"} />
       </MyProvider>
     </div>
   );

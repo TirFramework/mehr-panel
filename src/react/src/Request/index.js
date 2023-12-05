@@ -1,5 +1,12 @@
 import { useMutation, useQuery } from "react-query";
-import { deleteRow, getCols, getData, getSidebar } from "../api";
+import {
+  deleteRow,
+  getCols,
+  getCreateOrEditFields,
+  getData,
+  getFields,
+  getSidebar,
+} from "../api";
 import { notification } from "antd";
 
 export const useGetData = (pageModule, filter, options) => {
@@ -36,6 +43,14 @@ export const useDeleteRow = () => {
 
 export const useSidebar = () => {
   const query = useQuery([`sidebar`], () => getSidebar());
+
+  return query;
+};
+
+export const useFieldsQuery = ({ pageModule, id, type }) => {
+  const query = useQuery([`${pageModule}-${id}-${type}`], () =>
+    getFields(pageModule, id, type)
+  );
 
   return query;
 };

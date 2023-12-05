@@ -40,9 +40,22 @@ export const getDetailFields = async (module, id) => {
   return await data;
 };
 
+export const getFields = async (module, id, type) => {
+  if (type === "detail") {
+    const { data } = await axios.get(`${module}/${id}`);
+    return await data;
+  } else if (id) {
+    const { data } = await axios.get(`${module}/${id}/edit`);
+    return await data;
+  } else {
+    const { data } = await axios.get(`${module}/create`);
+    return await data;
+  }
+};
+
 export const getCreateOrEditFields = async (module, id = null) => {
   if (id) {
-    const { data } = await axios.get(`${module}/${id}/edit?locale=all`);
+    const { data } = await axios.get(`${module}/${id}/edit`);
     return await data;
   } else {
     const { data } = await axios.get(`${module}/create`);

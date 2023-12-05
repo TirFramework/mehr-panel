@@ -1,4 +1,14 @@
-import { Button, Popover, Tag, Form } from "antd";
+import {
+  Button,
+  Popover,
+  Tag,
+  Form,
+  DatePicker,
+  Space,
+  Divider,
+  Col,
+  Row,
+} from "antd";
 import dayjs from "dayjs";
 import {
   EditOutlined,
@@ -7,6 +17,7 @@ import {
   DeleteOutlined,
   CloseOutlined,
   FormOutlined,
+  SearchOutlined,
 } from "@ant-design/icons";
 
 import {
@@ -21,6 +32,7 @@ import { useQueryClient } from "react-query";
 import Config from "../constants/config";
 import Field from "../components/Field";
 import { defaultFIlter } from "../constants/config";
+import FilterDate from "../blocks/FilterDate";
 
 export const getColsNormalize = (res, params, pageModule) => {
   let cols = res.cols;
@@ -34,6 +46,15 @@ export const getColsNormalize = (res, params, pageModule) => {
     // -----------------------------------
     // add data for filter
     // col.sorter = true;
+
+    col.filterDropdown = (props) => {
+      return <FilterDate {...props} />;
+    };
+
+    // col.filterIcon = (filtered) => (
+    //   <SearchOutlined style={{ color: filtered ? "#1677ff" : undefined }} />
+    // );
+
     // -----------------------------------
     // -----------------------------------
     // add data for filter

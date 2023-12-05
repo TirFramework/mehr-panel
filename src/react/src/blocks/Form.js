@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useSearchParams, useLocation, useParams } from "react-router-dom";
-import { Form, Typography, Card, Row, Col } from "antd";
+import { Form, Typography, Card, Row, Col, Skeleton } from "antd";
 
 import * as api from "../api";
 import { onFinish } from "../lib/helpers";
@@ -8,10 +8,10 @@ import SubmitGroup from "../components/SubmitGroup";
 import FormGroup from "../components/FormGroup";
 import Header from "./Header";
 import { useMyContext } from "../context/MyContext";
+import { useFieldsQuery } from "../Request";
 
-const CreateForm = (props) => {
+const CreateForm = ({ type }) => {
   const [form] = Form.useForm();
-  const type = props.type;
 
   const [urlParams, setUrlParams] = useSearchParams();
   const pageId = urlParams.get("id");
@@ -20,41 +20,49 @@ const CreateForm = (props) => {
   // const editMode = urlParams.editMode;
 
   const { pageModule } = useParams();
-  const { pageType } = useParams();
-
-  const [data, setData] = useState([]);
-  const [bootLoad, setBootLoad] = useState(true);
-  const [submitLoad, setSubmitLoad] = useState(true);
   const [isTouched, setIsTouched] = useState(false);
 
   const { myState, updateMyState } = useMyContext();
 
-  useEffect(() => {
-    setIsTouched(false);
-    setBootLoad(true);
-    setData([]);
+  const { data: data, ...dataQuery } = useFieldsQuery({
+    pageModule: pageModule,
+    id:
+      pageId ||
+      new URLSearchParams(window.location.search).get("newId") ||
+      null,
+    type,
+  });
 
-    if (type === "detail") {
-      api.getDetailFields(pageModule, pageId).then((res) => {
-        setData(res);
-        setBootLoad(false);
-        setSubmitLoad(false);
-        form.resetFields();
-      });
-    } else {
-      api
-        .getCreateOrEditFields(
-          pageModule,
-          pageId || new URLSearchParams(window.location.search).get("newId")
-        )
-        .then((res) => {
-          setData(res);
-          setBootLoad(false);
-          setSubmitLoad(false);
-          form.resetFields();
-        });
-    }
-  }, [pageModule, pageId]);
+  // useEffect(() => {
+  //   setIsTouched(false);
+  //   setBootLoad(true);
+  //   setData([]);
+
+  //   if (type === "detail") {
+  //     api.getDetailFields(pageModule, pageId).then((res) => {
+  //       setData(res);
+  //       setBootLoad(false);
+  //       setSubmitLoad(false);
+  //       form.resetFields();
+  //     });
+  //   } else {
+  //     // const { data: data, ...dataQuery } = useCreateOrEditFieldsQuery(
+  //     //   pageModule,
+  //     //   pageId || new URLSearchParams(window.location.search).get("newId")
+  //     // );
+  //     api
+  //       .getCreateOrEditFields(
+  //         pageModule,
+  //         pageId || new URLSearchParams(window.location.search).get("newId")
+  //       )
+  //       .then((res) => {
+  //         setData(res);
+  //         setBootLoad(false);
+  //         setSubmitLoad(false);
+  //         form.resetFields();
+  //       });
+  //   }
+  // }, [pageModule, pageId]);
 
   const onFinishFailed = (errorInfo) => {
     console.log("Failed:", errorInfo);
@@ -84,20 +92,34 @@ const CreateForm = (props) => {
 
   return (
     <>
-      <Header pageTitle={data.configs?.module_title} />
-      <usePrompt
-        message={(nextLocation) => {
-          // navigation prompt should only happen when pathname is about to change
-          // not on urlParams change or location.search change
-          if (nextLocation.pathname !== location.pathname && isTouched) {
-            return promptMessage;
-          }
-          return true;
-        }}
-      />
+      {dataQuery.isLoading ? (
+        <>
+          <div>
+            <Skeleton.Input
+              active={true}
+              size="large"
+              style={{ width: "200px", height: "16px", marginBottom: "14px" }}
+            />
+          </div>
+          <div>
+            <Skeleton.Input
+              active={true}
+              size="large"
+              style={{
+                width: "calc(100vw - 350px)",
+                height: "40px",
+                marginBottom: "16px",
+              }}
+            />
+          </div>
+        </>
+      ) : (
+        <Header pageTitle={data?.configs?.module_title} />
+      )}
+
       <Form
         form={form}
-        validateMessages={data.validationMsg}
+        validateMessages={data?.validationMsg}
         name="basic"
         scrollToFirstError={true}
         labelCol={{
@@ -131,14 +153,13 @@ const CreateForm = (props) => {
             <SubmitGroup buttons={data?.buttons} form={form} pageId={pageId} />
           </Col>
         </Row>
-        <Card className="create-edit__card" loading={bootLoad}>
+        <Card className="create-edit__card" loading={dataQuery.isLoading}>
           <Row gutter={[16, 16]}>
-            {data.fields?.map((field, index) => (
+            {data?.fields?.map((field, index) => (
               <FormGroup
                 key={index}
                 index={index}
                 pageType={!!pageId ? "edit" : "create"}
-                loading={submitLoad}
                 {...field}
               />
             ))}
@@ -147,6 +168,16 @@ const CreateForm = (props) => {
 
         <SubmitGroup buttons={data?.buttons} form={form} pageId={pageId} />
       </Form>
+      <usePrompt
+        message={(nextLocation) => {
+          // navigation prompt should only happen when pathname is about to change
+          // not on urlParams change or location.search change
+          if (nextLocation.pathname !== location.pathname && isTouched) {
+            return promptMessage;
+          }
+          return true;
+        }}
+      />
     </>
   );
 };

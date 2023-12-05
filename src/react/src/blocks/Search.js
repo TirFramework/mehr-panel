@@ -20,7 +20,7 @@ function Search({ value, onSearch, loading }) {
       allowClear
       enterButton
       size="large"
-      style={{ width: "80vw", maxWidth: "700px" }}
+      style={{ width: "50vw", maxWidth: "calc(100vw - 375px)" }}
     />
   );
 }

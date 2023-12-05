@@ -34,7 +34,7 @@ axios.defaults.paramsSerializer = (params) => {
   return new URLSearchParams(newData).toString();
 };
 
-axios.defaults.timeout = 10000;
+axios.defaults.timeout = 600000;
 
 // Add a request interceptor
 axios.interceptors.request.use(

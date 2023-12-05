@@ -16,10 +16,18 @@ function Export({ data, loading }) {
 
   const exportCSV = () => {
     setLo(true);
-    api.getRows(pageModule, { pageSize: 1000 }).then((response) => {
-      setLo(false);
-      setAllData(response.data);
-    });
+    api
+      .getRows(pageModule, {
+        pageSize: 10000,
+        current: 1,
+        filters: null,
+        search: null,
+        sorter: null,
+      })
+      .then((response) => {
+        setLo(false);
+        setAllData(response.data);
+      });
   };
 
   const items = [

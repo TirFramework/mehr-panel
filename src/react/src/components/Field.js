@@ -27,9 +27,7 @@ const Field = (props) => {
               ))}
             </Card>
           ) : (
-            <Form.Item label={props.display}>
-              <input placeholder="loading..." className="ant-input" />
-            </Form.Item>
+            <></>
           )}
         </div>
       }

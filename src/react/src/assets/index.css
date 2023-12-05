@@ -18,6 +18,8 @@ body {
 }
 .ant-layout-content {
   padding: 16px;
+  height: calc(100vh - 64px);
+  overflow: auto;
 }
 .logo {
   margin: 0 !important;
@@ -78,9 +80,9 @@ body {
 }
 
 .ant-input[disabled].readOnly {
-  border: 0 !important;
-  background: white !important;
-  color: #000 !important;
+  /* border: 0 !important; */
+  /* background: white !important;
+  color: #000 !important; */
   cursor: auto !important;
 }
 
@@ -143,8 +145,9 @@ body {
   top: -22px;
   z-index: 9;
   /* background-color: #f0f2f5; */
+  margin-top: -50px;
   height: 50px;
-  margin-top: -75px;
+  /* transform: translateY(-75px); */
 }
 
 .header-page .ant-typography {
@@ -271,7 +274,7 @@ body {
 
 .create-edit__title {
   margin-top: 0;
-  margin-bottom: 0;
+  margin-bottom: 0 !important;
 }
 .create-edit__header {
   padding-bottom: 16px;
