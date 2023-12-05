@@ -2,8 +2,17 @@ import { useState } from "react";
 import Cookies from "js-cookie";
 import axios from "../lib/axios";
 import { useNavigate } from "react-router-dom";
-import { Form, Input, Button, notification } from "antd";
-import { LockOutlined, UserOutlined } from "@ant-design/icons";
+import {
+  Form,
+  Input,
+  Button,
+  notification,
+  Card,
+  Typography,
+  Layout,
+} from "antd";
+
+import { LockOutlined, UserOutlined, GithubOutlined } from "@ant-design/icons";
 import * as api from "../api";
 import Config from "../constants/config";
 
@@ -12,6 +21,7 @@ const Login = () => {
 
   const [loading, setLoading] = useState(false);
   const onFinish = (values) => {
+    setLoading(true);
     api
       .postLogin(values)
       .then((res) => {
@@ -43,49 +53,70 @@ const Login = () => {
   };
 
   return (
-    <div className="login-page">
-      <div className="login-box">
-        <div className="illustration-wrapper">
-          <img src="" alt="Login" />
-        </div>
+    <Layout>
+      <Layout.Content className="login-page">
+        <Card>
+          <div className="illustration-wrapper">
+            <img src="" alt="Login" />
+          </div>
 
-        <Form
-          name="basic"
-          className="login-form"
-          initialValues={{ remember: true }}
-          onFinish={onFinish}
-          onFinishFailed={onFinishFailed}
-        >
-          <p className="form-title">Welcome back</p>
-          <p>Login to the Dashboard</p>
-
-          <Form.Item
-            name="email"
-            rules={[{ required: true, message: "Please input your email!" }]}
+          <Form
+            name="basic"
+            className="login-form"
+            initialValues={{ remember: true }}
+            onFinish={onFinish}
+            onFinishFailed={onFinishFailed}
           >
-            <Input placeholder="Email" prefix={<UserOutlined />} />
-          </Form.Item>
+            <Typography.Title className="page-index__title">
+              Welcome back
+            </Typography.Title>
 
-          <Form.Item
-            name="password"
-            rules={[{ required: true, message: "Please input your password!" }]}
-          >
-            <Input.Password placeholder="Password" prefix={<LockOutlined />} />
-          </Form.Item>
+            <Typography.Paragraph>Login to the Dashboard</Typography.Paragraph>
 
-          <Form.Item>
-            <Button
-              type="primary"
-              htmlType="submit"
-              loading={loading}
-              className="w-full"
+            <Form.Item
+              name="email"
+              rules={[{ required: true, message: "Please input your email!" }]}
             >
-              Sign In
-            </Button>
-          </Form.Item>
-        </Form>
-      </div>
-    </div>
+              <Input
+                size="large"
+                placeholder="Email"
+                prefix={<UserOutlined />}
+              />
+            </Form.Item>
+
+            <Form.Item
+              name="password"
+              rules={[
+                { required: true, message: "Please input your password!" },
+              ]}
+            >
+              <Input.Password
+                size="large"
+                placeholder="Password"
+                prefix={<LockOutlined />}
+              />
+            </Form.Item>
+
+            <Form.Item>
+              <Button
+                block
+                size="large"
+                type="primary"
+                htmlType="submit"
+                loading={loading}
+              >
+                Sign In
+              </Button>
+            </Form.Item>
+          </Form>
+        </Card>
+      </Layout.Content>
+      <Layout.Footer className="login-page__footer">
+        <a href="https://github.com/TirFramework/mehr-panel">
+          <GithubOutlined /> MehrPanel <small>V{Config.panelVersion}</small>
+        </a>
+      </Layout.Footer>
+    </Layout>
   );
 };
 

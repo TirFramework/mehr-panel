@@ -46,15 +46,14 @@ function DefaultLayout(props) {
         ""
       )}
 
-      <Sidebar name={general?.name} />
-      <Layout className="site-layout">
-        <div className="flex flex-col h-screen">
-          <TopHeader username={general?.username} />
-          <Content className="mp-main p-4">
+      <Layout>
+        <TopHeader name={general?.name} username={general?.username} />
+        <Layout>
+          <Sidebar />
+          <Layout.Content>
             <Outlet />
-          </Content>
-          {/* <Footer/> */}
-        </div>
+          </Layout.Content>
+        </Layout>
       </Layout>
     </div>
   );

@@ -2,7 +2,11 @@ import { Button, Dropdown } from "antd";
 import { CSVDownload, CSVLink } from "react-csv";
 import { useParams } from "react-router-dom";
 import { useState } from "react";
-import { ExportOutlined, DownOutlined } from "@ant-design/icons";
+import {
+  ExportOutlined,
+  DownOutlined,
+  FileExcelOutlined,
+} from "@ant-design/icons";
 import * as api from "../api";
 
 function Export({ data, loading }) {
@@ -30,7 +34,7 @@ function Export({ data, loading }) {
         </CSVLink>
       ),
       key: "1",
-      icon: <ExportOutlined />,
+      icon: <FileExcelOutlined />,
     },
   ];
 
@@ -49,7 +53,7 @@ function Export({ data, loading }) {
         onClick={exportCSV}
         // icon={<DownOutlined />}
       >
-        <ExportOutlined /> Export All Data
+        <FileExcelOutlined /> Export All Data
       </Dropdown.Button>
     </>
   );

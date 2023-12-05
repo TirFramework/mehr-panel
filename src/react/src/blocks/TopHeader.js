@@ -8,15 +8,16 @@ import {
   Menu,
   Button,
   Col,
+  Space,
 } from "antd";
 import { useNavigate } from "react-router-dom";
-import { LogoutOutlined } from "@ant-design/icons";
+import { LogoutOutlined, ExportOutlined } from "@ant-design/icons";
 import Cookies from "js-cookie";
 import * as api from "../api";
 
-const { Header } = Layout;
+const { Header, Content } = Layout;
 
-const TopHeader = (props) => {
+const TopHeader = ({ username, name }) => {
   const navigate = useNavigate();
 
   const logout = () => {
@@ -34,19 +35,24 @@ const TopHeader = (props) => {
   return (
     <>
       <Header className="px-4">
-        <Row
-          justify="end"
-          gutter={16}
-          align="middle"
-          className="text-right flex align-middle h-full"
-        >
+        <Row justify="space-between" gutter={16} align="middle">
           <Col>
-            <div className="text-right username sentry-unmask">
-              {props.username}
-            </div>
+            <Typography.Title level={2} className="logo">
+              <a href="/" target="_blank">
+                <Space>
+                  {name}
+                  <small>
+                    <ExportOutlined />
+                  </small>
+                </Space>
+              </a>
+            </Typography.Title>
           </Col>
           <Col>
-            <Button shape="circle" onClick={logout} icon={<LogoutOutlined />} />
+            <div className="text-right username sentry-unmask">{username}</div>
+            <Button onClick={logout} icon={<LogoutOutlined />}>
+              Logout
+            </Button>
           </Col>
         </Row>
       </Header>

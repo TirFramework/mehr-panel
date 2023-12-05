@@ -3,21 +3,30 @@ import { Layout, Menu } from "antd";
 import { Link } from "react-router-dom";
 import Icon from "../components/Icon";
 import { useSidebar } from "../Request";
+import useLocalStorage from "../hooks/useLocalStorage";
 
 const { Sider } = Layout;
 
 function App(props) {
   const { data: menus, ...menusQuery } = useSidebar();
+  const [isCollapsible, setIsCollapsible] = useLocalStorage("collapsible", {
+    status: false,
+  });
 
   return (
-    <Sider collapsible>
+    <Sider
+      collapsible
+      collapsed={isCollapsible.status}
+      onCollapse={(value) =>
+        setIsCollapsible({
+          status: value,
+        })
+      }
+    >
       {menusQuery.isLoading ? (
         <>loading ....</>
       ) : (
         <>
-          <div className="logo text-xl text-white p-4 bg-black">
-            {props?.name}
-          </div>
           <Menu
             theme="dark"
             defaultSelectedKeys={["0"]}
