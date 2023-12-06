@@ -1,4 +1,4 @@
-import { notification, message } from "antd";
+import { message } from "antd";
 import { replaceLastNumberFromString, stringToObject } from ".";
 
 import * as api from "../../api";

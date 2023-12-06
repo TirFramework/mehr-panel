@@ -18,17 +18,13 @@ import {
   Skeleton,
   Space,
   Spin,
-  Input,
   Popconfirm,
 } from "antd";
 import {
   EditOutlined,
   EyeOutlined,
-  QuestionCircleOutlined,
   DeleteOutlined,
-  CloseOutlined,
   FormOutlined,
-  SearchOutlined,
 } from "@ant-design/icons";
 import * as helpers from "../lib/helpers";
 

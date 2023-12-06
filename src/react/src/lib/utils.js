@@ -1,44 +1,15 @@
-import {
-  Button,
-  Popover,
-  Tag,
-  Form,
-  DatePicker,
-  Space,
-  Divider,
-  Col,
-  Row,
-} from "antd";
+import { Popover, Tag } from "antd";
 import dayjs from "dayjs";
-import {
-  EditOutlined,
-  EyeOutlined,
-  QuestionCircleOutlined,
-  DeleteOutlined,
-  CloseOutlined,
-  FormOutlined,
-  SearchOutlined,
-} from "@ant-design/icons";
+import { QuestionCircleOutlined } from "@ant-design/icons";
 
-import {
-  useParams,
-  Link,
-  useNavigate,
-  useSearchParams,
-} from "react-router-dom";
-import { useDeleteRow } from "../Request";
-import useLocalStorage from "../hooks/useLocalStorage";
-import { useQueryClient } from "react-query";
+import { useSearchParams } from "react-router-dom";
 import Config from "../constants/config";
 import Field from "../components/Field";
-import { defaultFilter } from "../constants/config";
-import FilterDate from "../blocks/FilterDate";
-
-export const getColsNormalize = (res, params, pageModule) => {
+export const getColsNormalize = (res) => {
   let cols = res.cols;
 
   //   // loop for detect array
-  cols.forEach((col, index) => {
+  cols.forEach((col) => {
     // ----------------------------------------
     // convert to array
     col.dataIndex = col.dataIndex.split(".");

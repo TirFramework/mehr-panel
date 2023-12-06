@@ -1,13 +1,11 @@
-import React, { useEffect, useState } from "react";
-import { Switch, Route, Redirect, Outlet } from "react-router-dom";
+import React from "react";
+import { Outlet } from "react-router-dom";
 
 import { Layout, Spin, Typography } from "antd";
 
-import routes from "../routes.js";
 import { LoadingOutlined } from "@ant-design/icons";
 import Sidebar from "../blocks/Sidebar";
 import TopHeader from "../blocks/TopHeader.js";
-import * as api from "../api";
 import { useIsFetching } from "react-query";
 import { useGeneralQuery } from "../Request/index.js";
 
