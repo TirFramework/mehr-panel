@@ -462,7 +462,6 @@ const DeleteRow = ({ id }) => {
 };
 
 const InlineEdit = ({ id, form, data }) => {
-  console.log("🚀 ~ file: Index.js:588 ~ InlineEdit ~ data:", data);
   const [urlParams, setUrlParams] = useSearchParams();
   let pageId = urlParams.get("id");
   const [saveLoading, setSaveLoading] = useState(false);
@@ -501,14 +500,14 @@ const InlineEdit = ({ id, form, data }) => {
           >
             Save
           </Button>
-          <Popconfirm
-            title="Sure to cancel?"
+          <Button
+            type="link"
             onConfirm={() => {
               setUrlParams(``);
             }}
           >
-            <Button type="link">Cancel</Button>
-          </Popconfirm>
+            Cancel
+          </Button>
         </>
       ) : (
         <>

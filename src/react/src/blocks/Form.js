@@ -9,6 +9,7 @@ import FormGroup from "../components/FormGroup";
 import Header from "./Header";
 import { useMyContext } from "../context/MyContext";
 import { useFieldsQuery } from "../Request";
+import Prompt from "./Prompt";
 
 const CreateForm = ({ type }) => {
   const [form] = Form.useForm();
@@ -114,7 +115,7 @@ const CreateForm = ({ type }) => {
           </div>
         </>
       ) : (
-        <Header pageTitle={data?.configs?.module_title} />
+        <Header type={type} pageTitle={data?.configs?.module_title} />
       )}
 
       <Form
@@ -168,16 +169,8 @@ const CreateForm = ({ type }) => {
 
         <SubmitGroup buttons={data?.buttons} form={form} pageId={pageId} />
       </Form>
-      <usePrompt
-        message={(nextLocation) => {
-          // navigation prompt should only happen when pathname is about to change
-          // not on urlParams change or location.search change
-          if (nextLocation.pathname !== location.pathname && isTouched) {
-            return promptMessage;
-          }
-          return true;
-        }}
-      />
+
+      {/* <Prompt /> */}
     </>
   );
 };
