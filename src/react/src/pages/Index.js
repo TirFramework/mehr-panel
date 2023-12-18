@@ -467,6 +467,11 @@ const InlineEdit = ({ id, form, data }) => {
   let pageId = urlParams.get("id");
   const [saveLoading, setSaveLoading] = useState(false);
   const { pageModule } = useParams();
+  const [pagination, setPagination] = useLocalStorage(pageModule, {
+    ...defaultFilter,
+    key: pageModule,
+  });
+  const queryClient = useQueryClient();
 
   const handleFormSubmit = () => {
     form
@@ -481,6 +486,26 @@ const InlineEdit = ({ id, form, data }) => {
           setUrlParams: () => {},
           afterSubmit: () => {
             setUrlParams("");
+            queryClient.setQueryData(
+              [`index-data-${pageModule}`, pagination],
+              (oldData) => {
+                const newData = { ...oldData };
+
+                newData.data.forEach((item) => {
+                  if (item.id === Number(pageId)) {
+                    for (const [key, value] of Object.entries(values)) {
+                      item[key] = value;
+                    }
+                  }
+                });
+                console.log(
+                  "🚀 ~ file: Index.js:508 ~ .then ~ newData:",
+                  newData
+                );
+
+                return newData;
+              }
+            );
           },
         });
       })
