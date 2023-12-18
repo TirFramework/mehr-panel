@@ -26,8 +26,8 @@ const ErrorHandler = async (error) => {
       description:
         mes.length > 0 ? (
           <ul className="pl-2">
-            {mes.map((val) => (
-              <li>{val}</li>
+            {mes.map((val, index) => (
+              <li key={`error-${index}`}>{val}</li>
             ))}
           </ul>
         ) : null,

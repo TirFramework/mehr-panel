@@ -1,4 +1,4 @@
-import { message } from "antd";
+import { App } from "antd";
 import { replaceLastNumberFromString, stringToObject } from ".";
 
 import * as api from "../../api";
@@ -33,6 +33,7 @@ export const onFinish = ({
   pageModule,
   pageId,
   setUrlParams,
+  message,
   afterSubmit = () => {},
 }) => {
   // console.log("Success:", values);

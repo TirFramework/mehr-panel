@@ -8,18 +8,23 @@ const Header = ({ pageTitle, type }) => {
   const pageId = urlParams.get("id");
   let newId = urlParams.get("newId");
 
+  const items = [
+    {
+      title: pageTitle,
+    },
+    {
+      title:
+        type === "detail" ? (
+          <>Details</>
+        ) : (
+          <>{pageId || newId ? "Edit" : "Create"}</>
+        ),
+    },
+  ];
+
   return (
     <header className="create-edit__header">
-      <Breadcrumb>
-        <Breadcrumb.Item>{pageTitle}</Breadcrumb.Item>
-        <Breadcrumb.Item>
-          {type === "detail" ? (
-            <>Details</>
-          ) : (
-            <>{pageId || newId ? "Edit" : "Create"}</>
-          )}
-        </Breadcrumb.Item>
-      </Breadcrumb>
+      <Breadcrumb items={items} />
       <Typography.Title className=" create-edit__title">
         {pageTitle}
       </Typography.Title>

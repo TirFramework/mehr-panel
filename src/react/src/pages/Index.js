@@ -19,6 +19,7 @@ import {
   Space,
   Spin,
   Popconfirm,
+  App,
 } from "antd";
 import {
   EditOutlined,
@@ -471,6 +472,7 @@ const InlineEdit = ({ id, form, data }) => {
     key: pageModule,
   });
   const queryClient = useQueryClient();
+  const { message, notification, modal } = App.useApp();
 
   const handleFormSubmit = () => {
     form
@@ -478,6 +480,7 @@ const InlineEdit = ({ id, form, data }) => {
       .then((values) => {
         // setUrlParams("");
         helpers.onFinish({
+          message: message,
           values: values,
           setSubmitLoad: setSaveLoading,
           pageModule: pageModule,

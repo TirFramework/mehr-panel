@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useSearchParams, useLocation, useParams } from "react-router-dom";
-import { Form, Typography, Card, Row, Col, Skeleton } from "antd";
+import { App, Form, Typography, Card, Row, Col, Skeleton } from "antd";
 
 import * as api from "../api";
 import { onFinish } from "../lib/helpers";
@@ -91,6 +91,8 @@ const CreateForm = ({ type }) => {
     }
   }, [isTouched]);
 
+  const { message, notification, modal } = App.useApp();
+
   return (
     <>
       {dataQuery.isLoading ? (
@@ -139,6 +141,7 @@ const CreateForm = ({ type }) => {
         className="form"
         onFinish={(value) => {
           onFinish({
+            message: message,
             values: value,
             setSubmitLoad: updateMyState,
             pageModule: pageModule,

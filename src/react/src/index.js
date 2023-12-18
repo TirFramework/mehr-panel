@@ -2,10 +2,12 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import { QueryClient, QueryClientProvider } from "react-query";
 
+import { App } from "antd";
+
 // import "./assets/tailwindbasic.css";
 // import "antd/dist/antd.min.css"; // or 'antd/dist/antd.less'
 import "./assets/index.css";
-import App from "./App";
+import MyApp from "./MyApp";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 
@@ -25,9 +27,11 @@ const queryClient = new QueryClient({
 });
 
 root.render(
-  <QueryClientProvider client={queryClient}>
-    <App />
-  </QueryClientProvider>
+  <App>
+    <QueryClientProvider client={queryClient}>
+      <MyApp />
+    </QueryClientProvider>
+  </App>
 );
 
 // If you want to start measuring performance in your app, pass a function

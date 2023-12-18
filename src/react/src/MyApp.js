@@ -17,7 +17,7 @@ import { useState } from "react";
 import useLocalStorage from "./hooks/useLocalStorage.js";
 const { defaultAlgorithm, darkAlgorithm } = theme;
 
-function App() {
+function MyApp() {
   const [isDarkMode, setIsDarkMode] = useLocalStorage("mode", { mode: false });
 
   return (
@@ -65,4 +65,4 @@ function App() {
   );
 }
 
-export default App;
+export default MyApp;
