@@ -203,12 +203,16 @@ function Index() {
 
                     {pageData?.cols.length && (
                       <CustomCol
-                        column={[
-                          ...pageData?.cols,
-                          actions(pageData?.configs.actions, pageModule, form),
-                        ]}
+                        column={[...pageData?.cols]}
                         onChange={(newCol) => {
-                          setColumn(newCol);
+                          setColumn([
+                            ...newCol,
+                            actions(
+                              pageData?.configs.actions,
+                              pageModule,
+                              form
+                            ),
+                          ]);
                         }}
                       />
                     )}
