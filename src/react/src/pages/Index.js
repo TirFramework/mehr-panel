@@ -201,7 +201,10 @@ function Index() {
                     />
 
                     <CustomCol
-                      column={pageData?.cols}
+                      column={[
+                        ...pageData?.cols,
+                        actions(pageData.configs.actions, pageModule, form),
+                      ]}
                       onChange={(newCol) => {
                         setColumn(newCol);
                       }}

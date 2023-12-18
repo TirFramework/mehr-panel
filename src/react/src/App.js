@@ -1,10 +1,11 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import dashboardRoutes from "./routes.js";
+import { dashboardRoutes, authRoutes } from "./routes.js";
 import { ConfigProvider, theme, Button, Card } from "antd";
 
 // import reportWebVitals from "./reportWebVitals";
 
 import PrivateRoute from "./PrivateRoute.js";
+import PublicRoute from "./PublicRoute.js";
 
 // core components
 import DefaultLayout from "./layouts/DefaultLayout.js";
@@ -38,12 +39,16 @@ function App() {
           icon={isDarkMode.mode ? <BulbOutlined /> : <BulbFilled />}
         />
         <Routes>
-          <Route
-            path={"/admin/login"}
-            element={<Login />}
-            key={`Login`}
-            title={`Login`}
-          />
+          <Route element={<PublicRoute />}>
+            {authRoutes.map((authRoute, index) => (
+              <Route
+                path={authRoute.path}
+                element={authRoute.component}
+                key={`${authRoute.path}-${index}`}
+                title={`${authRoute.path}-${index}`}
+              />
+            ))}
+          </Route>
           <Route element={<PrivateRoute />}>
             {dashboardRoutes.map((privateAuthRoute, index) => (
               <Route

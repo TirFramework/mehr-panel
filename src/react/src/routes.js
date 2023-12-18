@@ -2,8 +2,9 @@ import Custom from "./pages/Custom.js";
 import Index from "./pages/Index";
 import Create from "./pages/Create";
 import Detail from "./pages/Detail";
+import Login from "./layouts/Login.js";
 
-const dashboardRoutes = [
+export const dashboardRoutes = [
   {
     path: "/admin/overwrite-index/:pageModule",
     component: <Custom />,
@@ -29,5 +30,9 @@ const dashboardRoutes = [
     component: <Index />,
   },
 ];
-
-export default dashboardRoutes;
+export const authRoutes = [
+  {
+    path: "/admin/login",
+    component: <Login />,
+  },
+];

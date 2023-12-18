@@ -8,45 +8,67 @@ function FilterDate({
   clearFilters,
   close,
   filters,
+  filtersType,
+  data,
 }) {
+  const getMarks = (d) => {
+    const transformedObject = {};
+
+    for (const item of d) {
+      transformedObject[item.value] = item.label;
+    }
+
+    return transformedObject;
+  };
+
+  const getMin = (d) => {
+    return d[0].value;
+  };
+
+  const getMax = (d) => {
+    return d[d.length - 1].value;
+  };
+
   return (
     <div className="custom-filter">
-      {/* <>
-         <DatePicker.RangePicker
-          // format={"DD-MM-YY"}
-          size="small"
-          value={
-            selectedKeys.length > 0
-              ? [dayjs(selectedKeys[0]), dayjs(selectedKeys[1])]
-              : ""
-          }
-          onChange={(e) => {
-            setSelectedKeys([
-              //   e[0].format("YYYY-MM-DDT00:00:00Z"),
-              e[0],
-              e[1],
-            ]);
-          }}
-          allowClear={false}
-        />
-      </> */}
-      <div style={{ padding: "0 16px" }}>
-        <Slider
-          size={"small"}
-          style={{ width: "200px" }}
-          min={1}
-          max={2000}
-          range
-          marks={{
-            1: "1",
-            2000: "2000",
-          }}
-          value={selectedKeys.length > 0 ? selectedKeys : [0, 2000]}
-          onChange={(val) => {
-            setSelectedKeys(val);
-          }}
-        />
-      </div>
+      <>
+        {filtersType === "date" && (
+          <DatePicker.RangePicker
+            // format={"DD-MM-YY"}
+            size="small"
+            value={
+              selectedKeys.length > 0
+                ? [dayjs(selectedKeys[0]), dayjs(selectedKeys[1])]
+                : ""
+            }
+            onChange={(e) => {
+              setSelectedKeys([
+                //   e[0].format("YYYY-MM-DDT00:00:00Z"),
+                e[0],
+                e[1],
+              ]);
+            }}
+            allowClear={false}
+          />
+        )}
+      </>
+
+      {filtersType === "slider" && (
+        <div style={{ padding: "0 16px" }}>
+          <Slider
+            size={"small"}
+            style={{ width: "200px" }}
+            min={getMin(data)}
+            max={getMax(data)}
+            range
+            marks={getMarks(data)}
+            value={selectedKeys.length > 0 ? selectedKeys : [0, 2000]}
+            onChange={(val) => {
+              setSelectedKeys(val);
+            }}
+          />
+        </div>
+      )}
       {/* <>
         <Input
           value={selectedKeys}

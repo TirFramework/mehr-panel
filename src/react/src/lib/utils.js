@@ -1,10 +1,11 @@
 import { Popover, Tag } from "antd";
 import dayjs from "dayjs";
-import { QuestionCircleOutlined } from "@ant-design/icons";
+import { QuestionCircleOutlined, SearchOutlined } from "@ant-design/icons";
 
 import { useSearchParams } from "react-router-dom";
 import Config from "../constants/config";
 import Field from "../components/Field";
+import FilterDate from "../blocks/FilterDate";
 export const getColsNormalize = (res) => {
   let cols = res.cols;
 
@@ -18,18 +19,22 @@ export const getColsNormalize = (res) => {
     // add data for filter
     // col.sorter = true;
 
-    // col.filterDropdown = (props) => {
-    //   return <FilterDate {...props} />;
-    // };
-
-    // col.filterIcon = (filtered) => (
-    //   <SearchOutlined style={{ color: filtered ? "#1677ff" : undefined }} />
-    // );
-
     // -----------------------------------
     // -----------------------------------
     // add data for filter
     if (col.filters !== undefined) {
+      col.filterDropdown = (props) => {
+        return (
+          <FilterDate {...props} filtersType={"slider"} data={col.filters} />
+        );
+      };
+
+      if (col.filtersType === "input") {
+        col.filterIcon = (filtered) => (
+          <SearchOutlined style={{ color: filtered ? "#1677ff" : undefined }} />
+        );
+      }
+
       col.filters?.map((item) => (item.text = item.label));
       col.filterSearch = col.filters.length > 10;
     }

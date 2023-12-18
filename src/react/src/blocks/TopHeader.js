@@ -47,10 +47,12 @@ const TopHeader = ({ username, name }) => {
             </Typography.Title>
           </Col>
           <Col>
-            <div className="username">{username}</div>
-            <Button onClick={logout} icon={<LogoutOutlined />}>
-              Logout
-            </Button>
+            <Space>
+              <div className="username">{username}</div>
+              <Button onClick={logout} icon={<LogoutOutlined />}>
+                Logout
+              </Button>
+            </Space>
           </Col>
         </Row>
       </Header>
