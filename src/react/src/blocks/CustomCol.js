@@ -17,76 +17,72 @@ function CustomCol({ column, onChange }) {
 
   return (
     <>
-      {column.length > 0 && (
-        <>
-          <Button
-            type="primary"
-            danger={Options?.length !== Object.values(columnList).length}
-            size={"large"}
-            onClick={() => {
-              setIsModalOpen(true);
-            }}
-            icon={<SettingOutlined />}
-          />
+      <Button
+        type="primary"
+        danger={Options?.length !== Object.values(columnList).length}
+        size={"large"}
+        onClick={() => {
+          setIsModalOpen(true);
+        }}
+        icon={<SettingOutlined />}
+      />
 
-          {Options && (
-            <Modal
-              title="Basic Modal"
-              open={isModalOpen}
-              onCancel={() => {
-                setIsModalOpen(false);
+      {Options && (
+        <Modal
+          title="Basic Modal"
+          open={isModalOpen}
+          onCancel={() => {
+            setIsModalOpen(false);
+          }}
+          title={""}
+          closable={false}
+          footer={""}
+          onOk={() => {}}
+        >
+          <>
+            <>Customaze columns</>
+            <Divider />
+
+            <Checkbox
+              indeterminate={
+                !!Object.values(columnList).length &&
+                Object.values(columnList).length < Options.length
+              }
+              onChange={(e) => {
+                setColumnList(e.target.checked ? Options : []);
               }}
-              title={""}
-              closable={false}
-              footer={""}
-              onOk={() => {}}
+              checked={Options.length === Object.values(columnList).length}
             >
-              <>
-                <>Customaze columns</>
-                <Divider />
+              Check all
+            </Checkbox>
+            <Divider />
+            <Checkbox.Group
+              options={Options}
+              value={Object.values(columnList)}
+              onChange={(list) => {
+                setColumnList(list);
+              }}
+            />
+            <Divider />
 
-                <Checkbox
-                  indeterminate={
-                    !!Object.values(columnList).length &&
-                    Object.values(columnList).length < Options.length
-                  }
-                  onChange={(e) => {
-                    setColumnList(e.target.checked ? Options : []);
+            <Row justify={"center"}>
+              <Col>
+                <Button
+                  type="primary"
+                  onClick={() => {
+                    const filteredList = column.filter((item) =>
+                      Object.values(columnList).includes(item.title)
+                    );
+                    onChange(filteredList);
+                    setIsModalOpen(false);
                   }}
-                  checked={Options.length === Object.values(columnList).length}
                 >
-                  Check all
-                </Checkbox>
-                <Divider />
-                <Checkbox.Group
-                  options={Options}
-                  value={Object.values(columnList)}
-                  onChange={(list) => {
-                    setColumnList(list);
-                  }}
-                />
-                <Divider />
-
-                <Row justify={"center"}>
-                  <Col>
-                    <Button
-                      type="primary"
-                      onClick={() => {
-                        const filteredList = column.filter((item) =>
-                          Object.values(columnList).includes(item.title)
-                        );
-                        onChange(filteredList);
-                        setIsModalOpen(false);
-                      }}
-                    >
-                      Ok
-                    </Button>
-                  </Col>
-                </Row>
-              </>
-            </Modal>
-          )}
-        </>
+                  Ok
+                </Button>
+              </Col>
+            </Row>
+          </>
+        </Modal>
       )}
     </>
   );

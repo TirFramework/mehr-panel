@@ -48,9 +48,11 @@ export const useSidebar = () => {
   return query;
 };
 
-export const useFieldsQuery = ({ pageModule, id, type }) => {
-  const query = useQuery([`${pageModule}-${id}-${type}`], () =>
-    getFields(pageModule, id, type)
+export const useFieldsQuery = ({ pageModule, id, type }, options) => {
+  const query = useQuery(
+    [`${pageModule}-${id}-${type}`],
+    () => getFields(pageModule, id, type),
+    options
   );
 
   return query;
