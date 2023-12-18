@@ -461,7 +461,6 @@ const DeleteRow = ({ id }) => {
     </>
   );
 };
-
 const InlineEdit = ({ id, form, data }) => {
   const [urlParams, setUrlParams] = useSearchParams();
   let pageId = urlParams.get("id");
