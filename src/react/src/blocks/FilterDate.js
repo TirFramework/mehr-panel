@@ -15,7 +15,7 @@ function FilterDate({
     const transformedObject = {};
 
     for (const item of d) {
-      transformedObject[item.value] = item.label;
+      transformedObject[Number(item.value)] = item.label;
     }
 
     return transformedObject;
@@ -32,7 +32,7 @@ function FilterDate({
   return (
     <div className="custom-filter">
       <>
-        {filtersType === "date" && (
+        {filtersType === "DatePicker" && (
           <DatePicker.RangePicker
             // format={"DD-MM-YY"}
             size="small"
@@ -53,7 +53,7 @@ function FilterDate({
         )}
       </>
 
-      {filtersType === "slider" && (
+      {filtersType === "Slider" && (
         <div style={{ padding: "0 16px" }}>
           <Slider
             size={"small"}
@@ -62,23 +62,29 @@ function FilterDate({
             max={getMax(data)}
             range
             marks={getMarks(data)}
-            value={selectedKeys.length > 0 ? selectedKeys : [0, 2000]}
+            value={
+              selectedKeys.length > 0
+                ? selectedKeys
+                : [getMin(data), getMax(data)]
+            }
             onChange={(val) => {
               setSelectedKeys(val);
             }}
           />
         </div>
       )}
-      {/* <>
-        <Input
-          value={selectedKeys}
-          placeholder="Search"
-          size="small"
-          onChange={(e) => {
-            setSelectedKeys(e.target.value);
-          }}
-        />
-      </> */}
+      {filtersType === "Search" && (
+        <>
+          <Input
+            value={selectedKeys}
+            placeholder="Search"
+            size="small"
+            onChange={(e) => {
+              setSelectedKeys(e.target.value);
+            }}
+          />
+        </>
+      )}
       <div>
         <Divider style={{ margin: "8px" }} />
       </div>

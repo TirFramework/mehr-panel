@@ -200,15 +200,17 @@ function Index() {
                       onSearch={onSearch}
                     />
 
-                    <CustomCol
-                      column={[
-                        ...pageData?.cols,
-                        actions(pageData?.configs.actions, pageModule, form),
-                      ]}
-                      onChange={(newCol) => {
-                        setColumn(newCol);
-                      }}
-                    />
+                    {pageData?.cols.length && (
+                      <CustomCol
+                        column={[
+                          ...pageData?.cols,
+                          actions(pageData?.configs.actions, pageModule, form),
+                        ]}
+                        onChange={(newCol) => {
+                          setColumn(newCol);
+                        }}
+                      />
+                    )}
                   </>
                   <>
                     {(helpers.notEmpty(pagination?.filters) ||
@@ -489,19 +491,21 @@ const InlineEdit = ({ id, form, data }) => {
       {pageId == id ? (
         <>
           <Button
-            type="link"
+            type="primary"
             htmlType="submit"
             onClick={() => {
               handleFormSubmit();
             }}
             loading={saveLoading}
+            style={{ width: "85px" }}
+
             // icon={<CloseOutlined />}
           >
             Save
           </Button>
           <Button
             type="link"
-            onConfirm={() => {
+            onClick={() => {
               setUrlParams(``);
             }}
           >

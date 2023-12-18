@@ -23,13 +23,19 @@ export const getColsNormalize = (res) => {
     // -----------------------------------
     // add data for filter
     if (col.filters !== undefined) {
-      col.filterDropdown = (props) => {
-        return (
-          <FilterDate {...props} filtersType={"slider"} data={col.filters} />
-        );
-      };
+      if (["DatePicker", "Slider", "Search"].includes(col.filterType)) {
+        col.filterDropdown = (props) => {
+          return (
+            <FilterDate
+              {...props}
+              filtersType={col.filterType}
+              data={col.filters}
+            />
+          );
+        };
+      }
 
-      if (col.filtersType === "input") {
+      if (col.filterType === "Search") {
         col.filterIcon = (filtered) => (
           <SearchOutlined style={{ color: filtered ? "#1677ff" : undefined }} />
         );
