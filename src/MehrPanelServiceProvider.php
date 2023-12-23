@@ -42,6 +42,7 @@ class MehrPanelServiceProvider extends ServiceProvider
 
         $this->publishes([
             __DIR__ . '/custom.scss' => base_path('resources/admin/src/assets/custom.scss'),
+            __DIR__ . '/dashboard.js' => base_path('resources/admin/src/dynamic-pages/dashboard.js'),
 
         ], 'mehr-panel-customize');
     }
