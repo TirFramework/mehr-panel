@@ -12,24 +12,44 @@ import {
   Layout,
 } from "antd";
 
-import { LockOutlined, UserOutlined, GithubOutlined } from "@ant-design/icons";
+import {
+  LockOutlined,
+  UserOutlined,
+  GithubOutlined,
+  KeyOutlined,
+} from "@ant-design/icons";
 import * as api from "../api";
 import Config from "../constants/config";
 
 const Login = () => {
   const navigate = useNavigate();
-
+  const [mustVerify, setMustVerify] = useState(false);
   const [loading, setLoading] = useState(false);
+
+  const handleTryAgain = () => {
+    // Reset mustVerify to false when "Try Again" is clicked
+    setMustVerify(false);
+  };
+
   const onFinish = (values) => {
     setLoading(true);
     api
       .postLogin(values)
       .then((res) => {
         setLoading(false);
-        notification["success"]({
-          message: "You have successfully logged",
-        });
-        login(res.api_token);
+
+        if (res.must_verify === true) {
+          setMustVerify(true);
+          notification["warning"]({
+            message: res.message.error,
+            duration: 20,
+          });
+        } else {
+          notification["success"]({
+            message: "You have successfully logged",
+          });
+          login(res.api_token);
+        }
       })
       .catch(() => {
         setLoading(false);
@@ -75,7 +95,12 @@ const Login = () => {
 
             <Form.Item
               name="email"
-              rules={[{ required: true, message: "Please input your email!" }]}
+              rules={[
+                {
+                  required: true,
+                  message: "Please input your email!",
+                },
+              ]}
             >
               <Input
                 size="large"
@@ -87,7 +112,10 @@ const Login = () => {
             <Form.Item
               name="password"
               rules={[
-                { required: true, message: "Please input your password!" },
+                {
+                  required: true,
+                  message: "Please input your password!",
+                },
               ]}
             >
               <Input.Password
@@ -96,6 +124,23 @@ const Login = () => {
                 prefix={<LockOutlined />}
               />
             </Form.Item>
+
+            {mustVerify && (
+              <Form.Item
+                name="code"
+                rules={[
+                  {
+                    required: true,
+                    message: "Please input your verification code!",
+                  },
+                ]}
+              >
+                <Input
+                  placeholder="Verification Code"
+                  prefix={<KeyOutlined />}
+                />
+              </Form.Item>
+            )}
 
             <Form.Item>
               <Button
@@ -108,6 +153,18 @@ const Login = () => {
                 Sign In
               </Button>
             </Form.Item>
+
+            {mustVerify && (
+              <Form.Item>
+                <Button
+                  onClick={handleTryAgain}
+                  className="w-full"
+                  type="secondary"
+                >
+                  Did not received the code? Try Again
+                </Button>
+              </Form.Item>
+            )}
           </Form>
         </Card>
       </Layout.Content>
