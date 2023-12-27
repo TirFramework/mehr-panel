@@ -1,10 +1,6 @@
 import { Form, ColorPicker as AntdColorPicker } from "antd";
 
 import { separationRules } from "../lib/helpers";
-<<<<<<< HEAD
-import { useEffect, useState } from "react";
-=======
->>>>>>> b422e49e3db751c47aa39210108024a1b841d337
 
 const ColorPicker = (props) => {
   const rules = separationRules({
