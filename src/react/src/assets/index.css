@@ -373,3 +373,10 @@ body {
 .read-only__value--editor {
   font-size: 80%;
 }
+
+.showColorPicker {
+  width: 25px;
+  height: 25px;
+  display: block;
+  border-radius: 5px;
+}

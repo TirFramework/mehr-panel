@@ -118,6 +118,12 @@ const Render = ({ item, value, rowIndex, data, id }) => {
           ? item.field.options.dateFormat
           : item.field.options.dateFormat + " " + item.field.options?.showTime
       );
+    } else if (item.type === "ColorPicker") {
+      return (
+        <>
+          <div className="showColorPicker" style={{ background: value }}></div>
+        </>
+      );
     } else if (item.dataSet.length !== 0) {
       if (typeof value === "object" && value) {
         return (
