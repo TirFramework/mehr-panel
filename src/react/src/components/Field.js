@@ -7,6 +7,7 @@ import Blank from "./Blank";
 import Button from "./Button";
 import Group from "./Group";
 import Text from "./Text";
+import ColorPicker from "./ColorPicker";
 import DatePicker from "./DatePicker";
 import FileUploader from "./FileUploader";
 import Icon from "./Icon";
@@ -63,6 +64,8 @@ const Field = (props) => {
         <Render {...props} />
       ) : props.type === "Text" ? (
         <Text {...props} />
+      ) : props.type === "ColorPicker" ? (
+        <ColorPicker {...props} />
       ) : props.type === "Blank" ? (
         <Blank {...props} />
       ) : props.type === "Button" ? (
