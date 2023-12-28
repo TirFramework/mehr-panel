@@ -113,11 +113,15 @@ const Render = ({ item, value, rowIndex, data, id }) => {
     return <Field value={value} {...item.field} />;
   } else {
     if (item.type === "DatePicker") {
-      return dayjs(value).format(
-        !item.field.options?.showTime?.length
-          ? item.field.options.dateFormat
-          : item.field.options.dateFormat + " " + item.field.options?.showTime
-      );
+      if (value) {
+        return dayjs(value).format(
+          !item.field.options?.showTime?.length
+            ? item.field.options.dateFormat
+            : item.field.options.dateFormat + " " + item.field.options?.showTime
+        );
+      } else {
+        return " - ";
+      }
     } else if (item.type === "ColorPicker") {
       return (
         <>

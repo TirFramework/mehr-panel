@@ -34,7 +34,7 @@ const MyColorPicker = (props) => {
         value={props.value}
         onChange={(val) => {
           props.onChange(
-            `rgba(${val?.metaColor.r},${val?.metaColor.g},${val?.metaColor.r}, ${val?.metaColor.a})`
+            `rgba(${val?.metaColor.r},${val?.metaColor.g},${val?.metaColor.b}, ${val?.metaColor.a})`
           );
         }}
       />
