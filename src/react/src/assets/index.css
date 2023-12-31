@@ -381,3 +381,7 @@ body {
   display: block;
   border-radius: 5px;
 }
+
+.menu__sidebar .ant-badge {
+  color: #fff;
+}

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Layout, Menu } from "antd";
+import { Badge, Layout, Menu } from "antd";
 import { Link, useParams } from "react-router-dom";
 import Icon from "../components/Icon";
 import { useSidebar } from "../Request";
@@ -45,37 +45,60 @@ function App(props) {
         <>
           <Menu
             theme="dark"
+            className="menu__sidebar"
             defaultSelectedKeys={["0"]}
             selectedKeys={pageModule}
             defaultOpenKeys={openKeys(menus)}
             mode="inline"
-            items={menus.map(({ link, icon, title, name, children = [] }) => ({
-              icon: <Icon type={icon} />,
-              key: name,
-              label: (
-                <>
-                  {children.length === 0 ? (
-                    <Link className="menu__link" to={link}>
-                      {title}
-                    </Link>
-                  ) : (
-                    <span className="menu__parent">{title}</span>
-                  )}
-                </>
-              ),
-              children:
-                children.length === 0
-                  ? null
-                  : children.map(({ link, icon, title, name }) => ({
-                      icon: <Icon type={icon} />,
-                      key: name,
-                      label: (
-                        <Link className="menu__link" to={link}>
-                          {title}
-                        </Link>
-                      ),
-                    })),
-            }))}
+            items={menus.map(
+              ({ link, icon, title, name, badge, children = [] }) => ({
+                icon: (
+                  <>
+                    {badge ? (
+                      <Badge count={badge} size="small">
+                        <Icon type={icon} />
+                      </Badge>
+                    ) : (
+                      <Icon type={icon} />
+                    )}
+                  </>
+                ),
+                key: name,
+                label: (
+                  <>
+                    {children.length === 0 ? (
+                      <Link className="menu__link" to={link}>
+                        {title}
+                      </Link>
+                    ) : (
+                      <span className="menu__parent">{title}</span>
+                    )}
+                  </>
+                ),
+                children:
+                  children.length === 0
+                    ? null
+                    : children.map(({ link, icon, title, name, badge }) => ({
+                        icon: (
+                          <>
+                            {badge ? (
+                              <Badge count={badge} size="small">
+                                <Icon color="#fff" type={icon} />
+                              </Badge>
+                            ) : (
+                              <Icon type={icon} />
+                            )}
+                          </>
+                        ),
+                        key: name,
+                        label: (
+                          <Link className="menu__link" to={link}>
+                            {title}
+                          </Link>
+                        ),
+                      })),
+              })
+            )}
           />
         </>
       )}

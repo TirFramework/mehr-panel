@@ -17,7 +17,7 @@ export const getColsNormalize = (res) => {
     // ----------------------------------------
     // -----------------------------------
     // add data for filter
-    // col.sorter = true;
+    col.sorter = col.field.sortable;
 
     // -----------------------------------
     // -----------------------------------
