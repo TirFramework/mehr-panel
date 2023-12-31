@@ -1,5 +1,5 @@
 import { memo, lazy, Suspense } from "react";
-import { QuestionCircleFilled } from "@ant-design/icons";
+import { QuestionCircleFilled, LoadingOutlined } from "@ant-design/icons";
 
 function MyComponent(props) {
   let OtherComponent;
@@ -11,7 +11,7 @@ function MyComponent(props) {
   return (
     <div>
       {process.env.NODE_ENV !== "development" ? (
-        <Suspense fallback={<div>Loading...</div>}>
+        <Suspense fallback={<LoadingOutlined />}>
           <OtherComponent />
         </Suspense>
       ) : (

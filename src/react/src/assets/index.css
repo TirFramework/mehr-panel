@@ -50,9 +50,9 @@ body {
   flex-grow: 1;
 }
 
-.ant-menu .ant-menu-item .anticon {
+/* .ant-menu .ant-menu-item .anticon {
   margin-right: 16px !important;
-}
+} */
 
 .ant-layout-sider-trigger {
   padding: 16px;
@@ -360,6 +360,7 @@ body {
 .ant-table-cell .ant-form-item {
   margin-bottom: 0;
 }
+.menu__link,
 .menu__parent {
   margin-left: 16px;
 }

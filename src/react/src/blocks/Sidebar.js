@@ -55,7 +55,7 @@ function App(props) {
               label: (
                 <>
                   {children.length === 0 ? (
-                    <Link className="ml-2" to={link}>
+                    <Link className="menu__link" to={link}>
                       {title}
                     </Link>
                   ) : (
@@ -70,7 +70,7 @@ function App(props) {
                       icon: <Icon type={icon} />,
                       key: name,
                       label: (
-                        <Link className="ml-2" to={link}>
+                        <Link className="menu__link" to={link}>
                           {title}
                         </Link>
                       ),
