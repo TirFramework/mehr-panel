@@ -52,23 +52,14 @@ function App(props) {
             mode="inline"
             items={menus.map(
               ({ link, icon, title, name, badge, children = [] }) => ({
-                icon: (
-                  <>
-                    {badge ? (
-                      <Badge count={badge} size="small">
-                        <Icon type={icon} />
-                      </Badge>
-                    ) : (
-                      <Icon type={icon} />
-                    )}
-                  </>
-                ),
+                icon: <Icon type={icon} />,
                 key: name,
                 label: (
                   <>
                     {children.length === 0 ? (
                       <Link className="menu__link" to={link}>
-                        {title}
+                        {title}{" "}
+                        {badge > 0 && <Badge count={badge} size="small" />}
                       </Link>
                     ) : (
                       <span className="menu__parent">{title}</span>
@@ -79,21 +70,12 @@ function App(props) {
                   children.length === 0
                     ? null
                     : children.map(({ link, icon, title, name, badge }) => ({
-                        icon: (
-                          <>
-                            {badge ? (
-                              <Badge count={badge} size="small">
-                                <Icon color="#fff" type={icon} />
-                              </Badge>
-                            ) : (
-                              <Icon type={icon} />
-                            )}
-                          </>
-                        ),
+                        icon: <Icon type={icon} />,
                         key: name,
                         label: (
                           <Link className="menu__link" to={link}>
-                            {title}
+                            {title}{" "}
+                            {badge > 0 && <Badge count={badge} size="small" />}
                           </Link>
                         ),
                       })),

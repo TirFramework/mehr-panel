@@ -360,6 +360,23 @@ body {
 .ant-table-cell .ant-form-item {
   margin-bottom: 0;
 }
+.menu__link .ant-badge {
+  padding: 1px;
+}
+.menu__link .ant-badge .ant-badge-count-sm {
+  padding: 0px 5px 0px 3px;
+  font-size: 12px;
+  border-radius: 4px;
+  border: 0 !important;
+  outline: 0 !important;
+  box-shadow: none !important;
+}
+
+.menu__link {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
 .menu__link,
 .menu__parent {
   margin-left: 16px;
@@ -381,7 +398,7 @@ body {
   display: block;
   border-radius: 5px;
 }
-
+/* 
 .menu__sidebar .ant-badge {
   color: #fff;
-}
+} */
