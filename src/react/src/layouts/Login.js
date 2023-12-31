@@ -136,6 +136,7 @@ const Login = () => {
                 ]}
               >
                 <Input
+                  size="large"
                   placeholder="Verification Code"
                   prefix={<KeyOutlined />}
                 />
