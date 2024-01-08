@@ -16,18 +16,17 @@ const Text = (props) => {
     updateRules: props.updateRules,
   });
 
-
   return (
     <>
       <Form.Item
         label={props.display}
         name={props.name}
-        initialValue={props.value}
+        initialValue={props.value ? Number(props.value) : ""}
         rules={rules}
       >
         <InputNumber
-            {...props.options}
-            placeholder={props.options.placeholder}
+          {...props.options}
+          placeholder={props.options.placeholder}
           disabled={props.readonly}
           className={`${props.readonly && "readOnly"} w-full`}
         />
