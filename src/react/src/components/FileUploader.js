@@ -40,7 +40,7 @@ import { HTML5Backend } from "react-dnd-html5-backend";
 import update from "immutability-helper";
 import { UploadOutlined } from "@ant-design/icons";
 
-import { separationRules } from "../lib/helpers";
+import { getAccept, separationRules } from "../lib/helpers";
 
 import Cookies from "js-cookie";
 
@@ -49,7 +49,7 @@ import Config from "../constants/config";
 const type = "DragableUploadList";
 
 const DragableUploadListItem = ({ originNode, moveRow, file, fileList }) => {
-    const ref = React.useRef();
+  const ref = React.useRef();
   const index = fileList.indexOf(file);
   const [{ isOver, dropClassName }, drop] = useDrop({
     accept: type,
@@ -152,6 +152,7 @@ const DragSortingUpload = (props) => {
     <>
       <DndProvider backend={HTML5Backend}>
         <Upload
+          accept={getAccept(props.rules)}
           action={props.postUrl}
           headers={{ Authorization: `Bearer ${token}` }}
           // defaultFileList={initialValueHandeling(props.value)}
@@ -211,7 +212,7 @@ const CustomUpload = (props) => {
     <Form.Item
       name={props.name}
       // valuePropName="fileList"
-      initialValue={props.value}
+      initialValue={props.value || props.defaultValue}
       rules={rules}
       getValueFromEvent={normFile}
       // setFieldsValue={fileList}

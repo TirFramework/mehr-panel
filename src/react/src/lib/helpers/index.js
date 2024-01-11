@@ -65,7 +65,53 @@ const separationRules = ({ pageType, rules, creationRules, updateRules }) => {
     }
   }
 
+  // rules = [...new Set(rules)];
+  // let newRules = [];
+
+  // console.log("🚀 ~ file: index.js:82 ~ separationRules ~ rules:", rules);
+  // antdRule = {
+  //     required: "required",
+  // };
+  // rules.forEach((rule) => {
+  //     ruleArr = rule.split(":");
+
+  //     ruleKey = ruleArr[0];
+  //     rulevalues = ruleArr[1];
+
+  //     rulevaluesArr = rule.split(",");
+
+  //     antdRule[ruleKey];
+  //     newRules.push(thisRules);
+  // });
+
   return newRules;
+};
+
+export const getAccept = (rules) => {
+  const format = {
+    mp4: "video/mp4",
+    png: "video/mp4",
+  };
+  let acceptFormat = [];
+  rules.forEach((rule) => {
+    if (rule.search(":")) {
+      const ruleArr = rule.split(":");
+      const ruleKey = ruleArr[0];
+
+      if (ruleKey === "mimes") {
+        const rulevalues = ruleArr[1];
+        const rulevaluesArr = rulevalues.split(",");
+        rulevaluesArr.forEach((item) => {
+          acceptFormat.push(`.${item}`);
+        });
+      }
+    }
+  });
+  console.log(
+    "🚀 ~ file: index.js:104 ~ getAccept ~ acceptFormat:",
+    acceptFormat
+  );
+  return acceptFormat;
 };
 
 const findValue = (string) => {

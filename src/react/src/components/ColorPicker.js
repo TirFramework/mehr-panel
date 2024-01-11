@@ -15,7 +15,7 @@ const ColorPicker = (props) => {
       <Form.Item
         label={props.display}
         name={props.name}
-        initialValue={props.value}
+        initialValue={props.value || props.defaultValue}
         rules={rules}
       >
         <MyColorPicker {...props} />

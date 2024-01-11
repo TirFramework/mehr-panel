@@ -21,7 +21,13 @@ const Text = (props) => {
       <Form.Item
         label={props.display}
         name={props.name}
-        initialValue={props.value ? Number(props.value) : ""}
+        initialValue={
+          props.value
+            ? Number(props.value)
+            : props.defaultValue
+            ? Number(props.defaultValue)
+            : ""
+        }
         rules={rules}
       >
         <InputNumber

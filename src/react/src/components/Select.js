@@ -29,9 +29,9 @@ const MySelect = (props) => {
 };
 
 const Text = (props) => {
-  const [value, setValue] = useState(props.value);
+  const [value, setValue] = useState(props.value || props.defaultValue);
   useEffect(() => {
-    setValue(props.value);
+    setValue(props.value || props.defaultValue);
   }, []);
 
   const rules = separationRules({
