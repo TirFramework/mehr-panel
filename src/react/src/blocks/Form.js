@@ -28,11 +28,15 @@ const CreateForm = ({ type }) => {
   const { data: data, ...dataQuery } = useFieldsQuery({
     pageModule: pageModule,
     id:
-      pageId ||
+      new URLSearchParams(window.location.search).get("id") ||
       new URLSearchParams(window.location.search).get("newId") ||
       null,
     type,
   });
+
+  useEffect(() => {
+    form.resetFields();
+  }, [pageModule, pageId]);
 
   // useEffect(() => {
   //   setIsTouched(false);

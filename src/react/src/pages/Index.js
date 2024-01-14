@@ -348,14 +348,14 @@ const actions = (moduleActions, pageModule, form) => {
     dataIndex: Config.interactionCharacter,
     align: "center",
     fixed: "right",
-    width: 160,
+    width: 120,
     render: (id, data) => {
       return (
         <>
           <div className="action-td">
             {showAction && <DetailRow id={id} />}
 
-            {editAction && <InlineEdit id={id} form={form} data={data} />}
+            {/* {editAction && <InlineEdit id={id} form={form} data={data} />} */}
 
             {editAction && <EditRow id={id} />}
 
