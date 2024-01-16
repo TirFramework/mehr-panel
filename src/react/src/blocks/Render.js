@@ -90,7 +90,7 @@ const Render = (props) => {
           <label>{props.display}:</label>
           {props.value.map((i) => (
             <div>
-              <img src={i} width={"100px"} />
+              <img src={i} width={"100px"} style={{ maxWidth: "100%" }} />
             </div>
           ))}
         </>
