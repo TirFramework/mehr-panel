@@ -78,6 +78,7 @@ function Index() {
             const filteredList = newData.filter((item) =>
               activeCols.includes(item.title)
             );
+            filteredList.push(actions(res.configs.actions, pageModule, form));
             return filteredList;
           }
 
@@ -88,6 +89,7 @@ function Index() {
       },
     }
   );
+
   const { data: indexData, ...dataQuery } = useGetData(
     pagination?.key || pageModule,
     pagination,
