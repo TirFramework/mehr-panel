@@ -170,9 +170,8 @@ const Login = () => {
         </Card>
       </Layout.Content>
       <Layout.Footer className="login-page__footer">
-        <a href="https://github.com/TirFramework/mehr-panel">
-          <GithubOutlined /> MehrPanel <small>V{Config.panelVersion}</small>
-        </a>
+        <GithubOutlined />
+        <small>V{Config.panelVersion}</small>
       </Layout.Footer>
     </Layout>
   );

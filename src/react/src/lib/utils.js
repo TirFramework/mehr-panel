@@ -133,7 +133,7 @@ const Render = ({ item, value, rowIndex, data, id }) => {
         return (
           <>
             {value.map((val, index) => (
-              <Tag key={index}>{item.dataSet[val]}</Tag>
+              <Tag key={index}>{item.dataSet[val.id || val]}</Tag>
             ))}
           </>
         );
@@ -145,7 +145,8 @@ const Render = ({ item, value, rowIndex, data, id }) => {
         <>
           {value?.map((value, index) => (
             <Tag key={index}>
-              <Render value={value} item={item} />
+              {/* <Render value={value} item={item} /> */}
+              {value.id || value}
             </Tag>
           ))}
         </>
