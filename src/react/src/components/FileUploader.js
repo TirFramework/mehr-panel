@@ -152,7 +152,7 @@ const DragSortingUpload = (props) => {
     <>
       <DndProvider backend={HTML5Backend}>
         <Upload
-          accept={getAccept(props.rules)}
+          accept={getAccept(props.fileRules)}
           action={props.postUrl}
           headers={{ Authorization: `Bearer ${token}` }}
           // defaultFileList={initialValueHandeling(props.value)}
