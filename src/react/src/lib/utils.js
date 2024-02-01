@@ -8,7 +8,7 @@ import Field from "../components/Field";
 import FilterDate from "../blocks/FilterDate";
 export const getColsNormalize = (res) => {
   let cols = res.cols;
-
+  const interactionCharacter = res.configs.primary_key;
   //   // loop for detect array
   cols.forEach((col) => {
     // ----------------------------------------
@@ -60,7 +60,7 @@ export const getColsNormalize = (res) => {
           item={col}
           data={data}
           rowIndex={rowIndex}
-          id={data[Config.interactionCharacter]}
+          id={data[interactionCharacter]}
         />
       );
     };
@@ -128,12 +128,12 @@ const Render = ({ item, value, rowIndex, data, id }) => {
           <div className="showColorPicker" style={{ background: value }}></div>
         </>
       );
-    } else if (item.dataSet.length !== 0) {
+    } else if (Object.keys(item.dataSet).length !== 0) {
       if (typeof value === "object" && value) {
         return (
           <>
             {value.map((val, index) => (
-              <Tag key={index}>{item.dataSet[val.id || val]}</Tag>
+              <Tag key={index}>{item.dataSet[val[item.dataKey] || val]}</Tag>
             ))}
           </>
         );
@@ -145,8 +145,8 @@ const Render = ({ item, value, rowIndex, data, id }) => {
         <>
           {value?.map((value, index) => (
             <Tag key={index}>
-              {/* <Render value={value} item={item} /> */}
-              {value.id || value}
+              {/*<Render value={value} item={item} />*/}
+              {value[item.dataField] || value}
             </Tag>
           ))}
         </>

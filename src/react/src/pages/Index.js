@@ -78,18 +78,16 @@ function Index() {
             const filteredList = newData.filter((item) =>
               activeCols.includes(item.title)
             );
-            filteredList.push(actions(res.configs.actions, pageModule, form));
+            filteredList.push(actions(res.configs, pageModule, form));
             return filteredList;
           }
-
-          newData.push(actions(res.configs.actions, pageModule, form));
+          newData.push(actions(res.configs, pageModule, form));
 
           return newData;
         });
       },
     }
   );
-
   const { data: indexData, ...dataQuery } = useGetData(
     pagination?.key || pageModule,
     pagination,
@@ -209,11 +207,7 @@ function Index() {
                         onChange={(newCol) => {
                           setColumn([
                             ...newCol,
-                            actions(
-                              pageData?.configs.actions,
-                              pageModule,
-                              form
-                            ),
+                            actions(pageData?.configs, pageModule, form),
                           ]);
                         }}
                       />
@@ -341,13 +335,15 @@ function Index() {
 
 export default Index;
 
-const actions = (moduleActions, pageModule, form) => {
+const actions = (configs, pageModule, form) => {
+  const moduleActions = configs.actions;
+  const interactionCharacter = configs.primary_key;
   const showAction = moduleActions.show;
   const editAction = moduleActions.edit;
   const deleteAction = moduleActions.destroy;
   return {
     title: "Actions",
-    dataIndex: Config.interactionCharacter,
+    dataIndex: interactionCharacter,
     align: "center",
     fixed: "right",
     width: 120,
