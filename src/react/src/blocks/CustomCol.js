@@ -71,7 +71,7 @@ function CustomCol({ column, onChange }) {
                   type="primary"
                   onClick={() => {
                     const filteredList = column.filter((item) =>
-                      Object.values(columnList).includes(item.title)
+                      Object.values(columnList).includes(item.field.display)
                     );
                     onChange(filteredList);
                     setIsModalOpen(false);
