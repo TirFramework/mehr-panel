@@ -20,7 +20,6 @@ import {
   Spin,
   Popconfirm,
   App,
-  Tooltip,
 } from "antd";
 import {
   EditOutlined,
@@ -358,7 +357,8 @@ export default Index;
 
 const actions = (configs, pageModule, form) => {
   const moduleActions = configs.actions;
-  const interactionCharacter = configs.primary_key || "id";
+  const interactionCharacter =
+    configs.primary_key || Config.interactionCharacter;
   const showAction = moduleActions.show;
   const editAction = moduleActions.edit;
   const deleteAction = moduleActions.destroy;
@@ -378,7 +378,9 @@ const actions = (configs, pageModule, form) => {
 
             {editAction && <EditRow id={id} />}
 
-            {deleteAction && <DeleteRow id={id} />}
+            {deleteAction && (
+              <DeleteRow id={id} interactionCharacter={interactionCharacter} />
+            )}
           </div>
         </>
       );
@@ -431,7 +433,7 @@ const EditRow = ({ id }) => {
     </>
   );
 };
-const DeleteRow = ({ id }) => {
+const DeleteRow = ({ id, interactionCharacter }) => {
   const { pageModule } = useParams();
   useDeleteRow(pageModule, id);
 
@@ -463,7 +465,7 @@ const DeleteRow = ({ id }) => {
                     (oldData) => {
                       const basic = { ...oldData };
                       const newData = oldData.data.filter(
-                        (item) => item[Config.interactionCharacter] !== id
+                        (item) => item[interactionCharacter] !== id
                       );
                       basic.total = oldData.total - 1;
                       return { ...basic, data: newData };

@@ -5,7 +5,7 @@ import useLocalStorage from "../hooks/useLocalStorage";
 import { useParams } from "react-router-dom";
 
 function CustomCol({ column, onChange }) {
-  const Options = column?.map((item) => item.title);
+  const Options = column?.map((item) => item.field.display);
   const { pageModule } = useParams();
 
   const [columnList, setColumnList] = useLocalStorage(

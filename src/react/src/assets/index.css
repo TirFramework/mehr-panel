@@ -398,7 +398,7 @@ body {
   display: block;
   border-radius: 5px;
 }
-.ant-table-thead th > div {
+.ant-table-thead th {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;

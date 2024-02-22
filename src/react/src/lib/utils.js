@@ -8,7 +8,8 @@ import Field from "../components/Field";
 import FilterDate from "../blocks/FilterDate";
 export const getColsNormalize = (res) => {
   let cols = res.cols;
-  const interactionCharacter = res.configs.primary_key;
+  const interactionCharacter =
+    res.configs.primary_key || Config.interactionCharacter;
   //   // loop for detect array
   cols.forEach((col) => {
     // ----------------------------------------
@@ -18,18 +19,6 @@ export const getColsNormalize = (res) => {
     // -----------------------------------
     // add data for filter
     col.sorter = col.field.sortable;
-    // col.width = 120;
-    // col.ellipsis = true;
-    col.onHeaderCell = (column) => {
-      // console.log("🚀 ~ cols.forEach ~ column:", column);
-      return {
-        minWidth: 100,
-        width: 150,
-      };
-      // onResize: this.handleResize(index),
-
-      // return column;
-    };
 
     // -----------------------------------
     // -----------------------------------
@@ -75,7 +64,12 @@ export const getColsNormalize = (res) => {
           id={data[interactionCharacter]}
           minWidth={
             col.field.options?.minWidth ||
-            calculatWidth(col.field.display, value)
+            calculatWidth(
+              col.field.display,
+              value,
+              !!col.filters,
+              col.field.sortable
+            )
           }
         />
       );
@@ -179,16 +173,32 @@ const Render = ({ item, value, rowIndex, data, id, minWidth }) => {
   }
 };
 
-const calculatWidth = (th, td) => {
-  console.log("🚀 ~ calculatWidth ~ th:", th);
-  console.log("🚀 ~ calculatWidth ~ td:", td);
+const calculatWidth = (th, td, isFilter, sortable) => {
+  console.log("🚀 ~ calculatWidth ~ isFilter:", isFilter);
+  let icon = 0;
+  if (isFilter) {
+    icon = 28;
+  }
+  if (sortable) {
+    icon = 30;
+  }
+  const thWidth = getTextWidth(
+    th,
+    "600 14px -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,'Noto Sans',sans-serif,'Apple Color Emoji','Segoe UI Emoji','Segoe UI Symbol','Noto Color Emoji'"
+  );
 
-  if (!td) {
-    const thWidth = getTextWidth(
-      th,
+  if (td) {
+    const tdWidth = getTextWidth(
+      td,
       "600 14px -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,'Noto Sans',sans-serif,'Apple Color Emoji','Segoe UI Emoji','Segoe UI Symbol','Noto Color Emoji'"
     );
-    return thWidth;
+    if (thWidth + icon > tdWidth) {
+      return thWidth + icon;
+    }
+    return "auto";
+  }
+  if (!td) {
+    return thWidth + icon;
   }
   return "auto";
 };

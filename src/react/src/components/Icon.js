@@ -3,12 +3,11 @@ import { QuestionCircleFilled, LoadingOutlined } from "@ant-design/icons";
 
 function MyComponent(props) {
   let OtherComponent;
-  if (process.env.NODE_ENV == "development") {
+  if (process.env.NODE_ENV !== "development") {
     OtherComponent = lazy(() =>
-      import(`@ant-design/icons/es/icons/${props.type}`).catch((error) => {
-        console.error("🚀 ~ MyComponent ~ error:", error);
-        return import("@ant-design/icons/es/icons/QuestionCircleFilled");
-      })
+      import(`@ant-design/icons/es/icons/${props.type}`).catch((error) =>
+        import("@ant-design/icons/es/icons/QuestionCircleFilled")
+      )
     );
   }
   return (
