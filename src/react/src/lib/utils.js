@@ -18,6 +18,18 @@ export const getColsNormalize = (res) => {
     // -----------------------------------
     // add data for filter
     col.sorter = col.field.sortable;
+    // col.width = 120;
+    // col.ellipsis = true;
+    col.onHeaderCell = (column) => {
+      // console.log("🚀 ~ cols.forEach ~ column:", column);
+      return {
+        minWidth: 100,
+        width: 150,
+      };
+      // onResize: this.handleResize(index),
+
+      // return column;
+    };
 
     // -----------------------------------
     // -----------------------------------
@@ -61,26 +73,33 @@ export const getColsNormalize = (res) => {
           data={data}
           rowIndex={rowIndex}
           id={data[interactionCharacter]}
+          minWidth={
+            col.field.options?.minWidth ||
+            calculatWidth(col.field.display, value)
+          }
         />
       );
     };
 
-    if (col.comment?.content !== undefined) {
-      col.title = (
-        <div>
-          {col.title}
+    col.title = (
+      <div title={col.title}>
+        {col.title}
+        {col.comment?.content !== undefined && (
           <Popover content={col.comment.content} title={col.comment.title}>
             <QuestionCircleOutlined />
           </Popover>
-        </div>
-      );
-    }
+        )}
+      </div>
+    );
     // col.sorter = col.field.sortable;
     // if (activeColumn.length > 0) {
     //   if (!activeColumn.includes(col.fieldName)) {
     //     col.className = "hidden";
     //   }
     // }
+
+    // col.width = 800;
+    // col.textWrap = "word-break";
   });
   // cols.push(actions(res.configs.actions, pageModule));
   return res;
@@ -105,7 +124,7 @@ export const indexOfInObject = (arr, obj, val, label) => {
   }
 };
 
-const Render = ({ item, value, rowIndex, data, id }) => {
+const Render = ({ item, value, rowIndex, data, id, minWidth }) => {
   const [searchParams] = useSearchParams();
   let pageId = searchParams.get("id");
 
@@ -125,34 +144,74 @@ const Render = ({ item, value, rowIndex, data, id }) => {
     } else if (item.type === "ColorPicker") {
       return (
         <>
-          <div className="showColorPicker" style={{ background: value }}></div>
+          <div
+            className="showColorPicker"
+            style={{ background: value, minWidth: minWidth }}
+          ></div>
         </>
       );
     } else if (Object.keys(item.dataSet).length !== 0) {
       if (typeof value === "object" && value) {
         return (
-          <>
+          <div style={{ minWidth: minWidth }}>
             {value.map((val, index) => (
               <Tag key={index}>{item.dataSet[val[item.dataKey] || val]}</Tag>
             ))}
-          </>
+          </div>
         );
       } else {
-        return <>{item.dataSet[value]}</>;
+        return <div style={{ minWidth: minWidth }}>{item.dataSet[value]}</div>;
       }
     } else if (item.valueType === "array") {
       return (
-        <>
+        <div style={{ minWidth: minWidth }}>
           {value?.map((value, index) => (
             <Tag key={index}>
               {/*<Render value={value} item={item} />*/}
               {value[item.dataField] || value}
             </Tag>
           ))}
-        </>
+        </div>
       );
     } else {
-      return <div>{value}</div>;
+      return <div style={{ minWidth: minWidth }}>{value}</div>;
     }
   }
 };
+
+const calculatWidth = (th, td) => {
+  console.log("🚀 ~ calculatWidth ~ th:", th);
+  console.log("🚀 ~ calculatWidth ~ td:", td);
+
+  if (!td) {
+    const thWidth = getTextWidth(
+      th,
+      "600 14px -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,'Noto Sans',sans-serif,'Apple Color Emoji','Segoe UI Emoji','Segoe UI Symbol','Noto Color Emoji'"
+    );
+    return thWidth;
+  }
+  return "auto";
+};
+
+function getTextWidth(text, font) {
+  // re-use canvas object for better performance
+  const canvas =
+    getTextWidth.canvas ||
+    (getTextWidth.canvas = document.createElement("canvas"));
+  const context = canvas.getContext("2d");
+  context.font = font;
+  const metrics = context.measureText(text);
+  return metrics.width;
+}
+
+function getCssStyle(element, prop) {
+  return window.getComputedStyle(element, null).getPropertyValue(prop);
+}
+
+function getCanvasFont(el = document.body) {
+  const fontWeight = getCssStyle(el, "font-weight") || "normal";
+  const fontSize = getCssStyle(el, "font-size") || "16px";
+  const fontFamily = getCssStyle(el, "font-family") || "Times New Roman";
+
+  return `${fontWeight} ${fontSize} ${fontFamily}`;
+}

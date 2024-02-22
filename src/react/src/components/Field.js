@@ -29,7 +29,11 @@ import Render from "../blocks/Render";
 // };
 
 const Field = (props) => {
-  const DynamicField = lazy(() => import(`./${props.type}`));
+  const DynamicField = lazy(() =>
+    import(`./${props.type}`).catch((error) => {
+      return { default: () => <div>Error loading the field.</div> };
+    })
+  );
   return (
     <Suspense
       fallback={

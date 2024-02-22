@@ -20,6 +20,7 @@ import {
   Spin,
   Popconfirm,
   App,
+  Tooltip,
 } from "antd";
 import {
   EditOutlined,
@@ -302,6 +303,26 @@ function Index() {
                   ? "remove filter "
                   : "nodata"
               }
+              // components={{
+              //   header: {
+              //     cell: (headerCell, data) => {
+              //       return (
+              //         <th
+              //           className={headerCell.className}
+              //           style={headerCell.style}
+              //         >
+              //           <Tooltip
+              //             placement="left"
+              //             overlayClassName="table_tooltip"
+              //             title={<div>{headerCell.children}</div>}
+              //           >
+              //             <div>{headerCell.children}</div>
+              //           </Tooltip>
+              //         </th>
+              //       );
+              //     },
+              //   },
+              // }}
               pagination={{
                 pageSize: pagination?.pageSize,
                 current: pagination?.current,
@@ -337,7 +358,7 @@ export default Index;
 
 const actions = (configs, pageModule, form) => {
   const moduleActions = configs.actions;
-  const interactionCharacter = configs.primary_key;
+  const interactionCharacter = configs.primary_key || "id";
   const showAction = moduleActions.show;
   const editAction = moduleActions.edit;
   const deleteAction = moduleActions.destroy;

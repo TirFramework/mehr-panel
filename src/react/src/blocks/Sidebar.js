@@ -52,7 +52,7 @@ function App(props) {
             mode="inline"
             items={menus.map(
               ({ link, icon, title, name, badge, children = [] }) => ({
-                icon: <Icon type={icon} />,
+                icon: icon ? <Icon type={icon} /> : null,
                 key: name,
                 label: (
                   <>
@@ -70,7 +70,7 @@ function App(props) {
                   children.length === 0
                     ? null
                     : children.map(({ link, icon, title, name, badge }) => ({
-                        icon: <Icon type={icon} />,
+                        icon: icon ? <Icon type={icon} /> : null,
                         key: name,
                         label: (
                           <Link className="menu__link" to={link}>

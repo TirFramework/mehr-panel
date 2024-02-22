@@ -398,7 +398,12 @@ body {
   display: block;
   border-radius: 5px;
 }
-/* 
-.menu__sidebar .ant-badge {
-  color: #fff;
-} */
+.ant-table-thead th > div {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ant-table-filter-trigger {
+  margin-inline: 0 !important ;
+}

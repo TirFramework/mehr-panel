@@ -1,6 +1,6 @@
 {
   "name": "mehr-panel",
-  "version": "3.3.7-beta",
+  "version": "3.3.8-beta",
   "private": true,
   "dependencies": {
     "@testing-library/jest-dom": "^5.16.4",

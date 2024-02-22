@@ -5,7 +5,11 @@ import { Skeleton } from "antd";
 
 const Field = (props) => {
   const { pageModule } = useParams();
-  const DynamicField = lazy(() => import(`../dynamic-pages/${pageModule}`));
+  const DynamicPage = lazy(() =>
+    import(`../dynamic-pages/${pageModule}`).catch((error) => {
+      return { default: () => <div>Error loading the field.</div> };
+    })
+  );
 
   return (
     <Suspense
@@ -15,7 +19,7 @@ const Field = (props) => {
         </div>
       }
     >
-      <DynamicField {...props} />
+      <DynamicPage {...props} />
     </Suspense>
   );
 };
