@@ -168,6 +168,7 @@ const CreateForm = ({ type }) => {
                 key={index}
                 index={index}
                 pageType={!!pageId ? "edit" : "create"}
+                form={form}
                 {...field}
               />
             ))}

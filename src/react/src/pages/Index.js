@@ -399,14 +399,13 @@ const DetailRow = ({ id }) => {
       {pageId == id ? (
         <></>
       ) : (
-        <Button
+        <Link
           type="link"
           // disabled={!!pageId}
-          onClick={() => {
-            navigate(`/admin/${pageModule}/detail?id=${id}`);
-          }}
-          icon={<EyeOutlined />}
-        />
+          to={`/admin/${pageModule}/detail?id=${id}`}
+        >
+          <EyeOutlined />
+        </Link>
       )}
     </>
   );
@@ -422,13 +421,9 @@ const EditRow = ({ id }) => {
       {pageId == id ? (
         <></>
       ) : (
-        <Button
-          type="link"
-          onClick={() => {
-            navigate(`/admin/${pageModule}/create-edit?id=${id}`);
-          }}
-          icon={<FormOutlined />}
-        />
+        <Link to={`/admin/${pageModule}/create-edit?id=${id}`}>
+          <FormOutlined />
+        </Link>
       )}
     </>
   );

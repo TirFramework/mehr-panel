@@ -72,7 +72,7 @@ const Additional = (props) => {
                                     danger
                                 />
                                 {child.map((f, i) => (
-                                    <FormGroup key={`additional-field-${i}`} {...f} />
+                                    <FormGroup key={`additional-field-${i}`} {...f} form={props.form}/>
                                 ))}
                             </Row>
                         ))}
