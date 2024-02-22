@@ -76,7 +76,7 @@ function Index() {
 
           if (activeCols) {
             const filteredList = newData.filter((item) =>
-              activeCols.includes(item.title)
+              activeCols.includes(item.field.display)
             );
             filteredList.push(actions(res.configs, pageModule, form));
             return filteredList;
