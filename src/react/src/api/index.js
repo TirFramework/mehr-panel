@@ -135,3 +135,15 @@ export const deleteRow = async ({ pageModule, id }) => {
 
   return res.data;
 };
+
+export const postAddFcmToken = async (params) => {
+  const res = await axios({
+    method: "post",
+    url: "/notification/addToken/",
+    data: {
+      ...params,
+    },
+  });
+
+  return res.data;
+};

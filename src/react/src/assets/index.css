@@ -412,3 +412,15 @@ body {
 .ant-table-filter-trigger {
   margin-inline: 0 !important ;
 }
+
+.firebase-notification-confirm {
+  position: fixed;
+  right: 15px;
+  width: 300px;
+  bottom: 15px;
+}
+.firebase-notification-confirm__title {
+  font-size: 18px;
+  /* font-weight: 300; */
+  margin-bottom: 16px;
+}

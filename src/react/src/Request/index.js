@@ -7,6 +7,7 @@ import {
   getFields,
   getGeneral,
   getSidebar,
+  postAddFcmToken,
 } from "../api";
 import { notification } from "antd";
 
@@ -61,4 +62,9 @@ export const useFieldsQuery = ({ pageModule, id, type }, options) => {
 export const useGeneralQuery = () => {
   const query = useQuery([`general`], () => getGeneral());
   return query;
+};
+
+export const useAddFcmToken = () => {
+  const mutation = useMutation(postAddFcmToken);
+  return mutation;
 };
