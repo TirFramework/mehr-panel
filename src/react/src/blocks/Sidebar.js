@@ -70,15 +70,15 @@ function App(props) {
                   children.length === 0
                     ? null
                     : children.map(({ link, icon, title, name, badge }) => ({
-                        icon: icon ? <Icon type={icon} /> : null,
-                        key: name,
-                        label: (
-                          <Link className="menu__link" to={link}>
-                            {title}{" "}
-                            {badge > 0 && <Badge count={badge} size="small" />}
-                          </Link>
-                        ),
-                      })),
+                      icon: icon ? <Icon type={icon} /> : null,
+                      key: name,
+                      label: (
+                        <Link className="menu__link" to={link}>
+                          {title}{" "}
+                          {badge > 0 && <Badge count={badge} size="small" />}
+                        </Link>
+                      ),
+                    })),
               })
             )}
           />

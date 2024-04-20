@@ -1,8 +1,9 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import { QueryClient, QueryClientProvider } from "react-query";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 import { App } from "antd";
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 
 // import "./assets/tailwindbasic.css";
 // import "antd/dist/antd.min.css"; // or 'antd/dist/antd.less'
@@ -30,6 +31,7 @@ root.render(
   <App>
     <QueryClientProvider client={queryClient}>
       <MyApp />
+      {/* <ReactQueryDevtools initialIsOpen={false} /> */}
     </QueryClientProvider>
   </App>
 );

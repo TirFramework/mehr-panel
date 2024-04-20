@@ -3,7 +3,7 @@ import { notification } from "antd";
 
 const ErrorHandler = async (error) => {
   let mes = [];
-  if (error.response.data instanceof Blob) {
+  if (error?.response?.data instanceof Blob) {
     const responseBlob = new Blob([error.response.data], {
       type: "application/json",
     });
@@ -11,7 +11,7 @@ const ErrorHandler = async (error) => {
     error.response.data = JSON.parse(jsonData);
   }
 
-  if (error.response.data.message) {
+  if (error?.response?.data?.message) {
     if (typeof error.response.data.message === "object") {
       for (const [key, value] of Object.entries(error.response.data.message)) {
         value.forEach((val) => {
@@ -19,7 +19,7 @@ const ErrorHandler = async (error) => {
         });
       }
     } else {
-      mes.push(error.response.data.message);
+      mes.push(error?.response?.data?.message);
     }
     notification["warning"]({
       message: error.response.data.title,

@@ -127,13 +127,13 @@ const Render = ({ item, value, rowIndex, data, id, minWidth }) => {
   } else {
     if (item.type === "DatePicker") {
       if (value) {
-        return dayjs(value).format(
+        return <div className="" style={{ minWidth: minWidth }}>{dayjs(value).format(
           !item.field.options?.showTime?.length
             ? item.field.options.dateFormat
             : item.field.options.dateFormat + " " + item.field.options?.showTime
-        );
+        )}</div>
       } else {
-        return " - ";
+        return <div className="" style={{ minWidth: minWidth }}> - </div>;
       }
     } else if (item.type === "ColorPicker") {
       return (
@@ -174,7 +174,7 @@ const Render = ({ item, value, rowIndex, data, id, minWidth }) => {
 };
 
 const calculatWidth = (th, td, isFilter, sortable) => {
-  console.log("🚀 ~ calculatWidth ~ isFilter:", isFilter);
+  // console.log("🚀 ~ calculatWidth ~ isFilter:", isFilter);
   let icon = 0;
   if (isFilter) {
     icon = 28;
@@ -186,21 +186,22 @@ const calculatWidth = (th, td, isFilter, sortable) => {
     th,
     "600 14px -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,'Noto Sans',sans-serif,'Apple Color Emoji','Segoe UI Emoji','Segoe UI Symbol','Noto Color Emoji'"
   );
+  return thWidth + icon;
 
-  if (td) {
-    const tdWidth = getTextWidth(
-      td,
-      "600 14px -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,'Noto Sans',sans-serif,'Apple Color Emoji','Segoe UI Emoji','Segoe UI Symbol','Noto Color Emoji'"
-    );
-    if (thWidth + icon > tdWidth) {
-      return thWidth + icon;
-    }
-    return "auto";
-  }
-  if (!td) {
-    return thWidth + icon;
-  }
-  return "auto";
+  // if (td) {
+  //   const tdWidth = getTextWidth(
+  //     td,
+  //     "600 14px -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,'Noto Sans',sans-serif,'Apple Color Emoji','Segoe UI Emoji','Segoe UI Symbol','Noto Color Emoji'"
+  //   );
+  //   if (thWidth + icon > tdWidth) {
+  //     return thWidth + icon;
+  //   }
+  //   return "auto";
+  // }
+  // if (!td) {
+  //   return thWidth + icon;
+  // }
+  // return "auto";
 };
 
 function getTextWidth(text, font) {

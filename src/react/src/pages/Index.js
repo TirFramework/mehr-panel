@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   useParams,
   Link,
@@ -35,7 +35,7 @@ import Config, { defaultFilter } from "../constants/config";
 import Search from "../blocks/Search";
 import CustomCol from "../blocks/CustomCol";
 import Export from "../blocks/Export";
-import { useQueryClient } from "react-query";
+import { useQueryClient } from "@tanstack/react-query";
 
 const { Title } = Typography;
 
@@ -57,37 +57,38 @@ function Index() {
   const { data: pageData, ...pageDataQuery } = useGetColumns(
     pageModule,
     pagination,
-    {
-      onSuccess: (res) => {
-        setColumn((prevCols) => {
-          const newData = res.cols.map((col) => {
-            return {
-              ...col,
-              filteredValue: pagination.filters[col.fieldName] || null,
-              defaultSortOrder:
-                pagination.sorter?.field === col.fieldName
-                  ? pagination.sorter.order
-                  : null,
-            };
-          });
-          const activeCols = JSON.parse(
-            window.localStorage.getItem(`cols-${pageModule}`)
-          );
-
-          if (activeCols) {
-            const filteredList = newData.filter((item) =>
-              activeCols.includes(item.field.display)
-            );
-            filteredList.push(actions(res.configs, pageModule, form));
-            return filteredList;
-          }
-          newData.push(actions(res.configs, pageModule, form));
-
-          return newData;
-        });
-      },
-    }
   );
+
+  useEffect(() => {
+    if (pageData?.cols.length > 0 && Object.keys(pagination).length !== 0) {
+
+      setColumn((prevCols) => {
+        const newData = pageData.cols.map((col) => {
+          return {
+            ...col,
+            filteredValue: pagination.filters[col.fieldName] || null,
+            defaultSortOrder:
+              pagination?.sorter?.field === col.fieldName
+                ? pagination?.sorter.order
+                : null,
+          };
+        });
+        const activeCols = JSON.parse(
+          window.localStorage.getItem(`cols-${pageModule}`)
+        );
+        if (activeCols) {
+          const filteredList = newData.filter((item) =>
+            activeCols.includes(item.field.display)
+          );
+          filteredList.push(actions(pageData.configs, pageModule, form));
+          return filteredList;
+        }
+        newData.push(actions(pageData.configs, pageModule, form));
+        return newData;
+      });
+    }
+  }, [pageData]);
+
   const { data: indexData, ...dataQuery } = useGetData(
     pagination?.key || pageModule,
     pagination,
@@ -158,7 +159,7 @@ function Index() {
     <div className={`${pageModule}-index page-index`}>
       <Form
         form={form}
-        // disabled={!(pageId === restProps["data-row-key"])}
+      // disabled={!(pageId === restProps["data-row-key"])}
       >
         {pageDataQuery.isLoading ? (
           <>
@@ -217,22 +218,22 @@ function Index() {
                     {(helpers.notEmpty(pagination?.filters) ||
                       pagination.search ||
                       helpers.notEmpty(pagination?.sorter)) && (
-                      <Button
-                        icon={<ClearOutlined />}
-                        type="primary"
-                        size="large"
-                        danger
-                        onClick={() => {
-                          setPagination({ ...defaultFilter, key: pageModule });
-                          const newData = [...column];
-                          newData.forEach((col) => {
-                            col.filteredValue = null;
-                            col.sortOrder = {};
-                          });
-                          setColumn(newData);
-                        }}
-                      />
-                    )}
+                        <Button
+                          icon={<ClearOutlined />}
+                          type="primary"
+                          size="large"
+                          danger
+                          onClick={() => {
+                            setPagination({ ...defaultFilter, key: pageModule });
+                            const newData = [...column];
+                            newData.forEach((col) => {
+                              col.filteredValue = null;
+                              col.sortOrder = {};
+                            });
+                            setColumn(newData);
+                          }}
+                        />
+                      )}
                   </>
                 </Space>
               </Col>
@@ -505,7 +506,7 @@ const InlineEdit = ({ id, form, data }) => {
           setSubmitLoad: setSaveLoading,
           pageModule: pageModule,
           pageId: pageId,
-          setUrlParams: () => {},
+          setUrlParams: () => { },
           afterSubmit: () => {
             setUrlParams("");
             queryClient.setQueryData(
@@ -531,7 +532,7 @@ const InlineEdit = ({ id, form, data }) => {
           },
         });
       })
-      .catch((errorInfo) => {});
+      .catch((errorInfo) => { });
   };
   return (
     <>
@@ -546,7 +547,7 @@ const InlineEdit = ({ id, form, data }) => {
             loading={saveLoading}
             style={{ width: "85px" }}
 
-            // icon={<CloseOutlined />}
+          // icon={<CloseOutlined />}
           >
             Save
           </Button>

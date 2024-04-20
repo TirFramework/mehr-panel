@@ -6,7 +6,7 @@ import { Alert, Button, Col, Layout, Row, Space, Spin, Typography } from "antd";
 import { LoadingOutlined } from "@ant-design/icons";
 import Sidebar from "../blocks/Sidebar";
 import TopHeader from "../blocks/TopHeader.js";
-import { useIsFetching } from "react-query";
+import { useIsFetching } from "@tanstack/react-query";
 import { useAddFcmToken, useGeneralQuery } from "../Request/index.js";
 import useLocalStorage from "../hooks/useLocalStorage.js";
 import { fetchToken } from "../lib/firebase.js";
@@ -91,10 +91,10 @@ function DefaultLayout(props) {
                                 );
                                 // if Permission is allowed then getting firebase messanging token from firebase
                                 fetchToken().then((fcm_token) => {
-                                  console.log(
-                                    "🚀 ~ fetchToken ~ fcm_token:",
-                                    fcm_token
-                                  );
+                                  // console.log(
+                                  //   "🚀 ~ fetchToken ~ fcm_token:",
+                                  //   fcm_token
+                                  // );
                                   // displaying token in index file
                                   addFcmToken.mutate(
                                     { fcm_token: fcm_token },
@@ -107,9 +107,9 @@ function DefaultLayout(props) {
                                   );
                                 });
                               } else {
-                                console.log(
-                                  "🚀 ~ .then ~ Permission not granted"
-                                );
+                                // console.log(
+                                //   "🚀 ~ .then ~ Permission not granted"
+                                // );
                               }
                             })
                             .catch((e) => {

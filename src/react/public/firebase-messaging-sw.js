@@ -1,18 +1,18 @@
 importScripts(
-  "https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"
+  "https://www.gstatic.com/firebasejs/10.7.2/firebase-app-compat.js"
 );
 importScripts(
-  "https://www.gstatic.com/firebasejs/10.8.0/firebase-messaging-compat.js"
+  "https://www.gstatic.com/firebasejs/10.7.2/firebase-messaging-compat.js"
 );
 
 // Initialize the Firebase app in the service worker by passing the generated config
 const firebaseConfig = {
-  apiKey: "AIzaSyDwTbAMzNqsBimV8GXjtP6cTcVPm7fUC3Y",
-  authDomain: "team-a1315.firebaseapp.com",
-  projectId: "team-a1315",
-  storageBucket: "team-a1315.appspot.com",
-  messagingSenderId: "532528895072",
-  appId: "1:532528895072:web:a998f17c8a124fb2b61f05",
+  apiKey: "AIzaSyBNSWwoEmgNeFmEXGlZbHSaO5X74qUNdY8",
+  authDomain: "test-for-dev-4c979.firebaseapp.com",
+  projectId: "test-for-dev-4c979",
+  storageBucket: "test-for-dev-4c979.appspot.com",
+  messagingSenderId: "34527836370",
+  appId: "1:34527836370:web:4713867b83e73c42f2950b",
 };
 firebase.initializeApp(firebaseConfig);
 
