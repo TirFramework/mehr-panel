@@ -9,7 +9,7 @@
         }
     ],
     "require": {
-        "tir/crud": "^3.0"
+        "tir/crud": "^3.0 || ^8.0",
     },
 
     "autoload": {
