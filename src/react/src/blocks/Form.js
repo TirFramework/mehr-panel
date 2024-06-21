@@ -161,7 +161,7 @@ const CreateForm = ({ type }) => {
             <SubmitGroup buttons={data?.buttons} form={form} pageId={pageId} />
           </Col>
         </Row>
-        <Card className="create-edit__card" loading={dataQuery.isLoading}>
+        <Card className="create-edit__card" loading={dataQuery.isLoading || dataQuery.isFetching}>
           <Row gutter={[16, 16]}>
             {data?.fields?.map((field, index) => (
               <FormGroup

@@ -22,9 +22,9 @@ const Text = (props) => {
         label={props.display}
         name={props.name}
         initialValue={
-          props.value
+          (props.value !== undefined)
             ? Number(props.value)
-            : props.defaultValue
+            : Number(props.defaultValue)
             ? Number(props.defaultValue)
             : ""
         }

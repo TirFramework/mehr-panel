@@ -149,12 +149,12 @@ const Render = ({ item, value, rowIndex, data, id, minWidth }) => {
         return (
           <div style={{ minWidth: minWidth }}>
             {value.map((val, index) => (
-              <Tag key={index}>{item.dataSet[val[item.dataKey] || val]}</Tag>
+              <Tag key={index}>{item.dataSet[val[item.dataKey] || val] || val}</Tag>
             ))}
           </div>
         );
       } else {
-        return <div style={{ minWidth: minWidth }}>{item.dataSet[value]}</div>;
+        return <div style={{ minWidth: minWidth }}>{item.dataSet[value] || value}</div>;
       }
     } else if (item.valueType === "array") {
       return (
@@ -174,7 +174,6 @@ const Render = ({ item, value, rowIndex, data, id, minWidth }) => {
 };
 
 const calculatWidth = (th, td, isFilter, sortable) => {
-  // console.log("🚀 ~ calculatWidth ~ isFilter:", isFilter);
   let icon = 0;
   if (isFilter) {
     icon = 28;
@@ -186,23 +185,8 @@ const calculatWidth = (th, td, isFilter, sortable) => {
     th,
     "600 14px -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,'Noto Sans',sans-serif,'Apple Color Emoji','Segoe UI Emoji','Segoe UI Symbol','Noto Color Emoji'"
   );
-  return thWidth + icon;
-
-  // if (td) {
-  //   const tdWidth = getTextWidth(
-  //     td,
-  //     "600 14px -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,'Noto Sans',sans-serif,'Apple Color Emoji','Segoe UI Emoji','Segoe UI Symbol','Noto Color Emoji'"
-  //   );
-  //   if (thWidth + icon > tdWidth) {
-  //     return thWidth + icon;
-  //   }
-  //   return "auto";
-  // }
-  // if (!td) {
-  //   return thWidth + icon;
-  // }
-  // return "auto";
-};
+    return thWidth + icon;
+}
 
 function getTextWidth(text, font) {
   // re-use canvas object for better performance
