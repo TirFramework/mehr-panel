@@ -9,7 +9,7 @@ import Config from "../constants/config";
 
 const firebaseConfig = Config.firebase;
 
-console.log("🚀 ~ firebaseConfig:", firebaseConfig);
+// console.log("🚀 ~ firebaseConfig:", firebaseConfig);
 
 // Initialize Firebase
 

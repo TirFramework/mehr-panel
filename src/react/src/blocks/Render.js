@@ -9,9 +9,9 @@ const Render = (props) => {
       <>
         <label>{props.display}:</label>
         <div>
-          {dayjs(props.value).format(
-            props?.options?.dateFormat || "YYYY-MM-DD"
-          )}
+          {
+              (props.value) && dayjs(props.value).format(props?.options?.dateFormat || "YYYY-MM-DD")
+          }
         </div>
       </>
     );

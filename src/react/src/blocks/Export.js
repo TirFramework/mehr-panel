@@ -9,7 +9,8 @@ import {
 } from "@ant-design/icons";
 import * as api from "../api";
 
-function Export({ data, loading }) {
+function Export({ data, loading, columns }) {
+
   const { pageModule } = useParams();
   const [allData, setAllData] = useState([]);
   const [lo, setLo] = useState(false);
@@ -30,6 +31,19 @@ function Export({ data, loading }) {
       });
   };
 
+    const getHeader  = () => {
+           let  headers = columns.map(function (item) {
+                    if(item.fieldName)
+                    {
+                        return {label:item.field?.display, key:item.fieldName}
+                    }
+
+                }
+            ).filter(notUndefined => notUndefined !== undefined);
+        return headers;
+
+    }
+
   const items = [
     {
       label: (
@@ -37,6 +51,7 @@ function Export({ data, loading }) {
           loading={loading}
           filename={`${pageModule}_data.csv`}
           data={data}
+          headers={getHeader()}
         >
           <div>Export to CSV</div>
         </CSVLink>
@@ -53,6 +68,8 @@ function Export({ data, loading }) {
           data={allData}
           target="_blank"
           filename={`${pageModule}_all_data.csv`}
+          headers={getHeader()}
+
         />
       )}
       <Dropdown.Button

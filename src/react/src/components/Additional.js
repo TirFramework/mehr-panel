@@ -52,7 +52,7 @@ const Additional = (props) => {
     };
     return (
         <>
-            <div className={ props.readonly && "readOnly " + props.className} >
+            <div className={ props.readonly ? "readOnly " : '' + props.className} >
                 {fields.length > 0 ? (
                     <>
                         {fields.map((child, index) => (

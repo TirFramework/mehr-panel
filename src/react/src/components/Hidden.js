@@ -1,4 +1,5 @@
-import { Form, Checkbox } from "antd";
+import { Form, Input } from "antd";
+
 import { separationRules } from "../lib/helpers";
 
 const Text = (props) => {
@@ -8,30 +9,24 @@ const Text = (props) => {
     creationRules: props.creationRules,
     updateRules: props.updateRules,
   });
+
   return (
     <>
-      <Form.Item
-        // label={props.display}
+      <Form.Item style={{display:'none;'}}
         name={props.name}
-        initialValue={props.value}
-        valuePropName="checked"
+        initialValue={props.value ?? props.defaultValue}
         rules={rules}
-        labelCol={{
-          flex: "none",
-        }}
-        wrapperCol={{
-          flex: "auto",
-        }}
       >
-        <Checkbox
-          onChange={props.onChange}
+        <Input
+          placeholder={props.options.placeholder}
           disabled={props.readonly}
           className={props.readonly && "readOnly"}
-        >{props.display}</Checkbox>
+          type="hidden"
+
+        />
       </Form.Item>
     </>
   );
 };
-
 
 export default Text;

@@ -5,6 +5,8 @@ import * as api from "../../api";
 import { ifExistNumberFromString } from "./duplicate";
 
 export const fixNumber = (obj) => {
+    //object should sort before this function
+  obj =  sortObject(obj);
   const counts = {};
   const newObj = {};
 
@@ -27,6 +29,28 @@ export const fixNumber = (obj) => {
   return newObj;
 };
 
+
+export const sortObject = (unordered) => {
+    const parseKey = (key) => {
+        // This regex will capture the number part of the key for sorting purposes
+        const match = key.match(/\.([0-9]+)\./);
+        return match ? parseInt(match[1], 10) : -1;
+    };
+
+    return Object.keys(unordered).sort((a, b) => {
+        const numA = parseKey(a);
+        const numB = parseKey(b);
+        if (numA !== numB) {
+            return numA - numB;
+        }
+        // If the numbers are the same, fall back to lexicographical order
+        return a.localeCompare(b);
+    }).reduce((obj, key) => {
+        obj[key] = unordered[key];
+        return obj;
+    }, {});
+};
+
 export const onFinish = ({
   values,
   setSubmitLoad,
@@ -36,14 +60,8 @@ export const onFinish = ({
   message,
   afterSubmit = () => {},
 }) => {
-  // console.log("Success:", values);
 
-  values = fixNumber(values);
-  // console.log("After ronded :", values);
-
-  // values = stringToObject(values);
-
-  // console.log("After fix :", values);
+    values = fixNumber(values);
 
   setSubmitLoad(true);
 

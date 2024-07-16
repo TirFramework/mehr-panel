@@ -1,5 +1,5 @@
 import { memo, lazy, Suspense } from "react";
-import { Card, Checkbox, Form, Input, Skeleton } from "antd";
+import { Card, Form, Input, Skeleton } from "antd";
 import Submit from "./Submit";
 import Cancel from "./Cancel";
 import Additional from "./Additional";
@@ -22,6 +22,8 @@ import Switch from "./Switch";
 import Textarea from "./Textarea";
 import Editor from "./Editor";
 import Render from "../blocks/Render";
+import Checkbox from "./Checkbox";
+
 
 // const DynamicField = (props) => {
 //   const F = lazy(() => import(`./${props.type}.js`));

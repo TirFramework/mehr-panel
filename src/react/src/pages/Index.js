@@ -159,7 +159,7 @@ function Index() {
     <div className={`${pageModule}-index page-index`}>
       <Form
         form={form}
-      // disabled={!(pageId === restProps["data-row-key"])}
+        // disabled={!(pageId === restProps["data-row-key"])}
       >
         {pageDataQuery.isLoading ? (
           <>
@@ -335,6 +335,7 @@ function Index() {
                         <Export
                           loading={dataQuery.isLoading || dataQuery.isFetching}
                           data={indexData?.data}
+                          columns={column}
                         />
                       </Col>
                       <Col>
@@ -506,7 +507,7 @@ const InlineEdit = ({ id, form, data }) => {
           setSubmitLoad: setSaveLoading,
           pageModule: pageModule,
           pageId: pageId,
-          setUrlParams: () => { },
+          setUrlParams: () => {},
           afterSubmit: () => {
             setUrlParams("");
             queryClient.setQueryData(
@@ -521,11 +522,6 @@ const InlineEdit = ({ id, form, data }) => {
                     }
                   }
                 });
-                console.log(
-                  "🚀 ~ file: Index.js:508 ~ .then ~ newData:",
-                  newData
-                );
-
                 return newData;
               }
             );
