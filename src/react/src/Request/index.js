@@ -27,23 +27,24 @@ export const useGetColumns = (pageModule, filter, options) => {
   const query = useQuery({
     queryKey: [`index-columns-${pageModule}`],
     queryFn: () => getCols(pageModule, filter),
-    ...options
+            onSuccess: (res) => {  }
+        }
+    );
 
-  }
-  );
-
-  return query;
+    return query;
 };
 
 export const useDeleteRow = () => {
-  const mutation = useMutation({
-    mutationFn: deleteRow,
-    onSuccess: (data) => {
-      notification.success({
-        message: data.message,
-      });
-    }
-  });
+    const mutation = useMutation({
+        mutationFn: deleteRow,
+        options: {
+            onSuccess: (data) => {
+                notification.success({
+                    message: data.message,
+                });
+            }
+        }
+    });
 
   return mutation;
 };
@@ -52,9 +53,9 @@ export const useSidebar = () => {
   const query = useQuery({
     queryKey: [`sidebar`],
     queryFn: () => getSidebar(),
-  }
-  );
-
+    staleTime: 5 * 60 * 1000,
+    refetchInterval: 5 * 60 * 1000
+  });
   return query;
 };
 

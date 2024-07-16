@@ -31,6 +31,7 @@ function App(props) {
 
   return (
     <Sider
+      width={250}
       collapsible
       collapsed={isCollapsible.status}
       onCollapse={(value) =>

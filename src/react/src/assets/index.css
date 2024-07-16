@@ -122,12 +122,12 @@ body {
 }
 
 .ant-card-head {
-  min-height: fit-content;
-  z-index: 5;
-  position: absolute;
-  top: -13px;
-  padding-bottom: 0 !important;
-  padding-top: 0 !important;
+  /*min-height: fit-content;*/
+  /*z-index: 5;*/
+  /*position: absolute;*/
+  /*top: -13px;*/
+  /*padding-bottom: 0 !important;*/
+  /*padding-top: 0 !important;*/
 }
 
 .ant-card-head-title {
