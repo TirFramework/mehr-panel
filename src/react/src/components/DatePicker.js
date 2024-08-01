@@ -1,7 +1,7 @@
 import { Form, DatePicker } from "antd";
 import { separationRules } from "../lib/helpers";
-import utc from 'dayjs/plugin/utc';
-import customParseFormat from 'dayjs/plugin/customParseFormat';
+import utc from "dayjs/plugin/utc";
+import customParseFormat from "dayjs/plugin/customParseFormat";
 import dayjs from "dayjs";
 
 dayjs.extend(utc);
@@ -22,10 +22,20 @@ const CustomDatePicker = ({ format, onChange, value, ...props }) => {
       {...props}
       format={format}
       onChange={(data) => {
-        if (props.enableTimezone || props.options?.showTime?.length > 0) {
+        console.log(
+          "🚀 ~ CustomDatePicker ~ props.options?.showTime?.length:",
+          props
+        );
+        if (props.enableTimezone || Object.keys(props.showTime).length > 0) {
           onChange(data ? dayjs(data) : null);
+          console.log("🚀 ~ CustomDatePicker ~ dayjs(data):", dayjs(data));
         } else {
-          onChange(data ? dayjs(data).startOf('day').format("YYYY-MM-DD") + 'T00:00:00+00:00' : null);
+          onChange(
+            data
+              ? dayjs(data).startOf("day").format("YYYY-MM-DD") +
+                  "T00:00:00+00:00"
+              : null
+          );
         }
       }}
       value={formattedValue}

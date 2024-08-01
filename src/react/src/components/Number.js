@@ -22,7 +22,7 @@ const Text = (props) => {
         label={props.display}
         name={props.name}
         initialValue={
-          (props.value !== undefined)
+          props.value !== undefined
             ? Number(props.value)
             : Number(props.defaultValue)
             ? Number(props.defaultValue)
@@ -35,6 +35,7 @@ const Text = (props) => {
           placeholder={props.options.placeholder}
           disabled={props.readonly}
           className={`${props.readonly && "readOnly"} w-full`}
+          style={{ width: "100%" }}
         />
       </Form.Item>
     </>

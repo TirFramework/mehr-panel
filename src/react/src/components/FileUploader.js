@@ -143,6 +143,7 @@ const DragSortingUpload = (props) => {
 
   const onChange = ({ fileList: newFileList }) => {
     setFileList(newFileList);
+    console.log("🚀 ~ onChange ~ newFileList:", newFileList);
     props.onChange(newFileList);
   };
 
@@ -190,13 +191,16 @@ const CustomUpload = (props) => {
   });
 
   const normFile = (e) => {
+    console.log("🚀 ~ normFile ~ e:", e);
     // return e.fileList
-    if (e.length === 1) {
-      if (e[0].response !== undefined) {
-        return `${e[0].response.path}`;
-      }
-      if (e[0].value !== undefined) {
-        return `${e[0].value}`;
+    if (props.maxCount === 1) {
+      if (e.length === 1) {
+        if (e[0].response !== undefined) {
+          return `${e[0].response.path}`;
+        }
+        if (e[0].value !== undefined) {
+          return `${e[0].value}`;
+        }
       }
     }
     return e.map((item) => {
@@ -209,16 +213,19 @@ const CustomUpload = (props) => {
     });
   };
   return (
-    <Form.Item
-      name={props.name}
-      // valuePropName="fileList"
-      initialValue={props.value || props.defaultValue}
-      rules={rules}
-      getValueFromEvent={normFile}
-      // setFieldsValue={fileList}
-    >
-      <DragSortingUpload {...props} />
-    </Form.Item>
+    <>
+      <Form.Item
+        name={props.name}
+        // valuePropName="fileList"
+        initialValue={props.value || props.defaultValue}
+        rules={rules}
+        getValueFromEvent={normFile}
+        // setFieldsValue={fileList}
+      >
+        <DragSortingUpload {...props} />
+      </Form.Item>
+      {console.log("🚀 ~ CustomUpload ~ props.value:", props.value)}
+    </>
   );
 };
 export default CustomUpload;
