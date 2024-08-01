@@ -1,6 +1,6 @@
 {
   "name": "mehr-panel",
-  "version": "8.0.1-beta",
+  "version": "8.0.2-beta",
   "private": true,
   "dependencies": {
     "@tanstack/react-query": "^5.29.2",

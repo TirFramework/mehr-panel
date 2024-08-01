@@ -34,6 +34,7 @@ const Text = (props) => {
           {...props.options}
           placeholder={props.options.placeholder}
           disabled={props.readonly}
+          style={{ width: "100%" }}
           className={`${props.readonly && "readOnly"} w-full`}
           style={{ width: "100%" }}
         />
