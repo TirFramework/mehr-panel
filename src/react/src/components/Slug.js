@@ -49,7 +49,7 @@ const Slug = (props) => {
         type="link"
         onClick={editingHandel}
         icon={<EditOutlined />}
-        style={{ display: !editing ? "none" : "flex" }}
+        style={{ display: editing ? "none" : "flex" }}
       >
         {props.value}
       </Button>
@@ -58,7 +58,7 @@ const Slug = (props) => {
         name={props.name}
         rules={rules}
         initialValue={props.value}
-        style={{ display: editing ? "none" : "block" }}
+        style={{ display: !editing ? "none" : "block" }}
       >
         <MyInput
           // {...props}
