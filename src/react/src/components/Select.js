@@ -7,6 +7,7 @@ const MySelect = (props) => {
   return (
     <Select
       showSearch
+      data-test-id={props.name}
       filterOption={(input, option) =>
         option.label.toLowerCase().indexOf(input.toLowerCase()) >= 0
       }

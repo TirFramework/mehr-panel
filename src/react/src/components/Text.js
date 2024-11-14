@@ -17,6 +17,7 @@ const Text = (props) => {
         name={props.name}
         initialValue={props.value}
         rules={rules}
+        data-test-id={props.name}
       >
         <Input
           placeholder={props.options.placeholder}

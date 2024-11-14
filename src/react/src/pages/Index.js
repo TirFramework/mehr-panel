@@ -184,7 +184,7 @@ function Index() {
           </>
         ) : (
           <>
-            <Title className="page-index__title">
+            <Title className="page-index__title" data-testid='page-index-title'>
               {pageData?.configs?.module_title}
             </Title>
 

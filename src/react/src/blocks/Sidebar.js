@@ -58,7 +58,7 @@ function App(props) {
                 label: (
                   <>
                     {children.length === 0 ? (
-                      <Link className="menu__link" to={link}>
+                      <Link className="menu__link" to={link} data-test-id={name}
                         {title}{" "}
                         {badge > 0 && <Badge count={badge} size="small" />}
                       </Link>
