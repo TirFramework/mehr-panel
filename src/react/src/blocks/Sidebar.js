@@ -1,74 +1,87 @@
 import React, { useEffect, useState } from "react";
-import { Layout, Menu } from "antd";
-import { Link } from "react-router-dom";
+import { Badge, Layout, Menu } from "antd";
+import { Link, useParams } from "react-router-dom";
 import Icon from "../components/Icon";
-
-import * as api from "../api";
+import { useSidebar } from "../Request";
+import useLocalStorage from "../hooks/useLocalStorage";
 
 const { Sider } = Layout;
-// const { SubMenu } = Menu;
 
-function App() {
-  const [current, setCurrent] = useState();
-  const [menus, setMenus] = useState();
-  const [general, setGeneral] = useState();
-  const [loading, setLoading] = useState(true);
+function App(props) {
+  const { data: menus, ...menusQuery } = useSidebar();
+  const [isCollapsible, setIsCollapsible] = useLocalStorage("collapsible", {
+    status: false,
+  });
 
-  const makeGeneral = () => {
-    return api
-      .getGeneral()
-      .then((res) => {
-        setGeneral(res);
-        setLoading(false);
-      })
-      .catch((err) => {});
-  };
+  const { pageModule } = useParams();
 
-  const getMenus = () => {
-    return api
-      .getSidebar()
-      .then((res) => {
-        setMenus(res);
-        setLoading(false);
-      })
-      .catch((err) => {});
-  };
-
-  useEffect(() => {
-    async function makeSidebar() {
-      await getMenus();
-      await makeGeneral();
-    }
-    makeSidebar();
-  }, []);
-
-  const handleClick = (e) => {
-    setCurrent(e.key);
+  const openKeys = (menus) => {
+    let r = [];
+    menus.forEach((item) => {
+      if (item.children) {
+        item.children.forEach((element) => {
+          if (element.name === pageModule) {
+            r.push(item.name);
+          }
+        });
+      }
+    });
+    return r;
   };
 
   return (
-    <Sider collapsible>
-      {loading ? (
+    <Sider
+      width={250}
+      collapsible
+      collapsed={isCollapsible.status}
+      onCollapse={(value) =>
+        setIsCollapsible({
+          status: value,
+        })
+      }
+    >
+      {menusQuery.isLoading ? (
         <>loading ....</>
       ) : (
         <>
-          <div className="logo text-xl text-white p-4 bg-black">
-            {general?.name}
-          </div>
           <Menu
             theme="dark"
+            className="menu__sidebar"
             defaultSelectedKeys={["0"]}
-            onClick={handleClick}
-            selectedKeys={[current]}
+            selectedKeys={pageModule}
+            defaultOpenKeys={openKeys(menus)}
             mode="inline"
-            items={menus.map(({ link, icon, title }) => ({
-              icon: <Icon type={icon} />,
-              label: (
-                <Link className="ml-2" to={link}>
-                  {title}
-                </Link>
-              ),
-            }))}
+            items={menus.map(
+              ({ link, icon, title, name, badge, children = [] }) => ({
+                icon: icon ? <Icon type={icon} /> : null,
+                key: name,
+                label: (
+                  <>
+                    {children.length === 0 ? (
+                      <Link className="menu__link" to={link}>
+                        {title}{" "}
+                        {badge > 0 && <Badge count={badge} size="small" />}
+                      </Link>
+                    ) : (
+                      <span className="menu__parent">{title}</span>
+                    )}
+                  </>
+                ),
+                children:
+                  children.length === 0
+                    ? null
+                    : children.map(({ link, icon, title, name, badge }) => ({
+                      icon: icon ? <Icon type={icon} /> : null,
+                      key: name,
+                      label: (
+                        <Link className="menu__link" to={link}>
+                          {title}{" "}
+                          {badge > 0 && <Badge count={badge} size="small" />}
+                        </Link>
+                      ),
+                    })),
+              })
+            )}
           />
         </>
       )}

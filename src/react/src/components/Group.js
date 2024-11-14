@@ -15,6 +15,7 @@ const Group = (props) => {
             index={[props.index, index]}
             pageType={props.pageType}
             key={index}
+            form={props.form}
             {...field}
           />
         ))}

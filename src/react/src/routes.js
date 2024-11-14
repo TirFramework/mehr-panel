@@ -1,38 +1,38 @@
 import Custom from "./pages/Custom.js";
 import Index from "./pages/Index";
 import Create from "./pages/Create";
+import Detail from "./pages/Detail";
+import Login from "./layouts/Login.js";
 
-const dashboardRoutes = [
+export const dashboardRoutes = [
   {
-    path: "/overwrite-index/:pageModule",
-    name: "custom",
-    component: Custom,
-    layout: "/admin",
+    path: "/admin/overwrite-index/:pageModule",
+    component: <Custom />,
   },
   {
-    path: "/c/:pageModule/create-edit",
-    name: "custom",
-    component: Custom,
-    layout: "/admin",
+    path: "/admin/c/:pageModule/create-edit",
+    component: <Custom />,
   },
   {
-    path: "/custom/:pageModule",
-    name: "custom",
-    component: Custom,
-    layout: "/admin",
+    path: "/admin/custom/:pageModule",
+    component: <Custom />,
   },
   {
-    path: "/:pageModule/create-edit",
-    name: "Create",
-    component: Create,
-    layout: "/admin",
+    path: "/admin/:pageModule/detail",
+    component: <Detail />,
   },
   {
-    path: "/:pageModule",
-    name: "Index",
-    component: Index,
-    layout: "/admin",
+    path: "/admin/:pageModule/create-edit",
+    component: <Create />,
+  },
+  {
+    path: "/admin/:pageModule",
+    component: <Index />,
   },
 ];
-
-export default dashboardRoutes;
+export const authRoutes = [
+  {
+    path: "/admin/login",
+    component: <Login />,
+  },
+];

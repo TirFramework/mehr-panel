@@ -1,5 +1,10 @@
-import React, { useState, useEffect, useCallback } from "react";
-import { useParams, Link, useHistory } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import {
+  useParams,
+  Link,
+  useSearchParams,
+  useNavigate,
+} from "react-router-dom";
 import { PlusOutlined, ClearOutlined } from "@ant-design/icons";
 
 import {
@@ -7,223 +12,118 @@ import {
   Card,
   Row,
   Table,
-  Input,
-  Tag,
+  Form,
   Typography,
-  Popover,
-  notification,
   Col,
-  Tooltip,
   Skeleton,
+  Space,
+  Spin,
+  Popconfirm,
+  App,
 } from "antd";
 import {
   EditOutlined,
-  QuestionCircleOutlined,
+  EyeOutlined,
   DeleteOutlined,
+  FormOutlined,
 } from "@ant-design/icons";
-import { CSVLink } from "react-csv";
-
 import * as helpers from "../lib/helpers";
 
-import * as api from "../api";
 import useLocalStorage from "../hooks/useLocalStorage";
-import moment from "moment";
-
-// const getColumns = async (query) => {
-//   return fetch(`http://localhost:8000/post/index.json`).then((_) => _.json());
-// }
+import { useDeleteRow, useGetColumns, useGetData } from "../Request";
+import Config, { defaultFilter } from "../constants/config";
+import Search from "../blocks/Search";
+import CustomCol from "../blocks/CustomCol";
+import Export from "../blocks/Export";
+import { useQueryClient } from "@tanstack/react-query";
 
 const { Title } = Typography;
 
 function Index() {
+  const [form] = Form.useForm();
+
   const { pageModule } = useParams();
+  const [urlParams, setUrlParams] = useSearchParams();
+  const pageId = urlParams.get("id");
 
-  const history = useHistory();
+  const [pagination, setPagination] = useLocalStorage(pageModule, {
+    ...defaultFilter,
+    key: pageModule,
+  });
 
-  if (!localStorage.getItem(pageModule)) {
-    localStorage.setItem(
-      pageModule,
-      JSON.stringify({
-        current: 1,
-        pageSize: 15,
-        total: 0,
-        search: null,
-        filters: null,
-      })
-    );
-  }
-  const [columns, setColumns] = useState();
+  const [column, setColumn] = useState([]);
+  const isEditing = (record) => record.key === pageId;
 
-  const [data, setData] = useState();
-
-  const [dataLoading, setDataLoading] = useState(true);
-  const [tableLoading, setTableLoading] = useState(true);
-
-  const [pagination, setPagination] = useLocalStorage(pageModule);
-
-  const deleteRow = (id) => {
-    setTableLoading(true);
-    api
-      .deleteRow(pageModule, id)
-      .then((res) => {
-        // console.log("🚀 ~ file: Create.js ~ line 77 ~ .then ~ res", res)
-        notification["success"]({
-          message: res.message,
-        });
-        //TODO:: pagination problem after delete the item
-        setTableLoading(false);
-        getData(pagination);
-      })
-      .catch((err) => {
-        // console.log("🚀 ~ file: Create.js ~ line 88 ~ onFinish ~ err", err);
-        setTableLoading(false);
-      });
-  };
-
-  const actions = {
-    title: "",
-    dataIndex: "id",
-    align: "right",
-    render: (id, data) => (
-      <>
-        <Tooltip title="Edit">
-          <Link
-            to={`/admin/${pageModule}/create-edit?id=${data.id || data._id}`}
-          >
-            <EditOutlined title="Edit" />
-          </Link>
-        </Tooltip>
-        <Tooltip title="Delete">
-          <Button
-            className="ml-4"
-            type="link"
-            danger
-            onClick={() => deleteRow(data.id || data._id)}
-            icon={<DeleteOutlined />}
-          />
-        </Tooltip>
-      </>
-    ),
-  };
-
-  const getColumns = (params) => {
-    setTableLoading(true);
-    api
-      .getCols(pageModule)
-      .then((res) => {
-        let cols = res.cols;
-        // loop for detect array
-        cols.forEach((col) => {
-          var item;
-
-          col.dataIndex = col.dataIndex.split(".");
-
-          if (params?.filters?.hasOwnProperty(col.dataIndex)) {
-            item = params?.filters[col.dataIndex];
-            col.defaultFilteredValue = item;
-          }
-
-          if (col.type === "DatePicker") {
-            col.render = (value) => {
-              return moment.utc(value).format(col.field.options.dateFormat);
-            };
-          }
-
-          if (col.valueType === "array") {
-            col.render = (arr) =>
-              arr?.map((item, index) => <Tag key={index}>{item}</Tag>);
-          } else if (col.valueType === "object") {
-            col.render = (arr) => arr?.text;
-          }
-          if (col.filters !== undefined) {
-            col.filters?.map((item) => (item.text = item.label));
-
-            col.filterSearch = col.filters.length > 10;
-          }
-
-          if (col.dataSet.length !== 0) {
-            col.render = (data) => {
-              if (typeof data === "object" && data) {
-                return (
-                  <>
-                    {data.map(function (item, index) {
-                      if (col.dataKey) {
-                        item = item[col.dataKey];
-                      }
-                      return <Tag key={index}>{col.dataSet[item]}</Tag>;
-                    })}
-                  </>
-                );
-              } else {
-                return <>{col.dataSet[data]}</>;
-              }
-            };
-          }
-
-          if (col.comment?.content !== undefined) {
-            col.title = (
-              <div>
-                {col.title}
-                <Popover
-                  content={col.comment.content}
-                  title={col.comment.title}
-                >
-                  <QuestionCircleOutlined />
-                </Popover>
-              </div>
-            );
-          }
-        });
-        cols.push(actions);
-
-        setColumns(res);
-        setTableLoading(false);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-    getData(params);
-  };
-
-  useEffect(() => {
-    getColumns(pagination);
-  }, [pageModule]);
-
-  const getData = useCallback(
-    (params) => {
-      setDataLoading(true);
-      api
-        .getRows(pageModule, params)
-        .then((res) => {
-          if (!res.data.length) {
-            setPagination({
-              ...pagination,
-              current: 1,
-            });
-          }
-          setData(res);
-          setDataLoading(false);
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    },
-    [pageModule, pagination]
+  const { data: pageData, ...pageDataQuery } = useGetColumns(
+    pageModule,
+    pagination,
   );
 
-  const handleTableChange = (p, filters, sorter) => {
+  useEffect(() => {
+    if (pageData?.cols.length > 0 && Object.keys(pagination).length !== 0) {
+
+      setColumn((prevCols) => {
+        const newData = pageData.cols.map((col) => {
+          return {
+            ...col,
+            filteredValue: pagination.filters[col.fieldName] || null,
+            defaultSortOrder:
+              pagination?.sorter?.field === col.fieldName
+                ? pagination?.sorter.order
+                : null,
+          };
+        });
+        const activeCols = JSON.parse(
+          window.localStorage.getItem(`cols-${pageModule}`)
+        );
+        if (activeCols) {
+          const filteredList = newData.filter((item) =>
+            activeCols.includes(item.field.display)
+          );
+          filteredList.push(actions(pageData.configs, pageModule, form));
+          return filteredList;
+        }
+        newData.push(actions(pageData.configs, pageModule, form));
+        return newData;
+      });
+    }
+  }, [pageData]);
+
+  const { data: indexData, ...dataQuery } = useGetData(
+    pagination?.key || pageModule,
+    pagination,
+    {
+      enabled: !!pagination?.key,
+    }
+  );
+
+  const handleChangeTable = (p, filters, sorter) => {
+    // console.log(
+    //   "🚀 ~ file: Index.js:93 ~ handleChangeTable ~ filters:",
+    //   filters
+    // );
+    // console.log("🚀 ~ file: Index.js:93 ~ handleChangeTable ~ sorter:", sorter);
     filters = helpers.removeNullFromObject(filters);
+    const orderBy = {
+      field: sorter?.column?.fieldName,
+      order: sorter.order,
+    };
+
     setPagination({
       ...pagination,
       current: p.current,
       pageSize: p.pageSize,
       filters: filters,
+      key: pageModule,
+      sorter: orderBy,
     });
-    getData({
-      ...pagination,
-      current: p.current,
-      pageSize: p.pageSize,
-      filters: filters,
+    setColumn((prevColumns) => {
+      return prevColumns.map((col) => ({
+        ...col,
+        filteredValue: filters[col.fieldName] || null,
+        sortOrder:
+          sorter?.column?.fieldName === col.fieldName ? sorter.order : null,
+      }));
     });
   };
 
@@ -234,108 +134,442 @@ function Index() {
     setPagination({
       ...pagination,
       search: value,
-    });
-    getData({
-      ...pagination,
-      search: value,
+      current: 1,
+      key: pageModule,
     });
   };
+
+  const mergedColumns = column.map((col) => {
+    if (!col.editable) {
+      return col;
+    }
+    return {
+      ...col,
+      onCell: (record) => ({
+        record,
+        inputType: col.dataIndex === "age" ? "number" : "text",
+        dataIndex: col.dataIndex,
+        title: col.title,
+        editing: isEditing(record),
+      }),
+    };
+  });
+
   return (
-    <div className={`${pageModule}-index`}>
-      <Title>{columns?.configs?.module_title}</Title>
-      <Row align="bottom" className="mb-4">
-        <Col className="gutter-row" span={12}>
-          {!tableLoading ? (
-            <Input.Search
-              placeholder=""
-              onSearch={onSearch}
-              defaultValue={pagination.search}
-              allowClear
-              enterButton
-              size="large"
-            />
-          ) : (
-            <Skeleton.Input
-              active={true}
-              className="w-full"
-              style={{ width: "100%" }}
-            />
-          )}
-        </Col>
-        <Col className="gutter-row" span={8}>
-          {(pagination?.filters || pagination.search) && (
-            <Button
-              icon={<ClearOutlined />}
-              type="primary"
-              size="large"
-              danger
-              onClick={() => {
-                const newPagination = {
-                  ...pagination,
-                  current: 1,
-                  filters: null,
-                  search: null,
-                };
-                setPagination(newPagination);
-                getColumns(newPagination);
-                getData(newPagination);
-              }}
-            ></Button>
-          )}
-        </Col>
-        {columns?.actions?.create && (
-          <Col className="gutter-row text-right" span={4}>
-            <Link to={`/admin/${pageModule}/create-edit`}>
-              <Button
-                type="primary"
-                icon={<PlusOutlined />}
-                loading={tableLoading}
-              >
-                {columns?.configs?.module_title}
-              </Button>
-            </Link>
-          </Col>
+    <div className={`${pageModule}-index page-index`}>
+      <Form
+        form={form}
+        // disabled={!(pageId === restProps["data-row-key"])}
+      >
+        {pageDataQuery.isLoading ? (
+          <>
+            <div>
+              <Skeleton.Input
+                active={true}
+                size="large"
+                style={{ width: "200px", height: "40px", marginBottom: "16px" }}
+              />
+            </div>
+            <div>
+              <Skeleton.Input
+                active={true}
+                size="large"
+                style={{
+                  width: "calc(100vw - 350px)",
+                  height: "46px",
+                  marginBottom: "16px",
+                }}
+              />
+            </div>
+          </>
+        ) : (
+          <>
+            <Title className="page-index__title">
+              {pageData?.configs?.module_title}
+            </Title>
+
+            <Row
+              align="bottom"
+              className="page-index__header"
+              justify={"space-between"}
+            >
+              <Col className="gutter-row">
+                <Space>
+                  <>
+                    <Search
+                      loading={dataQuery.isLoading}
+                      value={pagination?.search}
+                      onSearch={onSearch}
+                    />
+
+                    {pageData?.cols.length && (
+                      <CustomCol
+                        column={[...pageData?.cols]}
+                        onChange={(newCol) => {
+                          setColumn([
+                            ...newCol,
+                            actions(pageData?.configs, pageModule, form),
+                          ]);
+                        }}
+                      />
+                    )}
+                  </>
+                  <>
+                    {(helpers.notEmpty(pagination?.filters) ||
+                      pagination.search ||
+                      helpers.notEmpty(pagination?.sorter)) && (
+                        <Button
+                          icon={<ClearOutlined />}
+                          type="primary"
+                          size="large"
+                          danger
+                          onClick={() => {
+                            setPagination({ ...defaultFilter, key: pageModule });
+                            const newData = [...column];
+                            newData.forEach((col) => {
+                              col.filteredValue = null;
+                              col.sortOrder = {};
+                            });
+                            setColumn(newData);
+                          }}
+                        />
+                      )}
+                  </>
+                </Space>
+              </Col>
+              <Col className="gutter-row text-right">
+                <Space>
+                  {pageData?.actions?.create && (
+                    <Link to={`/admin/${pageModule}/create-edit`}>
+                      <Button
+                        size="large"
+                        type="primary"
+                        icon={<PlusOutlined />}
+                        loading={pageDataQuery.isLoading}
+                      >
+                        {pageData?.configs?.module_title}
+                      </Button>
+                    </Link>
+                  )}
+                </Space>
+              </Col>
+            </Row>
+          </>
         )}
-      </Row>
-      <Card loading={tableLoading}>
-        <Table
-          columns={columns?.cols}
-          rowKey={(record) => record.id}
-          dataSource={data?.data}
-          pagination={{
-            pageSize: pagination?.pageSize,
-            current: pagination?.current,
-            total: data?.total,
-          }}
-          // onRow={(record, rowIndex) => {
-          //   return {
-          //     onClick: (event) => {
-          //       history.push(
-          //         `/admin/${pageModule}/create-edit?id=${record.id}`
-          //       );
-          //     }, // click row
-          //   };
-          // }}
-          // rowClassName={"cursor-pointer	"}
-          loading={dataLoading}
-          onChange={handleTableChange}
-          footer={() => (
-            <>
-              {!dataLoading && (
-                <CSVLink
-                  filename={"Expense_Table.csv"}
-                  data={data?.data}
-                  className="btn btn-primary"
-                >
-                  Export to CSV
-                </CSVLink>
-              )}
-            </>
+        <Card className="index-page__card">
+          {pageDataQuery.isLoading ? (
+            <div className="table-loading">
+              <div className="table-loading__header">
+                <Skeleton.Input
+                  active={true}
+                  size="large"
+                  style={{
+                    width: "100%",
+                    height: "55px",
+                  }}
+                />
+              </div>
+              <div className="table-loading__body">
+                <Spin />
+              </div>
+              <div className="table-loading__footer">
+                <Skeleton.Input
+                  active={true}
+                  size="large"
+                  style={{
+                    width: "100px",
+                    height: "32px",
+                  }}
+                />
+                <Skeleton.Input
+                  active={true}
+                  size="large"
+                  style={{
+                    width: "400px",
+                    height: "32px",
+                  }}
+                />
+              </div>
+            </div>
+          ) : (
+            <Table
+              tableLayout={"auto"}
+              scroll={{ y: "calc(100vh - 340px)" }}
+              columns={mergedColumns}
+              rowKey={(record) => record.id || record._id}
+              dataSource={indexData?.data}
+              noDataContent={
+                helpers.notEmpty(pagination?.filters) || pagination?.search
+                  ? "remove filter "
+                  : "nodata"
+              }
+              // components={{
+              //   header: {
+              //     cell: (headerCell, data) => {
+              //       return (
+              //         <th
+              //           className={headerCell.className}
+              //           style={headerCell.style}
+              //         >
+              //           <Tooltip
+              //             placement="left"
+              //             overlayClassName="table_tooltip"
+              //             title={<div>{headerCell.children}</div>}
+              //           >
+              //             <div>{headerCell.children}</div>
+              //           </Tooltip>
+              //         </th>
+              //       );
+              //     },
+              //   },
+              // }}
+              pagination={{
+                pageSize: pagination?.pageSize,
+                current: pagination?.current,
+                pageSizeOptions: ["10", "15", "30", "50", "100", "500"],
+                total: indexData?.total,
+                showTotal: (total) => (
+                  <>
+                    <Row justify={"space-between"}>
+                      <Col>
+                        <Export
+                          loading={dataQuery.isLoading || dataQuery.isFetching}
+                          data={indexData?.data}
+                          columns={column}
+                        />
+                      </Col>
+                      <Col>
+                        <Button>Total: {indexData?.total}</Button>
+                      </Col>
+                    </Row>
+                  </>
+                ),
+              }}
+              loading={dataQuery.isLoading || dataQuery.isFetching}
+              onChange={handleChangeTable}
+            />
           )}
-        />
-      </Card>
+        </Card>
+      </Form>
     </div>
   );
 }
 
 export default Index;
+
+const actions = (configs, pageModule, form) => {
+  const moduleActions = configs.actions;
+  const interactionCharacter =
+    configs.primary_key || Config.interactionCharacter;
+  const showAction = moduleActions.show;
+  const editAction = moduleActions.edit;
+  const deleteAction = moduleActions.destroy;
+  return {
+    title: "Actions",
+    dataIndex: interactionCharacter,
+    align: "center",
+    fixed: "right",
+    width: 120,
+    render: (id, data) => {
+      return (
+        <>
+          <div className="action-td">
+            {showAction && <DetailRow id={id} />}
+
+            {/* {editAction && <InlineEdit id={id} form={form} data={data} />} */}
+
+            {editAction && <EditRow id={id} />}
+
+            {deleteAction && (
+              <DeleteRow id={id} interactionCharacter={interactionCharacter} />
+            )}
+          </div>
+        </>
+      );
+    },
+  };
+};
+
+const DetailRow = ({ id }) => {
+  const { pageModule } = useParams();
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  let pageId = searchParams.get("id");
+
+  return (
+    <>
+      {pageId == id ? (
+        <></>
+      ) : (
+        <Link
+          type="link"
+          // disabled={!!pageId}
+          to={`/admin/${pageModule}/detail?id=${id}`}
+        >
+          <EyeOutlined />
+        </Link>
+      )}
+    </>
+  );
+};
+const EditRow = ({ id }) => {
+  const { pageModule } = useParams();
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  let pageId = searchParams.get("id");
+
+  return (
+    <>
+      {pageId == id ? (
+        <></>
+      ) : (
+        <Link to={`/admin/${pageModule}/create-edit?id=${id}`}>
+          <FormOutlined />
+        </Link>
+      )}
+    </>
+  );
+};
+const DeleteRow = ({ id, interactionCharacter }) => {
+  const { pageModule } = useParams();
+  useDeleteRow(pageModule, id);
+
+  const [searchParams] = useSearchParams();
+  let pageId = searchParams.get("id");
+
+  const deleteRow = useDeleteRow();
+
+  const [pagination, setPagination] = useLocalStorage(pageModule, {
+    ...defaultFilter,
+    key: pageModule,
+  });
+  const queryClient = useQueryClient();
+
+  return (
+    <>
+      {pageId == id ? (
+        <></>
+      ) : (
+        <Popconfirm
+          title="Sure to delete?"
+          onConfirm={() => {
+            deleteRow.mutate(
+              { pageModule, id },
+              {
+                onSuccess: () => {
+                  queryClient.setQueryData(
+                    [`index-data-${pageModule}`, pagination],
+                    (oldData) => {
+                      const basic = { ...oldData };
+                      const newData = oldData.data.filter(
+                        (item) => item[interactionCharacter] !== id
+                      );
+                      basic.total = oldData.total - 1;
+                      return { ...basic, data: newData };
+                    }
+                  );
+                },
+              }
+            );
+          }}
+        >
+          <Button
+            type="link"
+            danger
+            loading={deleteRow.isLoading}
+            icon={<DeleteOutlined />}
+          />
+        </Popconfirm>
+      )}
+    </>
+  );
+};
+const InlineEdit = ({ id, form, data }) => {
+  const [urlParams, setUrlParams] = useSearchParams();
+  let pageId = urlParams.get("id");
+  const [saveLoading, setSaveLoading] = useState(false);
+  const { pageModule } = useParams();
+  const [pagination, setPagination] = useLocalStorage(pageModule, {
+    ...defaultFilter,
+    key: pageModule,
+  });
+  const queryClient = useQueryClient();
+  const { message, notification, modal } = App.useApp();
+
+  const handleFormSubmit = () => {
+    form
+      .validateFields()
+      .then((values) => {
+        // setUrlParams("");
+        helpers.onFinish({
+          message: message,
+          values: values,
+          setSubmitLoad: setSaveLoading,
+          pageModule: pageModule,
+          pageId: pageId,
+          setUrlParams: () => {},
+          afterSubmit: () => {
+            setUrlParams("");
+            queryClient.setQueryData(
+              [`index-data-${pageModule}`, pagination],
+              (oldData) => {
+                const newData = { ...oldData };
+
+                newData.data.forEach((item) => {
+                  if (item.id === Number(pageId)) {
+                    for (const [key, value] of Object.entries(values)) {
+                      item[key] = value;
+                    }
+                  }
+                });
+                return newData;
+              }
+            );
+          },
+        });
+      })
+      .catch((errorInfo) => { });
+  };
+  return (
+    <>
+      {pageId == id ? (
+        <>
+          <Button
+            type="primary"
+            htmlType="submit"
+            onClick={() => {
+              handleFormSubmit();
+            }}
+            loading={saveLoading}
+            style={{ width: "85px" }}
+
+          // icon={<CloseOutlined />}
+          >
+            Save
+          </Button>
+          <Button
+            type="link"
+            onClick={() => {
+              setUrlParams(``);
+            }}
+          >
+            Cancel
+          </Button>
+        </>
+      ) : (
+        <>
+          <Button
+            onClick={() => {
+              form.setFieldsValue({
+                ...data,
+              });
+              setUrlParams(`id=${id}`);
+            }}
+            type="link"
+            icon={<EditOutlined />}
+          />
+        </>
+      )}
+    </>
+  );
+};

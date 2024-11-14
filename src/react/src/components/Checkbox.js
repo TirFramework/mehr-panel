@@ -11,7 +11,7 @@ const Text = (props) => {
   return (
     <>
       <Form.Item
-        label={props.display}
+        // label={props.display}
         name={props.name}
         initialValue={props.value}
         valuePropName="checked"
@@ -27,10 +27,11 @@ const Text = (props) => {
           onChange={props.onChange}
           disabled={props.readonly}
           className={props.readonly && "readOnly"}
-        />
+        >{props.display}</Checkbox>
       </Form.Item>
     </>
   );
 };
+
 
 export default Text;

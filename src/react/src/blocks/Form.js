@@ -1,40 +1,73 @@
 import { useEffect, useState } from "react";
-import { Prompt, useLocation, useParams } from "react-router-dom";
-import { Form, Typography, Card, Row, Col } from "antd";
+import { useSearchParams, useLocation, useParams } from "react-router-dom";
+import { App, Form, Typography, Card, Row, Col, Skeleton } from "antd";
 
 import * as api from "../api";
 import { onFinish } from "../lib/helpers";
-import { useUrlParams } from "../hooks/useUrlParams";
 import SubmitGroup from "../components/SubmitGroup";
 import FormGroup from "../components/FormGroup";
 import Header from "./Header";
+import { useMyContext } from "../context/MyContext";
+import { useFieldsQuery } from "../Request";
+import Prompt from "./Prompt";
 
-const CreateForm = () => {
+const CreateForm = ({ type }) => {
   const [form] = Form.useForm();
 
-  const [urlParams, , setUrlParams] = useUrlParams();
-  const pageId = urlParams.id;
+  const [urlParams, setUrlParams] = useSearchParams();
+  const pageId = urlParams.get("id");
+  let newId = urlParams.get("newId");
+
   // const editMode = urlParams.editMode;
 
   const { pageModule } = useParams();
-  const { pageType } = useParams();
-
-  const [data, setData] = useState([]);
-  const [bootLoad, setBootLoad] = useState(true);
-  const [submitLoad, setSubmitLoad] = useState(true);
   const [isTouched, setIsTouched] = useState(false);
 
+  const { myState, updateMyState } = useMyContext();
+
+  const { data: data, ...dataQuery } = useFieldsQuery({
+    pageModule: pageModule,
+    id:
+      new URLSearchParams(window.location.search).get("id") ||
+      new URLSearchParams(window.location.search).get("newId") ||
+      null,
+    type,
+  });
+
   useEffect(() => {
-    setIsTouched(false);
-    setBootLoad(true);
-    setData([]);
-    api.getCreateOrEditFields(pageModule, pageId).then((res) => {
-      setData(res);
-      setBootLoad(false);
-      setSubmitLoad(false);
-      form.resetFields();
-    });
+    form.resetFields();
   }, [pageModule, pageId]);
+
+  // useEffect(() => {
+  //   setIsTouched(false);
+  //   setBootLoad(true);
+  //   setData([]);
+
+  //   if (type === "detail") {
+  //     api.getDetailFields(pageModule, pageId).then((res) => {
+  //       setData(res);
+  //       setBootLoad(false);
+  //       setSubmitLoad(false);
+  //       form.resetFields();
+  //     });
+  //   } else {
+  //     // const { data: data, ...dataQuery } = useCreateOrEditFieldsQuery(
+  //     //   pageModule,
+  //     //   pageId || new URLSearchParams(window.location.search).get("newId")
+  //     // );
+  //     api
+  //       .getCreateOrEditFields(
+  //         pageModule,
+  //         pageId || new URLSearchParams(window.location.search).get("newId")
+  //       )
+  //       .then((res) => {
+  //         setData(res);
+  //         setBootLoad(false);
+  //         setSubmitLoad(false);
+  //         form.resetFields();
+  //       });
+  //   }
+  // }, [pageModule, pageId]);
 
   const onFinishFailed = (errorInfo) => {
     console.log("Failed:", errorInfo);
@@ -62,22 +95,38 @@ const CreateForm = () => {
     }
   }, [isTouched]);
 
+  const { message, notification, modal } = App.useApp();
+
   return (
     <>
-      <Header pageTitle={data.configs?.module_title} />
-      <Prompt
-        message={(nextLocation) => {
-          // navigation prompt should only happen when pathname is about to change
-          // not on urlParams change or location.search change
-          if (nextLocation.pathname !== location.pathname && isTouched) {
-            return promptMessage;
-          }
-          return true;
-        }}
-      />
+      {dataQuery.isLoading ? (
+        <>
+          <div>
+            <Skeleton.Input
+              active={true}
+              size="large"
+              style={{ width: "200px", height: "16px", marginBottom: "14px" }}
+            />
+          </div>
+          <div>
+            <Skeleton.Input
+              active={true}
+              size="large"
+              style={{
+                width: "calc(100vw - 350px)",
+                height: "40px",
+                marginBottom: "16px",
+              }}
+            />
+          </div>
+        </>
+      ) : (
+        <Header type={type} pageTitle={data?.configs?.module_title} />
+      )}
+
       <Form
         form={form}
-        validateMessages={data.validationMsg}
+        validateMessages={data?.validationMsg}
         name="basic"
         scrollToFirstError={true}
         labelCol={{
@@ -96,48 +145,40 @@ const CreateForm = () => {
         className="form"
         onFinish={(value) => {
           onFinish({
+            message: message,
             values: value,
-            setSubmitLoad: setSubmitLoad,
+            setSubmitLoad: updateMyState,
             pageModule: pageModule,
-            pageId: pageId,
+            pageId: pageId || newId,
             setUrlParams: setUrlParams,
           });
           setIsTouched(false);
         }}
         onFinishFailed={onFinishFailed}
       >
-        <Row justify="space-between" align="middle" className="header-page">
-          <Col></Col>
+        <Row justify="end" align="middle" className="header-page">
           <Col>
-            <SubmitGroup
-              buttons={data?.buttons}
-              form={form}
-              loading={submitLoad}
-              pageId={pageId}
-            />
+            <SubmitGroup buttons={data?.buttons} form={form} pageId={pageId} />
           </Col>
         </Row>
-        <Card className="main-card" loading={bootLoad}>
+        <Card className="create-edit__card" loading={dataQuery.isLoading || dataQuery.isFetching}>
           <Row gutter={[16, 16]}>
-            {data.fields?.map((field, index) => (
+            {data?.fields?.map((field, index) => (
               <FormGroup
                 key={index}
                 index={index}
                 pageType={!!pageId ? "edit" : "create"}
-                loading={submitLoad}
+                form={form}
                 {...field}
               />
             ))}
           </Row>
         </Card>
 
-        <SubmitGroup
-          buttons={data?.buttons}
-          form={form}
-          loading={submitLoad}
-          pageId={pageId}
-        />
+        <SubmitGroup buttons={data?.buttons} form={form} pageId={pageId} />
       </Form>
+
+      {/* <Prompt /> */}
     </>
   );
 };

@@ -40,13 +40,12 @@ import { HTML5Backend } from "react-dnd-html5-backend";
 import update from "immutability-helper";
 import { UploadOutlined } from "@ant-design/icons";
 
-import { separationRules } from "../lib/helpers";
+import { getAccept, separationRules } from "../lib/helpers";
 
 import Cookies from "js-cookie";
 
 import Config from "../constants/config";
 
-const token = Cookies.get("api_token");
 const type = "DragableUploadList";
 
 const DragableUploadListItem = ({ originNode, moveRow, file, fileList }) => {
@@ -144,13 +143,17 @@ const DragSortingUpload = (props) => {
 
   const onChange = ({ fileList: newFileList }) => {
     setFileList(newFileList);
+    console.log("🚀 ~ onChange ~ newFileList:", newFileList);
     props.onChange(newFileList);
   };
+
+  const token = Cookies.get("api_token");
 
   return (
     <>
       <DndProvider backend={HTML5Backend}>
         <Upload
+          accept={getAccept([props.fileRules])}
           action={props.postUrl}
           headers={{ Authorization: `Bearer ${token}` }}
           // defaultFileList={initialValueHandeling(props.value)}
@@ -188,13 +191,16 @@ const CustomUpload = (props) => {
   });
 
   const normFile = (e) => {
+    console.log("🚀 ~ normFile ~ e:", e);
     // return e.fileList
-    if (e.length === 1) {
-      if (e[0].response !== undefined) {
-        return `${e[0].response.path}`;
-      }
-      if (e[0].value !== undefined) {
-        return `${e[0].value}`;
+    if (props.maxCount === 1) {
+      if (e.length === 1) {
+        if (e[0].response !== undefined) {
+          return `${e[0].response.path}`;
+        }
+        if (e[0].value !== undefined) {
+          return `${e[0].value}`;
+        }
       }
     }
     return e.map((item) => {
@@ -207,16 +213,19 @@ const CustomUpload = (props) => {
     });
   };
   return (
-    <Form.Item
-      name={props.name}
-      // valuePropName="fileList"
-      initialValue={props.value}
-      rules={rules}
-      getValueFromEvent={normFile}
-      // setFieldsValue={fileList}
-    >
-      <DragSortingUpload {...props} />
-    </Form.Item>
+    <>
+      <Form.Item
+        name={props.name}
+        // valuePropName="fileList"
+        initialValue={props.value || props.defaultValue}
+        rules={rules}
+        getValueFromEvent={normFile}
+        // setFieldsValue={fileList}
+      >
+        <DragSortingUpload {...props} />
+      </Form.Item>
+      {console.log("🚀 ~ CustomUpload ~ props.value:", props.value)}
+    </>
   );
 };
 export default CustomUpload;

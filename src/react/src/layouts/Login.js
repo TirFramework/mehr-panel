@@ -1,33 +1,58 @@
 import { useState } from "react";
 import Cookies from "js-cookie";
 import axios from "../lib/axios";
+import { useNavigate } from "react-router-dom";
+import {
+  Form,
+  Input,
+  Button,
+  notification,
+  Card,
+  Typography,
+  Layout,
+} from "antd";
 
-import { useHistory } from "react-router-dom";
-
-import { Form, Input, Button, notification } from "antd";
-
-import { LockOutlined, UserOutlined } from "@ant-design/icons";
-
+import {
+  LockOutlined,
+  UserOutlined,
+  GithubOutlined,
+  KeyOutlined,
+} from "@ant-design/icons";
 import * as api from "../api";
+import Config from "../constants/config";
 
 const Login = () => {
-  let history = useHistory();
+  const navigate = useNavigate();
+  const [mustVerify, setMustVerify] = useState(false);
   const [loading, setLoading] = useState(false);
+
+  const handleTryAgain = () => {
+    // Reset mustVerify to false when "Try Again" is clicked
+    setMustVerify(false);
+  };
+
   const onFinish = (values) => {
+    setLoading(true);
     api
       .postLogin(values)
       .then((res) => {
         setLoading(false);
-        notification["success"]({
-          message: "You have successfully logged",
-        });
-        login(res.api_token);
+
+        if (res.must_verify === true) {
+          setMustVerify(true);
+          notification["warning"]({
+            message: res.message.error,
+            duration: 20,
+          });
+        } else {
+          notification["success"]({
+            message: "You have successfully logged",
+          });
+          login(res.api_token);
+        }
       })
-      .catch((err) => {
+      .catch(() => {
         setLoading(false);
-        notification["error"]({
-          message: "problem",
-        });
       });
   };
 
@@ -38,52 +63,117 @@ const Login = () => {
   const login = (token) => {
     Cookies.set("api_token", token);
     axios.defaults.headers.common = { Authorization: `Bearer ${token}` };
-    history.push("/admin/custom/dashboard");
+    const version = window.localStorage.getItem("version");
+
+    if (version !== Config.panelVersion) {
+      localStorage.clear();
+      window.localStorage.setItem("version", Config.panelVersion);
+    }
+    navigate("/admin/custom/dashboard");
   };
 
   return (
-    <div className="h-screen flex items-center flex-col bg-contain bg-center">
-      <div className="w-full max-w-sm m-auto flex-grow flex-col flex justify-center">
-        <Form
-          name="basic"
-          className="login"
-          initialValues={{ remember: true }}
-          onFinish={onFinish}
-          onFinishFailed={onFinishFailed}
-        >
-          <Form.Item
-            name="email"
-            rules={[{ required: true, message: "Please input your email!" }]}
-          >
-            <Input placeholder="Email" prefix={<UserOutlined />} />
-          </Form.Item>
+    <Layout>
+      <Layout.Content className="login-page">
+        <Card>
+          <div className="illustration-wrapper">
+            <img src="" alt="Login" />
+          </div>
 
-          <Form.Item
-            name="password"
-            rules={[{ required: true, message: "Please input your password!" }]}
+          <Form
+            name="basic"
+            className="login-form"
+            initialValues={{ remember: true }}
+            onFinish={onFinish}
+            onFinishFailed={onFinishFailed}
           >
-            <Input.Password placeholder="Password" prefix={<LockOutlined />} />
-          </Form.Item>
+            <Typography.Title className="page-index__title">
+              Welcome back
+            </Typography.Title>
 
-          <Form.Item>
-            <Button
-              type="primary"
-              htmlType="submit"
-              loading={loading}
-              className="w-full"
+            <Typography.Paragraph>Login to the Dashboard</Typography.Paragraph>
+
+            <Form.Item
+              name="email"
+              rules={[
+                {
+                  required: true,
+                  message: "Please input your email!",
+                },
+              ]}
             >
-              Sign In
-            </Button>
-          </Form.Item>
-        </Form>
-      </div>
+              <Input
+                size="large"
+                placeholder="Email"
+                prefix={<UserOutlined />}
+              />
+            </Form.Item>
 
-      <p className="my-7 text-center login-footer">
-        -
-        <br />
-        Copyright ©2021 Produced by - Finance Experience Technology Department
-      </p>
-    </div>
+            <Form.Item
+              name="password"
+              rules={[
+                {
+                  required: true,
+                  message: "Please input your password!",
+                },
+              ]}
+            >
+              <Input.Password
+                size="large"
+                placeholder="Password"
+                prefix={<LockOutlined />}
+              />
+            </Form.Item>
+
+            {mustVerify && (
+              <Form.Item
+                name="code"
+                rules={[
+                  {
+                    required: true,
+                    message: "Please input your verification code!",
+                  },
+                ]}
+              >
+                <Input
+                  size="large"
+                  placeholder="Verification Code"
+                  prefix={<KeyOutlined />}
+                />
+              </Form.Item>
+            )}
+
+            <Form.Item>
+              <Button
+                block
+                size="large"
+                type="primary"
+                htmlType="submit"
+                loading={loading}
+              >
+                Sign In
+              </Button>
+            </Form.Item>
+
+            {mustVerify && (
+              <Form.Item>
+                <Button
+                  onClick={handleTryAgain}
+                  className="w-full"
+                  type="secondary"
+                >
+                  Did not received the code? Try Again
+                </Button>
+              </Form.Item>
+            )}
+          </Form>
+        </Card>
+      </Layout.Content>
+      <Layout.Footer className="login-page__footer">
+        <GithubOutlined />
+        <small>V{Config.panelVersion}</small>
+      </Layout.Footer>
+    </Layout>
   );
 };
 

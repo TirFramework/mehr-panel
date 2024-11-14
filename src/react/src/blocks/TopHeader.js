@@ -1,17 +1,30 @@
 import { useParams } from "react-router-dom";
-import { Avatar, Dropdown, Layout, Row, Typography, Menu, Button } from "antd";
-import { useHistory } from "react-router-dom";
-import { LogoutOutlined } from "@ant-design/icons";
+import {
+  Avatar,
+  Dropdown,
+  Layout,
+  Row,
+  Typography,
+  Menu,
+  Button,
+  Col,
+  Space,
+} from "antd";
+import { useNavigate } from "react-router-dom";
+import { LogoutOutlined, ExportOutlined } from "@ant-design/icons";
 import Cookies from "js-cookie";
+import * as api from "../api";
 
-const { Header } = Layout;
+const { Header, Content } = Layout;
 
-const TopHeader = (props) => {
-  let history = useHistory();
+const TopHeader = ({ username, name }) => {
+  const navigate = useNavigate();
 
   const logout = () => {
-    Cookies.remove("api_token");
-    history.push("/admin/login");
+    api.postLogout().then(() => {
+      Cookies.remove("api_token");
+      navigate("/admin/login");
+    });
   };
 
   const menu = (
@@ -21,14 +34,26 @@ const TopHeader = (props) => {
   );
   return (
     <>
-      <Header className="px-4">
-        <Row
-          justify="space-between"
-          align="middle"
-          className="text-right flex justify-between align-middle h-full"
-        >
-          <div></div>
-          <Button onClick={logout} shape="circle" icon={<LogoutOutlined />} />
+      <Header className="top-header">
+        <Row justify="space-between" gutter={16} align="middle">
+          <Col>
+            <Typography.Title level={2} className="logo">
+              <a href="/" target="_blank">
+                {name}
+                <small>
+                  <ExportOutlined />
+                </small>
+              </a>
+            </Typography.Title>
+          </Col>
+          <Col>
+            <Space>
+              <div className="username">{username}</div>
+              <Button onClick={logout} icon={<LogoutOutlined />}>
+                Logout
+              </Button>
+            </Space>
+          </Col>
         </Row>
       </Header>
     </>

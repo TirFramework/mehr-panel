@@ -3,10 +3,13 @@ import { Editor as TinymceReact } from "@tinymce/tinymce-react";
 
 import * as api from "../api";
 import Config from "../constants/config";
+import useLocalStorage from "../hooks/useLocalStorage";
 
 // apiKey for TinyMCE
 let apiKey = Config.tinyemcApiKey;
 export default function Editor({ value, onChange, ...props }) {
+  const [isDarkMode, setIsDarkMode] = useLocalStorage("mode", { mode: false });
+
   return (
     <TinymceReact
       // {...props}
@@ -38,6 +41,8 @@ export default function Editor({ value, onChange, ...props }) {
         relative_urls: false,
         remove_script_host: false,
         convert_urls: false,
+        skin: isDarkMode.mode ? "oxide-dark" : "oxide",
+        content_css: isDarkMode.mode ? "dark" : "default",
         file_picker_types: "image",
         file_picker_callback: function (cb, value, meta) {
           var input = document.createElement("input");
@@ -63,10 +68,10 @@ export default function Editor({ value, onChange, ...props }) {
                   cb(`${props.basePath}${res.path}`);
                 })
                 .catch((err) => {
-                  console.log(
-                    "🚀 ~ file: Dashboard.js ~ line 95 ~ Index ~ err",
-                    err
-                  );
+                  // console.log(
+                  //   "🚀 ~ file: Dashboard.js ~ line 95 ~ Index ~ err",
+                  //   err
+                  // );
                 });
 
               /* call the callback and populate the Title field with the file name */
