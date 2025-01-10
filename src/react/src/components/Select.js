@@ -28,10 +28,20 @@ const MySelect = (props) => {
   );
 };
 
+const handelDefaultValue = (defaultValue) => {
+  if (isNaN(Number(defaultValue))) {
+    return defaultValue;
+  } else {
+    return Number(defaultValue);
+  }
+};
+
 const Text = (props) => {
-  const [value, setValue] = useState(props.value || props.defaultValue);
+  const [value, setValue] = useState(
+    props.value || handelDefaultValue(props.defaultValue)
+  );
   useEffect(() => {
-    setValue(props.value || props.defaultValue);
+    setValue(props.value || handelDefaultValue(props.defaultValue));
   }, []);
 
   const rules = separationRules({
