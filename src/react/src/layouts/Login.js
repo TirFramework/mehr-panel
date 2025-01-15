@@ -10,6 +10,7 @@ import {
   Card,
   Typography,
   Layout,
+  Flex,
 } from "antd";
 
 import {
@@ -166,6 +167,17 @@ const Login = () => {
                 </Button>
               </Form.Item>
             )}
+
+            <Flex gap="middle" justify="center">
+              <Button
+                type="link"
+                onClick={() => {
+                  navigate("/admin/forgot-password");
+                }}
+              >
+                Forgot Password
+              </Button>
+            </Flex>
           </Form>
         </Card>
       </Layout.Content>

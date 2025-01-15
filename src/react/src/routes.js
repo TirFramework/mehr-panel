@@ -3,6 +3,7 @@ import Index from "./pages/Index";
 import Create from "./pages/Create";
 import Detail from "./pages/Detail";
 import Login from "./layouts/Login.js";
+import ForgotPassword from "./pages/ForgotPassword.js";
 
 export const dashboardRoutes = [
   {
@@ -34,5 +35,9 @@ export const authRoutes = [
   {
     path: "/admin/login",
     component: <Login />,
+  },
+  {
+    path: "/admin/forgot-password",
+    component: <ForgotPassword />,
   },
 ];

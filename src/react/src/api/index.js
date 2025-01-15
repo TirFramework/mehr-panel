@@ -12,6 +12,16 @@ export const postLogin = async (body) => {
   return data;
 };
 
+export const postForgotPassword = async (body) => {
+  const { data } = await axios.post(`/forgot-password`, body);
+  return data;
+};
+
+export const postResetPassword = async (body) => {
+  const { data } = await axios.post(`/reset-password`, body);
+  return data;
+};
+
 export const getSidebar = async () => {
   const { data } = await axios.get(`/sidebar`);
   return data;
