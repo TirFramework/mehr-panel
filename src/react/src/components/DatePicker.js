@@ -22,10 +22,6 @@ const CustomDatePicker = ({ format, onChange, value, ...props }) => {
       {...props}
       format={format}
       onChange={(data) => {
-        console.log(
-          "🚀 ~ CustomDatePicker ~ props.options?.showTime?.length:",
-          props
-        );
         if (props.enableTimezone || Object.keys(props.showTime).length > 0) {
           onChange(data ? dayjs(data) : null);
           console.log("🚀 ~ CustomDatePicker ~ dayjs(data):", dayjs(data));
@@ -57,6 +53,11 @@ const Text = (props) => {
     updateRules: props.updateRules,
   });
 
+  const disablePastDates = (current) => {
+    // Disable dates before or equal to today
+    return current && current <= new Date().setHours(0, 0, 0, 0);
+  };
+
   return (
     <>
       <Form.Item
@@ -83,6 +84,11 @@ const Text = (props) => {
           style={{ width: "100%" }}
           enableTimezone={props.timezone[0]}
           timezone={props.timezone[1]}
+          disabledDate={
+            props.options?.disabledPast
+              ? (disabledDate = { disablePastDates })
+              : false
+          }
         />
       </Form.Item>
     </>
