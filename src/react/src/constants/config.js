@@ -8,7 +8,7 @@ const Config = {
     process.env.REACT_APP_API_STORAGE ||
     "/storage",
   tinyemcApiKey: process.env.MIX_APP_TINYEMC || process.env.REACT_APP_TINYEMC,
-  panelVersion: "8.1.2",
+  panelVersion: "8.1.3",
   interactionCharacter:
     process.env.MIX_APP_INTERACTION_CHARACTER ||
     process.env.REACT_APP_INTERACTION_CHARACTER ||
