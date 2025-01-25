@@ -1,4 +1,5 @@
-import { Form, Input } from "antd";
+import { Form, Input, Popover, Space } from "antd";
+import { QuestionCircleOutlined } from "@ant-design/icons";
 
 import { separationRules } from "../lib/helpers";
 
@@ -13,7 +14,19 @@ const Text = (props) => {
   return (
     <>
       <Form.Item
-        label={props.display}
+        label={
+          <Space>
+            {props.display}
+            {props.comment?.content !== undefined && (
+              <Popover
+                content={"props.comment.content"}
+                title={"props.comment.title"}
+              >
+                <QuestionCircleOutlined />
+              </Popover>
+            )}
+          </Space>
+        }
         name={props.name}
         initialValue={props.value}
         rules={rules}
