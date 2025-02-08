@@ -34,11 +34,11 @@
 // // export default Demo;
 
 import React, { useState, useCallback } from "react";
-import { Upload, Button, Tooltip, Form } from "antd";
+import { Upload, Button, Tooltip, Form, Popover } from "antd";
 import { DndProvider, useDrag, useDrop } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import update from "immutability-helper";
-import { UploadOutlined } from "@ant-design/icons";
+import { UploadOutlined, QuestionCircleOutlined } from "@ant-design/icons";
 
 import { getAccept, separationRules } from "../lib/helpers";
 
@@ -175,6 +175,14 @@ const DragSortingUpload = (props) => {
         >
           <Button icon={<UploadOutlined />}>
             Click to upload file for {props.display}
+            {props.comment?.content !== undefined && (
+              <Popover
+                content={props.comment.content}
+                title={props.comment.title}
+              >
+                <QuestionCircleOutlined />
+              </Popover>
+            )}
           </Button>
         </Upload>
       </DndProvider>

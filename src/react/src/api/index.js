@@ -107,10 +107,10 @@ export const getSelectValue = async (dataUrl, id) => {
   return await data;
 };
 
-export const uploadImage = async (file) => {
+export const uploadImage = async (url, file) => {
   const formData = new FormData();
   formData.append("file", file);
-  const { data } = await axios.post(`/file-manager/upload`, formData);
+  const { data } = await axios.post(url, formData);
 
   return await data;
 };
