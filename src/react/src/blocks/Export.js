@@ -2,15 +2,11 @@ import { Button, Dropdown } from "antd";
 import { CSVDownload, CSVLink } from "react-csv";
 import { useParams } from "react-router-dom";
 import { useState } from "react";
-import {
-  ExportOutlined,
-  DownOutlined,
-  FileExcelOutlined,
-} from "@ant-design/icons";
+import { FileExcelOutlined } from "@ant-design/icons";
 import * as api from "../api";
+import dayjs from "dayjs";
 
 function Export({ data, loading, columns }) {
-
   const { pageModule } = useParams();
   const [allData, setAllData] = useState([]);
   const [lo, setLo] = useState(false);
@@ -31,18 +27,40 @@ function Export({ data, loading, columns }) {
       });
   };
 
-    const getHeader  = () => {
-           let  headers = columns.map(function (item) {
-                    if(item.fieldName)
-                    {
-                        return {label:item.field?.display, key:item.fieldName}
-                    }
+  const getHeader = () => {
+    let headers = columns
+      .map(function (item) {
+        if (item.fieldName) {
+          return { label: item.field?.display, key: item.fieldName };
+        }
+      })
+      .filter((notUndefined) => notUndefined !== undefined);
+    return headers;
+  };
 
-                }
-            ).filter(notUndefined => notUndefined !== undefined);
-        return headers;
-
-    }
+  const getData = (d) => {
+    console.log("🚀 ~ getData ~ d:", d);
+    let newData = d;
+    columns.forEach((element) => {
+      if (typeof element.dataSet === "object") {
+        if (Object.keys(element.dataSet).length > 0) {
+          newData.map(function (item) {
+            return (item[element.fieldName] =
+              element.dataSet[item[element.fieldName]]);
+          });
+        }
+      }
+      if (element.type === "DatePicker") {
+        newData.map(function (item) {
+          return (item[element.fieldName] =
+            item[element.fieldName] !== null
+              ? dayjs(item[element.fieldName]).format("YYYY-MM-DD")
+              : "-");
+        });
+      }
+    });
+    return newData;
+  };
 
   const items = [
     {
@@ -50,10 +68,10 @@ function Export({ data, loading, columns }) {
         <CSVLink
           loading={loading}
           filename={`${pageModule}_data.csv`}
-          data={data}
+          data={getData(data)}
           headers={getHeader()}
         >
-          <div>Export to CSV</div>
+          <div>Export this Table</div>
         </CSVLink>
       ),
       key: "1",
@@ -65,11 +83,10 @@ function Export({ data, loading, columns }) {
     <>
       {allData.length > 0 && (
         <CSVDownload
-          data={allData}
+          data={getData(allData)}
           target="_blank"
           filename={`${pageModule}_all_data.csv`}
           headers={getHeader()}
-
         />
       )}
       <Dropdown.Button
