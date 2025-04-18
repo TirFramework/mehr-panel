@@ -424,3 +424,7 @@ body {
   /* font-weight: 300; */
   margin-bottom: 16px;
 }
+.ant-menu-submenu-popup .ant-menu-vertical .ant-menu-item,
+.ant-menu-submenu-popup .ant-menu-vertical .ant-menu-submenu-title {
+    display: flex;
+}

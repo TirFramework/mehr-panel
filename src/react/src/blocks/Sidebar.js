@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
-import { Badge, Layout, Menu } from "antd";
-import { Link, useParams } from "react-router-dom";
+import React, { useMemo } from "react";
+import { Badge, Layout, Menu, Tooltip } from "antd";
+import { Link, useParams, useLocation } from "react-router-dom";
 import Icon from "../components/Icon";
 import { useSidebar } from "../Request";
 import useLocalStorage from "../hooks/useLocalStorage";
@@ -14,20 +14,50 @@ function App(props) {
   });
 
   const { pageModule } = useParams();
+  const location = useLocation();
 
-  const openKeys = (menus) => {
-    let r = [];
-    menus.forEach((item) => {
-      if (item.children) {
-        item.children.forEach((element) => {
-          if (element.name === pageModule) {
-            r.push(item.name);
-          }
-        });
+  const findActiveKeys = (
+    items,
+    currentPath,
+    currentPageModule,
+    parentKeys = []
+  ) => {
+    let activeKeys = [];
+    let openKeys = [];
+
+    items.forEach((item) => {
+      const isCurrentActive =
+        (item.activePaths && item.activePaths.includes(currentPath)) ||
+        item.link === currentPath ||
+        item.name === currentPageModule;
+
+      if (isCurrentActive) {
+        activeKeys.push(item.name);
+        openKeys.push(...parentKeys);
+      }
+
+      if (item.children && item.children.length > 0) {
+        const childKeys = findActiveKeys(
+          item.children,
+          currentPath,
+          currentPageModule,
+          [...parentKeys, item.name]
+        );
+
+        if (childKeys.activeKeys.length > 0) {
+          activeKeys.push(...childKeys.activeKeys);
+          openKeys.push(...childKeys.openKeys, item.name);
+        }
       }
     });
-    return r;
+
+    return { activeKeys, openKeys: [...new Set(openKeys)] };
   };
+
+  const activeMenuKeys = useMemo(() => {
+    if (!menus) return { activeKeys: [], openKeys: [] };
+    return findActiveKeys(menus, location.pathname, pageModule);
+  }, [menus, location.pathname, pageModule]);
 
   return (
     <Sider
@@ -41,25 +71,29 @@ function App(props) {
       }
     >
       {menusQuery.isLoading ? (
-        <>loading ....</>
+        <>loading ...</>
       ) : (
         <>
           <Menu
             theme="dark"
             className="menu__sidebar"
             defaultSelectedKeys={["0"]}
-            selectedKeys={pageModule}
-            defaultOpenKeys={openKeys(menus)}
+            selectedKeys={activeMenuKeys.activeKeys}
+            defaultOpenKeys={activeMenuKeys.openKeys}
             mode="inline"
             items={menus.map(
               ({ link, icon, title, name, badge, children = [] }) => ({
-                icon: icon ? <Icon type={icon} /> : null,
+                icon: icon ? (
+                  <Tooltip title={title} placement="right">
+                    <Icon type={icon} />
+                  </Tooltip>
+                ) : null,
                 key: name,
                 label: (
                   <>
                     {children.length === 0 ? (
                       <Link className="menu__link" to={link}>
-                        {title}{" "}
+                        {title}
                         {badge > 0 && <Badge count={badge} size="small" />}
                       </Link>
                     ) : (
@@ -71,15 +105,19 @@ function App(props) {
                   children.length === 0
                     ? null
                     : children.map(({ link, icon, title, name, badge }) => ({
-                      icon: icon ? <Icon type={icon} /> : null,
-                      key: name,
-                      label: (
-                        <Link className="menu__link" to={link}>
-                          {title}{" "}
-                          {badge > 0 && <Badge count={badge} size="small" />}
-                        </Link>
-                      ),
-                    })),
+                        icon: icon ? (
+                          <Tooltip title={title} placement="right">
+                            <Icon type={icon} />
+                          </Tooltip>
+                        ) : null,
+                        key: name,
+                        label: (
+                          <Link className="menu__link" to={link}>
+                            {title}
+                            {badge > 0 && <Badge count={badge} size="small" />}
+                          </Link>
+                        ),
+                      })),
               })
             )}
           />
