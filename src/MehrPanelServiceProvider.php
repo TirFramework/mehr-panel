@@ -17,7 +17,7 @@ class MehrPanelServiceProvider extends ServiceProvider
     {
 
         $this->mergeConfigFrom(
-            __DIR__ . '/../config/mehr-panel.php',
+            __DIR__ . '/config/mehr-panel.php',
             'mehr-panel'
         );
     }
@@ -51,7 +51,7 @@ class MehrPanelServiceProvider extends ServiceProvider
         ], 'mehr-panel-customize');
 
         $this->publishes([
-            __DIR__ . '/../config/mehr-panel.php' => config_path('mehr-panel.php'),
+            __DIR__ . '/config/mehr-panel.php' => config_path('mehr-panel.php'),
         ], 'mehr-panel-config');
     }
 }
