@@ -12,7 +12,7 @@ const PublicRoute = ({ component, ...rest }) => {
 
   useEffect(() => {
     if (auth) {
-      return navigate(`/admin/custom/dashboard`);
+      return navigate(`/admin/dashboard`);
     }
   }, [auth]);
 

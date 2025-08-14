@@ -1,11 +1,13 @@
 import { Button } from "antd";
 import { Link, useParams } from "react-router-dom";
 import { useLanguage } from "../context/LanguageContext";
+import Config from "../constants/config";
 import { useEffect, useState } from "react";
 
 const Submit = (props) => {
   const { pageModule } = useParams();
   const { t } = useLanguage();
+
   const [clicked, setClicked] = useState(false);
 
   useEffect(() => {
@@ -21,8 +23,10 @@ const Submit = (props) => {
       disabled={clicked ? false : props.loading}
       onClick={() => {
         setClicked(true);
-
-        props.form.redirect = false;
+        props.form.redirect = `/${Config.perfix}/${pageModule}`;
+        if (props.path) {
+          props.form.redirect = props.path;
+        }
         props.form.submit();
       }}
     >
@@ -30,7 +34,7 @@ const Submit = (props) => {
         {props.display ? (
           props.display
         ) : (
-          <>{props.pageId ? t.UPDATE : t.CREATE}</>
+          <>{props.pageId ? t.UPDATE_AND_CLOSE : t.CREATE_AND_CLOSE}</>
         )}
       </>
     </Button>

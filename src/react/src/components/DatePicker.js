@@ -58,6 +58,20 @@ const Text = (props) => {
     return current && current <= new Date().setHours(0, 0, 0, 0);
   };
 
+  if (props.readonly) {
+    return (
+      <>
+        {props.hideLable ?? <div>{props.display}</div>}
+        <div>
+          {props.value &&
+            dayjs(props.value).format(
+              props?.options?.dateFormat || "YYYY-MM-DD"
+            )}
+        </div>
+      </>
+    );
+  }
+
   return (
     <>
       <Form.Item
@@ -85,9 +99,7 @@ const Text = (props) => {
           enableTimezone={props.timezone[0]}
           timezone={props.timezone[1]}
           disabledDate={
-            props.options?.disabledPast
-              ? (disabledDate = { disablePastDates })
-              : false
+            props.options?.disabledPast ? { disablePastDates } : false
           }
         />
       </Form.Item>

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Form, Select } from "antd";
+import { Form, Select, Tag } from "antd";
 
 import { separationRules } from "../lib/helpers";
 
@@ -12,8 +12,7 @@ const MySelect = (props) => {
       }
       mode={props.multiple ? "multiple" : false}
       options={props.data.sort((a, b) => a.label.localeCompare(b.label))}
-      disabled={props.readonly}
-      className={props.readonly && "readOnly"}
+      disabled={props.disabled}
       allowClear={!props.readonly && true}
       value={props.value}
       onChange={(val) => {
@@ -28,20 +27,18 @@ const MySelect = (props) => {
   );
 };
 
-const handelDefaultValue = (defaultValue) => {
-  if (isNaN(Number(defaultValue))) {
-    return defaultValue;
-  } else {
-    return Number(defaultValue);
-  }
-};
+// const handelDefaultValue = (defaultValue) => {
+//   if (isNaN(Number(defaultValue))) {
+//     return defaultValue;
+//   } else {
+//     return Number(defaultValue);
+//   }
+// };
 
-const Text = (props) => {
-  const [value, setValue] = useState(
-    props.value || handelDefaultValue(props.defaultValue)
-  );
+const SelcetIndex = (props) => {
+  const [value, setValue] = useState(props.value || props.defaultValue);
   useEffect(() => {
-    setValue(props.value || handelDefaultValue(props.defaultValue));
+    setValue(props.value || props.defaultValue);
   }, []);
 
   const rules = separationRules({
@@ -50,6 +47,31 @@ const Text = (props) => {
     creationRules: props.creationRules,
     updateRules: props.updateRules,
   });
+
+  if (props.readonly) {
+    if (typeof props.value === "object") {
+      return (
+        <>
+          {props.hideLable ?? <div>{props.display}</div>}
+          <div>
+            {props.value.map((i) => (
+              <Tag>{props.dataSet[i]}</Tag>
+            ))}
+          </div>
+        </>
+      );
+    } else {
+      return (
+        <>
+          {props.hideLable ?? <div>{props.display}</div>}
+          <div>
+            <Tag>{props.dataSet[props.value]}</Tag>
+          </div>
+        </>
+      );
+    }
+  }
+
   return (
     <>
       <Form.Item
@@ -70,4 +92,4 @@ const Text = (props) => {
   );
 };
 
-export default Text;
+export default SelcetIndex;

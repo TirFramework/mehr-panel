@@ -70,7 +70,7 @@ const Login = () => {
       localStorage.clear();
       window.localStorage.setItem("version", Config.panelVersion);
     }
-    navigate("/admin/custom/dashboard");
+    navigate(`/${Config.perfix}/dashboard`);
   };
 
   return (
@@ -172,7 +172,7 @@ const Login = () => {
               <Button
                 type="link"
                 onClick={() => {
-                  navigate("/admin/forgot-password");
+                  navigate(`/${Config.perfix}/forgot-password`);
                 }}
               >
                 Forgot Password

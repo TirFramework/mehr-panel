@@ -1,9 +1,9 @@
 import { Form, InputNumber } from "antd";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 import { separationRules } from "../lib/helpers";
 
-const NumberIndex = (props) => {
+const Price = (props) => {
   const rules = separationRules({
     pageType: props.pageType,
     rules: props.rules,
@@ -15,7 +15,7 @@ const NumberIndex = (props) => {
     return (
       <>
         {props.hideLable ?? <div>{props.display}</div>}
-        {props.value}
+        {props.currency} {props.value}
       </>
     );
   }
@@ -36,20 +36,21 @@ const NumberIndex = (props) => {
       >
         <InputNumber
           {...props.options}
+          placeholder={props.options.placeholder}
           disabled={props.disabled}
           style={{ width: "100%" }}
+          className={`w-full`}
           addonBefore={
-            props.options.addonBefore ? (
-              props.options.addonBefore.trim().startsWith("<svg") ? (
-                <span
-                  dangerouslySetInnerHTML={{
-                    __html: props.options.addonBefore,
-                  }}
-                />
+            props.currency ? (
+              props.currency.trim().startsWith("<svg") ? (
+                <span dangerouslySetInnerHTML={{ __html: props.currency }} />
               ) : (
-                <span>{props.options.addonBefore}</span>
+                <span>{props.currency}</span>
               )
             ) : null
+          }
+          formatter={(value) =>
+            `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
           }
         />
       </Form.Item>
@@ -57,4 +58,4 @@ const NumberIndex = (props) => {
   );
 };
 
-export default NumberIndex;
+export default Price;

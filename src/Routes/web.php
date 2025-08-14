@@ -17,10 +17,13 @@ use Tir\MehrPanel\Controllers\AdminPanelController;
 
 // Add web middleware for use Laravel feature
 Route::group(['middleware' => 'web'], function () {
-    //add admin prefix and middleware for admin area to product package
-    Route::group(['prefix' => 'admin'], function () {
-        Route::view('/{path?}', 'mehr-panel::dashboard')
-            ->where('path', '.*')
-            ->name('react');
-    });
+    $prefixes = config('mehr-panel.panel.prefix', ['admin']);
+
+    foreach ($prefixes as $prefix) {
+        Route::group(['prefix' => $prefix], function () {
+            Route::view('/{path?}', 'mehr-panel::dashboard')
+                ->where('path', '.*')
+                ->name('react.' . $prefix);
+        });
+    };
 });

@@ -1,10 +1,8 @@
-
 import { Form, DatePicker } from "antd";
 
 const { RangePicker } = DatePicker;
 
-
-const Text = (data) => {
+const RangePickerIndex = (data) => {
   return (
     <>
       <Form.Item
@@ -24,4 +22,4 @@ const Text = (data) => {
   );
 };
 
-export default Text;
+export default RangePickerIndex;

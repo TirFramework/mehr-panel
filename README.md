@@ -1,15 +1,76 @@
-# first-adminpanel
+# Mehr Panel
 
-TODO:edit document manual mehr-panel
+A Laravel package for managing an admin panel.
 
-1- publish assets
-php artisan vendor:publish --tag=mehr-panel --force
+## Installation
 
-1- publish cusomize
-php artisan vendor:publish --tag=mehr-panel-customize
+1. Install the package via Composer:
 
-2- npm i
+   ```bash
+   composer require mehr-panel/mehr-panel
+   ```
 
-3- npm run prod
+2. Publish the configuration file (optional, to customize prefixes):
 
-create custom.scss in /admin/assets/
+   ```bash
+   php artisan vendor:publish --tag=mehr-panel-config
+   ```
+
+3. Publish assets:
+
+   ```bash
+   php artisan vendor:publish --tag=mehr-panel-assets --force
+   ```
+
+4. Publish customization files (optional):
+
+   ```bash
+   php artisan vendor:publish --tag=mehr-panel-customize
+   ```
+
+5. Install frontend dependencies:
+
+   ```bash
+   npm install
+   ```
+
+6. Build assets for production:
+   ```bash
+   npm run prod
+   ```
+
+## Configuration
+
+To customize the URL prefixes for the admin panel, you can either:
+
+- Edit the `config/mehr-panel.php` file after publishing it.
+- Set the `MEHR_PANEL_PREFIX` environment variable in your `.env` file.
+
+Example in `.env`:
+
+```env
+MEHR_PANEL_PREFIX=admin,dashboard
+```
+
+This will make the admin panel accessible at both `/admin` and `/dashboard`. If not set, the default prefix is `admin`.
+
+### Configuration File
+
+The `config/mehr-panel.php` file contains:
+
+```php
+<?php
+return [
+    'panel' => [
+        'prefix' => array_filter(explode(',', env('MEHR_PANEL_PREFIX', 'admin'))),
+    ],
+];
+```
+
+## Customization
+
+To override styles, create a `custom.scss` file in the `/admin/assets/` directory after publishing assets.
+
+## Routes
+
+The admin panel is accessible at `/{prefix}` for each prefix defined in the `panel.prefix` array (default: `admin`). For example, if `MEHR_PANEL_PREFIX=admin,dashboard` is set in `.env`, the admin panel will be available at both `/admin` and `/dashboard`.

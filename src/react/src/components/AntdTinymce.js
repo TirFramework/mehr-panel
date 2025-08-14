@@ -12,8 +12,9 @@ export default function Editor({ value, onChange, ...props }) {
 
   return (
     <TinymceReact
-      // {...props}
+      {...props.options}
       // value={value}
+      disabled={props.disabled}
       apiKey={apiKey}
       initialValue={value}
       init={{

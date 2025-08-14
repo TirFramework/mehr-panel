@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { Form, Input, Popover, Space } from "antd";
 import { QuestionCircleOutlined } from "@ant-design/icons";
 
@@ -10,6 +11,15 @@ const Text = (props) => {
     creationRules: props.creationRules,
     updateRules: props.updateRules,
   });
+
+  if (props.readonly) {
+    return (
+      <>
+        {props.hideLable ?? <div>{props.display}</div>}
+        {props.value}
+      </>
+    );
+  }
 
   return (
     <>
@@ -31,11 +41,7 @@ const Text = (props) => {
         initialValue={props.value}
         rules={rules}
       >
-        <Input
-          placeholder={props.options.placeholder}
-          disabled={props.readonly}
-          className={props.readonly && "readOnly"}
-        />
+        <Input {...props.options} disabled={props.disabled} />
       </Form.Item>
     </>
   );

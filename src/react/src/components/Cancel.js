@@ -1,13 +1,21 @@
 import { Button } from "antd";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import Config from "../constants/config";
+import { useLanguage } from "../context/LanguageContext";
 
 const Cancel = (props) => {
   const { pageModule } = useParams();
+  const navigate = useNavigate();
+  const { t } = useLanguage();
+
   return (
-    <Button>
-      <Link to={props.path || `/admin/${pageModule}`}>
-        {props.display || "Cancel"}
-      </Link>
+    <Button
+      disabled={props.loading}
+      onClick={() => {
+        navigate(props.path || `/${Config.perfix}/${pageModule}`);
+      }}
+    >
+      {props.display || t.CANCEL}
     </Button>
   );
 };

@@ -5,7 +5,6 @@ import { separationRules } from "../lib/helpers";
 const { TextArea: Textarea } = Input;
 
 const Text = (props) => {
-
   const rules = separationRules({
     pageType: props.pageType,
     rules: props.rules,
@@ -13,7 +12,14 @@ const Text = (props) => {
     updateRules: props.updateRules,
   });
 
-  // console.log("🚀 ~ file: text.js ~ line 14 ~ Text ~ rules", rules)
+  if (props.readonly) {
+    return (
+      <>
+        {props.hideLable ?? <div>{props.display}</div>}
+        {props.value}
+      </>
+    );
+  }
 
   return (
     <>
@@ -24,10 +30,10 @@ const Text = (props) => {
         rules={rules}
       >
         <Textarea
-            disabled={props.readonly}
-            placeholder={props.options.placeholder}
-            rows={props.row}
-            className={props.readonly && "readOnly"}
+          disabled={props.disabled}
+          placeholder={props.options.placeholder}
+          rows={props.row}
+          className={props.readonly && "readOnly"}
         />
       </Form.Item>
     </>

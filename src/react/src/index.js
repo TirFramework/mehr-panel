@@ -8,6 +8,7 @@ import { App } from "antd";
 // import "antd/dist/antd.min.css"; // or 'antd/dist/antd.less'
 import "./assets/index.css";
 import MyApp from "./MyApp";
+import { LanguageProvider } from "./context/LanguageContext";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 
@@ -29,10 +30,12 @@ const queryClient = new QueryClient({
 root.render(
   <App>
     <QueryClientProvider client={queryClient}>
-      <MyApp />
-      {process.env.NODE_ENV !== "development" && (
-        <ReactQueryDevtools initialIsOpen={false} />
-      )}
+      <LanguageProvider>
+        <MyApp />
+        {process.env.NODE_ENV !== "development" && (
+          <ReactQueryDevtools initialIsOpen={false} />
+        )}
+      </LanguageProvider>
     </QueryClientProvider>
   </App>
 );

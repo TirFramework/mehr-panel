@@ -12,13 +12,11 @@ import {
 import { notification } from "antd";
 
 export const useGetData = (pageModule, filter, options) => {
-  const query = useQuery(
-    {
-      queryKey: [`index-data-${pageModule}`, filter],
-      queryFn: () => getData(pageModule, filter),
-      ...options
-    }
-  );
+  const query = useQuery({
+    queryKey: [`index-data-${pageModule}`, filter],
+    queryFn: () => getData(pageModule, filter),
+    ...options,
+  });
 
   return query;
 };
@@ -27,24 +25,23 @@ export const useGetColumns = (pageModule, filter, options) => {
   const query = useQuery({
     queryKey: [`index-columns-${pageModule}`],
     queryFn: () => getCols(pageModule, filter),
-            onSuccess: (res) => {  }
-        }
-    );
+    onSuccess: (res) => {},
+  });
 
-    return query;
+  return query;
 };
 
 export const useDeleteRow = () => {
-    const mutation = useMutation({
-        mutationFn: deleteRow,
-        options: {
-            onSuccess: (data) => {
-                notification.success({
-                    message: data.message,
-                });
-            }
-        }
-    });
+  const mutation = useMutation({
+    mutationFn: deleteRow,
+    options: {
+      onSuccess: (data) => {
+        notification.success({
+          message: data.message,
+        });
+      },
+    },
+  });
 
   return mutation;
 };
@@ -54,7 +51,7 @@ export const useSidebar = () => {
     queryKey: [`sidebar`],
     queryFn: () => getSidebar(),
     staleTime: 5 * 60 * 1000,
-    refetchInterval: 5 * 60 * 1000
+    refetchInterval: 5 * 60 * 1000,
   });
   return query;
 };
@@ -63,29 +60,23 @@ export const useFieldsQuery = ({ pageModule, id, type }, options) => {
   const query = useQuery({
     queryKey: [`${pageModule}-${id}-${type}`],
     queryFn: () => getFields(pageModule, id, type),
-    options: options
-  }
-  );
+    options: options,
+  });
 
   return query;
 };
 
 export const useGeneralQuery = () => {
-  const query = useQuery(
-    {
-      queryKey: [`general`],
-      queryFn: () => getGeneral()
-    }
-
-  );
+  const query = useQuery({
+    queryKey: [`general`],
+    queryFn: () => getGeneral(),
+  });
   return query;
 };
 
 export const useAddFcmToken = () => {
   const mutation = useMutation({
-
-
-    mutationFn: postAddFcmToken
+    mutationFn: postAddFcmToken,
   });
   return mutation;
 };

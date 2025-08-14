@@ -7,37 +7,26 @@ import ForgotPassword from "./pages/ForgotPassword.js";
 
 export const dashboardRoutes = [
   {
-    path: "/admin/overwrite-index/:pageModule",
-    component: <Custom />,
+    path: "/:panelName/:pageModule/detail",
+    component: <Custom type="detail" />,
   },
   {
-    path: "/admin/c/:pageModule/create-edit",
-    component: <Custom />,
+    path: "/:panelName/:pageModule/create-edit",
+    component: <Custom type="create" />,
   },
   {
-    path: "/admin/custom/:pageModule",
-    component: <Custom />,
-  },
-  {
-    path: "/admin/:pageModule/detail",
-    component: <Detail />,
-  },
-  {
-    path: "/admin/:pageModule/create-edit",
-    component: <Create />,
-  },
-  {
-    path: "/admin/:pageModule",
-    component: <Index />,
+    path: "/:panelName/:pageModule",
+    component: <Custom type="index" />,
   },
 ];
+
 export const authRoutes = [
   {
-    path: "/admin/login",
+    path: "/:panelName/login",
     component: <Login />,
   },
   {
-    path: "/admin/forgot-password",
+    path: "/:panelName/forgot-password",
     component: <ForgotPassword />,
   },
 ];

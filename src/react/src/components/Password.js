@@ -31,7 +31,7 @@ const Text = (props) => {
       ) : (
         <Form.Item label={props.display} name={props.name} rules={rules}>
           <Input.Password
-            placeholder={props.options.placeholder}
+            {...props.options}
             iconRender={(visible) =>
               visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />
             }

@@ -2,14 +2,22 @@ import { Button, Dropdown } from "antd";
 import { CSVDownload, CSVLink } from "react-csv";
 import { useParams } from "react-router-dom";
 import { useState } from "react";
-import { FileExcelOutlined } from "@ant-design/icons";
+import { FileExcelOutlined, CopyOutlined } from "@ant-design/icons";
 import * as api from "../api";
 import dayjs from "dayjs";
+import {
+  extractFromlocalhost,
+  extractQueryParams,
+  objectToQueryString,
+} from "../lib/utils";
 
-function Export({ data, loading, columns }) {
+function Export({ data, loading, columns, pagination }) {
+  const orgData = [...data];
+  const orgColumns = [...columns];
   const { pageModule } = useParams();
   const [allData, setAllData] = useState([]);
   const [lo, setLo] = useState(false);
+  const [exportAllTrigger, setExportAllTrigger] = useState(false);
 
   const exportCSV = () => {
     setLo(true);
@@ -24,38 +32,34 @@ function Export({ data, loading, columns }) {
       .then((response) => {
         setLo(false);
         setAllData(response.data);
+        setExportAllTrigger(true); // فعال کردن دانلود بعد از دریافت داده‌ها
       });
   };
 
   const getHeader = () => {
-    let headers = columns
-      .map(function (item) {
-        if (item.fieldName) {
-          return { label: item.field?.display, key: item.fieldName };
-        }
-      })
-      .filter((notUndefined) => notUndefined !== undefined);
-    return headers;
+    return orgColumns
+      .filter((item) => item.fieldName)
+      .map((item) => ({ label: item.field?.display, key: item.fieldName }));
   };
 
   const getData = (d) => {
-    console.log("🚀 ~ getData ~ d:", d);
-    let newData = d;
-    columns.forEach((element) => {
-      if (typeof element.dataSet === "object") {
+    // ایجاد یک کپی عمیق از داده‌ها برای جلوگیری از تغییر داده‌های اصلی
+    const newData = d.map((item) => ({ ...item }));
+
+    orgColumns.forEach((element) => {
+      if (typeof element.dataSet === "object" && element.dataSet !== null) {
         if (Object.keys(element.dataSet).length > 0) {
-          newData.map(function (item) {
-            return (item[element.fieldName] =
-              element.dataSet[item[element.fieldName]]);
+          newData.forEach((item) => {
+            item[element.fieldName] = element.dataSet[item[element.fieldName]];
           });
         }
       }
       if (element.type === "DatePicker") {
-        newData.map(function (item) {
-          return (item[element.fieldName] =
+        newData.forEach((item) => {
+          item[element.fieldName] =
             item[element.fieldName] !== null
               ? dayjs(item[element.fieldName]).format("YYYY-MM-DD")
-              : "-");
+              : "-";
         });
       }
     });
@@ -68,7 +72,7 @@ function Export({ data, loading, columns }) {
         <CSVLink
           loading={loading}
           filename={`${pageModule}_data.csv`}
-          data={getData(data)}
+          data={getData(orgData)}
           headers={getHeader()}
         >
           <div>Export this Table</div>
@@ -77,24 +81,30 @@ function Export({ data, loading, columns }) {
       key: "1",
       icon: <FileExcelOutlined />,
     },
+    {
+      label: <> Share this table</>,
+      key: "2",
+      icon: <CopyOutlined />,
+      onClick: () => {
+        navigator.clipboard.writeText(
+          `${window.location.href}?${objectToQueryString(pagination)}`
+        );
+      },
+    },
   ];
 
   return (
     <>
-      {allData.length > 0 && (
+      {exportAllTrigger && allData.length > 0 && (
         <CSVDownload
           data={getData(allData)}
           target="_blank"
           filename={`${pageModule}_all_data.csv`}
           headers={getHeader()}
+          onDownload={() => setExportAllTrigger(false)}
         />
       )}
-      <Dropdown.Button
-        loading={lo}
-        menu={{ items }}
-        onClick={exportCSV}
-        // icon={<DownOutlined />}
-      >
+      <Dropdown.Button loading={lo} menu={{ items }} onClick={exportCSV}>
         <FileExcelOutlined /> Export All Data
       </Dropdown.Button>
     </>

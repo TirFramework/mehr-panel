@@ -5,8 +5,8 @@ import * as api from "../../api";
 import { ifExistNumberFromString } from "./duplicate";
 
 export const fixNumber = (obj) => {
-    //object should sort before this function
-  obj =  sortObject(obj);
+  //object should sort before this function
+  obj = sortObject(obj);
   const counts = {};
   const newObj = {};
 
@@ -29,25 +29,26 @@ export const fixNumber = (obj) => {
   return newObj;
 };
 
-
 export const sortObject = (unordered) => {
-    const parseKey = (key) => {
-        // This regex will capture the number part of the key for sorting purposes
-        const match = key.match(/\.([0-9]+)\./);
-        return match ? parseInt(match[1], 10) : -1;
-    };
+  const parseKey = (key) => {
+    // This regex will capture the number part of the key for sorting purposes
+    const match = key.match(/\.([0-9]+)\./);
+    return match ? parseInt(match[1], 10) : -1;
+  };
 
-    return Object.keys(unordered).sort((a, b) => {
-        const numA = parseKey(a);
-        const numB = parseKey(b);
-        if (numA !== numB) {
-            return numA - numB;
-        }
-        // If the numbers are the same, fall back to lexicographical order
-        return a.localeCompare(b);
-    }).reduce((obj, key) => {
-        obj[key] = unordered[key];
-        return obj;
+  return Object.keys(unordered)
+    .sort((a, b) => {
+      const numA = parseKey(a);
+      const numB = parseKey(b);
+      if (numA !== numB) {
+        return numA - numB;
+      }
+      // If the numbers are the same, fall back to lexicographical order
+      return a.localeCompare(b);
+    })
+    .reduce((obj, key) => {
+      obj[key] = unordered[key];
+      return obj;
     }, {});
 };
 
@@ -59,11 +60,14 @@ export const onFinish = ({
   setUrlParams,
   message,
   afterSubmit = () => {},
+  queryClient,
+  queryClientKey = null,
 }) => {
-
-    values = fixNumber(values);
+  values = fixNumber(values);
 
   setSubmitLoad(true);
+
+  const types = ["detail", "create-edit"];
 
   api
     .postEditOrCreate(pageModule, pageId, values)
@@ -71,12 +75,58 @@ export const onFinish = ({
       setSubmitLoad(false);
 
       if (!pageId) {
-        setUrlParams({ newId: res.id });
+        setUrlParams({ id: res.id });
       }
+      types.forEach((type) => {
+        const queryKeyToGet = `${pageModule}-${pageId}-${type}`;
+
+        queryClient.setQueryData([queryKeyToGet], (oldData) => {
+          const newData = { ...oldData };
+          return updateFieldsWithChanges(newData, res.changes);
+        });
+      });
+
+      if (queryClientKey) {
+        queryClient.setQueryData(queryClientKey, (oldData) => {
+          const newData = { ...oldData };
+
+          newData?.data.forEach((item) => {
+            if (item.id === Number(pageId)) {
+              for (const [key, value] of Object.entries(values)) {
+                item[key] = value;
+              }
+            }
+          });
+          return newData;
+        });
+      }
+
       afterSubmit();
+
       message.success(res.message);
     })
     .catch((err) => {
       setSubmitLoad(false);
     });
 };
+
+function updateFieldsWithChanges(fields, changes) {
+  if (Array.isArray(fields)) {
+    return fields.map((item) => updateFieldsWithChanges(item, changes));
+  } else if (typeof fields === "object" && fields !== null) {
+    const updatedObject = { ...fields };
+    if (updatedObject.name && changes[updatedObject.name] !== undefined) {
+      updatedObject.value = changes[updatedObject.name];
+    }
+    for (const key in updatedObject) {
+      if (Object.prototype.hasOwnProperty.call(updatedObject, key)) {
+        updatedObject[key] = updateFieldsWithChanges(
+          updatedObject[key],
+          changes
+        );
+      }
+    }
+    return updatedObject;
+  }
+  return fields;
+}

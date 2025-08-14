@@ -1,5 +1,5 @@
 import React from "react";
-import { Form } from "antd";
+import { Card, Form } from "antd";
 
 import AntdTinymce from "./AntdTinymce";
 import { separationRules } from "../lib/helpers";
@@ -11,6 +11,18 @@ export default function App(props) {
     creationRules: props.creationRules,
     updateRules: props.updateRules,
   });
+
+  if (props.readonly) {
+    return (
+      <>
+        {props.hideLable ?? <div>{props.display}</div>}
+        <Card size="small" className="read-only__value--editor">
+          <div dangerouslySetInnerHTML={{ __html: props.value }} />
+        </Card>
+      </>
+    );
+  }
+
   return (
     <>
       <Form.Item
@@ -24,6 +36,7 @@ export default function App(props) {
           initialValue={props.value}
           uploadUrl={props.uploadUrl}
           basePath={props.basePath}
+          disabled={props.disabled}
         />
       </Form.Item>
     </>

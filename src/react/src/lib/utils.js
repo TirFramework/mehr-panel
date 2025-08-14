@@ -44,6 +44,8 @@ export const getColsNormalize = (res) => {
 
       col.filters?.map((item) => (item.text = item.label));
       col.filterSearch = col.filters.length > 10;
+      // col.filterMode = "tree";
+      // col.filterMultiple = false;
     }
     // -----------------------------------
     // -----------------------------------
@@ -122,55 +124,15 @@ const Render = ({ item, value, rowIndex, data, id, minWidth }) => {
   const [searchParams] = useSearchParams();
   let pageId = searchParams.get("id");
 
-  if (id == pageId && pageId && id) {
-    return <Field value={value} {...item.field} />;
-  } else {
-    if (item.type === "DatePicker") {
-      if (value) {
-        return <div className="" style={{ minWidth: minWidth }}>{dayjs(value).format(
-          !item.field.options?.showTime?.length
-            ? item.field.options.dateFormat
-            : item.field.options.dateFormat + " " + item.field.options?.showTime
-        )}</div>
-      } else {
-        return <div className="" style={{ minWidth: minWidth }}> - </div>;
-      }
-    } else if (item.type === "ColorPicker") {
-      return (
-        <>
-          <div
-            className="showColorPicker"
-            style={{ background: value, minWidth: minWidth }}
-          ></div>
-        </>
-      );
-    } else if (Object.keys(item.dataSet).length !== 0) {
-      if (typeof value === "object" && value) {
-        return (
-          <div style={{ minWidth: minWidth }}>
-            {value.map((val, index) => (
-              <Tag key={index}>{item.dataSet[val[item.dataKey] || val] || val}</Tag>
-            ))}
-          </div>
-        );
-      } else {
-        return <div style={{ minWidth: minWidth }}>{item.dataSet[value] || value}</div>;
-      }
-    } else if (item.valueType === "array") {
-      return (
-        <div style={{ minWidth: minWidth }}>
-          {value?.map((value, index) => (
-            <Tag key={index}>
-              {/*<Render value={value} item={item} />*/}
-              {value[item.dataField] || value}
-            </Tag>
-          ))}
-        </div>
-      );
-    } else {
-      return <div style={{ minWidth: minWidth }}>{value}</div>;
-    }
-  }
+  return (
+    <Field
+      value={value}
+      {...item.field}
+      hideLable={true}
+      table={true}
+      readonly={!(id == pageId && pageId && id)}
+    />
+  );
 };
 
 const calculatWidth = (th, td, isFilter, sortable) => {
@@ -185,8 +147,8 @@ const calculatWidth = (th, td, isFilter, sortable) => {
     th,
     "600 14px -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,'Noto Sans',sans-serif,'Apple Color Emoji','Segoe UI Emoji','Segoe UI Symbol','Noto Color Emoji'"
   );
-    return thWidth + icon;
-}
+  return thWidth + icon;
+};
 
 function getTextWidth(text, font) {
   // re-use canvas object for better performance
@@ -209,4 +171,72 @@ function getCanvasFont(el = document.body) {
   const fontFamily = getCssStyle(el, "font-family") || "Times New Roman";
 
   return `${fontWeight} ${fontSize} ${fontFamily}`;
+}
+
+export function extractQueryParams() {
+  const searchParams = new URLSearchParams(window.location.search);
+  const newQueryParams = {};
+
+  // گرفتن پارامترهای ساده
+  newQueryParams.current = Number(searchParams.get("current"));
+  newQueryParams.pageSize = Number(searchParams.get("pageSize"));
+  newQueryParams.total = searchParams.get("total");
+  newQueryParams.search = searchParams.get("search");
+  newQueryParams.key = searchParams.get("key");
+
+  // گرفتن پارامترهای پیچیده (filters, sorter) و دیکد و JSON.parse کردن اونها
+  const filtersParam = searchParams.get("filters");
+  if (filtersParam) {
+    try {
+      newQueryParams.filters = JSON.parse(decodeURIComponent(filtersParam));
+    } catch (e) {
+      console.error("Failed to parse filters:", e);
+      newQueryParams.filters = {};
+    }
+  } else {
+    newQueryParams.filters = {};
+  }
+
+  const sorterParam = searchParams.get("sorter");
+  if (sorterParam) {
+    try {
+      newQueryParams.sorter = JSON.parse(decodeURIComponent(sorterParam));
+    } catch (e) {
+      console.error("Failed to parse sorter:", e);
+      newQueryParams.sorter = {};
+    }
+  } else {
+    newQueryParams.sorter = {};
+  }
+
+  return newQueryParams;
+}
+
+export function extractFromlocalhost() {}
+
+export function objectToQueryString(obj) {
+  const params = new URLSearchParams();
+
+  for (const key in obj) {
+    if (obj.hasOwnProperty(key)) {
+      const value = obj[key];
+
+      // برای مقادیر null یا undefined، هیچ کاری نمی‌کنیم
+      if (value === null || typeof value === "undefined") {
+        continue;
+      }
+
+      // اگر مقدار یک آبجکت یا آرایه بود، آن را به JSON تبدیل کرده و سپس encode می‌کنیم
+      if (typeof value === "object") {
+        // اطمینان حاصل می‌کنیم که آرایه‌های خالی یا آبجکت‌های خالی هم به درستی هندل بشن،
+        // اما اگر خواستید می‌تونید تصمیم بگیرید که اون‌ها رو اضافه نکنید.
+        const jsonString = JSON.stringify(value);
+        params.append(key, jsonString);
+      } else {
+        // برای مقادیر ساده (رشته، عدد، boolean)
+        params.append(key, value.toString());
+      }
+    }
+  }
+  return params.toString();
 }

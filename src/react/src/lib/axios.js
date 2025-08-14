@@ -6,7 +6,8 @@ import ErrorHandler from "./helpers/ErrorHandler";
 /**
  * Axios defaults
  */
-axios.defaults.baseURL = Config.apiBaseUrl;
+
+axios.defaults.baseURL = Config.apiBaseUrl + "/" + Config.perfix;
 
 // Headers
 axios.defaults.headers.common["Content-Type"] = "application/json";

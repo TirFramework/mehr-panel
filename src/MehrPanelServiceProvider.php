@@ -15,6 +15,11 @@ class MehrPanelServiceProvider extends ServiceProvider
 
     public function register()
     {
+
+        $this->mergeConfigFrom(
+            __DIR__ . '/../config/mehr-panel.php',
+            'mehr-panel'
+        );
     }
 
     /**
@@ -43,7 +48,10 @@ class MehrPanelServiceProvider extends ServiceProvider
         $this->publishes([
             __DIR__ . '/custom.scss' => base_path('resources/admin/src/assets/custom.scss'),
             __DIR__ . '/dashboard.js' => base_path('resources/admin/src/dynamic-pages/dashboard.js'),
-
         ], 'mehr-panel-customize');
+
+        $this->publishes([
+            __DIR__ . '/../config/mehr-panel.php' => config_path('mehr-panel.php'),
+        ], 'mehr-panel-config');
     }
 }

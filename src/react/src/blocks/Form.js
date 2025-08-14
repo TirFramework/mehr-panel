@@ -1,8 +1,13 @@
 import { useEffect, useState } from "react";
-import { useSearchParams, useLocation, useParams } from "react-router-dom";
+import {
+  useSearchParams,
+  useLocation,
+  useParams,
+  useNavigate,
+} from "react-router-dom";
 import { App, Form, Typography, Card, Row, Col, Skeleton } from "antd";
+import { useQueryClient } from "@tanstack/react-query";
 
-import * as api from "../api";
 import { onFinish } from "../lib/helpers";
 import SubmitGroup from "../components/SubmitGroup";
 import FormGroup from "../components/FormGroup";
@@ -13,19 +18,19 @@ import Prompt from "./Prompt";
 
 const CreateForm = ({ type }) => {
   const [form] = Form.useForm();
+  const queryClient = useQueryClient();
+  const navigate = useNavigate();
 
   const [urlParams, setUrlParams] = useSearchParams();
   const pageId = urlParams.get("id");
   let newId = urlParams.get("newId");
-
-  // const editMode = urlParams.editMode;
 
   const { pageModule } = useParams();
   const [isTouched, setIsTouched] = useState(false);
 
   const { myState, updateMyState } = useMyContext();
 
-  const { data: data, ...dataQuery } = useFieldsQuery({
+  const { data: fieldsData, ...dataQuery } = useFieldsQuery({
     pageModule: pageModule,
     id:
       new URLSearchParams(window.location.search).get("id") ||
@@ -36,38 +41,27 @@ const CreateForm = ({ type }) => {
 
   useEffect(() => {
     form.resetFields();
-  }, [pageModule, pageId]);
+  }, [pageModule, pageId, form]);
 
-  // useEffect(() => {
-  //   setIsTouched(false);
-  //   setBootLoad(true);
-  //   setData([]);
+  useEffect(() => {
+    if (fieldsData?.fields) {
+      const initialValues = {};
 
-  //   if (type === "detail") {
-  //     api.getDetailFields(pageModule, pageId).then((res) => {
-  //       setData(res);
-  //       setBootLoad(false);
-  //       setSubmitLoad(false);
-  //       form.resetFields();
-  //     });
-  //   } else {
-  //     // const { data: data, ...dataQuery } = useCreateOrEditFieldsQuery(
-  //     //   pageModule,
-  //     //   pageId || new URLSearchParams(window.location.search).get("newId")
-  //     // );
-  //     api
-  //       .getCreateOrEditFields(
-  //         pageModule,
-  //         pageId || new URLSearchParams(window.location.search).get("newId")
-  //       )
-  //       .then((res) => {
-  //         setData(res);
-  //         setBootLoad(false);
-  //         setSubmitLoad(false);
-  //         form.resetFields();
-  //       });
-  //   }
-  // }, [pageModule, pageId]);
+      function traverseFields(fields) {
+        fields.forEach((field) => {
+          if (field?.name && field?.value !== undefined) {
+            initialValues[field.name] = field.value;
+          }
+          if (field?.children && Array.isArray(field.children)) {
+            traverseFields(field.children);
+          }
+        });
+      }
+
+      traverseFields(fieldsData.fields);
+      form.setFieldsValue(initialValues);
+    }
+  }, [fieldsData, form]);
 
   const onFinishFailed = (errorInfo) => {
     console.log("Failed:", errorInfo);
@@ -80,15 +74,13 @@ const CreateForm = ({ type }) => {
 
   useEffect(() => {
     if (isTouched) {
-      // eslint-disable-next-line consistent-return
       window.onbeforeunload = (event) => {
         const e = event || window.event;
-        // Cancel the event
         e.preventDefault();
         if (e) {
-          e.returnValue = ""; // Legacy method for cross browser support
+          e.returnValue = "";
         }
-        return ""; // Legacy method for cross browser support
+        return "";
       };
     } else {
       window.onbeforeunload = () => {};
@@ -121,12 +113,12 @@ const CreateForm = ({ type }) => {
           </div>
         </>
       ) : (
-        <Header type={type} pageTitle={data?.configs?.module_title} />
+        <Header type={type} pageTitle={fieldsData?.configs?.module_title} />
       )}
 
       <Form
         form={form}
-        validateMessages={data?.validationMsg}
+        validateMessages={fieldsData?.validationMsg}
         name="basic"
         scrollToFirstError={true}
         labelCol={{
@@ -139,7 +131,6 @@ const CreateForm = ({ type }) => {
           remember: true,
         }}
         onFieldsChange={() => {
-          // add your additionaly logic here
           setIsTouched(true);
         }}
         className="form"
@@ -151,6 +142,12 @@ const CreateForm = ({ type }) => {
             pageModule: pageModule,
             pageId: pageId || newId,
             setUrlParams: setUrlParams,
+            queryClient: queryClient,
+            afterSubmit: () => {
+              if (form.redirect) {
+                navigate(form.redirect);
+              }
+            },
           });
           setIsTouched(false);
         }}
@@ -158,24 +155,34 @@ const CreateForm = ({ type }) => {
       >
         <Row justify="end" align="middle" className="header-page">
           <Col>
-            <SubmitGroup buttons={data?.buttons} form={form} pageId={pageId} />
+            <SubmitGroup
+              buttons={fieldsData?.buttons}
+              form={form}
+              pageId={pageId}
+              type={type}
+            />
           </Col>
         </Row>
-        <Card className="create-edit__card" loading={dataQuery.isLoading || dataQuery.isFetching}>
+        <Card className="create-edit__card" loading={dataQuery.isLoading}>
           <Row gutter={[16, 16]}>
-            {data?.fields?.map((field, index) => (
+            {fieldsData?.fields?.map((field, index) => (
               <FormGroup
                 key={index}
                 index={index}
                 pageType={!!pageId ? "edit" : "create"}
-                form={form}
+                form={form} // پاس دادن instance فرم
                 {...field}
+                isFetching={dataQuery.isFetching}
               />
             ))}
           </Row>
         </Card>
 
-        <SubmitGroup buttons={data?.buttons} form={form} pageId={pageId} />
+        <SubmitGroup
+          buttons={fieldsData?.buttons}
+          form={form}
+          pageId={pageId}
+        />
       </Form>
 
       {/* <Prompt /> */}

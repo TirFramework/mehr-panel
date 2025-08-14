@@ -1,14 +1,26 @@
-import { Form, Switch } from "antd";
+import { Form, Switch, Tag } from "antd";
+import { CheckOutlined, CloseOutlined } from "@ant-design/icons";
 
 import { separationRules } from "../lib/helpers";
 
-const Text = (props) => {
+const SwitchIndex = (props) => {
   const rules = separationRules({
     pageType: props.pageType,
     rules: props.rules,
     creationRules: props.creationRules,
     updateRules: props.updateRules,
   });
+
+  if (props.readonly) {
+    return (
+      <>
+        {props.hideLable ?? <div>{props.display}</div>}
+        <div className="read-only__value">
+          {props.value ? <CheckOutlined /> : <CloseOutlined />}
+        </div>
+      </>
+    );
+  }
 
   return (
     <>
@@ -35,4 +47,4 @@ const Text = (props) => {
   );
 };
 
-export default Text;
+export default SwitchIndex;

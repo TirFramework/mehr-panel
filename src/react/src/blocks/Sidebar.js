@@ -81,7 +81,7 @@ function App(props) {
             selectedKeys={activeMenuKeys.activeKeys}
             defaultOpenKeys={activeMenuKeys.openKeys}
             mode="inline"
-            items={menus.map(
+            items={menus?.map(
               ({ link, icon, title, name, badge, children = [] }) => ({
                 icon: icon ? (
                   <Tooltip title={title} placement="right">

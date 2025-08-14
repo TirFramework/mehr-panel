@@ -1,14 +1,19 @@
+const path = window.location.pathname; // "/panelName/pageModule"
+const parts = path.split("/");
+const panelName = parts[1];
+
 const Config = {
   apiBaseUrl:
     process.env.MIX_APP_API_BASE_URL ||
     process.env.REACT_APP_API_BASE_URL ||
-    "/api/v1/admin",
+    `/api/v1`,
   storage:
     process.env.MIX_APP_API_STORAGE ||
     process.env.REACT_APP_API_STORAGE ||
     "/storage",
   tinyemcApiKey: process.env.MIX_APP_TINYEMC || process.env.REACT_APP_TINYEMC,
-  panelVersion: "8.1.4",
+  perfix: panelName,
+  panelVersion: "11.0.0",
   interactionCharacter:
     process.env.MIX_APP_INTERACTION_CHARACTER ||
     process.env.REACT_APP_INTERACTION_CHARACTER ||

@@ -23,7 +23,7 @@ import Textarea from "./Textarea";
 import Editor from "./Editor";
 import Render from "../blocks/Render";
 import Checkbox from "./Checkbox";
-
+import SaveAndClose from "./SaveAndClose";
 
 // const DynamicField = (props) => {
 //   const F = lazy(() => import(`./${props.type}.js`));
@@ -60,15 +60,17 @@ const Field = (props) => {
         <Cancel {...props} />
       ) : props.type === "Submit" ? (
         <Submit {...props} />
+      ) : props.type === "SaveAndClose" ? (
+        <SaveAndClose {...props} />
       ) : props.type === "Additional" ? (
         <Additional {...props} />
       ) : props.type === "Icon" ? (
         <Icon {...props} />
       ) : props.type === "Link" ? (
         <Link {...props} />
-      ) : props.readonly && !props.custom ? (
-        <Render {...props} />
-      ) : props.type === "Text" ? (
+      ) : // ) : props.readonly && !props.custom ? (
+      //   <Render {...props} />
+      props.type === "Text" ? (
         <Text {...props} />
       ) : props.type === "ColorPicker" ? (
         <ColorPicker {...props} />

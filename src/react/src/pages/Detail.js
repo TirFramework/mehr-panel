@@ -9,7 +9,6 @@ const Detail = () => {
   const pageId = urlParams.get("id");
 
   const { pageModule } = useParams();
-  const { pageType } = useParams();
   return (
     <div className={`page detail page-${pageModule} ${pageModule}-${pageId}`}>
       <MyProvider>

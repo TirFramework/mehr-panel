@@ -36,6 +36,7 @@ import Search from "../blocks/Search";
 import CustomCol from "../blocks/CustomCol";
 import Export from "../blocks/Export";
 import { useQueryClient } from "@tanstack/react-query";
+import useGetParams from "../hooks/useGetParams";
 
 const { Title } = Typography;
 
@@ -46,7 +47,7 @@ function Index() {
   const [urlParams, setUrlParams] = useSearchParams();
   const pageId = urlParams.get("id");
 
-  const [pagination, setPagination] = useLocalStorage(pageModule, {
+  const [pagination, setPagination] = useGetParams(pageModule, {
     ...defaultFilter,
     key: pageModule,
   });
@@ -56,12 +57,11 @@ function Index() {
 
   const { data: pageData, ...pageDataQuery } = useGetColumns(
     pageModule,
-    pagination,
+    pagination
   );
 
   useEffect(() => {
     if (pageData?.cols.length > 0 && Object.keys(pagination).length !== 0) {
-
       setColumn((prevCols) => {
         const newData = pageData.cols.map((col) => {
           return {
@@ -96,6 +96,7 @@ function Index() {
       enabled: !!pagination?.key,
     }
   );
+  console.log("🚀 ~ Index ~ indexData:", indexData);
 
   const handleChangeTable = (p, filters, sorter) => {
     // console.log(
@@ -155,6 +156,7 @@ function Index() {
     };
   });
 
+  // debugger;
   return (
     <div className={`${pageModule}-index page-index`}>
       <Form
@@ -218,22 +220,23 @@ function Index() {
                     {(helpers.notEmpty(pagination?.filters) ||
                       pagination.search ||
                       helpers.notEmpty(pagination?.sorter)) && (
-                        <Button
-                          icon={<ClearOutlined />}
-                          type="primary"
-                          size="large"
-                          danger
-                          onClick={() => {
-                            setPagination({ ...defaultFilter, key: pageModule });
-                            const newData = [...column];
-                            newData.forEach((col) => {
-                              col.filteredValue = null;
-                              col.sortOrder = {};
-                            });
-                            setColumn(newData);
-                          }}
-                        />
-                      )}
+                      <Button
+                        icon={<ClearOutlined />}
+                        type="primary"
+                        size="large"
+                        danger
+                        onClick={() => {
+                          setPagination({ ...defaultFilter, key: pageModule });
+                          const newData = [...column];
+                          newData.forEach((col) => {
+                            col.filteredValue = null;
+                            col.sortOrder = {};
+                          });
+                          setUrlParams({});
+                          setColumn(newData);
+                        }}
+                      />
+                    )}
                   </>
                 </Space>
               </Col>
@@ -336,6 +339,7 @@ function Index() {
                           loading={dataQuery.isLoading || dataQuery.isFetching}
                           data={indexData?.data}
                           columns={column}
+                          pagination={pagination}
                         />
                       </Col>
                       <Col>
@@ -345,7 +349,7 @@ function Index() {
                   </>
                 ),
               }}
-              loading={dataQuery.isLoading || dataQuery.isFetching}
+              loading={dataQuery.isLoading}
               onChange={handleChangeTable}
             />
           )}
@@ -376,7 +380,7 @@ const actions = (configs, pageModule, form) => {
           <div className="action-td">
             {showAction && <DetailRow id={id} />}
 
-            {/* {editAction && <InlineEdit id={id} form={form} data={data} />} */}
+            {editAction && <InlineEdit id={id} form={form} data={data} />}
 
             {editAction && <EditRow id={id} />}
 
@@ -439,7 +443,7 @@ const DeleteRow = ({ id, interactionCharacter }) => {
 
   const deleteRow = useDeleteRow();
 
-  const [pagination, setPagination] = useLocalStorage(pageModule, {
+  const [pagination, setPagination] = useGetParams(pageModule, {
     ...defaultFilter,
     key: pageModule,
   });
@@ -489,7 +493,7 @@ const InlineEdit = ({ id, form, data }) => {
   let pageId = urlParams.get("id");
   const [saveLoading, setSaveLoading] = useState(false);
   const { pageModule } = useParams();
-  const [pagination, setPagination] = useLocalStorage(pageModule, {
+  const [pagination, setPagination] = useGetParams(pageModule, {
     ...defaultFilter,
     key: pageModule,
   });
@@ -509,26 +513,14 @@ const InlineEdit = ({ id, form, data }) => {
           pageId: pageId,
           setUrlParams: () => {},
           afterSubmit: () => {
+            console.log("🚀 ~ .then ~ afterSubmit:");
             setUrlParams("");
-            queryClient.setQueryData(
-              [`index-data-${pageModule}`, pagination],
-              (oldData) => {
-                const newData = { ...oldData };
-
-                newData.data.forEach((item) => {
-                  if (item.id === Number(pageId)) {
-                    for (const [key, value] of Object.entries(values)) {
-                      item[key] = value;
-                    }
-                  }
-                });
-                return newData;
-              }
-            );
           },
+          queryClient: queryClient,
+          queryClientKey: [`index-data-${pageModule}`, pagination],
         });
       })
-      .catch((errorInfo) => { });
+      .catch((errorInfo) => {});
   };
   return (
     <>
@@ -543,7 +535,7 @@ const InlineEdit = ({ id, form, data }) => {
             loading={saveLoading}
             style={{ width: "85px" }}
 
-          // icon={<CloseOutlined />}
+            // icon={<CloseOutlined />}
           >
             Save
           </Button>
