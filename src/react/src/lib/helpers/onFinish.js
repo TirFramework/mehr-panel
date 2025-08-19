@@ -62,6 +62,8 @@ export const onFinish = ({
   afterSubmit = () => {},
   queryClient,
   queryClientKey = null,
+  requestBy,
+
 }) => {
   values = fixNumber(values);
 
@@ -70,7 +72,7 @@ export const onFinish = ({
   const types = ["detail", "create-edit"];
 
   api
-    .postEditOrCreate(pageModule, pageId, values)
+    .postEditOrCreate(pageModule, pageId, values, requestBy)
     .then((res) => {
       setSubmitLoad(false);
 
@@ -81,8 +83,7 @@ export const onFinish = ({
         const queryKeyToGet = `${pageModule}-${pageId}-${type}`;
 
         queryClient.setQueryData([queryKeyToGet], (oldData) => {
-          const newData = { ...oldData };
-          return updateFieldsWithChanges(newData, res.changes);
+          return res.scaffolder;
         });
       });
 
@@ -110,23 +111,23 @@ export const onFinish = ({
     });
 };
 
-function updateFieldsWithChanges(fields, changes) {
-  if (Array.isArray(fields)) {
-    return fields.map((item) => updateFieldsWithChanges(item, changes));
-  } else if (typeof fields === "object" && fields !== null) {
-    const updatedObject = { ...fields };
-    if (updatedObject.name && changes[updatedObject.name] !== undefined) {
-      updatedObject.value = changes[updatedObject.name];
-    }
-    for (const key in updatedObject) {
-      if (Object.prototype.hasOwnProperty.call(updatedObject, key)) {
-        updatedObject[key] = updateFieldsWithChanges(
-          updatedObject[key],
-          changes
-        );
-      }
-    }
-    return updatedObject;
-  }
-  return fields;
-}
+// function updateFieldsWithChanges(fields, changes) {
+//   if (Array.isArray(fields)) {
+//     return fields.map((item) => updateFieldsWithChanges(item, changes));
+//   } else if (typeof fields === "object" && fields !== null) {
+//     const updatedObject = { ...fields };
+//     if (updatedObject.name && changes[updatedObject.name] !== undefined) {
+//       updatedObject.value = changes[updatedObject.name];
+//     }
+//     for (const key in updatedObject) {
+//       if (Object.prototype.hasOwnProperty.call(updatedObject, key)) {
+//         updatedObject[key] = updateFieldsWithChanges(
+//           updatedObject[key],
+//           changes
+//         );
+//       }
+//     }
+//     return updatedObject;
+//   }
+//   return fields;
+// }

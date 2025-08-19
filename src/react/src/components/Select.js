@@ -55,14 +55,9 @@ const SelcetIndex = (props) => {
           {props.hideLable ?? <div>{props.display}</div>}
           <div>
             {props.value.map((i) => {
-                if(typeof i === "object") {
-                    return (<Tag>{props.dataSet[i.value]}</Tag>)
-                }
-                else{
                     return (<Tag>{props.dataSet[i]}</Tag>)
                 }
-
-            })}
+            )}
           </div>
         </>
       );
