@@ -34,4 +34,11 @@ mix
   //   })
   .version();
 
+
+mix.webpackConfig({
+    output: {
+    chunkFilename: "admin-assets/js/[name].[contenthash].js",
+    },
+});
+
 mix.browserSync("localhost:8000");
