@@ -49,7 +49,7 @@ const ForgotPassword = () => {
       .then((res) => {
         setLoading(false);
         setShowSetPassword("");
-        navigate("/admin/login");
+        navigate(`/${Config.perfix}/login`);
       })
       .catch(() => {
         setLoading(false);
@@ -107,7 +107,7 @@ const ForgotPassword = () => {
                   type="link"
                   onClick={() => {
                     setShowSetPassword("");
-                    navigate("/admin/login");
+                    navigate(`/${Config.perfix}/login`);
                   }}
                 >
                   Back to login
@@ -204,7 +204,7 @@ const ForgotPassword = () => {
                   type="link"
                   onClick={() => {
                     setShowSetPassword("");
-                    navigate("/admin/login");
+                    navigate(`/${Config.perfix}/login`);
                   }}
                 >
                   Back to login
