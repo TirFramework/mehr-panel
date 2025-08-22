@@ -20,7 +20,7 @@ Route::group(['middleware' => 'web'], function () {
     $prefixes = config('mehr-panel.panel.prefix', ['admin']);
 
     foreach ($prefixes as $prefix) {
-        Route::group(['prefix' => $prefix], function () {
+        Route::group(['prefix' => $prefix], function () use( $prefix ) {
             Route::view('/{path?}', 'mehr-panel::dashboard')
                 ->where('path', '.*')
                 ->name('react.' . $prefix);

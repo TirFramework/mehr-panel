@@ -83,8 +83,18 @@ export const postEdit = async (module, id, body) => {
   return await data;
 };
 
-export const postEditOrCreate = async (module, id, body) => {
+export const postInlineEdit = async (module, id, body) => {
+  const { data } = await axios.put(`${module}/${id}/inlineEdit`, body);
+  return await data;
+};
+
+export const postEditOrCreate = async (module, id, body, requestBy) => {
   if (id) {
+    if (requestBy === "inlineEdit") {
+      const { data } = await axios.put(`${module}/${id}/inlineEdit`, body);
+      return await data;
+
+    }
     const { data } = await axios.put(`${module}/${id}`, body);
     return await data;
   } else {

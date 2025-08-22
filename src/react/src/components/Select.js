@@ -49,27 +49,33 @@ const SelcetIndex = (props) => {
   });
 
   if (props.readonly) {
-    if (typeof props.value === "object") {
-      return (
-        <>
-          {props.hideLable ?? <div>{props.display}</div>}
-          <div>
-            {props.value.map((i) => (
-              <Tag>{props.dataSet[i]}</Tag>
-            ))}
-          </div>
-        </>
-      );
-    } else {
-      return (
-        <>
-          {props.hideLable ?? <div>{props.display}</div>}
-          <div>
-            <Tag>{props.dataSet[props.value]}</Tag>
-          </div>
-        </>
-      );
+    if (props.value) {
+      if (typeof props.value === "object") {
+        return (
+          <>
+            {props.hideLable ?? <div>{props.display}</div>}
+            <div>
+              {props.value.map((i) => {
+                if (!props.dataSet[i]) {
+                  return <Tag>{i} not found</Tag>;
+                }
+                return <Tag>{props.dataSet[i]}</Tag>;
+              })}
+            </div>
+          </>
+        );
+      } else {
+        return (
+          <>
+            {props.hideLable ?? <div>{props.display}</div>}
+            <div>
+              <Tag>{props.dataSet[props.value]}</Tag>
+            </div>
+          </>
+        );
+      }
     }
+    return;
   }
 
   return (

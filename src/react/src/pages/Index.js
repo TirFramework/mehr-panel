@@ -367,6 +367,7 @@ const actions = (configs, pageModule, form) => {
     configs.primary_key || Config.interactionCharacter;
   const showAction = moduleActions.show;
   const editAction = moduleActions.edit;
+  const inlineEditAction = moduleActions.inlineEdit;
   const deleteAction = moduleActions.destroy;
   return {
     title: "Actions",
@@ -380,7 +381,7 @@ const actions = (configs, pageModule, form) => {
           <div className="action-td">
             {showAction && <DetailRow id={id} />}
 
-            {editAction && <InlineEdit id={id} form={form} data={data} />}
+            {inlineEditAction && <InlineEdit id={id} form={form} data={data} />}
 
             {editAction && <EditRow id={id} />}
 
@@ -508,9 +509,9 @@ const InlineEdit = ({ id, form, data }) => {
           pageModule: pageModule,
           pageId: editingId,
           afterSubmit: () => {
-            console.log("🚀 ~ .then ~ afterSubmit:");
             cancelEditing();
           },
+          requestBy: "inlineEdit",
           queryClient: queryClient,
           queryClientKey: [`index-data-${pageModule}`, pagination],
         });
