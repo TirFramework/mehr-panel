@@ -3,6 +3,7 @@ import { useEffect } from "react";
 
 import { Outlet, useNavigate } from "react-router-dom";
 import PublicLayout from "./layouts/PublicLayout";
+import Config from "./constants/config";
 
 // A wrapper for <Route> that redirects to the login
 // screen if you're not yet authenticated.
@@ -12,7 +13,7 @@ const PublicRoute = ({ component, ...rest }) => {
 
   useEffect(() => {
     if (auth) {
-      return navigate(`/admin/dashboard`);
+      return navigate(`/${Config.perfix}/dashboard`);
     }
   }, [auth]);
 

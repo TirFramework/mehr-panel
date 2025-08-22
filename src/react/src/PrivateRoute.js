@@ -8,6 +8,7 @@ import {
   isWindowSupported,
   onMessageListener,
 } from "./lib/firebase";
+import Config from "./constants/config";
 
 // A wrapper for <Route> that redirects to the login
 // screen if you're not yet authenticated.
@@ -39,7 +40,9 @@ const PrivateRoute = ({ component, ...rest }) => {
   useEffect(() => {
     // console.log("🚀 ~ file: PrivateRoute.js:39 ~ useEffect ~ useEffect:");
     if (!auth) {
-      return navigate(`/admin/login?path=${window.location.pathname}`);
+      return navigate(
+        `/${Config.perfix}/login?path=${window.location.pathname}`
+      );
     }
   }, [auth]);
 

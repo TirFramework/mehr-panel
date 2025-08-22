@@ -6,6 +6,7 @@ import { useSearchParams } from "react-router-dom";
 import Config from "../constants/config";
 import Field from "../components/Field";
 import FilterDate from "../blocks/FilterDate";
+import { useEditing } from "../context/EditingContext";
 export const getColsNormalize = (res) => {
   let cols = res.cols;
   const interactionCharacter =
@@ -121,8 +122,10 @@ export const indexOfInObject = (arr, obj, val, label) => {
 };
 
 const Render = ({ item, value, rowIndex, data, id, minWidth }) => {
-  const [searchParams] = useSearchParams();
-  let pageId = searchParams.get("id");
+  // 1. استفاده از هوک useEditing به جای useSearchParams
+  const { editingId } = useEditing();
+
+  console.log("🚀 ~ Render ~ editingId:", editingId);
 
   return (
     <Field
@@ -130,7 +133,8 @@ const Render = ({ item, value, rowIndex, data, id, minWidth }) => {
       {...item.field}
       hideLable={true}
       table={true}
-      readonly={!(id == pageId && pageId && id)}
+      // 2. تغییر شرط readonly برای استفاده از editingId
+      readonly={!(id === editingId)}
     />
   );
 };

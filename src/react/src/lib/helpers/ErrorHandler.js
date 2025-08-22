@@ -1,5 +1,6 @@
 import Cookies from "js-cookie";
 import { notification } from "antd";
+import Config from "../../constants/config";
 
 const ErrorHandler = async (error) => {
   let mes = [];
@@ -57,8 +58,8 @@ const ErrorHandler = async (error) => {
 
   if (error.response.status === 401) {
     setTimeout(() => {
-      window.location.pathname !== "/admin/login" &&
-        window.location.replace("/admin/login");
+      window.location.pathname !== `/${Config.perfix}/login` &&
+        window.location.replace(`/${Config.perfix}/login`);
     }, 1000);
 
     Cookies.remove("api_token");

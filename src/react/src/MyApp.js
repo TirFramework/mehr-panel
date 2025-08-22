@@ -15,6 +15,7 @@ import Login from "./layouts/Login.js";
 
 import { useState } from "react";
 import useLocalStorage from "./hooks/useLocalStorage.js";
+import { EditingProvider } from "./context/EditingContext.js";
 const { defaultAlgorithm, darkAlgorithm } = theme;
 
 function MyApp() {
@@ -26,41 +27,43 @@ function MyApp() {
         algorithm: isDarkMode.mode ? darkAlgorithm : defaultAlgorithm,
       }}
     >
-      <BrowserRouter>
-        <Button
-          type="link"
-          size="large"
-          className="toggle-theme"
-          onClick={() => {
-            setIsDarkMode({
-              mode: !isDarkMode.mode,
-            });
-          }}
-          icon={isDarkMode.mode ? <BulbOutlined /> : <BulbFilled />}
-        />
-        <Routes>
-          <Route element={<PublicRoute />}>
-            {authRoutes.map((authRoute, index) => (
-              <Route
-                path={authRoute.path}
-                element={authRoute.component}
-                key={`${authRoute.path}-${index}`}
-                title={`${authRoute.path}-${index}`}
-              />
-            ))}
-          </Route>
-          <Route element={<PrivateRoute />}>
-            {dashboardRoutes.map((privateAuthRoute, index) => (
-              <Route
-                path={privateAuthRoute.path}
-                element={privateAuthRoute.component}
-                key={`${privateAuthRoute.path}-${index}`}
-                title={`${privateAuthRoute.path}-${index}`}
-              />
-            ))}
-          </Route>
-        </Routes>
-      </BrowserRouter>
+      <EditingProvider>
+        <BrowserRouter>
+          <Button
+            type="link"
+            size="large"
+            className="toggle-theme"
+            onClick={() => {
+              setIsDarkMode({
+                mode: !isDarkMode.mode,
+              });
+            }}
+            icon={isDarkMode.mode ? <BulbOutlined /> : <BulbFilled />}
+          />
+          <Routes>
+            <Route element={<PublicRoute />}>
+              {authRoutes.map((authRoute, index) => (
+                <Route
+                  path={authRoute.path}
+                  element={authRoute.component}
+                  key={`${authRoute.path}-${index}`}
+                  title={`${authRoute.path}-${index}`}
+                />
+              ))}
+            </Route>
+            <Route element={<PrivateRoute />}>
+              {dashboardRoutes.map((privateAuthRoute, index) => (
+                <Route
+                  path={privateAuthRoute.path}
+                  element={privateAuthRoute.component}
+                  key={`${privateAuthRoute.path}-${index}`}
+                  title={`${privateAuthRoute.path}-${index}`}
+                />
+              ))}
+            </Route>
+          </Routes>
+        </BrowserRouter>
+      </EditingProvider>
     </ConfigProvider>
   );
 }
