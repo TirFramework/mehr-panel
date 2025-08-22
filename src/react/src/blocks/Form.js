@@ -177,12 +177,6 @@ const CreateForm = ({ type }) => {
             ))}
           </Row>
         </Card>
-
-        <SubmitGroup
-          buttons={fieldsData?.buttons}
-          form={form}
-          pageId={pageId}
-        />
       </Form>
 
       {/* <Prompt /> */}

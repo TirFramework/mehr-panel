@@ -13,7 +13,7 @@ const Config = {
     "/storage",
   tinyemcApiKey: process.env.MIX_APP_TINYEMC || process.env.REACT_APP_TINYEMC,
   perfix: panelName,
-  panelVersion: "11.0.0",
+  panelVersion: "12.2",
   interactionCharacter:
     process.env.MIX_APP_INTERACTION_CHARACTER ||
     process.env.REACT_APP_INTERACTION_CHARACTER ||

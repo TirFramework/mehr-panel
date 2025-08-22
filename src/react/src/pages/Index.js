@@ -242,7 +242,7 @@ function Index() {
               </Col>
               <Col className="gutter-row text-right">
                 <Space>
-                  {pageData?.actions?.create && (
+                  {pageData?.configs?.actions?.create && (
                     <Link to={`/${Config.perfix}/${pageModule}/create-edit`}>
                       <Button
                         size="large"

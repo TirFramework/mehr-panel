@@ -36,6 +36,29 @@ function Export({ data, loading, columns, pagination }) {
       });
   };
 
+  const handleShare = async () => {
+    // ابتدا بررسی می‌کنیم که آیا Web Share API در مرورگر پشتیبانی می‌شود یا خیر.
+    if (navigator.share) {
+      try {
+        // اگر پشتیبانی می‌شود، از متد share استفاده می‌کنیم.
+        await navigator.share({
+          title: "title", // عنوان متنی که به اشتراک گذاشته می‌شود.
+          text: "text", // متن اصلی پیام.
+          url: objectToQueryString(pagination), // آدرسی که به اشتراک گذاشته می‌شود.
+        });
+        console.log("اشتراک‌گذاری موفقیت‌آمیز بود.");
+      } catch (error) {
+        console.error("خطا در هنگام اشتراک‌گذاری:", error);
+      }
+    } else {
+      // در صورت عدم پشتیبانی مرورگر، یک پیام خطا در کنسول نمایش می‌دهیم.
+      navigator.clipboard.writeText(
+        `${window.location.href}?${objectToQueryString(pagination)}`
+      );
+
+      // alert("Web Share API در این مرورگر پشتیبانی نمی‌شود.");
+    }
+  };
   const getHeader = () => {
     return orgColumns
       .filter((item) => item.fieldName)
@@ -86,9 +109,7 @@ function Export({ data, loading, columns, pagination }) {
       key: "2",
       icon: <CopyOutlined />,
       onClick: () => {
-        navigator.clipboard.writeText(
-          `${window.location.href}?${objectToQueryString(pagination)}`
-        );
+        handleShare();
       },
     },
   ];

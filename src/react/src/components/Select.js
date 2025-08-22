@@ -69,7 +69,7 @@ const SelcetIndex = (props) => {
           <>
             {props.hideLable ?? <div>{props.display}</div>}
             <div>
-              <Tag>{props.dataSet[props.value]}</Tag>
+              <Tag>{props.dataSet[props.value] || props.value}</Tag>
             </div>
           </>
         );
