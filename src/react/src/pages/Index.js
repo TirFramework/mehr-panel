@@ -38,6 +38,7 @@ import Export from "../blocks/Export";
 import { useQueryClient } from "@tanstack/react-query";
 import useGetParams from "../hooks/useGetParams";
 import { useEditing } from "../context/EditingContext";
+import { getPlacementsForSearch, getSearchableFromCols } from "../lib/utils";
 
 const { Title } = Typography;
 
@@ -187,7 +188,7 @@ function Index() {
         ) : (
           <>
             <Title className="page-index__title">
-              {pageData?.configs?.module_title}
+              {pageData?.configs?.module_title} {}
             </Title>
 
             <Row
@@ -202,6 +203,7 @@ function Index() {
                       loading={dataQuery.isLoading}
                       value={pagination?.search}
                       onSearch={onSearch}
+                      placeholder={getPlacementsForSearch(pageData?.cols)}
                     />
 
                     {pageData?.cols.length && (

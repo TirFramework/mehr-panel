@@ -1,7 +1,7 @@
 import { Input } from "antd";
 import { useEffect, useState } from "react";
 
-function Search({ value, onSearch, loading }) {
+function Search({ value, onSearch, loading, placeholder }) {
   const [val, setVal] = useState(value);
 
   useEffect(() => {
@@ -10,7 +10,7 @@ function Search({ value, onSearch, loading }) {
 
   return (
     <Input.Search
-      placeholder="Search"
+      placeholder={placeholder}
       onSearch={onSearch}
       value={val}
       onChange={(e) => {

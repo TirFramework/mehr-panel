@@ -42,9 +42,9 @@ function Export({ data, loading, columns, pagination }) {
       try {
         // اگر پشتیبانی می‌شود، از متد share استفاده می‌کنیم.
         await navigator.share({
-          title: "title", // عنوان متنی که به اشتراک گذاشته می‌شود.
-          text: "text", // متن اصلی پیام.
-          url: objectToQueryString(pagination), // آدرسی که به اشتراک گذاشته می‌شود.
+          // title: document.title,
+          // text: "Check out this table!",
+          url: `${window.location.href}?${objectToQueryString(pagination)}`,
         });
         console.log("اشتراک‌گذاری موفقیت‌آمیز بود.");
       } catch (error) {

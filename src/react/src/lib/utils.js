@@ -125,7 +125,7 @@ const Render = ({ item, value, rowIndex, data, id, minWidth }) => {
   // 1. استفاده از هوک useEditing به جای useSearchParams
   const { editingId } = useEditing();
 
-  console.log("🚀 ~ Render ~ editingId:", editingId);
+  // console.log("🚀 ~ Render ~ editingId:", editingId);
 
   return (
     <Field
@@ -163,6 +163,37 @@ function getTextWidth(text, font) {
   context.font = font;
   const metrics = context.measureText(text);
   return metrics.width;
+}
+
+export function getPlacementsForSearch(cols) {
+  const searchableFields = getSearchableFromCols(cols);
+
+  //TODO: add translate
+  if (!searchableFields) {
+    return "No searchable fields";
+  }
+
+  //TODO: add translate
+  return `${searchableFields}`;
+}
+
+export function getSearchableFromCols(cols) {
+  const newCols = [...cols];
+  const searchableFields = [];
+
+  newCols.forEach((col) => {
+    // چک کردن اگر فیلد اصلی و همچنین searchable است
+    if (col.field && col.field.searchable) {
+      searchableFields.push(col.field.display);
+    }
+  });
+
+  console.log(
+    "🚀 ~ getSearchableFromCols ~ searchableFields:",
+    searchableFields
+  );
+
+  return searchableFields.join(", ");
 }
 
 function getCssStyle(element, prop) {

@@ -25,12 +25,12 @@ function useGetParams(key, defaultFilter) {
 
     // به‌روزرسانی state با آبجکت ساخته شده
     if (hasQueryParams(newQueryParams)) {
-      console.log("🚀 ~ useGetParams ~ defaultFilter:", defaultFilter);
-      console.log("🚀 ~ useGetParams ~ newQueryParams:", {
-        ...newQueryParams,
-        key: key,
-        total: 0,
-      });
+      // console.log("🚀 ~ useGetParams ~ defaultFilter:", defaultFilter);
+      // console.log("🚀 ~ useGetParams ~ newQueryParams:", {
+      //   ...newQueryParams,
+      //   key: key,
+      //   total: 0,
+      // });
       setStoredValue({ ...newQueryParams, key: key, total: 0, search: null });
     } else {
       const item = window.localStorage.getItem(key);
@@ -39,7 +39,7 @@ function useGetParams(key, defaultFilter) {
   }, [key]);
 
   const setValue = (value) => {
-    console.log("🚀 ~ setValue ~ value:", value);
+    // console.log("🚀 ~ setValue ~ value:", value);
     try {
       const newQueryParams = extractQueryParams();
       if (hasQueryParams(newQueryParams)) {
