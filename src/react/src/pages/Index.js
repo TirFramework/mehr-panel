@@ -38,7 +38,11 @@ import Export from "../blocks/Export";
 import { useQueryClient } from "@tanstack/react-query";
 import useGetParams from "../hooks/useGetParams";
 import { useEditing } from "../context/EditingContext";
-import { getPlacementsForSearch, getSearchableFromCols } from "../lib/utils";
+import {
+  getPlacementsForSearch,
+  getSearchableFromCols,
+  isCustomView,
+} from "../lib/utils";
 
 const { Title } = Typography;
 
@@ -188,7 +192,24 @@ function Index() {
         ) : (
           <>
             <Title className="page-index__title">
-              {pageData?.configs?.module_title} {}
+              {pageData?.configs?.module_title}{" "}
+              {isCustomView() && (
+                <>
+                  <small style={{ fontSize: "50%" }}>
+                    <Button
+                      icon={<ClearOutlined />}
+                      type="link"
+                      size="large"
+                      danger
+                      onClick={() => {
+                        setUrlParams({});
+                      }}
+                    >
+                      Custom View
+                    </Button>
+                  </small>
+                </>
+              )}
             </Title>
 
             <Row
@@ -222,22 +243,28 @@ function Index() {
                     {(helpers.notEmpty(pagination?.filters) ||
                       pagination.search ||
                       helpers.notEmpty(pagination?.sorter)) && (
-                      <Button
-                        icon={<ClearOutlined />}
-                        type="primary"
-                        size="large"
-                        danger
-                        onClick={() => {
-                          setPagination({ ...defaultFilter, key: pageModule });
-                          const newData = [...column];
-                          newData.forEach((col) => {
-                            col.filteredValue = null;
-                            col.sortOrder = {};
-                          });
-                          setUrlParams({});
-                          setColumn(newData);
-                        }}
-                      />
+                      <>
+                        {!isCustomView() && (
+                          <Button
+                            icon={<ClearOutlined />}
+                            type="primary"
+                            size="large"
+                            danger
+                            onClick={() => {
+                              setPagination({
+                                ...defaultFilter,
+                                key: pageModule,
+                              });
+                              const newData = [...column];
+                              newData.forEach((col) => {
+                                col.filteredValue = null;
+                                col.sortOrder = {};
+                              });
+                              setColumn(newData);
+                            }}
+                          />
+                        )}
+                      </>
                     )}
                   </>
                 </Space>

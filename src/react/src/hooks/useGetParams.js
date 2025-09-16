@@ -1,19 +1,11 @@
 import { useEffect, useState } from "react";
-import { extractQueryParams, objectToQueryString } from "../lib/utils";
+import {
+  extractQueryParams,
+  hasQueryParams,
+  isCustomView,
+  objectToQueryString,
+} from "../lib/utils";
 import { useSearchParams } from "react-router-dom";
-
-// تابع بررسی وجود پارامترهای جستجو
-function hasQueryParams(newQueryParams) {
-  return (
-    newQueryParams.current ||
-    newQueryParams.pageSize ||
-    newQueryParams.total ||
-    newQueryParams.search ||
-    // newQueryParams.key ||
-    Object.keys(newQueryParams.filters).length > 0 ||
-    Object.keys(newQueryParams.sorter).length > 0
-  );
-}
 
 function useGetParams(key, defaultFilter) {
   const [storedValue, setStoredValue] = useState({});
@@ -41,8 +33,7 @@ function useGetParams(key, defaultFilter) {
   const setValue = (value) => {
     // console.log("🚀 ~ setValue ~ value:", value);
     try {
-      const newQueryParams = extractQueryParams();
-      if (hasQueryParams(newQueryParams)) {
+      if (isCustomView()) {
         setSearchParams(objectToQueryString(value));
         setStoredValue({ ...value });
       } else {

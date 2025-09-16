@@ -176,6 +176,14 @@ export function getPlacementsForSearch(cols) {
   //TODO: add translate
   return `${searchableFields}`;
 }
+export const isCustomView = () => {
+  const newQueryParams = extractQueryParams();
+  if (hasQueryParams(newQueryParams)) {
+    // اگر پارامترهای جستجو وجود داشت، نمای سفارشی است
+    return true;
+  }
+  return false;
+};
 
 export function getSearchableFromCols(cols) {
   const newCols = [...cols];
@@ -187,11 +195,6 @@ export function getSearchableFromCols(cols) {
       searchableFields.push(col.field.display);
     }
   });
-
-  console.log(
-    "🚀 ~ getSearchableFromCols ~ searchableFields:",
-    searchableFields
-  );
 
   return searchableFields.join(", ");
 }
@@ -274,4 +277,17 @@ export function objectToQueryString(obj) {
     }
   }
   return params.toString();
+}
+
+// تابع بررسی وجود پارامترهای جستجو
+export function hasQueryParams(newQueryParams) {
+  return (
+    newQueryParams.current ||
+    newQueryParams.pageSize ||
+    newQueryParams.total ||
+    newQueryParams.search ||
+    // newQueryParams.key ||
+    Object.keys(newQueryParams.filters).length > 0 ||
+    Object.keys(newQueryParams.sorter).length > 0
+  );
 }

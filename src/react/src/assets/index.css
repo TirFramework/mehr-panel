@@ -40,6 +40,9 @@ body {
   height: calc(100vh - 64px);
   overflow: auto;
 }
+.ant-layout-sider-has-trigger.ant-layout-sider{
+  height: calc(100vh - 64px - 48px);
+}
 
 .ant-layout-sider .ant-menu {
   flex-grow: 1;

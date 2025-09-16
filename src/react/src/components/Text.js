@@ -65,7 +65,7 @@ const Text = (props) => {
         <Input
           {...props.options}
           placeholder={props.placeholder || props.options.placeholder}
-          disabled={props.disabled}
+          disabled={props.disable}
         />
       </Form.Item>
     </>

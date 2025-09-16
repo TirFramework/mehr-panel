@@ -12,7 +12,7 @@ const MySelect = (props) => {
       }
       mode={props.multiple ? "multiple" : false}
       options={props.data.sort((a, b) => a.label.localeCompare(b.label))}
-      disabled={props.disabled}
+      disabled={props.disable}
       allowClear={!props.readonly && true}
       value={props.value}
       onChange={(val) => {
