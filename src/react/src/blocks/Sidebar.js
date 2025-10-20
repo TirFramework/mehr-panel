@@ -1,13 +1,41 @@
-import React, { useMemo } from "react";
+import React, { memo, useMemo, useState, useEffect } from "react";
 import { Badge, Layout, Menu, Tooltip } from "antd";
 import { Link, useParams, useLocation } from "react-router-dom";
-import Icon from "../components/Icon";
+import { LoadingOutlined } from "@ant-design/icons";
+import * as antdIcons from "@ant-design/icons"; // تمام آیکن‌ها را وارد کنید
 import { useSidebar } from "../Request";
 import useLocalStorage from "../hooks/useLocalStorage";
 
 const { Sider } = Layout;
 
-function App(props) {
+// کش برای آیکن‌ها
+const iconCache = new Map();
+
+// تابع برای دریافت آیکن از کش یا لود کردن آن
+const getIconComponent = (iconName) => {
+  if (!iconName) return null;
+
+  if (iconCache.has(iconName)) {
+    return iconCache.get(iconName);
+  }
+
+  const IconComponent = antdIcons[iconName] || antdIcons.QuestionCircleFilled;
+  iconCache.set(iconName, IconComponent);
+  return IconComponent;
+};
+
+// Memoized Icon Component
+const MyIcon = memo(
+  function MyIcon({ type }) {
+    const IconComponent = useMemo(() => getIconComponent(type), [type]);
+
+    return IconComponent ? <IconComponent /> : <LoadingOutlined />;
+  },
+  (prevProps, nextProps) => prevProps.type === nextProps.type
+);
+
+// Memoized Sidebar Component
+const Sidebar = memo(function App() {
   const { data: menus, ...menusQuery } = useSidebar();
   const [isCollapsible, setIsCollapsible] = useLocalStorage("collapsible", {
     status: false,
@@ -16,6 +44,8 @@ function App(props) {
   const { pageModule } = useParams();
   const location = useLocation();
 
+  const [openKeys, setOpenKeys] = useState([]);
+
   const findActiveKeys = (
     items,
     currentPath,
@@ -23,38 +53,35 @@ function App(props) {
     parentKeys = []
   ) => {
     let activeKeys = [];
-    let openKeys = [];
-    console.log("🚀 ~ findActiveKeys ~ items:", items);
+    let newOpenKeys = [];
 
-    if (items.length > 0 && typeof items === "object") {
-      items?.forEach((item) => {
-        const isCurrentActive =
-          (item.activePaths && item.activePaths.includes(currentPath)) ||
-          item.link === currentPath ||
-          item.name === currentPageModule;
+    items.forEach((item) => {
+      const isCurrentActive =
+        (item.activePaths && item.activePaths.includes(currentPath)) ||
+        item.link === currentPath ||
+        item.name === currentPageModule;
 
-        if (isCurrentActive) {
-          activeKeys.push(item.name);
-          openKeys.push(...parentKeys);
+      if (isCurrentActive) {
+        activeKeys.push(item.name);
+        newOpenKeys.push(...parentKeys);
+      }
+
+      if (item.children && item.children.length > 0) {
+        const childKeys = findActiveKeys(
+          item.children,
+          currentPath,
+          currentPageModule,
+          [...parentKeys, item.name]
+        );
+
+        if (childKeys.activeKeys.length > 0) {
+          activeKeys.push(...childKeys.activeKeys);
+          newOpenKeys.push(...childKeys.openKeys, item.name);
         }
+      }
+    });
 
-        if (item.children && item.children.length > 0) {
-          const childKeys = findActiveKeys(
-            item.children,
-            currentPath,
-            currentPageModule,
-            [...parentKeys, item.name]
-          );
-
-          if (childKeys.activeKeys.length > 0) {
-            activeKeys.push(...childKeys.activeKeys);
-            openKeys.push(...childKeys.openKeys, item.name);
-          }
-        }
-      });
-    }
-
-    return { activeKeys, openKeys: [...new Set(openKeys)] };
+    return { activeKeys, openKeys: [...new Set(newOpenKeys)] };
   };
 
   const activeMenuKeys = useMemo(() => {
@@ -62,96 +89,46 @@ function App(props) {
     return findActiveKeys(menus, location.pathname, pageModule);
   }, [menus, location.pathname, pageModule]);
 
-  return (
-    <>
-      <div>
-        <Sider
-          width={250}
-          collapsible
-          collapsed={isCollapsible.status}
-          onCollapse={(value) =>
-            setIsCollapsible({
-              status: value,
-            })
-          }
-        >
-          {menusQuery.isLoading ? (
-            <>loading ...</>
-          ) : (
-            <>
-              <div>
-                <Menu
-                  theme="dark"
-                  className="menu__sidebar"
-                  defaultSelectedKeys={["0"]}
-                  selectedKeys={activeMenuKeys.activeKeys}
-                  defaultOpenKeys={activeMenuKeys.openKeys}
-                  mode="inline"
-                  items={menus?.map(
-                    ({ link, icon, title, name, badge, children = [] }) => ({
-                      icon: icon ? (
-                        <Tooltip title={title} placement="right">
-                          <Icon type={icon} />
-                        </Tooltip>
-                      ) : null,
-                      key: name,
-                      label: (
-                        <>
-                          {children.length === 0 ? (
-                            <Link className="menu__link" to={link}>
-                              {title}
-                              {badge > 0 && (
-                                <Badge count={badge} size="small" />
-                              )}
-                            </Link>
-                          ) : (
-                            <span className="menu__parent">{title}</span>
-                          )}
-                        </>
-                      ),
-                      children:
-                        children.length === 0
-                          ? null
-                          : children.map(
-                              ({ link, icon, title, name, badge }) => ({
-                                icon: icon ? (
-                                  <Tooltip title={title} placement="right">
-                                    <Icon type={icon} />
-                                  </Tooltip>
-                                ) : null,
-                                key: name,
-                                label: (
-                                  <Link className="menu__link" to={link}>
-                                    {title}
-                                    {badge > 0 && (
-                                      <Badge count={badge} size="small" />
-                                    )}
-                                  </Link>
-                                ),
-                              })
-                            ),
-                    })
-                  )}
-                />
-              </div>
-            </>
-          )}
-        </Sider>
-      </div>
+  useEffect(() => {
+    if (
+      activeMenuKeys.openKeys.length > 0 &&
+      activeMenuKeys.openKeys.some((key) => !openKeys.includes(key))
+    ) {
+      setOpenKeys(activeMenuKeys.openKeys);
+    }
+  }, [activeMenuKeys.openKeys]);
 
-      {/* <div>
+  const onOpenChange = (keys) => {
+    setOpenKeys(keys);
+  };
+
+  return (
+    <Sider
+      width={250}
+      collapsible
+      collapsed={isCollapsible.status}
+      onCollapse={(value) =>
+        setIsCollapsible({
+          status: value,
+        })
+      }
+    >
+      {menusQuery.isLoading ? (
+        <>loading ....</>
+      ) : (
         <Menu
           theme="dark"
           className="menu__sidebar"
           defaultSelectedKeys={["0"]}
           selectedKeys={activeMenuKeys.activeKeys}
-          defaultOpenKeys={activeMenuKeys.openKeys}
+          openKeys={openKeys}
+          onOpenChange={onOpenChange}
           mode="inline"
-          items={menus?.map(
+          items={menus.map(
             ({ link, icon, title, name, badge, children = [] }) => ({
               icon: icon ? (
                 <Tooltip title={title} placement="right">
-                  <Icon type={icon} />
+                  <MyIcon type={icon} />
                 </Tooltip>
               ) : null,
               key: name,
@@ -173,7 +150,7 @@ function App(props) {
                   : children.map(({ link, icon, title, name, badge }) => ({
                       icon: icon ? (
                         <Tooltip title={title} placement="right">
-                          <Icon type={icon} />
+                          <MyIcon type={icon} />
                         </Tooltip>
                       ) : null,
                       key: name,
@@ -187,9 +164,9 @@ function App(props) {
             })
           )}
         />
-      </div> */}
-    </>
+      )}
+    </Sider>
   );
-}
+});
 
-export default App;
+export default Sidebar;

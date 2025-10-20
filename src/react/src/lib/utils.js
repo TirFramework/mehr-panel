@@ -59,27 +59,38 @@ export const getColsNormalize = (res) => {
 
     col.render = (value, data, rowIndex) => {
       return (
-        <Render
-          value={value}
-          item={col}
-          data={data}
-          rowIndex={rowIndex}
-          id={data[interactionCharacter]}
-          minWidth={
-            col.field.options?.minWidth ||
-            calculatWidth(
-              col.field.display,
-              value,
-              !!col.filters,
-              col.field.sortable
-            )
-          }
-        />
+        <div
+          style={{
+            minWidth:
+              col.field.options?.minWidth ||
+              calculatWidth(
+                col.field.display,
+                value,
+                !!col.filters,
+                col.field.sortable
+              ),
+          }}
+        >
+          <Render
+            value={value}
+            item={col}
+            data={data}
+            rowIndex={rowIndex}
+            id={data[interactionCharacter]}
+          />
+        </div>
       );
     };
 
     col.title = (
-      <div title={col.title}>
+      <div
+        title={col.title}
+        style={{
+          minWidth:
+            col.field.options?.minWidth ||
+            calculatWidth(col.field.display, null, false, false),
+        }}
+      >
         {col.title}
         {col.comment?.content !== undefined && (
           <Popover content={col.comment.content} title={col.comment.title}>
@@ -122,10 +133,7 @@ export const indexOfInObject = (arr, obj, val, label) => {
 };
 
 const Render = ({ item, value, rowIndex, data, id, minWidth }) => {
-  // 1. استفاده از هوک useEditing به جای useSearchParams
   const { editingId } = useEditing();
-
-  // console.log("🚀 ~ Render ~ editingId:", editingId);
 
   return (
     <Field
@@ -140,6 +148,7 @@ const Render = ({ item, value, rowIndex, data, id, minWidth }) => {
 };
 
 const calculatWidth = (th, td, isFilter, sortable) => {
+  console.log("🚀 ~ calculatWidth ~ th:", th);
   let icon = 0;
   if (isFilter) {
     icon = 28;
@@ -151,6 +160,7 @@ const calculatWidth = (th, td, isFilter, sortable) => {
     th,
     "600 14px -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,'Noto Sans',sans-serif,'Apple Color Emoji','Segoe UI Emoji','Segoe UI Symbol','Noto Color Emoji'"
   );
+  console.log("🚀 ~ calculatWidth ~ thWidth:", thWidth);
   return thWidth + icon;
 };
 
@@ -179,7 +189,6 @@ export function getPlacementsForSearch(cols) {
 export const isCustomView = () => {
   const newQueryParams = extractQueryParams();
   if (hasQueryParams(newQueryParams)) {
-    // اگر پارامترهای جستجو وجود داشت، نمای سفارشی است
     return true;
   }
   return false;
@@ -190,7 +199,6 @@ export function getSearchableFromCols(cols) {
   const searchableFields = [];
 
   newCols.forEach((col) => {
-    // چک کردن اگر فیلد اصلی و همچنین searchable است
     if (col.field && col.field.searchable) {
       searchableFields.push(col.field.display);
     }
@@ -215,14 +223,12 @@ export function extractQueryParams() {
   const searchParams = new URLSearchParams(window.location.search);
   const newQueryParams = {};
 
-  // گرفتن پارامترهای ساده
   newQueryParams.current = Number(searchParams.get("current"));
   newQueryParams.pageSize = Number(searchParams.get("pageSize"));
   newQueryParams.total = searchParams.get("total");
   newQueryParams.search = searchParams.get("search");
   newQueryParams.key = searchParams.get("key");
 
-  // گرفتن پارامترهای پیچیده (filters, sorter) و دیکد و JSON.parse کردن اونها
   const filtersParam = searchParams.get("filters");
   if (filtersParam) {
     try {
@@ -259,15 +265,11 @@ export function objectToQueryString(obj) {
     if (obj.hasOwnProperty(key)) {
       const value = obj[key];
 
-      // برای مقادیر null یا undefined، هیچ کاری نمی‌کنیم
       if (value === null || typeof value === "undefined") {
         continue;
       }
 
-      // اگر مقدار یک آبجکت یا آرایه بود، آن را به JSON تبدیل کرده و سپس encode می‌کنیم
       if (typeof value === "object") {
-        // اطمینان حاصل می‌کنیم که آرایه‌های خالی یا آبجکت‌های خالی هم به درستی هندل بشن،
-        // اما اگر خواستید می‌تونید تصمیم بگیرید که اون‌ها رو اضافه نکنید.
         const jsonString = JSON.stringify(value);
         params.append(key, jsonString);
       } else {
