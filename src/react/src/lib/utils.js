@@ -148,7 +148,7 @@ const Render = ({ item, value, rowIndex, data, id, minWidth }) => {
 };
 
 const calculatWidth = (th, td, isFilter, sortable) => {
-  console.log("🚀 ~ calculatWidth ~ th:", th);
+  // console.log("🚀 ~ calculatWidth ~ th:", th);
   let icon = 0;
   if (isFilter) {
     icon = 28;
@@ -160,7 +160,7 @@ const calculatWidth = (th, td, isFilter, sortable) => {
     th,
     "600 14px -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,'Noto Sans',sans-serif,'Apple Color Emoji','Segoe UI Emoji','Segoe UI Symbol','Noto Color Emoji'"
   );
-  console.log("🚀 ~ calculatWidth ~ thWidth:", thWidth);
+  // console.log("🚀 ~ calculatWidth ~ thWidth:", thWidth);
   return thWidth + icon;
 };
 

@@ -48,7 +48,7 @@ function DefaultLayout(props) {
           </>
         ) : (
           <Layout>
-            <TopHeader name={data?.name} username={data?.username} />
+            <TopHeader {...data} />
             <Layout>
               <Sidebar />
               <Layout.Content>
