@@ -63,7 +63,6 @@ export const onFinish = ({
   queryClient,
   queryClientKey = null,
   requestBy,
-
 }) => {
   values = fixNumber(values);
 
@@ -92,7 +91,7 @@ export const onFinish = ({
           const newData = { ...oldData };
 
           newData?.data.forEach((item) => {
-            if (item.id === Number(pageId)) {
+            if (item.id == pageId) {
               for (const [key, value] of Object.entries(values)) {
                 item[key] = value;
               }
