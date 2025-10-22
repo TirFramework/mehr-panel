@@ -153,15 +153,34 @@ const calculatWidth = (th, td, isFilter, sortable) => {
   if (isFilter) {
     icon = 28;
   }
+
   if (sortable) {
     icon = 30;
   }
+
+  let finallyWidth = 100;
+
   const thWidth = getTextWidth(
     th,
     "600 14px -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,'Noto Sans',sans-serif,'Apple Color Emoji','Segoe UI Emoji','Segoe UI Symbol','Noto Color Emoji'"
   );
+
+  const tdWidth = getTextWidth(
+    td,
+    "600 14px -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,'Noto Sans',sans-serif,'Apple Color Emoji','Segoe UI Emoji','Segoe UI Symbol','Noto Color Emoji'"
+  );
+
+  if (tdWidth > thWidth + icon) {
+    finallyWidth = tdWidth;
+    if (tdWidth > 400) {
+      finallyWidth = 400;
+    }
+  } else {
+    finallyWidth = thWidth + icon;
+  }
+
   // console.log("🚀 ~ calculatWidth ~ thWidth:", thWidth);
-  return thWidth + icon;
+  return finallyWidth;
 };
 
 function getTextWidth(text, font) {
