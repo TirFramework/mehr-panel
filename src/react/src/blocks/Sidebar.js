@@ -48,7 +48,7 @@ const Sidebar = memo(function App() {
 
   const findActiveKeys = (
     items,
-    currentPath,
+    location,
     currentPageModule,
     parentKeys = []
   ) => {
@@ -56,12 +56,21 @@ const Sidebar = memo(function App() {
     let newOpenKeys = [];
 
     items.forEach((item) => {
-      const isCurrentActive =
-        (item.activePaths && item.activePaths.includes(currentPath)) ||
-        item.link === currentPath ||
-        item.name === currentPageModule;
+      const isCurrentActive = () => {
+        // return false;
 
-      if (isCurrentActive) {
+        const currentPath = location.pathname + location.search;
+
+        let r = false;
+        if (item.activePaths && item.activePaths.length > 0) {
+          r = item.activePaths.includes(currentPath);
+        } else {
+          r = item.link === currentPath || item.name === currentPageModule;
+        }
+        return r;
+      };
+
+      if (isCurrentActive()) {
         activeKeys.push(item.name);
         newOpenKeys.push(...parentKeys);
       }
@@ -69,7 +78,7 @@ const Sidebar = memo(function App() {
       if (item.children && item.children.length > 0) {
         const childKeys = findActiveKeys(
           item.children,
-          currentPath,
+          location,
           currentPageModule,
           [...parentKeys, item.name]
         );
@@ -86,8 +95,8 @@ const Sidebar = memo(function App() {
 
   const activeMenuKeys = useMemo(() => {
     if (!menus) return { activeKeys: [], openKeys: [] };
-    return findActiveKeys(menus, location.pathname, pageModule);
-  }, [menus, location.pathname, pageModule]);
+    return findActiveKeys(menus, location, pageModule);
+  }, [menus, location, pageModule]);
 
   useEffect(() => {
     if (

@@ -36,7 +36,7 @@ const NumberIndex = (props) => {
       >
         <InputNumber
           {...props.options}
-          disabled={props.disabled}
+          disabled={props.disable}
           style={{ width: "100%" }}
           addonBefore={
             props.options.addonBefore ? (

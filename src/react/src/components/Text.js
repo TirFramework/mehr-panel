@@ -3,6 +3,7 @@ import { Form, Input, Popover, Space, Tag } from "antd";
 import { QuestionCircleOutlined } from "@ant-design/icons";
 
 import { separationRules } from "../lib/helpers";
+import Readonly from "../blocks/Readonly";
 
 const Text = (props) => {
   const rules = separationRules({
@@ -34,10 +35,10 @@ const Text = (props) => {
 
     // خروجی نهایی
     return (
-      <>
+      <Readonly>
         {label}
         {valueContent}
-      </>
+      </Readonly>
     );
   }
 

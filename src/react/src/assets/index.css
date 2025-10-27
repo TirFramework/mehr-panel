@@ -432,3 +432,18 @@ body {
 .ant-menu-submenu-popup .ant-menu-vertical .ant-menu-submenu-title {
     display: flex;
 }
+
+/* .page-index .ant-table-cell .two_lines_text {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.page-index .ant-table-wrapper .ant-table-tbody>tr>td .ant-tag{
+  white-space: normal;
+}
+.page-index .ant-table-wrapper .ant-table-tbody>tr>td{
+  overflow-wrap: anywhere;
+} */

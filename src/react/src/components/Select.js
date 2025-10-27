@@ -57,7 +57,7 @@ const SelcetIndex = (props) => {
             <div>
               {props.value.map((i) => {
                 if (!props.dataSet[i]) {
-                  return <Tag>{i} not found</Tag>;
+                  return <Tag>{i}</Tag>;
                 }
                 return <Tag>{props.dataSet[i]}</Tag>;
               })}

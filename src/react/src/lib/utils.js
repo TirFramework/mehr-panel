@@ -85,11 +85,11 @@ export const getColsNormalize = (res) => {
     col.title = (
       <div
         title={col.title}
-        style={{
-          minWidth:
-            col.field.options?.minWidth ||
-            calculatWidth(col.field.display, null, false, false),
-        }}
+        // style={{
+        //   minWidth:
+        //     col.field.options?.minWidth ||
+        //     calculatWidth(col.field.display, null, false, false),
+        // }}
       >
         {col.title}
         {col.comment?.content !== undefined && (
