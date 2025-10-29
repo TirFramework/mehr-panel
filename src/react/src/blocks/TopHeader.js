@@ -25,7 +25,7 @@ const DefaultTopHeader = ({ username, name }) => {
         <Col>
           <Typography.Title level={2} className="logo">
             <a href="/" target="_blank" rel="noreferrer">
-              {name}
+              <span className="logo-text">{name}</span>
               <small>
                 <ExportOutlined />
               </small>
@@ -36,7 +36,7 @@ const DefaultTopHeader = ({ username, name }) => {
           <Space>
             <div className="username">{username}</div>
             <Button onClick={logout} icon={<LogoutOutlined />}>
-              Logout
+              <span className="logout-text">Logout</span>
             </Button>
           </Space>
         </Col>

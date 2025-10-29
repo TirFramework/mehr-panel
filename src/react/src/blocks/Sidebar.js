@@ -1,5 +1,5 @@
 import React, { memo, useMemo, useState, useEffect } from "react";
-import { Badge, Layout, Menu, Tooltip } from "antd";
+import { Badge, Layout, Menu, Tooltip, Button } from "antd";
 import { Link, useParams, useLocation } from "react-router-dom";
 import { LoadingOutlined } from "@ant-design/icons";
 import * as antdIcons from "@ant-design/icons"; // تمام آیکن‌ها را وارد کنید
@@ -40,6 +40,8 @@ const Sidebar = memo(function App() {
   const [isCollapsible, setIsCollapsible] = useLocalStorage("collapsible", {
     status: false,
   });
+  const [isMobile, setIsMobile] = useState(false);
+  const [isOpenSidebar, setIsOpenSidebar] = useState(false);
 
   const { pageModule } = useParams();
   const location = useLocation();
@@ -98,6 +100,20 @@ const Sidebar = memo(function App() {
     return findActiveKeys(menus, location, pageModule);
   }, [menus, location, pageModule]);
 
+  const hasChildrenMap = useMemo(() => {
+    const map = new Map();
+    if (!menus) return map;
+    const walk = (items) => {
+      items.forEach((item) => {
+        const hasChildren = !!(item.children && item.children.length > 0);
+        map.set(item.name, hasChildren);
+        if (hasChildren) walk(item.children);
+      });
+    };
+    walk(menus);
+    return map;
+  }, [menus]);
+
   useEffect(() => {
     if (
       activeMenuKeys.openKeys.length > 0 &&
@@ -111,70 +127,133 @@ const Sidebar = memo(function App() {
     setOpenKeys(keys);
   };
 
+  const onMenuClick = ({ key }) => {
+    if (!isMobile) return;
+    const isParent = hasChildrenMap.get(key);
+    if (!isParent) {
+      setIsOpenSidebar(false);
+    }
+  };
+
+  const toggleSidebarMobile = () => {
+    // setIsCollapsible((prev) => ({ status: !prev.status }));
+    if (isMobile) {
+      setIsOpenSidebar(!isOpenSidebar);
+    } else {
+      setIsCollapsible((prev) => ({ status: !prev.status }));
+    }
+  };
+
   return (
-    <Sider
-      width={250}
-      collapsible
-      collapsed={isCollapsible.status}
-      onCollapse={(value) =>
-        setIsCollapsible({
-          status: value,
-        })
-      }
-    >
-      {menusQuery.isLoading ? (
-        <>loading ....</>
-      ) : (
-        <Menu
-          theme="dark"
-          className="menu__sidebar"
-          defaultSelectedKeys={["0"]}
-          selectedKeys={activeMenuKeys.activeKeys}
-          openKeys={openKeys}
-          onOpenChange={onOpenChange}
-          mode="inline"
-          items={menus.map(
-            ({ link, icon, title, name, badge, children = [] }) => ({
-              icon: icon ? (
-                <Tooltip title={title} placement="right">
-                  <MyIcon type={icon} />
-                </Tooltip>
-              ) : null,
-              key: name,
-              label: (
-                <>
-                  {children.length === 0 ? (
-                    <Link className="menu__link" to={link}>
-                      {title}
-                      {badge > 0 && <Badge count={badge} size="small" />}
-                    </Link>
-                  ) : (
-                    <span className="menu__parent">{title}</span>
-                  )}
-                </>
-              ),
-              children:
-                children.length === 0
-                  ? null
-                  : children.map(({ link, icon, title, name, badge }) => ({
-                      icon: icon ? (
-                        <Tooltip title={title} placement="right">
-                          <MyIcon type={icon} />
-                        </Tooltip>
-                      ) : null,
-                      key: name,
-                      label: (
-                        <Link className="menu__link" to={link}>
-                          {title}
-                          {badge > 0 && <Badge count={badge} size="small" />}
-                        </Link>
-                      ),
-                    })),
-            })
-          )}
+    <>
+      {isMobile && isOpenSidebar ? (
+        <div
+          onClick={() => toggleSidebarMobile()}
+          style={{
+            position: "fixed",
+            inset: 0,
+            background: "rgba(0,0,0,0.35)",
+            zIndex: 1000,
+          }}
         />
-      )}
-    </Sider>
+      ) : null}
+
+      <Button
+        type="link"
+        shape="circle"
+        size="large"
+        onClick={toggleSidebarMobile}
+        color="white"
+        style={{
+          position: "fixed",
+          left: 16,
+          top: 16,
+          zIndex: 1001,
+          color: "white",
+        }}
+        icon={<antdIcons.MenuUnfoldOutlined />}
+      />
+
+      <Sider
+        width={isMobile && !isOpenSidebar ? 0 : 250}
+        // collapsible
+        collapsed={isMobile ? false : isCollapsible.status}
+        breakpoint="lg"
+        collapsedWidth={74}
+        onBreakpoint={(broken) => {
+          setIsMobile(broken);
+          // if (broken) {
+          //   setIsCollapsible({ status: true });
+          // }
+        }}
+        // onCollapse={(value) =>
+        //   setIsCollapsible({
+        //     status: value,
+        //   })
+        // }
+        style={{
+          position: isMobile ? "fixed" : "static",
+          // top: 0,
+          // left: 0,
+          // height: "100vh",
+          zIndex: 1000,
+        }}
+      >
+        {menusQuery.isLoading ? (
+          <>loading ....</>
+        ) : (
+          <Menu
+            theme="dark"
+            className="menu__sidebar"
+            defaultSelectedKeys={["0"]}
+            selectedKeys={activeMenuKeys.activeKeys}
+            openKeys={openKeys}
+            onOpenChange={onOpenChange}
+            onClick={onMenuClick}
+            mode="inline"
+            items={menus.map(
+              ({ link, icon, title, name, badge, children = [] }) => ({
+                icon: icon ? (
+                  <Tooltip title={title} placement="right">
+                    <MyIcon type={icon} />
+                  </Tooltip>
+                ) : null,
+                key: name,
+                label: (
+                  <>
+                    {children.length === 0 ? (
+                      <Link className="menu__link" to={link}>
+                        {title}
+                        {badge > 0 && <Badge count={badge} size="small" />}
+                      </Link>
+                    ) : (
+                      <span className="menu__parent">{title}</span>
+                    )}
+                  </>
+                ),
+                children:
+                  children.length === 0
+                    ? null
+                    : children.map(({ link, icon, title, name, badge }) => ({
+                        icon: icon ? (
+                          <Tooltip title={title} placement="right">
+                            <MyIcon type={icon} />
+                          </Tooltip>
+                        ) : null,
+                        key: name,
+                        label: (
+                          <Link className="menu__link" to={link}>
+                            {title}
+                            {badge > 0 && <Badge count={badge} size="small" />}
+                          </Link>
+                        ),
+                      })),
+              })
+            )}
+          />
+        )}
+      </Sider>
+    </>
   );
 });
 

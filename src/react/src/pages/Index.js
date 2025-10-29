@@ -20,12 +20,15 @@ import {
   Spin,
   Popconfirm,
   App,
+  Dropdown,
+  Menu,
 } from "antd";
 import {
   EditOutlined,
   EyeOutlined,
   DeleteOutlined,
   FormOutlined,
+  MoreOutlined,
 } from "@ant-design/icons";
 import * as helpers from "../lib/helpers";
 
@@ -279,7 +282,9 @@ function Index() {
                         icon={<PlusOutlined />}
                         loading={pageDataQuery.isLoading}
                       >
-                        {pageData?.configs?.module_title}
+                        <span className="create-text">
+                          {pageData?.configs?.module_title}
+                        </span>
                       </Button>
                     </Link>
                   )}
@@ -326,6 +331,7 @@ function Index() {
           ) : (
             <Table
               tableLayout={"auto"}
+              // tableLayout={"fixed"}
               scroll={{ y: "calc(100vh - 340px)" }}
               columns={mergedColumns}
               rowKey={(record) => record.id || record._id}
@@ -407,7 +413,7 @@ const actions = (configs, pageModule, form) => {
     render: (id, data) => {
       return (
         <>
-          <div className="action-td">
+          <div className="action-td action-td--desktop">
             {showAction && <DetailRow id={id} />}
 
             {inlineEditAction && <InlineEdit id={id} form={form} data={data} />}
@@ -417,6 +423,46 @@ const actions = (configs, pageModule, form) => {
             {deleteAction && (
               <DeleteRow id={id} interactionCharacter={interactionCharacter} />
             )}
+          </div>
+          <div className="action-td action-td--mobile">
+            {(() => {
+              const mobileMenu = (
+                <Menu>
+                  {showAction && (
+                    <Menu.Item key="detail">
+                      <DetailRow id={id} />
+                    </Menu.Item>
+                  )}
+                  {inlineEditAction && (
+                    <Menu.Item key="inlineEdit">
+                      <InlineEdit id={id} form={form} data={data} />
+                    </Menu.Item>
+                  )}
+                  {editAction && (
+                    <Menu.Item key="edit">
+                      <EditRow id={id} />
+                    </Menu.Item>
+                  )}
+                  {deleteAction && (
+                    <Menu.Item key="delete">
+                      <DeleteRow
+                        id={id}
+                        interactionCharacter={interactionCharacter}
+                      />
+                    </Menu.Item>
+                  )}
+                </Menu>
+              );
+              return (
+                <Dropdown
+                  overlay={mobileMenu}
+                  trigger={["click"]}
+                  placement="bottomRight"
+                >
+                  <Button type="link" icon={<MoreOutlined />} />
+                </Dropdown>
+              );
+            })()}
           </div>
         </>
       );
@@ -434,13 +480,17 @@ const DetailRow = ({ id }) => {
       {editingId == id ? (
         <></>
       ) : (
-        <Link
+        <Button
           type="link"
+          size="small"
+          onClick={() => {
+            navigate(`/${Config.perfix}/${pageModule}/detail?id=${id}`);
+          }}
           // disabled={!!pageId}
-          to={`/${Config.perfix}/${pageModule}/detail?id=${id}`}
         >
           <EyeOutlined />
-        </Link>
+          <span className="action-text">Detail</span>
+        </Button>
       )}
     </>
   );
@@ -455,9 +505,16 @@ const EditRow = ({ id }) => {
       {editingId == id ? (
         <></>
       ) : (
-        <Link to={`/${Config.perfix}/${pageModule}/create-edit?id=${id}`}>
+        <Button
+          type="link"
+          onClick={() => {
+            navigate(`/${Config.perfix}/${pageModule}/create-edit?id=${id}`);
+          }}
+          size="small"
+        >
           <FormOutlined />
-        </Link>
+          <span className="action-text">Edit</span>
+        </Button>
       )}
     </>
   );
@@ -508,8 +565,11 @@ const DeleteRow = ({ id, interactionCharacter }) => {
             type="link"
             danger
             loading={deleteRow.isLoading}
+            size="small"
             icon={<DeleteOutlined />}
-          />
+          >
+            <span className="action-text">Delete</span>
+          </Button>
         </Popconfirm>
       )}
     </>
@@ -583,8 +643,11 @@ const InlineEdit = ({ id, form, data }) => {
               startEditing(id);
             }}
             type="link"
+            size="small"
             icon={<EditOutlined />}
-          />
+          >
+            <span className="action-text">Inline Edit</span>
+          </Button>
         </>
       )}
     </>

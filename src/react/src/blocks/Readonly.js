@@ -1,5 +1,5 @@
 const Readonly = ({ children, ...props }) => {
-  console.log("🚀 ~ Readonly ~ props:", props);
+  // console.log("🚀 ~ Readonly ~ props:", props);
   return (
     <div className="read-only" {...props}>
       {props.options?.prefix && <label>{props.options.prefix}</label>}

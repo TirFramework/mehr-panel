@@ -20,7 +20,7 @@ function Search({ value, onSearch, loading, placeholder }) {
       allowClear
       enterButton
       size="large"
-      style={{ width: "50vw", maxWidth: "calc(100vw - 375px)" }}
+      className="search-input"
     />
   );
 }

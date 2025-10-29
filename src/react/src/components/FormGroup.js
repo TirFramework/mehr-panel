@@ -17,7 +17,13 @@ const FormGroup = (props) => {
   return (
     <>
       <Col
-        span={props.col}
+        // span={props.col}
+        xs={24}
+        sm={24}
+        md={24}
+        lg={props.col}
+        xl={props.col}
+        xxl={props.col}
         className={`${props.className} formGroup formGroup-${props.type}`}
       >
         <Field

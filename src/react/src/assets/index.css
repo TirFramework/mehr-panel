@@ -24,13 +24,49 @@ body {
 .logo {
   margin: 0 !important;
 }
+@media (max-width: 768px) {
+  .logo {
+    margin-left: 32px !important;
+  }
+  .logo small{
+    margin-top: 16px;
+  }
+  .logo-text{
+    display: none;
+  }
+}
+
 .logo a {
   color: #fff !important;
+}
+.search-input{
+  width: 50vw;
+  max-width: calc(100vw - 375px);
+}
+@media (max-width: 768px) {
+  .search-input{
+    width: 100%;
+    max-width: calc(100vw - 200px);
+  }
 }
 .logo small {
   font-size: 50%;
   vertical-align: top;
   margin-left: 8px;
+}
+@media (max-width: 768px) {
+  .logo small {
+    font-size: 14px;
+    vertical-align: middle;
+  }
+}
+@media (max-width: 768px) {
+  .logout-text{
+    display: none;
+  }
+  .create-text{
+    display: none;
+  }
 }
 .ant-layout-sider {
   /* background: #001629; */
@@ -263,9 +299,28 @@ body {
   top: 78px;
   right: 16px;
 }
-.action-td .ant-btn {
-  min-width: 28px;
+
+.action-td--mobile {
+  display: none !important;
+
 }
+.action-text{
+  display: none;
+}
+@media (max-width: 768px) {
+  .action-td--desktop{
+    display: none !important;
+  }
+  .action-td--mobile{
+    display: block !important;
+  }
+  .action-text{
+    display: inline-block;
+    /* margin-left: 16px; */
+  }
+}
+
+
 .action-td a {
   min-width: 28px;
   padding-top: 4px;

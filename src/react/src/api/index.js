@@ -93,7 +93,6 @@ export const postEditOrCreate = async (module, id, body, requestBy) => {
     if (requestBy === "inlineEdit") {
       const { data } = await axios.put(`${module}/${id}/inlineEdit`, body);
       return await data;
-
     }
     const { data } = await axios.put(`${module}/${id}`, body);
     return await data;
