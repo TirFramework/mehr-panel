@@ -7,13 +7,25 @@ import dayjs from "dayjs";
 dayjs.extend(utc);
 dayjs.extend(customParseFormat);
 
-const CustomDatePicker = ({ format, onChange, value, ...props }) => {
+const CustomDatePicker = ({
+  format,
+  onChange,
+  value,
+  defaultValue,
+  ...props
+}) => {
   let formattedValue = null;
   if (value) {
     if (props.enableTimezone || props.options?.showTime?.length > 0) {
       formattedValue = dayjs(value);
     } else {
       formattedValue = dayjs(value, "YYYY-MM-DDTHH:mm:ss");
+    }
+  } else if (defaultValue) {
+    if (props.enableTimezone || props.options?.showTime?.length > 0) {
+      formattedValue = dayjs(defaultValue);
+    } else {
+      formattedValue = dayjs(defaultValue, "YYYY-MM-DDTHH:mm:ss");
     }
   }
 
@@ -63,10 +75,18 @@ const Text = (props) => {
       <>
         {props.hideLable ?? <div>{props.display}</div>}
         <div>
-          {props.value &&
-            dayjs(props.value).format(
-              props?.options?.dateFormat || "YYYY-MM-DD"
-            )}
+          {props.value && (
+            <>
+              {dayjs(props.value).format(props?.options?.dateFormat) ||
+                "YYYY-MM-DD"}
+
+              {props.options.showTime &&
+                " " +
+                  dayjs(props.value).format(
+                    props?.options?.showTime || "HH:mm:ss"
+                  )}
+            </>
+          )}
         </div>
       </>
     );
@@ -77,7 +97,13 @@ const Text = (props) => {
       <Form.Item
         label={props.display}
         name={props.name}
-        initialValue={props.value && dayjs(props.value)}
+        initialValue={
+          props.value
+            ? dayjs(props.value)
+            : props.defaultValue
+            ? dayjs(props.defaultValue)
+            : undefined
+        }
         rules={rules}
       >
         <CustomDatePicker
