@@ -1,5 +1,4 @@
 import { Form, InputNumber } from "antd";
-import { useEffect, useState } from "react";
 
 import { separationRules } from "../lib/helpers";
 
@@ -10,6 +9,18 @@ const NumberIndex = (props) => {
     creationRules: props.creationRules,
     updateRules: props.updateRules,
   });
+
+  // اضافه کردن type: "number" به همه rules به جز required
+  const numberRules =
+    rules?.map((rule) => {
+      if (rule.required) {
+        return rule; // required rule را بدون تغییر نگه دار
+      }
+      return {
+        ...rule,
+        type: "number",
+      };
+    }) || [];
 
   if (props.readonly) {
     return (
@@ -32,7 +43,7 @@ const NumberIndex = (props) => {
             ? Number(props.defaultValue)
             : ""
         }
-        rules={rules}
+        rules={numberRules}
       >
         <InputNumber
           {...props.options}

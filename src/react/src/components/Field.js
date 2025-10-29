@@ -31,6 +31,10 @@ import SaveAndClose from "./SaveAndClose";
 // };
 
 const Field = (props) => {
+  if (props.existent === false) {
+    return null;
+  }
+
   const DynamicField = lazy(() =>
     import(`./${props.type}`).catch((error) => {
       return { default: () => <div>Error loading the field.</div> };

@@ -24,15 +24,23 @@ body {
 .logo {
   margin: 0 !important;
 }
-@media (max-width: 768px) {
+@media (max-width: 991px) {
   .logo {
-    margin-left: 32px !important;
+    margin-left: 8px !important;
+  }
+  .logo a{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: 32px;
   }
   .logo small{
-    margin-top: 16px;
+    /* margin-top: 16px; */
+    vertical-align: middle;
   }
   .logo-text{
-    display: none;
+    /* display: none; */
+    font-size: 16px;
   }
 }
 
@@ -43,7 +51,7 @@ body {
   width: 50vw;
   max-width: calc(100vw - 375px);
 }
-@media (max-width: 768px) {
+@media (max-width: 991px) {
   .search-input{
     width: 100%;
     max-width: calc(100vw - 200px);
@@ -54,13 +62,13 @@ body {
   vertical-align: top;
   margin-left: 8px;
 }
-@media (max-width: 768px) {
+@media (max-width: 991px) {
   .logo small {
     font-size: 14px;
     vertical-align: middle;
   }
 }
-@media (max-width: 768px) {
+@media (max-width: 991px) {
   .logout-text{
     display: none;
   }
@@ -230,10 +238,15 @@ body {
   margin: 0 0 8px 0 !important;
 }
 
-.ant-layout-header .username {
+.top-header .username {
   color: #fff;
 }
 
+@media (max-width: 991px) {
+  .top-header .username {
+    display: none;
+  }
+}
 /* .ant-notification-notice-warning {
   background: #ffe6b5;
 } */
@@ -307,7 +320,7 @@ body {
 .action-text{
   display: none;
 }
-@media (max-width: 768px) {
+@media (max-width: 991px) {
   .action-td--desktop{
     display: none !important;
   }
@@ -360,6 +373,8 @@ body {
 }
 .top-header {
   padding: 0 82px 0 16px;
+  z-index: 10;
+  position: relative;
 }
 
 .loading-container {
@@ -443,7 +458,7 @@ body {
 }
 .menu__link,
 .menu__parent {
-  margin-left: 16px;
+  margin-left: 0px;
 }
 .create-edit__header .ant-breadcrumb-link {
   text-transform: capitalize;

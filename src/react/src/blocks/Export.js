@@ -46,17 +46,11 @@ function Export({ data, loading, columns, pagination }) {
           // text: "Check out this table!",
           url: `${window.location.href}?${objectToQueryString(pagination)}`,
         });
-        console.log("اشتراک‌گذاری موفقیت‌آمیز بود.");
-      } catch (error) {
-        console.error("خطا در هنگام اشتراک‌گذاری:", error);
-      }
+      } catch (error) {}
     } else {
-      // در صورت عدم پشتیبانی مرورگر، یک پیام خطا در کنسول نمایش می‌دهیم.
       navigator.clipboard.writeText(
         `${window.location.href}?${objectToQueryString(pagination)}`
       );
-
-      // alert("Web Share API در این مرورگر پشتیبانی نمی‌شود.");
     }
   };
   const getHeader = () => {
@@ -105,8 +99,14 @@ function Export({ data, loading, columns, pagination }) {
       icon: <FileExcelOutlined />,
     },
     {
-      label: <> Share this table</>,
+      label: <div onClick={exportCSV}>Export All Data</div>,
       key: "2",
+      icon: <FileExcelOutlined />,
+      disabled: lo,
+    },
+    {
+      label: <> Share this table</>,
+      key: "3",
       icon: <CopyOutlined />,
       onClick: () => {
         handleShare();
@@ -125,9 +125,14 @@ function Export({ data, loading, columns, pagination }) {
           onDownload={() => setExportAllTrigger(false)}
         />
       )}
-      <Dropdown.Button loading={lo} menu={{ items }} onClick={exportCSV}>
-        <FileExcelOutlined /> Export All Data
-      </Dropdown.Button>
+      <Dropdown
+        loading={lo}
+        menu={{ items }}
+        trigger={["click"]}
+        placement="bottomRight"
+      >
+        <Button icon={<FileExcelOutlined />} />
+      </Dropdown>
     </>
   );
 }

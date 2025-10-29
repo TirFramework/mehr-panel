@@ -153,27 +153,36 @@ const Sidebar = memo(function App() {
             position: "fixed",
             inset: 0,
             background: "rgba(0,0,0,0.35)",
-            zIndex: 1000,
+            backdropFilter: "blur(10px)",
+            zIndex: 9,
           }}
         />
       ) : null}
 
-      <Button
-        type="link"
-        shape="circle"
-        size="large"
-        onClick={toggleSidebarMobile}
-        color="white"
-        style={{
-          position: "fixed",
-          left: 16,
-          top: 16,
-          zIndex: 1001,
-          color: "white",
-        }}
-        icon={<antdIcons.MenuUnfoldOutlined />}
-      />
-
+      {isMobile && (
+        <Button
+          // type="link"
+          // shape="circle"
+          size="large"
+          onClick={toggleSidebarMobile}
+          // color="white"
+          size="small"
+          style={{
+            position: "fixed",
+            left: 16,
+            top: 20,
+            zIndex: 1001,
+            // color: "#fff",
+          }}
+          icon={
+            isOpenSidebar ? (
+              <antdIcons.MenuFoldOutlined />
+            ) : (
+              <antdIcons.MenuUnfoldOutlined />
+            )
+          }
+        />
+      )}
       <Sider
         width={isMobile && !isOpenSidebar ? 0 : 250}
         // collapsible
@@ -222,12 +231,14 @@ const Sidebar = memo(function App() {
                 label: (
                   <>
                     {children.length === 0 ? (
-                      <Link className="menu__link" to={link}>
+                      <Link className="menu__link" to={link} title={title}>
                         {title}
                         {badge > 0 && <Badge count={badge} size="small" />}
                       </Link>
                     ) : (
-                      <span className="menu__parent">{title}</span>
+                      <span className="menu__parent" title={title}>
+                        {title}
+                      </span>
                     )}
                   </>
                 ),
@@ -242,7 +253,7 @@ const Sidebar = memo(function App() {
                         ) : null,
                         key: name,
                         label: (
-                          <Link className="menu__link" to={link}>
+                          <Link className="menu__link" to={link} title={title}>
                             {title}
                             {badge > 0 && <Badge count={badge} size="small" />}
                           </Link>
@@ -251,6 +262,26 @@ const Sidebar = memo(function App() {
               })
             )}
           />
+        )}
+        {!isMobile && (
+          <div className="menu__sidebar-footer">
+            <Button
+              type="link"
+              shape="circle"
+              block
+              size="large"
+              onClick={toggleSidebarMobile}
+              color="white"
+              style={{ color: "white" }}
+              icon={
+                isCollapsible.status ? (
+                  <antdIcons.MenuFoldOutlined />
+                ) : (
+                  <antdIcons.MenuUnfoldOutlined />
+                )
+              }
+            />
+          </div>
         )}
       </Sider>
     </>

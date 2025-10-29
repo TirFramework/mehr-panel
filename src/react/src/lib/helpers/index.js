@@ -8,83 +8,210 @@ export {
 } from "./duplicate";
 
 const separationRules = ({ pageType, rules, creationRules, updateRules }) => {
-  let newRules = [];
+  let allRules = [];
 
-  // console.log("🚀 ~ file: index.js ~ line 7 ~ rules", rules)
-
-  if (pageType === "create" && creationRules.length > 0) {
-    rules = [...rules, ...creationRules];
+  // جمع کردن تمام rules
+  if (rules && Array.isArray(rules)) {
+    allRules = [...allRules, ...rules];
   }
-  if (pageType === "edit" && updateRules.length > 0) {
-    rules = [...rules, ...updateRules];
+  if (
+    pageType === "create" &&
+    creationRules &&
+    Array.isArray(creationRules) &&
+    creationRules.length > 0
+  ) {
+    allRules = [...allRules, ...creationRules];
+  }
+  if (
+    pageType === "edit" &&
+    updateRules &&
+    Array.isArray(updateRules) &&
+    updateRules.length > 0
+  ) {
+    allRules = [...allRules, ...updateRules];
   }
 
-  // console.log("🚀 ~ file: index.js ~ line 7 ~ updateRules", updateRules)
-  // console.log("🚀 ~ file: index.js ~ line 7 ~ creationRules", creationRules)
-  // console.log("🚀 ~ file: index.js ~ line 7 ~ pageType", pageType)
-
-  // console.log("🚀 ~ file: index.js ~ line 25 ~ rules", rules)
-
-  if (rules === "") {
+  if (!allRules || allRules.length === 0) {
     return null;
   }
-  if (rules?.length === 0) {
-    return null;
-  }
 
-  // console.log("🚀 ~ file: not empty", rules)
+  // استفاده از Map برای جلوگیری از تکرار
+  const rulesMap = new Map();
 
-  // const defaultRules = ['required', '']
-
-  // var search = new RegExp('min' , 'i'); // prepare a regex object
-  // let b = rules.filter(item => search.test(item));
-
-  // // console.log(b); // ["foo","fool","cool"]
-
-  // // console.log("🚀 ~ file: index.js ~ line 10 ~ ", rules.indexOf("min") > -1 )
-
-  // newRules['required'] = rules.indexOf("required") > -1;
-
-  // // console.log("🚀 ~ file: index.js ~ line 15 ~ separationrules ~ newRules", newRules)
-
-  const defaultRules = ["min", "required", "max"];
-
-  for (let i = 0; i < defaultRules.length; i++) {
-    let thisRules = {};
-
-    let term = defaultRules[i];
-
-    var search = new RegExp(term, "i"); // prepare a regex object
-    let b = rules.filter((item) => search.test(item));
-
-    if (b.length > 0) {
-      b = findValue(b[0]);
-      thisRules[term] = Number(b);
-      // console.log("🚀 ~ file: index.js ~ line 42 ~ separationrules ~ b", b)
-      newRules.push(thisRules);
+  // پردازش هر rule
+  allRules.forEach((rule) => {
+    if (typeof rule === "string") {
+      // اگر rule یک رشته است، آن را پردازش کن
+      if (rule.includes("|")) {
+        // اگر شامل | است، آن را تقسیم کن
+        const parts = rule.split("|").map((part) => part.trim());
+        parts.forEach((part) => {
+          const ruleObj = parseRuleString(part);
+          if (ruleObj) {
+            mergeRule(rulesMap, ruleObj);
+          }
+        });
+      } else {
+        // اگر شامل | نیست، مستقیماً پردازش کن
+        const ruleObj = parseRuleString(rule);
+        if (ruleObj) {
+          mergeRule(rulesMap, ruleObj);
+        }
+      }
+    } else if (typeof rule === "object") {
+      // اگر rule یک آبجکت است، مستقیماً اضافه کن
+      mergeRule(rulesMap, rule);
     }
+  });
+
+  // تبدیل Map به آرایه
+  const newRules = Array.from(rulesMap.values());
+
+  return newRules.length > 0 ? newRules : null;
+};
+
+// تابع کمکی برای merge کردن rules و جلوگیری از تکرار
+const mergeRule = (rulesMap, ruleObj) => {
+  if (!ruleObj || typeof ruleObj !== "object") {
+    return;
   }
 
-  // rules = [...new Set(rules)];
-  // let newRules = [];
+  const keys = Object.keys(ruleObj);
 
-  // console.log("🚀 ~ file: index.js:82 ~ separationRules ~ rules:", rules);
-  // antdRule = {
-  //     required: "required",
-  // };
-  // rules.forEach((rule) => {
-  //     ruleArr = rule.split(":");
+  keys.forEach((key) => {
+    if (key === "required") {
+      // برای required، اگر true است، همیشه true نگه دار
+      if (ruleObj[key] === true) {
+        rulesMap.set(key, { required: true });
+      }
+    } else if (key === "min") {
+      // برای min، مقدار بزرگتر را نگه دار (سخت‌گیرانه‌تر)
+      const existing = rulesMap.get(key);
+      if (!existing) {
+        rulesMap.set(key, { min: ruleObj[key] });
+      } else {
+        rulesMap.set(key, { min: Math.max(existing.min, ruleObj[key]) });
+      }
+    } else if (key === "max") {
+      // برای max، مقدار کوچکتر را نگه دار (سخت‌گیرانه‌تر)
+      const existing = rulesMap.get(key);
+      if (!existing) {
+        rulesMap.set(key, { max: ruleObj[key] });
+      } else {
+        rulesMap.set(key, { max: Math.min(existing.max, ruleObj[key]) });
+      }
+    } else {
+      // برای سایر rules، اگر قبلاً وجود نداشته باشد اضافه کن
+      // اگر وجود داشته باشد، merge کن (برای patterns و messages)
+      if (!rulesMap.has(key)) {
+        rulesMap.set(key, ruleObj);
+      } else {
+        const existing = rulesMap.get(key);
+        rulesMap.set(key, { ...existing, ...ruleObj });
+      }
+    }
+  });
+};
 
-  //     ruleKey = ruleArr[0];
-  //     rulevalues = ruleArr[1];
+// تابع کمکی برای پردازش رشته‌های rule Laravel
+const parseRuleString = (ruleString) => {
+  if (!ruleString || typeof ruleString !== "string") {
+    return null;
+  }
 
-  //     rulevaluesArr = rule.split(",");
+  const trimmedRule = ruleString.trim();
 
-  //     antdRule[ruleKey];
-  //     newRules.push(thisRules);
-  // });
+  // required
+  if (trimmedRule === "required") {
+    return { required: true };
+  }
 
-  return newRules;
+  // nullable
+  if (trimmedRule === "nullable") {
+    return null; // nullable یعنی required نیست
+  }
+
+  // numeric
+  if (trimmedRule === "numeric") {
+    return { type: "number" };
+  }
+
+  // integer
+  if (trimmedRule === "integer") {
+    return { type: "number", transform: (value) => Math.floor(value) };
+  }
+
+  // min:value
+  if (trimmedRule.startsWith("min:")) {
+    const value = trimmedRule.split(":")[1];
+    return { min: Number(value) };
+  }
+
+  // max:value
+  if (trimmedRule.startsWith("max:")) {
+    const value = trimmedRule.split(":")[1];
+    return { max: Number(value) };
+  }
+
+  // between:min,max
+  if (trimmedRule.startsWith("between:")) {
+    const values = trimmedRule.split(":")[1].split(",");
+    return {
+      min: Number(values[0]),
+      max: Number(values[1]),
+    };
+  }
+
+  // size:value
+  if (trimmedRule.startsWith("size:")) {
+    const value = trimmedRule.split(":")[1];
+    return {
+      min: Number(value),
+      max: Number(value),
+    };
+  }
+
+  // email
+  if (trimmedRule === "email") {
+    return { type: "email" };
+  }
+
+  // url
+  if (trimmedRule === "url") {
+    return { type: "url" };
+  }
+
+  // alpha
+  if (trimmedRule === "alpha") {
+    return {
+      pattern: /^[A-Za-z]+$/,
+    };
+  }
+
+  // alpha_num
+  if (trimmedRule === "alpha_num") {
+    return {
+      pattern: /^[A-Za-z0-9]+$/,
+    };
+  }
+
+  // digits:value
+  if (trimmedRule.startsWith("digits:")) {
+    const value = trimmedRule.split(":")[1];
+    return {
+      pattern: new RegExp(`^\\d{${value}}$`),
+    };
+  }
+
+  // digits_between:min,max
+  if (trimmedRule.startsWith("digits_between:")) {
+    const values = trimmedRule.split(":")[1].split(",");
+    return {
+      pattern: new RegExp(`^\\d{${values[0]},${values[1]}}$`),
+    };
+  }
+
+  return null;
 };
 
 export const getAccept = (rules) => {
