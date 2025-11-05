@@ -4,6 +4,7 @@ namespace Tir\MehrPanel;
 
 
 use Illuminate\Support\ServiceProvider;
+use Tir\MehrPanel\Console\MergePackageJsonCommand;
 
 class MehrPanelServiceProvider extends ServiceProvider
 {
@@ -30,6 +31,10 @@ class MehrPanelServiceProvider extends ServiceProvider
     public function boot()
     {
 
+        if ($this->app->runningInConsole()) {
+            $this->commands([MergePackageJsonCommand::class]);
+        }
+
         $this->loadRoutesFrom(__DIR__ . '/Routes/web.php');
 
         $this->loadViewsFrom(__DIR__ . '/Resources/Views', 'mehr-panel');
@@ -38,7 +43,6 @@ class MehrPanelServiceProvider extends ServiceProvider
 
         $this->publishes([
             __DIR__ . '/react' => base_path('resources/admin/'),
-            __DIR__ . '/package.json' => base_path('package.json'),
             __DIR__ . '/webpack.mix.js' => base_path('webpack.mix.js'),
             __DIR__ . '/tailwind.config.js' => base_path('tailwind.config.js'),
             __DIR__ . '/public' => base_path('public'),

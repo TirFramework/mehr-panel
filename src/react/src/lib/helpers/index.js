@@ -234,10 +234,7 @@ export const getAccept = (rules) => {
       }
     }
   });
-  console.log(
-    "🚀 ~ file: index.js:104 ~ getAccept ~ acceptFormat:",
-    acceptFormat
-  );
+
   return acceptFormat;
 };
 

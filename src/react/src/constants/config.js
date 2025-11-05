@@ -3,10 +3,14 @@ const parts = path.split("/");
 const panelName = parts[1];
 
 const Config = {
+  defaultLang:
+    process.env.MIX_APP_DEFAULT_LANG ||
+    process.env.REACT_APP_DEFAULT_LANG ||
+    "en",
   apiBaseUrl:
     process.env.MIX_APP_API_BASE_URL ||
     process.env.REACT_APP_API_BASE_URL ||
-    `/api/v1`,
+    `https://timeleft.test/api/v1`,
   storage:
     process.env.MIX_APP_API_STORAGE ||
     process.env.REACT_APP_API_STORAGE ||

@@ -1,6 +1,5 @@
 import axios from "../lib/axios";
 import { getColsNormalize } from "../lib/utils";
-import qs from "qs";
 
 export const postLogout = async () => {
   const { data } = await axios.post(`/logout`);

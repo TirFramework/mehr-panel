@@ -17,12 +17,6 @@ function useGetParams(key, defaultFilter) {
 
     // به‌روزرسانی state با آبجکت ساخته شده
     if (hasQueryParams(newQueryParams)) {
-      // console.log("🚀 ~ useGetParams ~ defaultFilter:", defaultFilter);
-      // console.log("🚀 ~ useGetParams ~ newQueryParams:", {
-      //   ...newQueryParams,
-      //   key: key,
-      //   total: 0,
-      // });
       setStoredValue({ ...newQueryParams, key: key, total: 0, search: null });
     } else {
       const item = window.localStorage.getItem(key);
@@ -32,9 +26,14 @@ function useGetParams(key, defaultFilter) {
 
   const setValue = (value) => {
     // console.log("🚀 ~ setValue ~ value:", value);
+    const columns = searchParams.get("columns");
+    if (columns) {
+      columns = columns.split(",");
+      columns = columns.map((column) => ({ fieldName: column }));
+    }
     try {
       if (isCustomView()) {
-        setSearchParams(objectToQueryString(value));
+        setSearchParams(objectToQueryString(value, columns));
         setStoredValue({ ...value });
       } else {
         const valueToStore =

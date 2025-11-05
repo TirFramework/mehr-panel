@@ -25,13 +25,14 @@ const ErrorHandler = async (error) => {
     notification["warning"]({
       message: error.response.data.title,
       description:
-        mes.length > 0 ? (
-          <ul className="pl-2">
-            {mes.map((val, index) => (
-              <li key={`error-${index}`}>{val}</li>
-            ))}
-          </ul>
-        ) : null,
+        mes.length > 0
+          ? // <ul className="pl-2">
+            //   {mes.map((val, index) => (
+            //     <li key={`error-${index}`}>{val}</li>
+            //   ))}
+            // </ul>
+            mes.map((val, index) => val)
+          : null,
       duration:
         error.response.data.duration === "undefined"
           ? 10
