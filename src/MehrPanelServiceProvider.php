@@ -43,7 +43,7 @@ class MehrPanelServiceProvider extends ServiceProvider
 
         $this->publishes([
             __DIR__ . '/react' => base_path('resources/admin/'),
-            __DIR__ . '/webpack.mix.js' => base_path('webpack.mix.js'),
+            __DIR__ . '/vite.config' => base_path('vite.config'),
             __DIR__ . '/public' => base_path('public'),
             __DIR__ . '/custom.scss.sample' => base_path('resources/admin/src/assets/custom.scss.sample'),
 
