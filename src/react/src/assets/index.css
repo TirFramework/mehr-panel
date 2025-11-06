@@ -318,7 +318,7 @@ body {
 
 }
 .action-text{
-  display: none;
+  display: none !important;
 }
 @media (max-width: 991px) {
   .action-td--desktop{
@@ -328,7 +328,7 @@ body {
     display: block !important;
   }
   .action-text{
-    display: inline-block;
+    display: inline-block !important;
     /* margin-left: 16px; */
   }
 }
