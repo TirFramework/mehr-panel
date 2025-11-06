@@ -1,3 +1,4 @@
+import React from 'react';
 import { useParams, useSearchParams } from "react-router-dom";
 
 import Form from "../blocks/Form";

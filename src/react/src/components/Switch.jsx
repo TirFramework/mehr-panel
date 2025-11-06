@@ -1,4 +1,5 @@
-import { Form, Switch, Tag } from "antd";
+import React from "react";
+import { Form, Switch } from "antd";
 import { CheckOutlined, CloseOutlined } from "@ant-design/icons";
 
 import { separationRules } from "../lib/helpers";

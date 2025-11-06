@@ -1,3 +1,4 @@
+import React from "react";
 import { Form, InputNumber } from "antd";
 
 import { separationRules } from "../lib/helpers";

@@ -1,5 +1,5 @@
-import { memo, lazy, Suspense } from "react";
-import { Card, Form, Input, Skeleton } from "antd";
+import React, { memo, lazy, Suspense } from "react";
+import { Card, Form } from "antd";
 import Submit from "./Submit";
 import Cancel from "./Cancel";
 import Additional from "./Additional";

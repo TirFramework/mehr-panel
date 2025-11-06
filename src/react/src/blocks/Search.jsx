@@ -1,6 +1,6 @@
+import React, { useEffect, useState } from "react";
 import { Input, Space, Button } from "antd";
 import { SearchOutlined, LoadingOutlined } from "@ant-design/icons";
-import { useEffect, useState } from "react";
 
 function Search({ value, onSearch, loading, placeholder }) {
   const [val, setVal] = useState(value);

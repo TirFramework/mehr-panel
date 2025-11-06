@@ -9,8 +9,6 @@ import { getAccept, separationRules } from "../lib/helpers";
 
 import Cookies from "js-cookie";
 
-import Config from "../constants/config";
-
 const type = "DragableUploadList";
 
 const DragableUploadListItem = ({ originNode, moveRow, file, fileList }) => {

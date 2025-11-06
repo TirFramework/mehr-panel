@@ -1,10 +1,11 @@
+import React from "react";
 import { Form, Input } from "antd";
 
 import { separationRules } from "../lib/helpers";
 
 const { TextArea: Textarea } = Input;
 
-const Text = (props) => {
+const TextareaComponent = (props) => {
   const rules = separationRules({
     pageType: props.pageType,
     rules: props.rules,
@@ -40,4 +41,4 @@ const Text = (props) => {
   );
 };
 
-export default Text;
+export default TextareaComponent;

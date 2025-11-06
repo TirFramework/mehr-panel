@@ -37,7 +37,6 @@ const laravelEnv = loadLaravelEnv();
 
 export default defineConfig({
   plugins: [
-    react(),
     laravel({
       input: [
         "resources/admin/src/assets/index.css",
@@ -57,13 +56,13 @@ export default defineConfig({
   },
 
   server: {
-    https: true,
-    host: "localhost",
+    https: false,
+    host: "0.0.0.0",
     port: 5173,
     strictPort: true,
-    origin: "https://localhost:5173",
+    origin: "http://localhost:5173",
     hmr: {
-      protocol: "wss",
+      protocol: "ws",
       host: "localhost",
       port: 5173,
     },

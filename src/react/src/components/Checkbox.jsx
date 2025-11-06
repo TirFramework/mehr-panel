@@ -1,8 +1,9 @@
+import React from "react";
 import { Form, Checkbox } from "antd";
 import { separationRules } from "../lib/helpers";
-import { CheckCircleFilled,  CheckCircleOutlined,  CloseOutlined } from "@ant-design/icons";
+import { CheckCircleOutlined } from "@ant-design/icons";
 
-const Text = (props) => {
+const CheckboxComponent = (props) => {
   const rules = separationRules({
     pageType: props.pageType,
     rules: props.rules,
@@ -45,4 +46,4 @@ if (props.readonly) {
 };
 
 
-export default Text;
+export default CheckboxComponent;

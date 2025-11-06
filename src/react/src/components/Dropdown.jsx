@@ -1,10 +1,11 @@
-import { Button, Dropdown } from "antd";
-import { Link, useParams } from "react-router-dom";
+import React from "react";
+import { Dropdown } from "antd";
+import { useParams } from "react-router-dom";
 import { useLanguage } from "../context/LanguageContext";
 import { DownOutlined } from "@ant-design/icons";
 import Config from "../constants/config";
 
-const Submit = (props) => {
+const DropdownComponent = (props) => {
   const { pageModule } = useParams();
   const { t } = useLanguage();
 
@@ -48,4 +49,4 @@ const Submit = (props) => {
   );
 };
 
-export default Submit;
+export default DropdownComponent;

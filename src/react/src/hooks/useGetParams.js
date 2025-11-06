@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   extractQueryParams,
   hasQueryParams,
@@ -26,7 +26,7 @@ function useGetParams(key, defaultFilter) {
 
   const setValue = (value) => {
     // console.log("🚀 ~ setValue ~ value:", value);
-    const columns = searchParams.get("columns");
+    let columns = searchParams.get("columns");
     if (columns) {
       columns = columns.split(",");
       columns = columns.map((column) => ({ fieldName: column }));

@@ -1,4 +1,4 @@
-import { lazy, Suspense } from "react";
+import React, { lazy, Suspense } from "react";
 import { useParams } from "react-router-dom";
 import { Skeleton } from "antd";
 import Detail from "./Detail";
@@ -6,7 +6,7 @@ import Create from "./Create";
 import Index from "./Index";
 // import { capitalize } from "../lib/helpers"
 
-const Field = ({ type, ...props }) => {
+const Custom = ({ type, ...props }) => {
   const { pageModule } = useParams();
   const DynamicPage = lazy(() =>
     import(`../dynamic-pages/${pageModule}.jsx`).catch((error) => {
@@ -37,4 +37,4 @@ const Field = ({ type, ...props }) => {
   );
 };
 
-export default Field;
+export default Custom;

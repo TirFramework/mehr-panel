@@ -1,5 +1,5 @@
+import React, { useEffect } from "react";
 import Cookies from "js-cookie";
-import { useEffect } from "react";
 
 import { Outlet, useNavigate } from "react-router-dom";
 import PublicLayout from "./layouts/PublicLayout";

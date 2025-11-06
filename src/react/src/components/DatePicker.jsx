@@ -1,3 +1,4 @@
+import React from "react";
 import { Form, DatePicker } from "antd";
 import { separationRules } from "../lib/helpers";
 import utc from "dayjs/plugin/utc";
@@ -51,7 +52,7 @@ const CustomDatePicker = ({
   );
 };
 
-const Text = (props) => {
+const DatePickerComponent = (props) => {
   const dateFormat = props.options.dateFormat
     ? props.options.dateFormat
     : "YYYY-MM-DD";
@@ -133,4 +134,4 @@ const Text = (props) => {
   );
 };
 
-export default Text;
+export default DatePickerComponent;

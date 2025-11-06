@@ -1,8 +1,7 @@
-import { useEffect, useState } from "react";
-import { Button, Col, Row, Form } from "antd";
-import Field from "./Field";
-import { PlusOutlined, DragOutlined, CloseOutlined } from "@ant-design/icons";
-import { findNextName, replaceLastNumberFromString } from "../lib/helpers";
+import React, { useState } from "react";
+import { Button, Row, Form } from "antd";
+import { PlusOutlined, CloseOutlined } from "@ant-design/icons";
+import { replaceLastNumberFromString } from "../lib/helpers";
 import FormGroup from "./FormGroup";
 
 const Additional = (props) => {

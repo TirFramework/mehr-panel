@@ -1,13 +1,10 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import * as api from "../api";
 
 const useSidebar = () => {
   return useQuery("sidebar", api.getSidebar);
 };
-
-
-
 
 const useCols = () => {
   const [data, setData] = useState();
@@ -21,11 +18,7 @@ const useCols = () => {
     });
   }, []);
 
-
-	return {data , loading}
+  return { data, loading };
 };
-
-
-
 
 export { useSidebar, useCols };

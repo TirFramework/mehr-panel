@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import React, { useRef } from "react";
 import { useDrag, useDrop } from "react-dnd";
 const Card = ({ id, text, index, moveCard }) => {
   const ref = useRef(null);

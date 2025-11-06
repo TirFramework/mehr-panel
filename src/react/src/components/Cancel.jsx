@@ -1,5 +1,6 @@
+import React from "react";
 import { Button } from "antd";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import Config from "../constants/config";
 import { useLanguage } from "../context/LanguageContext";
 

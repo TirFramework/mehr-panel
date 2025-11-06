@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import React from "react";
 import { Form, Input, Popover, Space, Tag } from "antd";
 import { QuestionCircleOutlined } from "@ant-design/icons";
 
@@ -56,7 +56,6 @@ const Text = ({
     );
   }
 
-  // ... بقیه کد
   return (
     <>
       <Form.Item

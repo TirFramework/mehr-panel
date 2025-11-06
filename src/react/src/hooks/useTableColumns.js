@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import React, { useMemo } from "react";
 import { useParams, useSearchParams } from "react-router-dom";
 import { createActionsColumn } from "../components/TableActions";
 
