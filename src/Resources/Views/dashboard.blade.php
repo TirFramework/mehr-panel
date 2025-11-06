@@ -12,9 +12,6 @@
 
 <body>
     <div id="root"></div>
-
-    <script src="{{ mix('/admin-assets/js/index.js') }}"></script>
-
 </body>
 
 </html>
