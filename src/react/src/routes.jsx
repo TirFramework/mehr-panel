@@ -7,15 +7,15 @@ import ForgotPassword from "./pages/ForgotPassword";
 export const dashboardRoutes = [
   {
     path: "/:panelName/:pageModule/detail",
-    Component: () => <Custom  type="detail" />,
+    Component: <Custom type="detail" />,
   },
   {
     path: "/:panelName/:pageModule/create-edit",
-    Component: () => <Custom  type="create" />,
+    Component: <Custom type="create" />,
   },
   {
     path: "/:panelName/:pageModule",
-    Component: () => <Custom  type="index" />,
+    Component: <Custom type="index" />,
   },
   {
     path: "*",
