@@ -10,7 +10,7 @@ const Config = {
   apiBaseUrl:
     process.env.PANEL_APP_API_BASE_URL ||
     process.env.REACT_APP_API_BASE_URL ||
-    `https://timeleft.test/api/v1`,
+    `/api/v1`,
   storage:
     process.env.PANEL_APP_API_STORAGE ||
     process.env.REACT_APP_API_STORAGE ||
