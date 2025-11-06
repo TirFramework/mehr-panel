@@ -42,7 +42,7 @@ function MyApp() {
               {authRoutes.map((authRoute, index) => (
                 <Route
                   path={authRoute.path}
-                  element={authRoute.component}
+                  element={authRoute.Component}
                   key={`${authRoute.path}-${index}`}
                   title={`${authRoute.path}-${index}`}
                 />
@@ -52,7 +52,7 @@ function MyApp() {
               {dashboardRoutes.map((privateAuthRoute, index) => (
                 <Route
                   path={privateAuthRoute.path}
-                  element={privateAuthRoute.component}
+                  element={privateAuthRoute.Component}
                   key={`${privateAuthRoute.path}-${index}`}
                   title={`${privateAuthRoute.path}-${index}`}
                 />
