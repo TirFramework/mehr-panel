@@ -4,46 +4,46 @@ const panelName = parts[1];
 
 const Config = {
   defaultLang:
-    process.env.MIX_APP_DEFAULT_LANG ||
+    process.env.PANEL_APP_DEFAULT_LANG ||
     process.env.REACT_APP_DEFAULT_LANG ||
     "en",
   apiBaseUrl:
-    process.env.MIX_APP_API_BASE_URL ||
+    process.env.PANEL_APP_API_BASE_URL ||
     process.env.REACT_APP_API_BASE_URL ||
     `https://timeleft.test/api/v1`,
   storage:
-    process.env.MIX_APP_API_STORAGE ||
+    process.env.PANEL_APP_API_STORAGE ||
     process.env.REACT_APP_API_STORAGE ||
     "/storage",
-  tinyemcApiKey: process.env.MIX_APP_TINYEMC || process.env.REACT_APP_TINYEMC,
+  tinyemcApiKey: process.env.PANEL_APP_TINYEMC || process.env.REACT_APP_TINYEMC,
   perfix: panelName,
   panelVersion: "12.6",
   interactionCharacter:
-    process.env.MIX_APP_INTERACTION_CHARACTER ||
+    process.env.PANEL_APP_INTERACTION_CHARACTER ||
     process.env.REACT_APP_INTERACTION_CHARACTER ||
     "id",
   firebase: {
     apiKey:
-      process.env.MIX_APP_FIREBASE_API_KEY ||
+      process.env.PANEL_APP_FIREBASE_API_KEY ||
       process.env.REACT_APP_FIREBASE_API_KEY,
     authDomain:
-      process.env.MIX_APP_FIREBASE_AUTH_DOMAIN ||
+      process.env.PANEL_APP_FIREBASE_AUTH_DOMAIN ||
       process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,
     projectId:
-      process.env.MIX_APP_FIREBASE_AUTH_PROJECT_ID ||
+      process.env.PANEL_APP_FIREBASE_AUTH_PROJECT_ID ||
       process.env.REACT_APP_FIREBASE_AUTH_PROJECT_ID,
     storageBucket:
-      process.env.MIX_APP_FIREBASE_STORAGE_BUCKET ||
+      process.env.PANEL_APP_FIREBASE_STORAGE_BUCKET ||
       process.env.REACT_APP_FIREBASE_STORAGE_BUCKET,
     messagingSenderId:
-      process.env.MIX_APP_FIREBASE_MESSAGEING_SENDER_ID ||
+      process.env.PANEL_APP_FIREBASE_MESSAGEING_SENDER_ID ||
       process.env.REACT_APP_FIREBASE_MESSAGEING_SENDER_ID,
     appId:
-      process.env.MIX_APP_FIREBASE_APP_ID ||
+      process.env.PANEL_APP_FIREBASE_APP_ID ||
       process.env.REACT_APP_FIREBASE_APP_ID,
   },
   firebaseVapidKey:
-    process.env.MIX_APP_FIREBASE_VAPID_KEY ||
+    process.env.PANEL_APP_FIREBASE_VAPID_KEY ||
     process.env.REACT_APP_FIREBASE_VAPID_KEY,
 };
 
