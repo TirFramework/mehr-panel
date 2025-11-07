@@ -19,18 +19,18 @@ export const dashboardRoutes = [
   },
   {
     path: "*",
-    Component: NotFoundPage,
+    Component: <NotFoundPage />,
   },
 ];
 
 export const authRoutes = [
   {
     path: "/:panelName/login",
-    Component: Login,
+    Component: <Login />,
   },
   {
     path: "/:panelName/forgot-password",
-    Component: ForgotPassword,
+    Component: <ForgotPassword />,
   },
 ];
 
