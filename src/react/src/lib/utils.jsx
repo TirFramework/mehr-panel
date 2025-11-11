@@ -279,6 +279,9 @@ export function extractQueryParams() {
 export function extractFromlocalhost() {}
 
 export function objectToQueryString(obj, columns = []) {
+  if(columns === null){
+    columns = []
+  }
   const newColumns = [...columns];
   const params = new URLSearchParams();
 
