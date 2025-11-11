@@ -45,12 +45,10 @@ class MehrPanelServiceProvider extends ServiceProvider
             __DIR__ . '/react' => base_path('resources/admin/'),
             __DIR__ . '/vite.config.js' => base_path('vite.config.js'),
             __DIR__ . '/public' => base_path('public'),
-            __DIR__ . '/custom.scss.sample' => base_path('resources/admin/src/assets/custom.scss.sample'),
-
         ], 'mehr-panel');
 
         $this->publishes([
-            __DIR__ . '/custom.scss' => base_path('resources/admin/src/assets/custom.scss'),
+            __DIR__ . '/custom.css' => base_path('resources/admin/src/assets/custom.css'),
             __DIR__ . '/dashboard.js' => base_path('resources/admin/src/dynamic-pages/dashboard.js'),
             __DIR__ . '/CustomTopHeader.js' => base_path('resources/admin/src/dynamic-layouts/CustomTopHeader.js'),
         ], 'mehr-panel-customize');
