@@ -17,10 +17,10 @@ export const useGetData = (pageModule, filter, options) => {
   const query = useQuery({
     queryKey: [`index-data-${pageModule}`, serializedFilter],
     queryFn: () => getData(pageModule, filter),
-    staleTime: 30 * 1000, // Consider data fresh for 30 seconds
-    placeholderData: keepPreviousData, // Keep previous data while fetching new data
-    refetchOnMount: "always", // Only refetch if data is stale
-    refetchOnWindowFocus: false, // Don't refetch on window focus
+    // staleTime: 30 * 1000, // Consider data fresh for 30 seconds
+    // placeholderData: keepPreviousData, // Keep previous data while fetching new data
+    // refetchOnMount: "always", // Only refetch if data is stale
+    // refetchOnWindowFocus: false, // Don't refetch on window focus
     ...options,
   });
 
@@ -31,10 +31,10 @@ export const useGetColumns = (pageModule, filter, options) => {
   const query = useQuery({
     queryKey: [`index-columns-${pageModule}`],
     queryFn: () => getCols(pageModule, filter),
-    staleTime: 5 * 60 * 1000, // Consider columns fresh for 5 minutes
-    placeholderData: keepPreviousData, // Keep previous data while fetching new data
-    refetchOnMount: "always", // Only refetch if data is stale
-    refetchOnWindowFocus: false, // Don't refetch on window focus
+    // staleTime: 5 * 60 * 1000, // Consider columns fresh for 5 minutes
+    // placeholderData: keepPreviousData, // Keep previous data while fetching new data
+    // refetchOnMount: "always", // Only refetch if data is stale
+    // refetchOnWindowFocus: false, // Don't refetch on window focus
     onSuccess: (res) => {},
     ...options,
   });

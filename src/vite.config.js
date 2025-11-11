@@ -1,7 +1,7 @@
 import { defineConfig } from "vite";
 import laravel from "laravel-vite-plugin";
 import react from "@vitejs/plugin-react";
-import { readFileSync, readdirSync } from "fs";
+import { readFileSync, readdirSync, mkdirSync, writeFileSync } from "fs";
 import { resolve, dirname, extname } from "path";
 import { fileURLToPath } from "url";
 
@@ -66,17 +66,40 @@ function loadDynamicPages() {
 
 const dynamicPages = loadDynamicPages();
 
+// Plugin: ensure .gitignore exists in public/build-panel after each build
+function ensureBuildPanelGitignore() {
+  return {
+    name: "ensure-build-panel-gitignore",
+    apply: "build",
+    closeBundle() {
+      try {
+        const outDir = resolve(__dirname, "public", "build-panel");
+        mkdirSync(outDir, { recursive: true });
+        const gitignorePath = resolve(outDir, ".gitignore");
+        writeFileSync(gitignorePath, "*\n!.gitignore\n", {
+          encoding: "utf8",
+        });
+      } catch (e) {
+        console.warn("⚠️  Could not write build-panel/.gitignore:", e.message);
+      }
+    },
+  };
+}
+
 export default defineConfig({
   plugins: [
     laravel({
       input: [
         "resources/admin/src/assets/index.css",
+        "resources/admin/src/assets/custom.css",
         "resources/admin/src/main.jsx",
       ],
+      buildDirectory: "build-panel",
       refresh: true,
       detectTls: false,
       serverUrl: "https://localhost:5173",
     }),
+    ensureBuildPanelGitignore(),
   ],
 
   define: {
