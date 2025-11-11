@@ -21,8 +21,12 @@ function loadLaravelEnv() {
         const [key, ...valueParts] = trimmedLine.split("=");
         if (key) {
           const value = valueParts.join("=").trim();
-          // حذف کوتیشن‌ها اگر وجود داشته باشند
-          env[key.trim()] = value.replace(/^["']|["']$/g, "");
+          const cleanValue = value.replace(/^["']|["']$/g, "");
+          const trimmedKey = key.trim();
+          // فقط متغیرهایی که با VITE_ شروع می‌شوند را وارد کن
+          if (trimmedKey.startsWith("VITE_")) {
+            env[trimmedKey] = cleanValue;
+          }
         }
       }
     });
