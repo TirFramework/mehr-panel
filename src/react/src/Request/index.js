@@ -71,9 +71,9 @@ export const useFieldsQuery = ({ pageModule, id, type }, options) => {
   const query = useQuery({
     queryKey: [`${pageModule}-${id}-${type}`],
     queryFn: () => getFields(pageModule, id, type),
-    staleTime: 2 * 60 * 1000, // Consider fields fresh for 2 minutes
-    placeholderData: keepPreviousData, // Keep previous data while fetching
-    refetchOnWindowFocus: false, // Don't refetch on window focus
+    // staleTime: 2 * 60 * 1000, // Consider fields fresh for 2 minutes
+    // placeholderData: keepPreviousData, // Keep previous data while fetching
+    // refetchOnWindowFocus: false, // Don't refetch on window focus
     ...options,
   });
 
