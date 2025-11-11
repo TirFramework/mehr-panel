@@ -39,10 +39,8 @@ function Search({ value, onSearch, loading, placeholder }) {
         onClick={handleSearch}
         loading={loading}
         size="large"
-      >
-        Search
-      </Button>
-    </Space.Compact>
+      />
+      </Space.Compact>
   );
 }
 
