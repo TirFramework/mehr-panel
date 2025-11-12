@@ -1,7 +1,7 @@
 import axios from "axios";
 import Config from "../constants/config";
 import Cookies from "js-cookie";
-import ErrorHandler from "./helpers/ErrorHandler.js";
+import ErrorHandler from "./helpers/ErrorHandler";
 
 /**
  * Axios defaults

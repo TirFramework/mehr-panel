@@ -10,7 +10,13 @@ const buildDescription = (messages) => {
     return undefined;
   }
 
-  return messages.join("\n");
+  return (
+    <ul style={{ margin: 0, paddingInlineStart: 20 }}>
+      {messages.map((message, index) => (
+        <li key={`${message}-${index}`}>{message}</li>
+      ))}
+    </ul>
+  );
 };
 
 const normalizeDuration = (value) => {
