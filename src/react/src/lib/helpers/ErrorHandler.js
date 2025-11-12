@@ -1,70 +1,110 @@
 import Cookies from "js-cookie";
 import { notification } from "antd";
 import Config from "../../constants/config";
+import { getNotificationApi } from "../notificationService";
+
+const DEFAULT_DURATION = 10;
+
+const buildDescription = (messages) => {
+  if (!messages.length) {
+    return undefined;
+  }
+
+  return messages.join("\n");
+};
+
+const normalizeDuration = (value) => {
+  if (value === undefined || value === null) {
+    return DEFAULT_DURATION;
+  }
+  if (value === "undefined") {
+    return DEFAULT_DURATION;
+  }
+  const numeric = Number(value);
+  return Number.isNaN(numeric) ? DEFAULT_DURATION : numeric;
+};
 
 const ErrorHandler = async (error) => {
-  let mes = [];
-  if (error?.response?.data instanceof Blob) {
-    const responseBlob = new Blob([error.response.data], {
-      type: "application/json",
+  const response = error?.response;
+  const data = response?.data;
+
+  const notifier = getNotificationApi() || notification;
+
+  if (!response) {
+    notifier.warning({
+      message: "Unknown error",
+      description: "No response received from the server.",
+      duration: DEFAULT_DURATION,
     });
-    const jsonData = await responseBlob.text();
-    error.response.data = JSON.parse(jsonData);
+    return null;
   }
 
-  if (error?.response?.data?.message) {
-    if (typeof error.response.data.message === "object") {
-      for (const [key, value] of Object.entries(error.response.data.message)) {
-        value.forEach((val) => {
-          mes.push(val);
-        });
-      }
-    } else {
-      mes.push(error?.response?.data?.message);
+  // Handle Blob responses (e.g., file downloads with errors)
+  if (data instanceof Blob) {
+    try {
+      const responseBlob = new Blob([data], { type: "application/json" });
+      const jsonData = await responseBlob.text();
+      response.data = JSON.parse(jsonData);
+    } catch (parseError) {
+      notifier.warning({
+        message: "Response parsing error",
+        description: "Unable to read the error response from the server.",
+        duration: DEFAULT_DURATION,
+      });
+      return null;
     }
-    notification["warning"]({
-      message: error.response.data.title,
-      description:
-        mes.length > 0
-          ? // <ul className="pl-2">
-            //   {mes.map((val, index) => (
-            //     <li key={`error-${index}`}>{val}</li>
-            //   ))}
-            // </ul>
-            mes.map((val, index) => val)
-          : null,
-      duration:
-        error.response.data.duration === "undefined"
-          ? 10
-          : error.response.data.duration,
+  }
+
+  const messages = [];
+  const normalizedData = response.data || {};
+
+  if (normalizedData.message) {
+    if (typeof normalizedData.message === "object") {
+      Object.values(normalizedData.message).forEach((value) => {
+        if (Array.isArray(value)) {
+          messages.push(...value);
+        } else if (value) {
+          messages.push(String(value));
+        }
+      });
+    } else {
+      messages.push(String(normalizedData.message));
+    }
+
+    notifier.warning({
+      message: normalizedData.title || "Error",
+      description: buildDescription(messages),
+      duration: normalizeDuration(normalizedData.duration),
     });
   } else {
-    notification["warning"]({
+    notifier.warning({
       message: "Unknown error",
-      duration:
-        error.response.data.duration === "undefined"
-          ? 10
-          : error.response.data.duration,
+      description: "An error occurred. Please try again.",
+      duration: normalizeDuration(normalizedData.duration),
     });
   }
 
-  if (error.response.data?.redirect !== undefined) {
-    const page = window.location.pathname + window.location.search;
-    const redirect = "/admin" + error.response.data?.redirect;
+  if (normalizedData.redirect) {
+    const currentPage = window.location.pathname + window.location.search;
+    const redirectTarget = "/admin" + normalizedData.redirect;
 
     setTimeout(() => {
-      page !== redirect && window.location.replace(redirect);
+      if (currentPage !== redirectTarget) {
+        window.location.replace(redirectTarget);
+      }
     }, 500);
   }
 
-  if (error.response.status === 401) {
+  if (response.status === 401) {
     setTimeout(() => {
-      window.location.pathname !== `/${Config.perfix}/login` &&
+      if (window.location.pathname !== `/${Config.perfix}/login`) {
         window.location.replace(`/${Config.perfix}/login`);
+      }
     }, 1000);
 
     Cookies.remove("api_token");
   }
+
   return null;
 };
 

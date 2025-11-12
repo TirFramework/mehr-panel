@@ -28,8 +28,21 @@ const queryClient = new QueryClient({
 
 console.log(`TIRDAD ABBASI AND MEHRDAD ABBASI`);
 
+const NotificationInitializer = () => {
+  const { notification } = App.useApp();
+
+  React.useEffect(() => {
+    setNotificationApi(notification);
+  }, [notification]);
+
+  return null;
+};
+
+
 root.render(
   <App>
+    
+    <NotificationInitializer />
     <QueryClientProvider client={queryClient}>
       <LanguageProvider>
         <MyApp />
