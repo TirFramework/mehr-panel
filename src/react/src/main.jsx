@@ -6,6 +6,7 @@ import { App } from "antd";
 
 import MyApp from "./MyApp";
 import { LanguageProvider } from "./context/LanguageContext";
+import { setNotificationApi } from "./lib/notificationService";
 
 import "./assets/index.css";
 
@@ -41,7 +42,7 @@ const NotificationInitializer = () => {
 
 root.render(
   <App>
-    
+
     <NotificationInitializer />
     <QueryClientProvider client={queryClient}>
       <LanguageProvider>
