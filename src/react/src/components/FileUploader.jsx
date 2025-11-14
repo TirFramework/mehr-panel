@@ -115,6 +115,7 @@ const DragSortingUpload = (props) => {
     <>
       <DndProvider backend={HTML5Backend}>
         <Upload
+          data-cy={props.testId}
           accept={getAccept([props.fileRules])}
           action={props.postUrl}
           headers={{ Authorization: `Bearer ${token}` }}
@@ -136,7 +137,7 @@ const DragSortingUpload = (props) => {
             />
           )}
         >
-          <Button icon={<UploadOutlined />} disabled={props.disable}>
+          <Button icon={<UploadOutlined />} disabled={props.disable} data-cy={`${props.testId}-button`}>
             Click to upload file for {props.display}
           </Button>
         </Upload>

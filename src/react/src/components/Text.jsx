@@ -16,6 +16,7 @@ const Text = ({
   display,
   comment,
   name,
+  testId,
   options,
   placeholder,
   disable,
@@ -49,7 +50,7 @@ const Text = ({
 
     // خروجی نهایی
     return (
-      <Readonly>
+      <Readonly data-cy={testId}>
         {label}
         {valueContent}
       </Readonly>
@@ -70,10 +71,11 @@ const Text = ({
           </Space>
         }
         name={name}
-        initialValue={props.value || defaultValue}
+        initialValue={value || defaultValue}
         rules={formRules}
       >
         <Input
+          data-cy={testId}
           {...props.options}
           placeholder={placeholder || options.placeholder}
           disabled={props.disable}

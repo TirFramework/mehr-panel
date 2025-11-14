@@ -38,6 +38,7 @@ const Submit = (props) => {
   return (
     <Button
       type="primary"
+      data-cy={props.testId}
       loading={props.loading && clicked}
       disabled={clicked ? false : props.loading}
       onClick={handleSubmit}

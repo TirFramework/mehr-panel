@@ -4,7 +4,7 @@ const Btn = (props) => {
 
   return (
     <>
-        <Button {...props.options} href={props.path}>{props.display}</Button>
+        <Button {...props.options} data-cy={props.testId} href={props.path}>{props.display}</Button>
 
     </>
   );

@@ -8,6 +8,7 @@ const MySelect = (props) => {
   return (
     <Select
       {...props.options}
+      data-cy={props.testId}
       showSearch
       filterOption={(input, option) =>
         option.label.toLowerCase().indexOf(input.toLowerCase()) >= 0
@@ -54,7 +55,7 @@ const SelcetIndex = ({ defaultValue, ...props }) => {
     if (props.value) {
       if (typeof props.value === "object") {
         return (
-          <Readonly>
+          <Readonly data-cy={props.testId}>
             {props.hideLable ?? <div>{props.display}</div>}
             <div>
               {props.value.map((i) => {
@@ -68,7 +69,7 @@ const SelcetIndex = ({ defaultValue, ...props }) => {
         );
       } else {
         return (
-          <Readonly>
+          <Readonly data-cy={props.testId}>
             {props.hideLable ?? <div>{props.display}</div>}
             <div>
               <Tag>{props.dataSet[props.value] || props.value}</Tag>

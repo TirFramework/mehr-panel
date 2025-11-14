@@ -6,7 +6,7 @@ import FormGroup from "./FormGroup";
 const Group = ({ showCard = true, ...props }) => {
   if (!showCard) {
     return (
-      <>
+      <div data-cy={props.testId}>
         {props.children.map((field, index) => (
           <FormGroup
             addrow={props.addrow}
@@ -19,11 +19,15 @@ const Group = ({ showCard = true, ...props }) => {
             {...field}
           />
         ))}
-      </>
+      </div>
     );
   }
   return (
-    <Card title={props.display} className={`group ${props.class}`}>
+    <Card
+      title={props.display}
+      className={`group ${props.class}`}
+      data-cy={props.testId}
+    >
       <Row gutter={[16, 16]}>
         {props.children.map((field, index) => (
           <FormGroup
