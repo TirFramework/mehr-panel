@@ -15,6 +15,11 @@ const Additional = (props) => {
         const newData = [...fields];
         newData.splice(index, 1);
         setFields(newData);
+        
+        // If all rows are deleted, set empty array
+        if (newData.length === 0) {
+            props.form.setFieldValue(props.name, []);
+        }
     };
 
     const duplicate = () => {
@@ -52,7 +57,7 @@ const Additional = (props) => {
     return (
         <>
             <div className={ props.readonly ? "readOnly " : '' + props.className} >
-                {fields.length > 0 ? (
+                {fields && fields.length > 0 ? (
                     <>
                         {fields.map((child, index) => (
                             <Row
