@@ -51,28 +51,57 @@ const SelcetIndex = ({ defaultValue, ...props }) => {
     updateRules: props.updateRules,
   });
 
+  // Extract the display field name from relation if available
+  const getDisplayFieldName = () => {
+    if (props.relation && props.relation.field) {
+      return props.relation.field;
+    }
+    return null;
+  };
+
+  // Extract value from relation object using the defined display field
+  // Handles both MongoDB objects and simple IDs/strings/booleans from MySQL
+  const extractRelationValue = (val) => {
+    // If it's an object (MongoDB relation case), extract the display field
+    if (typeof val === 'object' && val !== null) {
+      const displayField = props.relation?.field;
+      // If relation field is defined, use it; otherwise use first non-null value
+      if (displayField && val[displayField] !== undefined) {
+        return val[displayField];
+      }
+      return Object.values(val).find(v => v !== null);
+    }
+
+    // For all other cases (string, number, boolean, etc.), return as-is
+    return val;
+  };
+
   if (props.readonly) {
     if (props.value) {
-      if (typeof props.value === "object") {
+      if (typeof props.value === "object" && Array.isArray(props.value)) {
         return (
           <Readonly data-cy={props.testId}>
             {props.hideLable ?? <div>{props.display}</div>}
             <div>
               {props.value.map((i) => {
-                if (!props.dataSet[i]) {
-                  return <Tag>{i}</Tag>;
+                // Extract ID from MongoDB relation object if needed
+                const displayValue = extractRelationValue(i);
+                if (!props.dataSet[displayValue]) {
+                  return <Tag key={displayValue}>{displayValue}</Tag>;
                 }
-                return <Tag>{props.dataSet[i]}</Tag>;
+                return <Tag key={displayValue}>{props.dataSet[displayValue]}</Tag>;
               })}
             </div>
           </Readonly>
         );
       } else {
+        // Extract ID from MongoDB relation object if needed
+        const displayValue = extractRelationValue(props.value);
         return (
           <Readonly data-cy={props.testId}>
             {props.hideLable ?? <div>{props.display}</div>}
             <div>
-              <Tag>{props.dataSet[props.value] || props.value}</Tag>
+              <Tag>{props.dataSet[displayValue] || displayValue}</Tag>
             </div>
           </Readonly>
         );
