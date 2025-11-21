@@ -15,7 +15,7 @@ const Additional = (props) => {
         const newData = [...fields];
         newData.splice(index, 1);
         setFields(newData);
-        
+
         // If all rows are deleted, set empty array
         if (newData.length === 0) {
             props.form.setFieldValue(props.name, []);

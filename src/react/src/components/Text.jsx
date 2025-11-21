@@ -21,6 +21,7 @@ const Text = ({
   placeholder,
   disable,
   value,
+  relation,
   ...props
 }) => {
   const formRules = separationRules({
@@ -29,26 +30,57 @@ const Text = ({
     creationRules: creationRules,
     updateRules: updateRules,
   });
-  // استفاده از یک متغیر برای ذخیره خروجی قبل از return
 
-  if (readonly) {
-    // نمایش برچسب اگر hideLable false باشد
-    const label = hideLable ? null : <div>{display}</div>;
+  // Extract the display field name from relation if available
+  const getDisplayFieldName = () => {
+    if (relation && relation.field) {
+      return relation.field;
+    }
+    return null;
+  };
 
-    // مدیریت نمایش prop.value
-    let valueContent;
-    if (Array.isArray(value)) {
-      // اگر یک آرایه بود، تگ‌ها را نمایش بده
-      valueContent = value.map((val, index) => <Tag key={index}>{val}</Tag>);
-    } else if (value === null) {
-      // اگر null بود، چیزی نمایش نده
-      valueContent = null;
-    } else {
-      // در غیر این صورت، مقدار را به صورت عادی نمایش بده
-      valueContent = value;
+  // Extract value from relation object using the defined display field
+  // Handles both MongoDB objects and MySQL strings
+  const extractRelationValue = (val) => {
+    // If it's already a string or number, return as-is (MySQL case)
+    if (typeof val === 'string' || typeof val === 'number') {
+      return val;
     }
 
-    // خروجی نهایی
+    // If it's an object (MongoDB case), extract the display field
+    if (typeof val === 'object' && val !== null) {
+      const displayField = getDisplayFieldName();
+      // If relation field is defined, use it; otherwise use first non-null value
+      if (displayField && val[displayField] !== undefined) {
+        return val[displayField];
+      }
+      return Object.values(val).find(v => v !== null);
+    }
+
+    return val;
+  };
+
+  // Display readonly mode for detail/view pages
+  if (readonly) {
+    // Show label unless hideLable is true
+    const label = hideLable ? null : <div>{display}</div>;
+
+    // Handle different value types
+    let valueContent;
+    if (Array.isArray(value)) {
+      // For arrays: display each item as a tag
+      valueContent = value.map((val, index) => {
+        const displayValue = extractRelationValue(val);
+        return <Tag key={index}>{displayValue}</Tag>;
+      });
+    } else if (value === null) {
+      // For null values: display nothing
+      valueContent = null;
+    } else {
+      // For object and simple values: extract using relation field
+      valueContent = extractRelationValue(value);
+    }
+
     return (
       <Readonly data-cy={testId}>
         {label}

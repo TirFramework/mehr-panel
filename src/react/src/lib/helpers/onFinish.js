@@ -66,14 +66,14 @@ export const onFinish = ({
 }) => {
   values = fixNumber(values);
 
-  setSubmitLoad(true);
+  setSubmitLoad({ isLoading: true, isSuccess: false });
 
   const types = ["detail", "create-edit"];
 
   api
     .postEditOrCreate(pageModule, pageId, values, requestBy)
     .then((res) => {
-      setSubmitLoad(false);
+      setSubmitLoad({ isLoading: false, isSuccess: true });
 
       if (!pageId) {
         setUrlParams({ id: res.id });
@@ -106,7 +106,7 @@ export const onFinish = ({
       message.success(res.message);
     })
     .catch((err) => {
-      setSubmitLoad(false);
+      setSubmitLoad({ isLoading: false, isSuccess: false });
     });
 };
 

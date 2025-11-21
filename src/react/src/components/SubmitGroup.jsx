@@ -33,7 +33,7 @@ const SubmitGroup = (props) => {
               key={`btn-${index}`}
               type={btn.action}
               form={props.form}
-              loading={myState}
+              loading={myState?.isLoading}
             />
           ))}
 
