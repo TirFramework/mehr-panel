@@ -20,13 +20,13 @@ const CustomDatePicker = ({
     if (props.enableTimezone || props.options?.showTime?.length > 0) {
       formattedValue = dayjs(value);
     } else {
-      formattedValue = dayjs(value, "YYYY-MM-DDTHH:mm:ss");
+      formattedValue = dayjs(value, "YYYY-MM-DDTHH:mm:ss.000[Z]");
     }
   } else if (defaultValue) {
     if (props.enableTimezone || props.options?.showTime?.length > 0) {
       formattedValue = dayjs(defaultValue);
     } else {
-      formattedValue = dayjs(defaultValue, "YYYY-MM-DDTHH:mm:ss");
+      formattedValue = dayjs(defaultValue, "YYYY-MM-DDTHH:mm:ss.000[Z]");
     }
   }
 
@@ -36,13 +36,12 @@ const CustomDatePicker = ({
       format={format}
       onChange={(data) => {
         if (props.enableTimezone || Object.keys(props.showTime).length > 0) {
-          onChange(data ? dayjs(data) : null);
+          onChange(data ? dayjs(data).format("YYYY-MM-DDTHH:mm:ss.000[Z]") : null);
           console.log("🚀 ~ CustomDatePicker ~ dayjs(data):", dayjs(data));
         } else {
           onChange(
             data
-              ? dayjs(data).startOf("day").format("YYYY-MM-DD") +
-                  "T00:00:00+00:00"
+              ? dayjs(data).startOf("day").format("YYYY-MM-DDTHH:mm:ss.000[Z]")
               : null
           );
         }
