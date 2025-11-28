@@ -73,17 +73,10 @@ export const DeleteRow = ({ id, interactionCharacter }) => {
       { pageModule, id },
       {
         onSuccess: () => {
-          queryClient.setQueryData(
-            [`index-data-${pageModule}`, pagination],
-            (oldData) => {
-              const basic = { ...oldData };
-              const newData = oldData.data.filter(
-                (item) => item[interactionCharacter] !== id
-              );
-              basic.total = oldData.total - 1;
-              return { ...basic, data: newData };
-            }
-          );
+          // Invalidate and refetch the query to update the table
+          queryClient.invalidateQueries({
+            queryKey: [`index-data-${pageModule}`]
+          });
         },
       }
     );
