@@ -338,10 +338,14 @@ body {
   min-width: 28px;
   padding-top: 4px;
   padding-bottom: 4px;
+  display: inline-flex;
+  align-items: center;
 }
 .action-td {
   display: flex;
   flex-wrap: nowrap;
+  align-items: center;
+  gap: 4px;
 }
 
 .index-page__card .ant-pagination-total-text {

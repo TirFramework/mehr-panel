@@ -7,7 +7,7 @@ import {
   FormOutlined,
   MoreOutlined,
 } from "@ant-design/icons";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, Link } from "react-router-dom";
 import { useQueryClient } from "@tanstack/react-query";
 import { useEditing } from "../context/EditingContext";
 import { useDeleteRow } from "../Request";
@@ -17,43 +17,37 @@ import * as helpers from "../lib/helpers";
 
 export const DetailRow = ({ id }) => {
   const { pageModule } = useParams();
-  const navigate = useNavigate();
   const { editingId } = useEditing();
-
-  const handleClick = () => {
-    navigate(`/${Config.perfix}/${pageModule}/detail?id=${id}`);
-  };
 
   if (editingId === id) {
     return null;
   }
 
   return (
-    <Button type="link" size="small" onClick={handleClick}>
-      <EyeOutlined />
-      <span className="action-text">Detail</span>
-    </Button>
+    <Link to={`/${Config.perfix}/${pageModule}/detail?id=${id}`}>
+      <Button type="link" size="small">
+        <EyeOutlined />
+        <span className="action-text">Detail</span>
+      </Button>
+    </Link>
   );
 };
 
 export const EditRow = ({ id }) => {
   const { pageModule } = useParams();
-  const navigate = useNavigate();
   const { editingId } = useEditing();
-
-  const handleClick = () => {
-    navigate(`/${Config.perfix}/${pageModule}/create-edit?id=${id}`);
-  };
 
   if (editingId === id) {
     return null;
   }
 
   return (
-    <Button type="link" onClick={handleClick} size="small">
-      <FormOutlined />
-      <span className="action-text">Edit</span>
-    </Button>
+    <Link to={`/${Config.perfix}/${pageModule}/create-edit?id=${id}`}>
+      <Button type="link" size="small">
+        <FormOutlined />
+        <span className="action-text">Edit</span>
+      </Button>
+    </Link>
   );
 };
 
