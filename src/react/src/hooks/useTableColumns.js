@@ -21,7 +21,10 @@ export const useTableColumns = (pageData, pagination, form) => {
     // Handle URL column params
     if (urlParams.get("columns")) {
       const columns = urlParams.get("columns").split(",");
-      return pageData.cols.filter((col) => columns.includes(col.fieldName));
+      const filteredCols = pageData.cols.filter((col) => columns.includes(col.fieldName));
+      // Add actions column
+      filteredCols.push(createActionsColumn(pageData.configs, pageModule, form));
+      return filteredCols;
     }
 
     // Map columns with filters and sorters

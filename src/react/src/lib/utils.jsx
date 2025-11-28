@@ -199,12 +199,12 @@ export function getPlacementsForSearch(cols) {
   const searchableFields = getSearchableFromCols(cols);
 
   //TODO: add translate
-  if (!searchableFields) {
-    return "No searchable fields";
+  if (!searchableFields || searchableFields.length === 0) {
+    return "Search...";
   }
 
   //TODO: add translate
-  return `${searchableFields}`;
+  return `Search: ${searchableFields}`;
 }
 export const isCustomView = () => {
   const newQueryParams = extractQueryParams();
@@ -215,6 +215,11 @@ export const isCustomView = () => {
 };
 
 export function getSearchableFromCols(cols) {
+  // Handle invalid or empty cols
+  if (!cols || !Array.isArray(cols) || cols.length === 0) {
+    return "";
+  }
+
   const newCols = [...cols];
   const searchableFields = [];
 

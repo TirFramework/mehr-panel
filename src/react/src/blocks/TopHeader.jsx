@@ -46,9 +46,9 @@ const DefaultTopHeader = ({ username, name }) => {
 };
 
 const TopHeader = (props) => {
-  const CustomTopHeader = "dynamic-layouts/CustomTopHeader";
   const DynamicField = lazy(() =>
-    import(`../${CustomTopHeader}.jsx`).catch((error) => {
+    import("../dynamic-layouts/CustomTopHeader.jsx").catch((error) => {
+      console.error("❌ Failed to load CustomTopHeader:", error);
       return { default: () => <DefaultTopHeader {...props} /> };
     })
   );
