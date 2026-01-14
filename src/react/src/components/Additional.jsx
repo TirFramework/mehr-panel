@@ -34,19 +34,31 @@ const Additional = (props) => {
         setFields(data);
     };
 
-    const changeName = (arry) => {
+    const changeName = (arry, timestamp) => {
+        if (!timestamp) timestamp = new Date().getTime();
+
         const newData = [...arry];
         newData.forEach((item, index) => {
-            if (item.children) {
+            // Replace both * and numbers in the name
+            let newName = item.name;
+            if (newName.includes('*')) {
+                newName = newName.replace(/\*/g, timestamp);
+            } else {
+                newName = replaceLastNumberFromString(newName, timestamp);
+            }
+
+            if (item.children && item.children.length > 0) {
+                // Recursively process children with the same timestamp
+                const updatedChildren = changeName(item.children, timestamp);
                 newData[index] = {
                     ...item,
-                    children: changeName(item.children),
+                    children: updatedChildren,
+                    name: newName,
                 };
             } else {
                 newData[index] = {
                     ...item,
-                    name: replaceLastNumberFromString(item.name, new Date().getTime()),
-                    // display: replaceLastNumberFromString(item.display, index),
+                    name: newName,
                     value: null,
                 };
                 delete newData[index].value;
