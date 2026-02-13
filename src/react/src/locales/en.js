@@ -1,0 +1,17 @@
+export const en = {
+  WELCOME: "Welcome",
+  GREETING: "Hello, world!",
+  CREATE: "Create",
+  UPDATE: "Update",
+  EDIT: "Edit",
+  CUSTOM_VIEW: "Custom View",
+  SHARE_THIS_TABLE: "Share this table",
+  CUSTOMIZE_COLUMNS: "Customize columns",
+  SHOW_ALL_COLUMNS: "Show all columns:",
+  SEARCH_COLUMNS: "Search columns...",
+  SELECT_ALL: "Select all",
+  INVERT_SELECTION: "Invert selection",
+  CANCEL: "Cancel",
+  CONFIRM: "Confirm",
+  NO_RESULTS_FOUND: "No results found",
+};

@@ -1,6 +1,5 @@
 import axios from "../lib/axios";
 import { getColsNormalize } from "../lib/utils";
-import qs from "qs";
 
 export const postLogout = async () => {
   const { data } = await axios.post(`/logout`);
@@ -9,6 +8,16 @@ export const postLogout = async () => {
 
 export const postLogin = async (body) => {
   const { data } = await axios.post(`/login`, body);
+  return data;
+};
+
+export const postForgotPassword = async (body) => {
+  const { data } = await axios.post(`/forgot-password`, body);
+  return data;
+};
+
+export const postResetPassword = async (body) => {
+  const { data } = await axios.post(`/reset-password`, body);
   return data;
 };
 
@@ -73,8 +82,17 @@ export const postEdit = async (module, id, body) => {
   return await data;
 };
 
-export const postEditOrCreate = async (module, id, body) => {
+export const postInlineEdit = async (module, id, body) => {
+  const { data } = await axios.put(`${module}/${id}/inlineEdit`, body);
+  return await data;
+};
+
+export const postEditOrCreate = async (module, id, body, requestBy) => {
   if (id) {
+    if (requestBy === "inlineEdit") {
+      const { data } = await axios.put(`${module}/${id}/inlineEdit`, body);
+      return await data;
+    }
     const { data } = await axios.put(`${module}/${id}`, body);
     return await data;
   } else {
@@ -97,10 +115,10 @@ export const getSelectValue = async (dataUrl, id) => {
   return await data;
 };
 
-export const uploadImage = async (file) => {
+export const uploadImage = async (url, file) => {
   const formData = new FormData();
   formData.append("file", file);
-  const { data } = await axios.post(`/file-manager/upload`, formData);
+  const { data } = await axios.post(url, formData);
 
   return await data;
 };
