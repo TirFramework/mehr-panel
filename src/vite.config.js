@@ -1,7 +1,7 @@
 import { defineConfig } from "vite";
 import laravel from "laravel-vite-plugin";
 import react from "@vitejs/plugin-react";
-import { readFileSync, readdirSync, mkdirSync, writeFileSync } from "fs";
+import { readFileSync, readdirSync, mkdirSync, writeFileSync, existsSync } from "fs";
 import { resolve, dirname, extname } from "path";
 import { fileURLToPath } from "url";
 
@@ -70,6 +70,33 @@ function loadDynamicPages() {
 
 const dynamicPages = loadDynamicPages();
 
+// پلاگین ماژول مجازی TopHeader: اگر CustomTopHeader.jsx وجود داشت از آن استفاده می‌شود، وگرنه DefaultTopHeader
+// (هم‌ساز با resources/admin/src وقتی پنل روی لاراول نصب شده)
+const customTopHeaderPath = resolve(
+  __dirname,
+  "resources/admin/src/dynamic-layouts/CustomTopHeader.jsx"
+);
+
+function topHeaderVirtualPlugin() {
+  const virtualId = "\0virtual:top-header";
+  const useCustom = existsSync(customTopHeaderPath);
+  const exportPath = useCustom
+    ? "./resources/admin/src/dynamic-layouts/CustomTopHeader.jsx"
+    : "./resources/admin/src/blocks/DefaultTopHeader.jsx";
+
+  return {
+    name: "virtual:top-header",
+    resolveId(id) {
+      if (id === "virtual:top-header") return virtualId;
+      return null;
+    },
+    load(id) {
+      if (id !== virtualId) return null;
+      return `export { default } from "${exportPath}";`;
+    },
+  };
+}
+
 // Plugin: ensure .gitignore exists in public/build-panel after each build
 function ensureBuildPanelGitignore() {
   return {
@@ -103,6 +130,8 @@ export default defineConfig({
       detectTls: false,
       serverUrl: "https://localhost:5173",
     }),
+    react(),
+    topHeaderVirtualPlugin(),
     ensureBuildPanelGitignore(),
   ],
 

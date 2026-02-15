@@ -63,6 +63,7 @@ export const onFinish = ({
   queryClient,
   queryClientKey = null,
   requestBy,
+  form,
 }) => {
   values = fixNumber(values);
 
@@ -101,9 +102,10 @@ export const onFinish = ({
         });
       }
 
-      afterSubmit();
+      form.resetFields();
 
       message.success(res.message);
+      afterSubmit();
     })
     .catch((err) => {
       setSubmitLoad({ isLoading: false, isSuccess: false });

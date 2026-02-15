@@ -3,11 +3,12 @@ import { Upload, Button, Tooltip, Form, Space, Popover } from "antd";
 import { DndProvider, useDrag, useDrop } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import update from "immutability-helper";
-import { QuestionCircleOutlined, UploadOutlined } from "@ant-design/icons";
+import { FileOutlined, QuestionCircleOutlined, UploadOutlined } from "@ant-design/icons";
 
 import { getAccept, separationRules } from "../lib/helpers";
 
 import Cookies from "js-cookie";
+import Readonly from "../blocks/Readonly";
 
 const type = "DragableUploadList";
 
@@ -146,6 +147,28 @@ const DragSortingUpload = (props) => {
   );
 };
 
+const ReadonlyFileUploader = ({ value, basePath, display, testId, defaultValue }) => {
+
+  const finalValuePath = value ? value : defaultValue;
+
+  if (!finalValuePath) {
+    return <div>No Found</div>;
+  } else {
+    const isPicture = finalValuePath.includes(".png") || finalValuePath.includes(".jpg") || finalValuePath.includes(".jpeg") || finalValuePath.includes(".gif") || finalValuePath.includes(".svg") || finalValuePath.includes(".webp");
+
+    if (isPicture) {
+      return <img src={`${basePath}/${finalValuePath}`} alt={display} width={50} height={50} />;
+    } else {
+      return  <Link href={`${basePath}/${finalValuePath}`} target="_blank">
+        <FileOutlined />
+      </Link>;
+    }
+  }
+
+
+
+};
+
 const CustomUpload = ({ defaultValue, ...props }) => {
   const rules = separationRules({
     pageType: props.pageType,
@@ -173,6 +196,19 @@ const CustomUpload = ({ defaultValue, ...props }) => {
       }
     });
   };
+
+  if (props.readonly) {
+
+    if (Array.isArray(props.value)) {
+      const value = props.value.map((item) => {
+        return `${props.basePath}/${item}`;
+      });
+      return (
+        <ReadonlyFileUploader value={value} basePath={props.basePath} display={props.display} testId={props.testId}  defaultValue={defaultValue}/>
+      );
+    }
+    return <ReadonlyFileUploader value={props.value} basePath={props.basePath} display={props.display} testId={props.testId} defaultValue={defaultValue} />;
+  }
   return (
     <Form.Item
       name={props.name}

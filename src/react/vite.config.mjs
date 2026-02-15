@@ -1,43 +1,118 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
+import { readFileSync, readdirSync, mkdirSync, writeFileSync, existsSync } from "fs";
+import { resolve, dirname, extname } from "path";
+import { fileURLToPath } from "url";
 
-// https://vite.dev/config/
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+// خواندن فایل .env لاراول
+function loadLaravelEnv() {
+  const envPath = resolve(__dirname, ".env");
+  const env = {};
+
+  try {
+    const envFile = readFileSync(envPath, "utf-8");
+    envFile.split("\n").forEach((line) => {
+      const trimmedLine = line.trim();
+      if (trimmedLine && !trimmedLine.startsWith("#")) {
+        const [key, ...valueParts] = trimmedLine.split("=");
+        if (key) {
+          const value = valueParts.join("=").trim();
+          const cleanValue = value.replace(/^["']|["']$/g, "");
+          const trimmedKey = key.trim();
+          // فقط متغیرهایی که با VITE_ شروع می‌شوند را وارد کن
+          if (trimmedKey.startsWith("VITE_")) {
+            env[trimmedKey] = cleanValue;
+          }
+        }
+      }
+    });
+  } catch (error) {
+    console.warn("⚠️  Could not read .env file:", error.message);
+  }
+
+  return env;
+}
+
+const laravelEnv = loadLaravelEnv();
+
+// خواندن فایل‌های dynamic pages (همان پوشه‌ای که Custom.jsx از آن import می‌کند)
+function loadDynamicPages() {
+  const dynamicPagesPath = resolve(__dirname, "src/dynamic-pages");
+  const dynamicPages = [];
+
+  try {
+    // خواندن فایل‌های موجود در پوشه dynamic-pages
+    const files = readdirSync(dynamicPagesPath);
+
+    // فیلتر کردن فایل‌های .jsx و .js و استخراج نام آن‌ها (بدون پسوند)
+    files.forEach((file) => {
+      const ext = extname(file);
+      if (ext === ".jsx" || ext === ".js") {
+        const fileName = file.replace(ext, "");
+        dynamicPages.push(fileName);
+      }
+    });
+
+    console.log("📦 Dynamic pages found:", dynamicPages);
+  } catch (error) {
+    console.warn("⚠️  Could not read dynamic-pages directory:", error.message);
+  }
+
+  return dynamicPages;
+}
+
+const dynamicPages = loadDynamicPages();
+
+
+// پلاگین ماژول مجازی برای TopHeader: اگر CustomTopHeader.jsx وجود داشت از آن استفاده می‌شود، وگرنه DefaultTopHeader
+const customTopHeaderPath = resolve(__dirname, "src/dynamic-layouts/CustomTopHeader.jsx");
+
+function topHeaderVirtualPlugin() {
+  const virtualId = "\0virtual:top-header";
+  const useCustom = existsSync(customTopHeaderPath);
+  const exportPath = useCustom
+    ? "./src/dynamic-layouts/CustomTopHeader.jsx"
+    : "./src/blocks/DefaultTopHeader.jsx";
+
+  return {
+    name: "virtual:top-header",
+    resolveId(id) {
+      if (id === "virtual:top-header") return virtualId;
+      return null;
+    },
+    load(id) {
+      if (id !== virtualId) return null;
+      // مسیر نسبی از root پروژه (همان پوشه vite.config)
+      return `export { default } from "${exportPath}";`;
+    },
+  };
+}
+
 export default defineConfig({
-  plugins: [react()],
+  plugins: [react(), topHeaderVirtualPlugin()],
   define: {
     "process.env": JSON.stringify({
-      MIX_APP_DEFAULT_LANG: process.env.MIX_APP_DEFAULT_LANG,
-      REACT_APP_DEFAULT_LANG: process.env.REACT_APP_DEFAULT_LANG,
-      MIX_APP_API_BASE_URL: process.env.MIX_APP_API_BASE_URL,
-      REACT_APP_API_BASE_URL: process.env.REACT_APP_API_BASE_URL,
-      MIX_APP_API_STORAGE: process.env.MIX_APP_API_STORAGE,
-      REACT_APP_API_STORAGE: process.env.REACT_APP_API_STORAGE,
-      MIX_APP_TINYEMC: process.env.MIX_APP_TINYEMC,
-      REACT_APP_TINYEMC: process.env.REACT_APP_TINYEMC,
-      MIX_APP_INTERACTION_CHARACTER: process.env.MIX_APP_INTERACTION_CHARACTER,
-      REACT_APP_INTERACTION_CHARACTER:
-        process.env.REACT_APP_INTERACTION_CHARACTER,
-      MIX_APP_FIREBASE_API_KEY: process.env.MIX_APP_FIREBASE_API_KEY,
-      REACT_APP_FIREBASE_API_KEY: process.env.REACT_APP_FIREBASE_API_KEY,
-      MIX_APP_FIREBASE_AUTH_DOMAIN: process.env.MIX_APP_FIREBASE_AUTH_DOMAIN,
-      REACT_APP_FIREBASE_AUTH_DOMAIN:
-        process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,
-      MIX_APP_FIREBASE_AUTH_PROJECT_ID:
-        process.env.MIX_APP_FIREBASE_AUTH_PROJECT_ID,
-      REACT_APP_FIREBASE_AUTH_PROJECT_ID:
-        process.env.REACT_APP_FIREBASE_AUTH_PROJECT_ID,
-      MIX_APP_FIREBASE_STORAGE_BUCKET:
-        process.env.MIX_APP_FIREBASE_STORAGE_BUCKET,
-      REACT_APP_FIREBASE_STORAGE_BUCKET:
-        process.env.REACT_APP_FIREBASE_STORAGE_BUCKET,
-      MIX_APP_FIREBASE_MESSAGEING_SENDER_ID:
-        process.env.MIX_APP_FIREBASE_MESSAGEING_SENDER_ID,
-      REACT_APP_FIREBASE_MESSAGEING_SENDER_ID:
-        process.env.REACT_APP_FIREBASE_MESSAGEING_SENDER_ID,
-      MIX_APP_FIREBASE_APP_ID: process.env.MIX_APP_FIREBASE_APP_ID,
-      REACT_APP_FIREBASE_APP_ID: process.env.REACT_APP_FIREBASE_APP_ID,
-      MIX_APP_FIREBASE_VAPID_KEY: process.env.MIX_APP_FIREBASE_VAPID_KEY,
-      REACT_APP_FIREBASE_VAPID_KEY: process.env.REACT_APP_FIREBASE_VAPID_KEY,
+      // اولویت با process.env Node.js، سپس .env لاراول
+      ...laravelEnv,
+      // اضافه کردن لیست dynamic pages به process.env
+      // مقدار به صورت JSON stringified array خواهد بود و باید در کد با JSON.parse() parse شود
+      VITE_DYNAMIC_PAGES: JSON.stringify(dynamicPages),
     }),
+  },
+
+  server: {
+    https: false,
+    host: "0.0.0.0",
+    port: 5173,
+    strictPort: true,
+    origin: "http://localhost:5173",
+    hmr: {
+      protocol: "ws",
+      host: "localhost",
+      port: 5173,
+    },
   },
 });

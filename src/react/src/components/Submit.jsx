@@ -1,16 +1,21 @@
 import React from "react";
-import { Button } from "antd";
+import { Button, Dropdown, Space } from "antd";
 import { useLanguage } from "../context/LanguageContext";
 import { useEffect, useState, useCallback } from "react";
+import { DownOutlined } from "@ant-design/icons";
+import Config from "../constants/config";
+import { useParams } from "react-router-dom";
 
 const Submit = (props) => {
+  const { pageModule } = useParams();
+
   const { t } = useLanguage();
   const [clicked, setClicked] = useState(false);
 
-  const handleSubmit = useCallback(() => {
+  const handleSubmit = useCallback((redirect = false) => {
     if (!props.form) return;
     setClicked(true);
-    props.form.redirect = false;
+    props.form.redirect = redirect;
     props.form.submit();
   }, [props.form]);
 
@@ -35,16 +40,45 @@ const Submit = (props) => {
     };
   }, [handleSubmit]);
 
+
+  const items = [
+    {
+      label: 'Submit and Close',
+      key: '1',
+      // disabled: clicked ? false : props.loading,
+      // loading: props.loading && clicked ,
+      onClick: () => {
+        handleSubmit( `/${Config.perfix}/${pageModule}`);
+      },
+    },
+    {
+      label: 'Submit and New',
+      key: '2',
+      // disabled: clicked ? false : props.loading ,
+      // loading: props.loading && clicked ,
+
+      onClick: () => {
+        handleSubmit( `/${Config.perfix}/${pageModule}/create-edit`);
+      },
+    },
+  ];
+
   return (
-    <Button
-      type="primary"
-      data-cy={props.testId}
-      loading={props.loading && clicked}
-      disabled={clicked ? false : props.loading}
-      onClick={handleSubmit}
-    >
-      {props.display ? props.display : props.pageId ? t.UPDATE : t.CREATE}
-    </Button>
+    <Space.Compact>
+      <Button
+        type="primary"
+        data-cy={props.testId}
+        loading={props.loading && clicked}
+        disabled={clicked ? false : props.loading}
+        onClick={handleSubmit}
+      >
+        {props.display ? props.display : props.pageId ? t.UPDATE : t.CREATE}
+      </Button>
+      <Dropdown menu={{ items }}>
+        <Button type="primary" icon={<DownOutlined   />} />
+      </Dropdown>    
+    </Space.Compact>
+
   );
 };
 

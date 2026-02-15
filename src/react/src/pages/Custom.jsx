@@ -5,75 +5,62 @@ import Detail from "./Detail";
 import Create from "./Create";
 import Index from "./Index";
 
-// Cache برای lazy components - فقط برای جلوگیری از re-creation
-const lazyPageCache = {};
-
-// تابع helper برای تعیین fallback component
-const getFallbackComponent = (type) => {
-  if (type === "create") return Create;
-  if (type === "detail") return Detail;
-  if (type === "index") return Index;
-  return Index;
-};
-
-const Custom = ({ type, ...props }) => {
-  const { pageModule } = useParams();
-
-  // اگر pageModule وجود ندارد، مستقیماً fallback را render می‌کنیم
-  if (!pageModule) {
-    const FallbackComponent = getFallbackComponent(type);
-    return <FallbackComponent {...props} />;
-  }
-
-  // استفاده از env برای چک سریع (اختیاری - اگر env موجود نباشد، باز هم کار می‌کند)
-  let dynamicPages = [];
+// لیست صفحاتی که فایل اختصاصی دارند (در بیلد از vite.config / src/dynamic-pages پر می‌شود)
+const DYNAMIC_PAGES = (() => {
   try {
-    if (process.env.VITE_DYNAMIC_PAGES) {
-      dynamicPages = JSON.parse(process.env.VITE_DYNAMIC_PAGES);
-      // اگر env موجود باشد و pageModule در لیست نباشد، fallback را render می‌کنیم
-      if (!dynamicPages.includes(pageModule)) {
-        const FallbackComponent = getFallbackComponent(type);
-        return <FallbackComponent {...props} />;
-      }
-    }
-  } catch (error) {
-    console.error("❌ Error parsing VITE_DYNAMIC_PAGES:", error);
+    return process.env.VITE_DYNAMIC_PAGES
+      ? JSON.parse(process.env.VITE_DYNAMIC_PAGES)
+      : [];
+  } catch {
+    return [];
   }
+})();
 
-  // اگر lazy component قبلاً ساخته شده، از cache استفاده می‌کنیم
-  if (!lazyPageCache[pageModule]) {
-    lazyPageCache[pageModule] = lazy(() =>
-      import(`../dynamic-pages/${pageModule}.jsx`).catch((error) => {
-        console.error(`❌ فایل ${pageModule}.jsx پیدا نشد:`, error);
-        // برگرداندن fallback component در صورت خطا
-        return {
-          default: () => {
-            const FallbackComponent = getFallbackComponent(type);
-            return (
-              <div>
-                <div style={{ padding: "20px", color: "red", marginBottom: "20px", backgroundColor: "#ffe6e6", borderRadius: "4px" }}>
-                  ⚠️ فایل {pageModule}.jsx پیدا نشد
-                </div>
-                <FallbackComponent {...props} />
-              </div>
-            );
-          },
-        };
+const BY_TYPE = { create: Create, detail: Detail, index: Index };
+const getFallback = (type) => BY_TYPE[type] ?? Index;
+
+const lazyCache = {};
+const getLazy = (pageModule) => {
+  if (!lazyCache[pageModule]) {
+    lazyCache[pageModule] = lazy(() =>
+      import(`../dynamic-pages/${pageModule}.jsx`).catch(() => {
+        // فایل نبود → همان fallback بر اساس type (از props در رندر مشخص می‌شود)
+        return { default: FallbackByType };
       })
     );
   }
+  return lazyCache[pageModule];
+};
 
-  const DynamicPage = lazyPageCache[pageModule];
+function FallbackByType(props) {
+  const C = getFallback(props.type);
+  return <C {...props} />;
+}
 
+/**
+ * اولویت با فایل: اگر برای این pageModule فایل در dynamic-pages باشد آن را لود می‌کند،
+ * وگرنه Index/Create/Detail را بر اساس روت (type) نشان می‌دهد.
+ */
+const Custom = ({ type = "index", ...props }) => {
+  const { pageModule } = useParams();
+
+  const hasCustomFile = pageModule && DYNAMIC_PAGES.includes(pageModule);
+
+  if (!hasCustomFile) {
+    const Fallback = getFallback(type);
+    return <Fallback type={type} {...props} />;
+  }
+
+  const Page = getLazy(pageModule);
   return (
     <Suspense
       fallback={
         <div>
-          <Skeleton.Input active={true} className="w-full mb-6" />
+          <Skeleton.Input active className="w-full mb-6" />
         </div>
       }
     >
-      <DynamicPage {...props} />
+      <Page pageModule={pageModule} type={type} {...props} />
     </Suspense>
   );
 };

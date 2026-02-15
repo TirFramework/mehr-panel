@@ -124,6 +124,7 @@ const CreateForm = ({ type }) => {
             navigate(form.redirect);
           }
         },
+        form: form,
       });
       setIsTouched(false);
     },
