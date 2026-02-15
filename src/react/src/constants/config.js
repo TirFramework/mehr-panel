@@ -17,7 +17,7 @@ const Config = {
     "/storage",
   tinyemcApiKey: process.env.VITE_APP_TINYEMC || process.env.REACT_APP_TINYEMC,
   perfix: panelName,
-  panelVersion: "12.6",
+  panelVersion: "12.7.5",
   interactionCharacter:
     process.env.VITE_APP_INTERACTION_CHARACTER ||
     process.env.REACT_APP_INTERACTION_CHARACTER ||
