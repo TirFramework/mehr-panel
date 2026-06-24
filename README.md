@@ -36,7 +36,7 @@ A Laravel package for managing an admin panel.
 
 6. Build assets for production:
    ```bash
-   npm run prod
+   npm run build
    ```
 
 ## Configuration
