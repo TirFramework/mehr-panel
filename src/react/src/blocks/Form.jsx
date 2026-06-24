@@ -9,6 +9,7 @@ import FormGroup from "../components/FormGroup";
 import Header from "./Header";
 import { useMyContext } from "../context/MyContext";
 import { useFieldsQuery } from "../Request";
+import { useLanguage } from "../context/LanguageContext";
 
 /**
  * Helper function to traverse fields and extract initial values
@@ -58,6 +59,16 @@ const CreateForm = ({ type }) => {
     {
       enabled: !!pageModule, // Only fetch if pageModule exists
     }
+  );
+
+  const { antdLocale } = useLanguage();
+
+  const validateMessages = useMemo(
+    () => ({
+      ...(fieldsData?.validationMsg || {}),
+      ...(antdLocale.Form?.defaultValidateMessages || {}),
+    }),
+    [fieldsData?.validationMsg, antdLocale]
   );
 
   // Reset form fields when pageModule or pageId changes
@@ -177,7 +188,7 @@ const CreateForm = ({ type }) => {
 
       <Form
         form={form}
-        validateMessages={fieldsData?.validationMsg}
+        validateMessages={validateMessages}
         name="basic"
         scrollToFirstError={true}
         labelCol={{ span: 24 }}
