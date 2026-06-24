@@ -94,7 +94,8 @@ body.dark-mode .ant-layout-content {
 
 /* ─── Header ─── */
 .top-header {
-  padding: 0 82px 0 24px;
+  padding-block: 0;
+  padding-inline: 24px 82px;
   z-index: 10;
   position: relative;
   background: linear-gradient(135deg, var(--mp-header-from) 0%, var(--mp-header-to) 100%) !important;
@@ -142,7 +143,7 @@ body.dark-mode .ant-layout-content {
 .logo small {
   font-size: 50%;
   vertical-align: top;
-  margin-left: 8px;
+  margin-inline-start: 8px;
   opacity: 0.7;
 }
 
@@ -158,8 +159,12 @@ body.dark-mode .ant-layout-content {
   height: calc(100vh - 64px);
   overflow: auto;
   background: var(--mp-sidebar) !important;
-  border-right: 1px solid rgba(255, 255, 255, 0.06) !important;
+  border-inline-end: 1px solid rgba(255, 255, 255, 0.06) !important;
   box-shadow: 2px 0 12px rgba(0, 0, 0, 0.08);
+}
+
+[dir="rtl"] .ant-layout-sider {
+  box-shadow: -2px 0 12px rgba(0, 0, 0, 0.08);
 }
 
 .ant-layout-sider-has-trigger.ant-layout-sider {
@@ -199,6 +204,10 @@ body.dark-mode .ant-layout-content {
   font-weight: 500;
 }
 
+[dir="rtl"] .menu__sidebar .ant-menu-item-selected {
+  background: linear-gradient(270deg, rgba(99, 102, 241, 0.25), rgba(139, 92, 246, 0.15)) !important;
+}
+
 .menu__sidebar .ant-menu-item:not(.ant-menu-item-selected):hover,
 .menu__sidebar .ant-menu-submenu-title:hover {
   background: var(--mp-sidebar-hover) !important;
@@ -219,7 +228,7 @@ body.dark-mode .ant-layout-content {
 
 .menu__link,
 .menu__parent {
-  margin-left: 0;
+  margin-inline-start: 0;
 }
 
 .menu__link .ant-badge {
@@ -444,7 +453,7 @@ body.dark-mode .header-page .ant-col  .ant-col {
 }
 
 .read-only__value {
-  padding-left: 8px;
+  padding-inline-start: 8px;
 }
 
 .read-only__value--editor {
@@ -710,7 +719,7 @@ body.dark-mode .not-found-page__glow--2 {
 /* ─── Theme toggle ─── */
 .toggle-theme {
   position: fixed;
-  right: 16px;
+  inset-inline-end: 16px;
   top: 12px;
   z-index: 100;
   width: 40px !important;
@@ -735,7 +744,7 @@ body.dark-mode .not-found-page__glow--2 {
 .isFetching {
   position: fixed;
   top: 78px;
-  right: 16px;
+  inset-inline-end: 16px;
   z-index: 50;
   padding: 8px 12px;
   background: var(--mp-surface);
@@ -776,7 +785,7 @@ body.dark-mode .not-found-page__glow--2 {
   display: flex;
   justify-content: center;
   padding-top: 135px;
-  padding-left: 16px;
+  padding-inline-start: 16px;
   opacity: 0.7;
 }
 
@@ -944,7 +953,7 @@ body.dark-mode .not-found-page__glow--2 {
 
 .table-row__save {
   position: absolute;
-  right: 16px;
+  inset-inline-end: 16px;
   z-index: 10;
   top: 50%;
   transform: translateY(-50%);
@@ -965,7 +974,7 @@ body.dark-mode .not-found-page__glow--2 {
 
 .firebase-notification-confirm {
   position: fixed;
-  right: 15px;
+  inset-inline-end: 15px;
   width: 300px;
   bottom: 15px;
   z-index: 100;
@@ -1023,14 +1032,14 @@ body.dark-mode .not-found-page__glow--2 {
 /* ─── Mobile ─── */
 @media (max-width: 991px) {
   .logo {
-    margin-left: 8px !important;
+    margin-inline-start: 8px !important;
   }
 
   .logo a {
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-left: 32px;
+    margin-inline-start: 32px;
   }
 
   .logo small {

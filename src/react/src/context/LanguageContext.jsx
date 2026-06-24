@@ -1,6 +1,7 @@
 // src/LanguageContext.js
-import React, { createContext, useState, useContext } from "react";
+import React, { createContext, useState, useContext, useEffect, useMemo } from "react";
 import Config from "../constants/config";
+import { getLocaleMeta } from "../constants/locales";
 
 /**
  * Auto-load all translation files from each language subfolder at build time.
@@ -21,6 +22,11 @@ const fa = mergeModules(import.meta.glob("../locales/fa/*.js", { eager: true }))
 // Object holding all translations (defaults)
 const allTranslations = { en, de, fa };
 const defaultLang = Config.defaultLang; // Application default language
+const defaultLocaleMeta = getLocaleMeta(defaultLang);
+
+// Apply direction before first paint to avoid LTR flash on RTL locales
+document.documentElement.dir = defaultLocaleMeta.dir;
+document.documentElement.lang = defaultLang;
 
 const LanguageContext = createContext();
 
@@ -54,9 +60,23 @@ export const LanguageProvider = ({ children }) => {
     }
   };
 
+  const localeMeta = useMemo(() => getLocaleMeta(lang), [lang]);
+
+  useEffect(() => {
+    document.documentElement.dir = localeMeta.dir;
+    document.documentElement.lang = lang;
+  }, [lang, localeMeta.dir]);
+
   return (
     <LanguageContext.Provider
-      value={{ lang, t, changeLanguage, setTranslations }}
+      value={{
+        lang,
+        dir: localeMeta.dir,
+        antdLocale: localeMeta.antdLocale,
+        t,
+        changeLanguage,
+        setTranslations,
+      }}
     >
       {children}
     </LanguageContext.Provider>

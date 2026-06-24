@@ -169,7 +169,7 @@ const Sidebar = memo(function App() {
           size="small"
           style={{
             position: "fixed",
-            left: 16,
+            insetInlineStart: 16,
             top: 20,
             zIndex: 1001,
             // color: "#fff",

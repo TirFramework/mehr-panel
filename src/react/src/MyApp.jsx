@@ -17,6 +17,7 @@ import PublicRoute from "./PublicRoute";
 
 import useLocalStorage from "./hooks/useLocalStorage";
 import { EditingProvider } from "./context/EditingContext";
+import { useLanguage } from "./context/LanguageContext";
 const { defaultAlgorithm, darkAlgorithm } = theme;
 
 const fontFamily =
@@ -65,6 +66,7 @@ const sharedTheme = {
 };
 
 function MyApp() {
+  const { dir, antdLocale } = useLanguage();
   const [isDarkMode, setIsDarkMode] = useLocalStorage("mode", { mode: false });
 
   // Stamp a class on <body> so plain CSS/SCSS can target dark mode
@@ -74,6 +76,8 @@ function MyApp() {
 
   return (
     <ConfigProvider
+      direction={dir}
+      locale={antdLocale}
       theme={{
         ...sharedTheme,
         algorithm: isDarkMode.mode ? darkAlgorithm : defaultAlgorithm,
