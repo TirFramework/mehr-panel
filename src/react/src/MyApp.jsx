@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
-import { BrowserRouter, Route, Routes, Link } from "react-router-dom";
-import { ConfigProvider, theme, Button } from "antd";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { App, ConfigProvider, theme, Button } from "antd";
 
 import Custom from "./pages/Custom";
 import Login from "./layouts/Login";
@@ -18,6 +18,7 @@ import PublicRoute from "./PublicRoute";
 import useLocalStorage from "./hooks/useLocalStorage";
 import { EditingProvider } from "./context/EditingContext";
 import { useLanguage } from "./context/LanguageContext";
+import { setNotificationApi } from "./lib/notificationService";
 const { defaultAlgorithm, darkAlgorithm } = theme;
 
 const fontFamily =
@@ -65,6 +66,16 @@ const sharedTheme = {
   },
 };
 
+const NotificationInitializer = () => {
+  const { notification } = App.useApp();
+
+  useEffect(() => {
+    setNotificationApi(notification);
+  }, [notification]);
+
+  return null;
+};
+
 function MyApp() {
   const { dir, antdLocale } = useLanguage();
   const [isDarkMode, setIsDarkMode] = useLocalStorage("mode", { mode: false });
@@ -96,7 +107,9 @@ function MyApp() {
         },
       }}
     >
-      <EditingProvider>
+      <App>
+        <NotificationInitializer />
+        <EditingProvider>
         <BrowserRouter>
           <Button
             type="link"
@@ -147,7 +160,8 @@ function MyApp() {
 
 
         </BrowserRouter>
-      </EditingProvider>
+        </EditingProvider>
+      </App>
     </ConfigProvider>
   );
 }

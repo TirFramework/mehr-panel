@@ -1,5 +1,8 @@
 // src/LanguageContext.js
 import React, { createContext, useState, useContext, useEffect, useMemo } from "react";
+import dayjs from "dayjs";
+import "dayjs/locale/fa";
+import "dayjs/locale/de";
 import Config from "../constants/config";
 import { getLocaleMeta } from "../constants/locales";
 
@@ -27,6 +30,7 @@ const defaultLocaleMeta = getLocaleMeta(defaultLang);
 // Apply direction before first paint to avoid LTR flash on RTL locales
 document.documentElement.dir = defaultLocaleMeta.dir;
 document.documentElement.lang = defaultLang;
+dayjs.locale(defaultLocaleMeta.dayjsLocale || "en");
 
 const LanguageContext = createContext();
 
@@ -65,7 +69,8 @@ export const LanguageProvider = ({ children }) => {
   useEffect(() => {
     document.documentElement.dir = localeMeta.dir;
     document.documentElement.lang = lang;
-  }, [lang, localeMeta.dir]);
+    dayjs.locale(localeMeta.dayjsLocale || "en");
+  }, [lang, localeMeta.dir, localeMeta.dayjsLocale]);
 
   return (
     <LanguageContext.Provider

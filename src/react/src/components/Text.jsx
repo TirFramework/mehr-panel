@@ -1,9 +1,25 @@
 import React from "react";
-import { Form, Input, Popover, Space, Tag } from "antd";
+import { Form, Input, Tag } from "antd";
 import { QuestionCircleOutlined } from "@ant-design/icons";
 
 import { separationRules } from "../lib/helpers";
 import Readonly from "../blocks/Readonly";
+
+const fieldCommentTooltip = (comment) => {
+  if (comment?.content === undefined) {
+    return undefined;
+  }
+
+  return {
+    title: (
+      <>
+        {comment.title ? <div>{comment.title}</div> : null}
+        <div>{comment.content}</div>
+      </>
+    ),
+    icon: <QuestionCircleOutlined />,
+  };
+};
 
 const Text = ({
   defaultValue,
@@ -92,16 +108,8 @@ const Text = ({
   return (
     <>
       <Form.Item
-        label={
-          <Space>
-            {display}
-            {comment?.content !== undefined && (
-              <Popover content={comment.content} title={comment.title}>
-                <QuestionCircleOutlined />
-              </Popover>
-            )}
-          </Space>
-        }
+        label={display}
+        tooltip={fieldCommentTooltip(comment)}
         name={name}
         initialValue={value || defaultValue}
         rules={formRules}

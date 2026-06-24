@@ -9,6 +9,22 @@ import { FileOutlined, QuestionCircleOutlined, UploadOutlined } from "@ant-desig
 import { getAccept, separationRules } from "../lib/helpers";
 import { getApiToken } from "../lib/authToken";
 
+const fieldCommentTooltip = (comment) => {
+  if (comment?.content === undefined) {
+    return undefined;
+  }
+
+  return {
+    title: (
+      <>
+        {comment.title ? <div>{comment.title}</div> : null}
+        <div>{comment.content}</div>
+      </>
+    ),
+    icon: <QuestionCircleOutlined />,
+  };
+};
+
 const type = "DragableUploadList";
 
 const DragableUploadListItem = ({ originNode, moveRow, file, fileList }) => {
@@ -252,19 +268,8 @@ const CustomUpload = ({ defaultValue, ...props }) => {
   return (
     <Form.Item
       name={props.name}
-      label={
-        <Space>
-          {props.display}
-          {props.comment?.content !== undefined && (
-            <Popover
-              content={props.comment.content}
-              title={props.comment.title}
-            >
-              <QuestionCircleOutlined />
-            </Popover>
-          )}
-        </Space>
-      }
+      label={props.display}
+      tooltip={fieldCommentTooltip(props.comment)}
       initialValue={props.value || defaultValue}
       rules={rules}
       getValueFromEvent={normFile}

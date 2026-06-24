@@ -2,12 +2,12 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
-import { App, notification } from "antd";
+import { notification } from "antd";
 import responseErrorHandler from "./lib/helpers/responseErrorHandler";
 
 import MyApp from "./MyApp";
 import { LanguageProvider } from "./context/LanguageContext";
-import { setNotificationApi } from "./lib/notificationService";
+import { getNotificationApi } from "./lib/notificationService";
 
 import "./assets/index.css";
 
@@ -19,8 +19,6 @@ const queryClient = new QueryClient({
       cacheTime: 1000 * 60 * 60 * 24,
       retry: false,
       refetchOnWindowFocus: false,
-      // when upload window opens the webiste loses focus and therefore when upload window closess
-      // some of the queries will refetch and app flow will be ruined !!!
       onError: (err) => {
         // console.log("🚀 ~ file: index.js:29 ~ err:", err);
       },
@@ -28,12 +26,12 @@ const queryClient = new QueryClient({
     mutations: {
       onError: (err) => {
         const error = responseErrorHandler(err);
-        notification.error({
+        const notify = getNotificationApi() || notification;
+        notify.error({
           message: error.message,
           duration: error.duration,
           description: error.description,
         });
-
       },
     },
   },
@@ -41,33 +39,13 @@ const queryClient = new QueryClient({
 
 console.log(`TIRDAD ABBASI AND MEHRDAD ABBASI`);
 
-const NotificationInitializer = () => {
-  const { notification } = App.useApp();
-
-  React.useEffect(() => {
-    setNotificationApi(notification);
-  }, [notification]);
-
-  return null;
-};
-
-
 root.render(
-  <App>
-
-    <NotificationInitializer />
-    <QueryClientProvider client={queryClient}>
-      <LanguageProvider>
-        <MyApp />
-        {import.meta.env.DEV && (
-          <ReactQueryDevtools initialIsOpen={false} />
-        )}
-      </LanguageProvider>
-    </QueryClientProvider>
-  </App>
+  <QueryClientProvider client={queryClient}>
+    <LanguageProvider>
+      <MyApp />
+      {import.meta.env.DEV && (
+        <ReactQueryDevtools initialIsOpen={false} />
+      )}
+    </LanguageProvider>
+  </QueryClientProvider>
 );
-
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-// reportWebVitals();

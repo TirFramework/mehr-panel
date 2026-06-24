@@ -14,6 +14,7 @@ import {
   Spin,
   Tag,
   Flex,
+  Empty,
 } from "antd";
 import * as helpers from "../lib/helpers";
 import { useGetColumns, useGetData } from "../Request";
@@ -390,10 +391,16 @@ function Index() {
               rowKey={(record) => record.id || record._id}
               dataSource={indexData?.data}
               locale={{
-                emptyText:
-                  helpers.notEmpty(pagination?.filters) || pagination?.search
-                    ? t.REMOVE_FILTER
-                    : t.NO_DATA,
+                emptyText: (
+                  <Empty
+                    image={Empty.PRESENTED_IMAGE_SIMPLE}
+                    description={
+                      helpers.notEmpty(pagination?.filters) || pagination?.search
+                        ? t.REMOVE_FILTER
+                        : t.NO_DATA
+                    }
+                  />
+                ),
               }}
               // components={{
               //   header: {

@@ -422,7 +422,7 @@ body.dark-mode .ant-layout-content {
 }
 
 .index-page__card .ant-empty {
-  height: calc(100vh - 437px);
+  height: calc(100vh - 448px);
 }
 
 .page-index .ant-table-header table {
