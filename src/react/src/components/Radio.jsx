@@ -14,23 +14,23 @@ const Field = (props) => {
   if (props.readonly) {
     if (typeof props.value === "object") {
       return (
-        <>
+        <div data-cy={props.testId} className="read-only">
           {props.hideLable ?? <div>{props.display}</div>}
           <div>
             {props.value.map((i) => (
               <Tag>{props.dataSet[i]}</Tag>
             ))}
           </div>
-        </>
+        </div>
       );
     } else {
       return (
-        <>
+        <div data-cy={props.testId} className="read-only">
           {props.hideLable ?? <div>{props.display}</div>}
           <div>
             <Tag>{props.dataSet[props.value]}</Tag>
           </div>
-        </>
+        </div>
       );
     }
   }
@@ -44,6 +44,7 @@ const Field = (props) => {
         rules={rules}
       >
         <Radio.Group
+          data-cy={props.testId}
           {...props.options}
           mode={props.multiple ? "multiple" : false}
           options={props.data}

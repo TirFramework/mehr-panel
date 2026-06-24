@@ -1,4 +1,4 @@
-import React, { useMemo, useCallback } from "react";
+import React, { useMemo, useCallback, useState } from "react";
 import { useParams, Link, useSearchParams } from "react-router-dom";
 import { PlusOutlined, ClearOutlined } from "@ant-design/icons";
 import {
@@ -12,11 +12,14 @@ import {
   Skeleton,
   Space,
   Spin,
+  Tag,
+  Flex,
 } from "antd";
 import * as helpers from "../lib/helpers";
 import { useGetColumns, useGetData } from "../Request";
 import Config, { defaultFilter } from "../constants/config";
 import Search from "../blocks/Search";
+import AiSearch from "../blocks/AiSearch";
 import CustomCol from "../blocks/CustomCol";
 import Export from "../blocks/Export";
 import useGetParams from "../hooks/useGetParams";
@@ -41,6 +44,16 @@ function Index() {
     key: pageModule,
   });
 
+  // aiFilterKeys, aiQuery, and aiMode live inside pagination so useGetParams persists
+  // them to localStorage — all three survive page refresh and navigation.
+  const aiFilterKeys = pagination.aiFilterKeys ?? [];
+  const aiQuery = pagination.aiQuery ?? "";
+
+  // aiMode: restore from localStorage if set, otherwise open if there are persisted AI filters
+  const [aiMode, setAiMode] = useState(() =>
+    pagination.aiMode !== undefined ? pagination.aiMode : aiFilterKeys.length > 0
+  );
+
   const { data: pageData, ...pageDataQuery } = useGetColumns(
     pageModule,
     pagination
@@ -62,9 +75,12 @@ function Index() {
   const handleChangeTable = useCallback(
     (p, filters, sorter) => {
       filters = helpers.removeNullFromObject(filters);
-      const orderBy = sorter?.order
-        ? { field: sorter?.column?.fieldName, order: sorter.order }
-        : pagination?.sorter;
+      // When sort is cleared, sorter.column is undefined — avoid storing
+      // { field: undefined, order: undefined } which notEmpty() treats as
+      // non-empty and keeps the clear button visible incorrectly.
+      const orderBy = sorter?.column
+        ? { field: sorter.column.fieldName, order: sorter.order }
+        : {};
 
       setPagination({
         ...pagination,
@@ -92,11 +108,43 @@ function Index() {
   );
 
   const handleClearFilters = useCallback(() => {
-    setPagination({
-      ...defaultFilter,
-      key: pageModule,
-    });
-  }, [pageModule, setPagination]);
+    // Keep aiMode when clearing filters — user may have activated AI search
+    setPagination({ ...defaultFilter, aiFilterKeys: [], aiQuery: "", aiMode: aiMode, key: pageModule });
+  }, [pageModule, setPagination, aiMode]);
+
+  // AI returned new filters — remove previous AI keys first, then merge new ones in
+  const handleAiFilters = useCallback(
+    (filters, query) => {
+      const base = { ...(pagination.filters || {}) };
+      // remove whatever AI set last time
+      aiFilterKeys.forEach((k) => delete base[k]);
+      // apply new AI filters on top of manual filters
+      setPagination({
+        ...pagination,
+        current: 1,
+        filters: { ...base, ...filters },
+        aiFilterKeys: Object.keys(filters),
+        aiQuery: query,
+        aiMode: true,
+        key: pageModule,
+      });
+    },
+    [pagination, pageModule, setPagination, aiFilterKeys]
+  );
+
+  // Remove only the AI-set keys from filters, leave manual filters intact
+  const handleAiClear = useCallback(() => {
+    const newFilters = { ...(pagination.filters || {}) };
+    aiFilterKeys.forEach((k) => delete newFilters[k]);
+    // Keep aiMode when clearing only AI filters — user may want to search again
+    setPagination({ ...pagination, current: 1, filters: newFilters, aiFilterKeys: [], aiQuery: "", aiMode: aiMode, key: pageModule });
+  }, [pagination, pageModule, setPagination, aiFilterKeys, aiMode]);
+
+  const handleAiModeChange = useCallback((active) => {
+    setAiMode(active);
+    // Persist aiMode to localStorage so it survives page refresh
+    setPagination({ ...pagination, aiMode: active, key: pageModule });
+  }, [pagination, pageModule, setPagination]);
 
   const handleColumnChange = useCallback(
     (newCol) => {
@@ -130,7 +178,7 @@ function Index() {
     <div className={`${pageModule}-index page-index`}>
       <Form
         form={form}
-        // disabled={!(pageId === restProps["data-row-key"])}
+      // disabled={!(pageId === restProps["data-row-key"])}
       >
         {pageDataQuery.isLoading && !pageData ? (
           <>
@@ -184,12 +232,28 @@ function Index() {
               <Col className="gutter-row">
                 <Space>
                   <>
-                    <Search
-                      loading={dataQuery.isLoading}
-                      value={pagination?.search}
-                      onSearch={onSearch}
-                      placeholder={getPlacementsForSearch(pageData?.cols)}
-                    />
+                    {pageData?.configs?.ai_search && (
+                      <AiSearch
+                        module={pageModule}
+                        onFilters={handleAiFilters}
+                        onClear={handleAiClear}
+                        onModeChange={handleAiModeChange}
+                        activeFilters={Object.fromEntries(aiFilterKeys.map((k) => [k, pagination.filters?.[k]]).filter(([, v]) => v != null))}
+                        initialQuery={aiQuery}
+                        initialOpen={aiMode}
+                      />
+                    )}
+
+                    {(!aiMode || !pageData?.configs?.ai_search) && (
+                      <Search
+                        loading={dataQuery.isLoading}
+                        value={pagination?.search}
+                        onSearch={onSearch}
+                        placeholder={getPlacementsForSearch(pageData?.cols)}
+                      />
+                    )}
+
+
 
                     {pageData?.cols.length && (
                       <CustomCol
@@ -202,19 +266,57 @@ function Index() {
                     {(helpers.notEmpty(pagination?.filters) ||
                       pagination.search ||
                       helpers.notEmpty(pagination?.sorter)) && (
-                      <>
-                        {!isCustomView() && (
-                          <Button
-                            icon={<ClearOutlined />}
-                            type="primary"
-                            size="large"
-                            danger
-                            onClick={handleClearFilters}
-                          />
-                        )}
-                      </>
-                    )}
+                        <>
+                          {!isCustomView() && (
+                            <Button
+                              icon={<ClearOutlined />}
+                              type="primary"
+                              size="large"
+                              danger
+                              onClick={handleClearFilters}
+                            />
+                          )}
+                        </>
+                      )}
                   </>
+
+                  {/* Filter tags — inline with toolbar */}
+                  {(aiFilterKeys.length > 0 ||
+                    Object.keys(pagination.filters || {}).filter((k) => !aiFilterKeys.includes(k)).length > 0) && (
+                      <span style={{ display: "inline-flex", flexWrap: "wrap", gap: 2, alignItems: "center" }}>
+                        {[
+                          ...aiFilterKeys.map((k) => ({ key: k, color: "purple", isAi: true })),
+                          ...Object.keys(pagination.filters || {}).filter((k) => !aiFilterKeys.includes(k)).map((k) => ({ key: k, color: "blue", isAi: false })),
+                        ].map(({ key, color, isAi }) => {
+                          const col = pageData?.cols?.find((c) => c.fieldName === key);
+                          const titleText = typeof col?.title === "string"
+                            ? col.title
+                            : col?.title?.props?.title ?? col?.title?.props?.children ?? key;
+                          const val = pagination.filters?.[key];
+                          const getLabel = (v) => col?.filters?.find((f) => String(f.value) === String(v))?.label ?? v;
+                          const display = Array.isArray(val)
+                            ? val.slice(0, 3).map(getLabel).join(", ") + (val.length > 3 ? " …" : "")
+                            : val && typeof val === "object"
+                              ? val.from && val.to ? `${val.from} – ${val.to}` : val.to ? `≤ ${val.to}` : val.from ? `≥ ${val.from}` : ""
+                              : getLabel(val);
+                          return (
+                            <Tag key={key} color={color} closable onClose={() => {
+                              const f = { ...(pagination.filters || {}) };
+                              delete f[key];
+                              setPagination({
+                                ...pagination,
+                                filters: f,
+                                aiFilterKeys: isAi ? aiFilterKeys.filter((k) => k !== key) : aiFilterKeys,
+                                key: pageModule,
+                              });
+                            }} style={{ margin: 0, fontSize: 10 }}>
+                              <strong>{titleText}{display ? ": " : ""}</strong>{display}
+                            </Tag>
+                          );
+                        })}
+                      </span>
+                    )}
+
                 </Space>
               </Col>
               <Col className="gutter-row text-right">
@@ -236,6 +338,8 @@ function Index() {
                 </Space>
               </Col>
             </Row>
+
+
           </>
         )}
         <Card className="index-page__card">
@@ -277,7 +381,7 @@ function Index() {
             <Table
               tableLayout={"auto"}
               // tableLayout={"fixed"}
-              scroll={{ y: "calc(100vh - 340px)" }}
+              scroll={{ x: "max-content", y: "calc(100vh - 340px)" }}
               columns={mergedColumns}
               rowKey={(record) => record.id || record._id}
               dataSource={indexData?.data}

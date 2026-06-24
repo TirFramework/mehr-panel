@@ -22,25 +22,27 @@ function Search({ value, onSearch, loading, placeholder }) {
   };
 
   return (
-    <Space.Compact size="large" className="search-input" >
-      <Input
-        placeholder={placeholder}
-        value={val}
-        onChange={(e) => {
-          setVal(e.target.value);
-        }}
-        onKeyDown={handleKeyDown}
-        allowClear
-        size="large"
-      />
-      <Button
-        type="primary"
-        icon={loading ? <LoadingOutlined /> : <SearchOutlined />}
-        onClick={handleSearch}
-        loading={loading}
-        size="large"
-      />
+    <Space direction="vertical" size={0}>
+      <Space.Compact size="large" className="search-input">
+        <Input
+          placeholder={placeholder}
+          value={val}
+          onChange={(e) => {
+            setVal(e.target.value);
+          }}
+          onKeyDown={handleKeyDown}
+          allowClear
+          size="large"
+        />
+        <Button
+          type="primary"
+          icon={loading ? <LoadingOutlined /> : <SearchOutlined />}
+          onClick={handleSearch}
+          loading={loading}
+          size="large"
+        />
       </Space.Compact>
+    </Space>
   );
 }
 

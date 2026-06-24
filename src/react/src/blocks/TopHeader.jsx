@@ -1,4 +1,4 @@
-import React, { lazy, memo, Suspense, useState, useEffect } from "react";
+import React, { lazy, memo, Suspense } from "react";
 import { Layout, Row, Typography, Button, Col, Space } from "antd";
 import { useNavigate } from "react-router-dom";
 import { LogoutOutlined, ExportOutlined } from "@ant-design/icons";
@@ -7,6 +7,9 @@ import * as api from "../api";
 import Config from "../constants/config";
 
 const { Header } = Layout;
+
+const panelSpecificLayouts = import.meta.glob("../dynamic-layouts/*/*.jsx");
+const sharedLayouts = import.meta.glob("../dynamic-layouts/*.jsx");
 
 /* --- نسخه پیش‌فرض --- */
 const DefaultTopHeader = ({ username, name }) => {
@@ -39,39 +42,29 @@ const DefaultTopHeader = ({ username, name }) => {
               <span className="logout-text">Logout</span>
             </Button>
           </Space>
-      </Col>
+        </Col>
       </Row>
     </Header>
   );
 };
 
-const TopHeader = (props) => {
-  const [CustomComponent, setCustomComponent] = React.useState(null);
-  const [loading, setLoading] = React.useState(true);
-  let CustomTopHeader = 'CustomTopHeader'
-  React.useEffect(() => {
-    import(`../dynamic-layouts/${CustomTopHeader}.jsx`)
-      .then((module) => {
-        setCustomComponent(() => module.default);
-        setLoading(false);
-      })
-      .catch(() => {
-        setCustomComponent(() => DefaultTopHeader);
-        setLoading(false);
-      });
-  }, []);
+const panel = Config.perfix;
+const CustomTopHeader = "CustomTopHeader";
+const panelSpecificKey = `../dynamic-layouts/${panel}/${CustomTopHeader}.jsx`;
+const sharedKey = `../dynamic-layouts/${CustomTopHeader}.jsx`;
+const importFn =
+  panelSpecificLayouts[panelSpecificKey] ?? sharedLayouts[sharedKey];
+const DynamicTopHeader = importFn ? lazy(importFn) : null;
 
-  if (loading) {
+const TopHeader = (props) => {
+  if (!DynamicTopHeader) {
     return <DefaultTopHeader {...props} />;
   }
 
-  const DynamicComponent = CustomComponent;
-
   return (
-    <DynamicComponent
-      {...props}
-      // showInIndex={props.id != pageId}
-    />
+    <Suspense fallback={<DefaultTopHeader {...props} />}>
+      <DynamicTopHeader {...props} />
+    </Suspense>
   );
 };
 

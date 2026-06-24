@@ -3,7 +3,7 @@ import { Form, Input } from "antd";
 
 import { separationRules } from "../lib/helpers";
 
-const Text = (props) => {
+const Hidden = (props) => {
   const rules = separationRules({
     pageType: props.pageType,
     rules: props.rules,
@@ -13,7 +13,7 @@ const Text = (props) => {
 
   return (
     <>
-      <Form.Item style={{display:'none;'}}
+      <Form.Item style={{ display: 'none;' }}
         name={props.name}
         initialValue={props.value ?? props.defaultValue}
         rules={rules}
@@ -30,4 +30,4 @@ const Text = (props) => {
   );
 };
 
-export default Text;
+export default Hidden;

@@ -58,20 +58,42 @@ export const getColsNormalize = (res) => {
     }
     // -----------------------------------
 
+    // Column sizing from backend options:
+    //   options.width    → fixed column width (no grow/shrink)
+    //   options.minWidth → minimum width (can grow)
+    //   options.maxWidth → maximum width (default 400; caps wide multi-tag cells)
+    // Without any option the calculated label/content width is used as the minimum.
+    const fixedWidth  = col.field.options?.width    ?? null;
+    const optMinWidth = col.field.options?.minWidth ?? null;
+    const optMaxWidth = col.field.options?.maxWidth ?? 400;
+
+    const calcMin = calculatWidth(
+      col.field.display,
+      null,
+      !!col.filters,
+      col.field.sortable
+    );
+
+    if (fixedWidth) {
+      col.width = fixedWidth;
+    } else {
+      col.minWidth = optMinWidth ?? calcMin;
+    }
+
     col.render = (value, data, rowIndex) => {
+      const cellCalcMin = calculatWidth(
+        col.field.display,
+        value,
+        !!col.filters,
+        col.field.sortable
+      );
+
+      const cellStyle = fixedWidth
+        ? { width: fixedWidth, overflow: "hidden" }
+        : { minWidth: optMinWidth ?? cellCalcMin, maxWidth: optMaxWidth };
+
       return (
-        <div
-          style={{
-            minWidth:
-              col.field.options?.minWidth ||
-              calculatWidth(
-                col.field.display,
-                value,
-                !!col.filters,
-                col.field.sortable
-              ),
-          }}
-        >
+        <div style={cellStyle}>
           <Render
             value={value}
             item={col}
@@ -159,6 +181,12 @@ const calculatWidth = (th, td, isFilter, sortable) => {
     icon = 30;
   }
 
+  // When the table is empty td is null/undefined — fall back to a safe
+  // minimum so the header at least fits its own label.
+  const safeText = (td != null && td !== "" && td !== false)
+    ? String(td)
+    : "";
+
   let finallyWidth = 100;
 
   const thWidth = getTextWidth(
@@ -167,18 +195,21 @@ const calculatWidth = (th, td, isFilter, sortable) => {
   );
 
   const tdWidth = getTextWidth(
-    td,
+    safeText,
     "600 14px -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,'Noto Sans',sans-serif,'Apple Color Emoji','Segoe UI Emoji','Segoe UI Symbol','Noto Color Emoji'"
   );
 
   if (tdWidth > thWidth + icon) {
-    finallyWidth = tdWidth;
-    if (tdWidth > 400) {
+    finallyWidth = tdWidth + 32; // 32px cell padding
+    if (finallyWidth > 400) {
       finallyWidth = 400;
     }
   } else {
-    finallyWidth = thWidth + icon;
+    finallyWidth = thWidth + icon + 32; // 32px cell padding
   }
+
+  // Never go below 80px so short headers (e.g. "Photo") stay readable
+  finallyWidth = Math.max(80, finallyWidth);
 
   // console.log("🚀 ~ calculatWidth ~ thWidth:", thWidth);
   return finallyWidth;
@@ -308,7 +339,6 @@ export function objectToQueryString(obj, columns = []) {
     }
   }
 
-  console.log("🚀 ~ objectToQueryString ~ columns:", newColumns);
   params.append(
     "columns",
     newColumns.map((column) => column.fieldName).join(",")
@@ -318,14 +348,12 @@ export function objectToQueryString(obj, columns = []) {
 
 // تابع بررسی وجود پارامترهای جستجو
 export function hasQueryParams(newQueryParams) {
-  const searchParams = new URLSearchParams(window.location.search);
   return (
     newQueryParams.current ||
     newQueryParams.pageSize ||
     newQueryParams.total ||
     newQueryParams.search ||
-    newQueryParams.key ||
-    searchParams.get("columns") ||
+    // newQueryParams.key ||
     Object.keys(newQueryParams.filters).length > 0 ||
     Object.keys(newQueryParams.sorter).length > 0
   );

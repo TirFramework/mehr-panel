@@ -25,10 +25,10 @@ const NumberIndex = (props) => {
 
   if (props.readonly) {
     return (
-      <>
+      <div data-cy={props.testId} className="read-only">
         {props.hideLable ?? <div>{props.display}</div>}
         {props.value}
-      </>
+      </div>
     );
   }
 
@@ -41,6 +41,7 @@ const NumberIndex = (props) => {
         rules={numberRules}
       >
         <InputNumber
+          data-cy={props.testId}
           {...props.options}
           disabled={props.disable}
           style={{ width: "100%" }}

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Button, Row, Form } from "antd";
 import { PlusOutlined, CloseOutlined } from "@ant-design/icons";
 import { replaceLastNumberFromString } from "../lib/helpers";
@@ -34,19 +34,31 @@ const Additional = (props) => {
         setFields(data);
     };
 
-    const changeName = (arry) => {
+    const changeName = (arry, timestamp) => {
+        if (!timestamp) timestamp = new Date().getTime();
+
         const newData = [...arry];
         newData.forEach((item, index) => {
-            if (item.children) {
+            // Replace both * and numbers in the name
+            let newName = item.name;
+            if (newName.includes('*')) {
+                newName = newName.replace(/\*/g, timestamp);
+            } else {
+                newName = replaceLastNumberFromString(newName, timestamp);
+            }
+
+            if (item.children && item.children.length > 0) {
+                // Recursively process children with the same timestamp
+                const updatedChildren = changeName(item.children, timestamp);
                 newData[index] = {
                     ...item,
-                    children: changeName(item.children),
+                    children: updatedChildren,
+                    name: newName,
                 };
             } else {
                 newData[index] = {
                     ...item,
-                    name: replaceLastNumberFromString(item.name, new Date().getTime()),
-                    // display: replaceLastNumberFromString(item.display, index),
+                    name: newName,
                     value: null,
                 };
                 delete newData[index].value;
@@ -55,14 +67,14 @@ const Additional = (props) => {
         return newData;
     };
     return (
-        <>
+        <div data-cy={props.testId || `Field-Additional-${props.name.replace(/\./g, '-')}`}>
             <div className={`${props.readonly ? "readOnly " : ""}${props.className || ""}`}>
                 {fields && fields.length > 0 ? (
                     <>
                         {fields.map((child, index) => (
                             <Row
                                 gutter={[16, 16]}
-                                className={`relative ${props.options.noBorder ? 'no-border' : 'border'}` }
+                                className={`relative ${props.options.noBorder ? 'no-border' : 'border'}`}
                                 key={`additional-group-${index}`}
                             >
                                 {!props.readonly && (
@@ -108,7 +120,7 @@ const Additional = (props) => {
                     {props.display}
                 </Button>
             )}
-        </>
+        </div>
     );
 };
 

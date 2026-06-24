@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { BrowserRouter, Route, Routes, Link } from "react-router-dom";
 import { ConfigProvider, theme, Button } from "antd";
 
@@ -21,6 +21,11 @@ const { defaultAlgorithm, darkAlgorithm } = theme;
 
 function MyApp() {
   const [isDarkMode, setIsDarkMode] = useLocalStorage("mode", { mode: false });
+
+  // Stamp a class on <body> so plain CSS/SCSS can target dark mode
+  useEffect(() => {
+    document.body.classList.toggle("dark-mode", !!isDarkMode.mode);
+  }, [isDarkMode.mode]);
 
   return (
     <ConfigProvider
@@ -69,7 +74,7 @@ function MyApp() {
                 element={<Custom type="index" />}
                 />
             </Route>
-            
+
             {/* 404 Route - باید در آخر باشد */}
             <Route
               path="*"

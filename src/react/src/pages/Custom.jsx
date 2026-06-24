@@ -1,15 +1,21 @@
 import React, { lazy, Suspense } from "react";
 import { useParams } from "react-router-dom";
 import { Skeleton } from "antd";
-import Config from "../constants/config";
 import Detail from "./Detail";
 import Create from "./Create";
 import Index from "./Index";
 
-// Cache برای lazy components - فقط برای جلوگیری از re-creation
+// Static glob maps — Vite analyses these at build time and creates proper code-split chunks.
+// Using import.meta.glob instead of dynamic template-literal imports because Vite cannot
+// statically resolve paths where BOTH the directory AND the filename are runtime variables,
+// which caused all custom-page imports to fail silently and fall through to the generic Index.
+const panelSpecificPages = import.meta.glob("../dynamic-pages/*/*.jsx");
+const sharedPages = import.meta.glob("../dynamic-pages/*.jsx");
+
+// Cache for lazy components — prevents re-creation on re-renders
 const lazyPageCache = {};
 
-// تابع helper برای تعیین fallback component
+// Helper to determine which fallback component to render based on page type
 const getFallbackComponent = (type) => {
   if (type === "create") return Create;
   if (type === "detail") return Detail;
@@ -18,54 +24,36 @@ const getFallbackComponent = (type) => {
 };
 
 const Custom = ({ type, ...props }) => {
-  const { pageModule } = useParams();
+  const { panelName, pageModule } = useParams();
 
-  // اگر 
-  // pageModule
-  //  وجود ندارد،
-  //  مستقیماً 
-  // fallback
-  //  را 
-  // render
-  //  می‌کنیم
+  // If pageModule is missing, render the fallback directly
   if (!pageModule) {
     const FallbackComponent = getFallbackComponent(type);
     return <FallbackComponent {...props} />;
   }
 
-  console.log("🚀 ~ Custom ~ Config.dynamicPages:", Config.dynamicPages)
-  console.log("🚀 ~ Custom ~ pageModule:", pageModule)
-  if (
-    !Config.dynamicPages.includes(pageModule)
-  ) {
-    const FallbackComponent = getFallbackComponent(type);
-    return <FallbackComponent {...props} />;
+  // Include panelName in the cache key so same-named pages in different panels don't collide
+  const cacheKey = `${panelName}__${pageModule}`;
+
+  if (!lazyPageCache[cacheKey]) {
+    // Look up the import function from the pre-built glob maps.
+    // Panel-specific file takes priority; shared file is the fallback.
+    const panelSpecificKey = `../dynamic-pages/${panelName}/${pageModule}.jsx`;
+    const sharedKey = `../dynamic-pages/${pageModule}.jsx`;
+
+    const importFn =
+      panelSpecificPages[panelSpecificKey] ?? sharedPages[sharedKey];
+
+    if (!importFn) {
+      // No custom page file exists — silently use the generic fallback
+      const FallbackComponent = getFallbackComponent(type);
+      return <FallbackComponent {...props} />;
+    }
+
+    lazyPageCache[cacheKey] = lazy(importFn);
   }
 
-  // اگر lazy component قبلاً ساخته شده، از cache استفاده می‌کنیم
-  if (!lazyPageCache[pageModule]) {
-    lazyPageCache[pageModule] = lazy(() =>
-      import(`../dynamic-pages/${pageModule}.jsx`).catch((error) => {
-        console.error(`❌ فایل ${pageModule}.jsx پیدا نشد:`, error);
-        // برگرداندن fallback component در صورت خطا
-        return {
-          default: () => {
-            const FallbackComponent = getFallbackComponent(type);
-            return (
-              <div>
-                <div style={{ padding: "20px", color: "red", marginBottom: "20px", backgroundColor: "#ffe6e6", borderRadius: "4px" }}>
-                  ⚠️ فایل {pageModule}.jsx پیدا نشد
-                </div>
-                <FallbackComponent {...props} />
-              </div>
-            );
-          },
-        };
-      })
-    );
-  }
-
-  const DynamicPage = lazyPageCache[pageModule];
+  const DynamicPage = lazyPageCache[cacheKey];
 
   return (
     <Suspense

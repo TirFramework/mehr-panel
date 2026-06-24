@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Outlet } from "react-router-dom";
 
 import { Alert, Button, Col, Layout, Row, Space, Spin, Typography } from "antd";
@@ -11,18 +11,27 @@ import { useAddFcmToken, useGeneralQuery } from "../Request/index";
 import useLocalStorage from "../hooks/useLocalStorage";
 import { fetchToken } from "../lib/firebase.js";
 import Config from "../constants/config.js";
+import { useLanguage } from "../context/LanguageContext";
 
 function DefaultLayout(props) {
   const addFcmToken = useAddFcmToken();
   const isFetching = useIsFetching();
   const [token, setToken] = useLocalStorage("fcmToken");
   const [loading, setLoading] = useState(false);
+  const { changeLanguage } = useLanguage();
 
   const { data, ...generalQuery } = useGeneralQuery();
 
+  // Apply the language sent by the backend as soon as the topbar data loads
+  useEffect(() => {
+    if (data?.lang) {
+      changeLanguage(data.lang);
+    }
+  }, [data?.lang]);
+
   return (
     <>
-      <div className="flex">
+      <div className={`flex panel-${Config.perfix}`}>
         {isFetching ? (
           <Spin
             className="isFetching"

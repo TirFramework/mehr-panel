@@ -173,7 +173,14 @@ function CustomCol({ column, onChange }) {
               value={effectiveColumnList}
               onChange={(list) => {
                 if (!showAllSwitch) {
-                  setColumnList(list);
+                  // Merge: keep selections that are hidden by the current search
+                  // filter, then apply the new selection for visible ones.
+                  // Without this, onChange only receives checked values among
+                  // visible options and wipes out any hidden checked items.
+                  const hiddenSelected = Object.values(columnList).filter(
+                    (item) => !filteredOptions.includes(item)
+                  );
+                  setColumnList([...hiddenSelected, ...list]);
                 }
               }}
               disabled={showAllSwitch}

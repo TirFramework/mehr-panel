@@ -61,7 +61,7 @@ const Field = (props) => {
     return null;
   }
 
-  const type  = props.type;
+  const { type } = props;
 
   // اگر type در map موجود باشد، مستقیماً از آن استفاده می‌کنیم
   if (fieldComponents[type]) {

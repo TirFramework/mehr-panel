@@ -15,7 +15,6 @@ const CustomDatePicker = ({
   defaultValue,
   ...props
 }) => {
-  // console.log("🚀 ~ CustomDatePicker ~ props:", props)
   const IsShowTime = Object.keys(props.showTime).length > 0;
   let formattedValue = null;
   if (value) {
@@ -37,13 +36,11 @@ const CustomDatePicker = ({
       {...props}
       format={format}
       onChange={(data) => {
-        console.log("🚀 ~ CustomDatePicker ~ data:", data)
         if (props.enableTimezone || IsShowTime) {
           let formattedData = null;
           if (data) {
             formattedData = dayjs(data).utc().format("YYYY-MM-DDTHH:mm:ss.SSSSSSZ");
           }
-          console.log("🚀 ~ CustomDatePicker ~ formattedData:", formattedData)
           onChange(formattedData);
         } else {
           onChange(
@@ -55,6 +52,7 @@ const CustomDatePicker = ({
         }
       }}
       value={formattedValue}
+      data-cy={props.testId}
     />
   );
 };
@@ -82,8 +80,8 @@ const DatePickerComponent = (props) => {
     return (
       <>
         {props.hideLable ?? <div>{props.display}</div>}
-        <div>
-          {props.value && (
+        <div data-cy={props.testId}>
+          {props.value ? (
             <>
               {dayjs(props.value).format(props?.options?.dateFormat) ||
                 "YYYY-MM-DD"}
@@ -94,6 +92,8 @@ const DatePickerComponent = (props) => {
                   props?.options?.showTime || "HH:mm:ss"
                 )}
             </>
+          ) : (
+            <span style={{ color: '#d9d9d9' }}>-</span>
           )}
         </div>
       </>
@@ -135,6 +135,7 @@ const DatePickerComponent = (props) => {
           disabledDate={
             props.options?.disabledPast ? { disablePastDates } : false
           }
+          testId={props.testId}
         />
       </Form.Item>
     </>

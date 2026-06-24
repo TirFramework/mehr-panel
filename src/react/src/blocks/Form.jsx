@@ -65,6 +65,19 @@ const CreateForm = ({ type }) => {
     form.resetFields();
   }, [pageModule, pageId, form]);
 
+
+  // useEffect(() => {
+  //   form.resetFields();
+  //   // Force fresh data fetch by invalidating cache and refetching
+  //   queryClient.invalidateQueries({
+  //     queryKey: [`${pageModule}-${recordId}-${type}`],
+  //   });
+  //   // Force an immediate refetch
+  //   queryClient.refetchQueries({
+  //     queryKey: [`${pageModule}-${recordId}-${type}`],
+  //   });
+  // }, [pageModule, recordId, form, queryClient, type]);
+
   // Extract and set initial form values from fields data
   useEffect(() => {
     if (fieldsData?.fields) {
