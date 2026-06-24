@@ -15,7 +15,7 @@ export default defineConfig([
       },
     },
     rules: {
-      // تمام قوانین غیرفعال شده‌اند
+      // All rules are disabled
     },
   },
 ]);

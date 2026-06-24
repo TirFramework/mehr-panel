@@ -18,38 +18,38 @@ const en = mergeModules(import.meta.glob("../locales/en/*.js", { eager: true }))
 const de = mergeModules(import.meta.glob("../locales/de/*.js", { eager: true }));
 const fa = mergeModules(import.meta.glob("../locales/fa/*.js", { eager: true }));
 
-// یک شیء کلی برای نگهداری تمام ترجمه‌ها (پیش‌فرض)
+// Object holding all translations (defaults)
 const allTranslations = { en, de, fa };
-const defaultLang = Config.defaultLang; // زبان پیش‌فرض اپلیکیشن
+const defaultLang = Config.defaultLang; // Application default language
 
 const LanguageContext = createContext();
 
 export const LanguageProvider = ({ children }) => {
   const [lang, setLang] = useState(defaultLang);
-  // t را با ترجمه‌های پیش‌فرض زبان اولیه پر می‌کنیم
+  // Initialize t with the default translations for the initial language
   const [t, setT] = useState(allTranslations[defaultLang]);
 
-  // تابع setTranslations برای به‌روزرسانی ترجمه‌ها از بیرون (بک‌اند)
+  // setTranslations updates translations from outside (backend)
   const setTranslations = (newTranslations) => {
-    // یک کپی از ترجمه‌های پیش‌فرض ایجاد می‌کنیم تا مستقیماً به آن‌ها دست نزنیم
+    // Copy default translations so we do not mutate them directly
     const updatedAllTranslations = { ...allTranslations };
 
-    // ترجمه‌های جدید را در شیء زبان مربوطه قرار می‌دهیم
-    // فرض می‌کنیم بک‌اند فقط ترجمه‌های زبان فعلی را می‌فرستد
+    // Place new translations in the object for the current language
+    // Assumes the backend sends translations for the active language only
     const updatedLangTranslations = {
       ...updatedAllTranslations[lang],
       ...newTranslations,
     };
     updatedAllTranslations[lang] = updatedLangTranslations;
 
-    // t را با آبجکت جدید آپدیت می‌کنیم
+    // Update t with the new object
     setT(updatedLangTranslations);
   };
 
   const changeLanguage = (newLang) => {
     if (allTranslations[newLang]) {
       setLang(newLang);
-      // با تغییر زبان، t را با ترجمه مربوطه از شیء کلی آپدیت می‌کنیم
+      // On language change, update t from the shared translations object
       setT(allTranslations[newLang]);
     }
   };

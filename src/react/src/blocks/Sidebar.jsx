@@ -2,16 +2,16 @@ import React, { memo, useMemo, useState, useEffect } from "react";
 import { Badge, Layout, Menu, Tooltip, Button } from "antd";
 import { Link, useParams, useLocation } from "react-router-dom";
 import { LoadingOutlined } from "@ant-design/icons";
-import * as antdIcons from "@ant-design/icons"; // تمام آیکن‌ها را وارد کنید
+import * as antdIcons from "@ant-design/icons"; // Import all icons
 import { useSidebar } from "../Request";
 import useLocalStorage from "../hooks/useLocalStorage";
 
 const { Sider } = Layout;
 
-// کش برای آیکن‌ها
+// Cache for icons
 const iconCache = new Map();
 
-// تابع برای دریافت آیکن از کش یا لود کردن آن
+// Get an icon from cache or load it
 const getIconComponent = (iconName) => {
   if (!iconName) return null;
 

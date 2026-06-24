@@ -11,11 +11,11 @@ const NumberIndex = (props) => {
     updateRules: props.updateRules,
   });
 
-  // اضافه کردن type: "number" به همه rules به جز required
+  // Add type: "number" to all rules except required
   const numberRules =
     rules?.map((rule) => {
       if (rule.required) {
-        return rule; // required rule را بدون تغییر نگه دار
+        return rule; // Keep the required rule unchanged
       }
       return {
         ...rule,

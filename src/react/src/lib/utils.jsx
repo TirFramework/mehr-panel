@@ -164,7 +164,7 @@ const Render = ({ item, value, rowIndex, data, id, minWidth }) => {
       {...item.field}
       hideLable={true}
       table={true}
-      // 2. تغییر شرط readonly برای استفاده از editingId
+      // 2. Update readonly condition to use editingId
       readonly={!(id === editingId)}
     />
   );
@@ -374,7 +374,7 @@ export function objectToQueryString(obj, columns = []) {
         const jsonString = JSON.stringify(value);
         params.append(key, jsonString);
       } else {
-        // برای مقادیر ساده (رشته، عدد، boolean)
+        // For simple values (string, number, boolean)
         params.append(key, value.toString());
       }
     }
@@ -387,7 +387,7 @@ export function objectToQueryString(obj, columns = []) {
   return params.toString();
 }
 
-// تابع بررسی وجود پارامترهای جستجو
+// Check whether query parameters exist
 export function hasQueryParams(newQueryParams) {
   return (
     newQueryParams.current ||

@@ -10,7 +10,7 @@ export {
 const separationRules = ({ pageType, rules, creationRules, updateRules }) => {
   let allRules = [];
 
-  // جمع کردن تمام rules
+  // Collect all rules
   if (rules && Array.isArray(rules)) {
     allRules = [...allRules, ...rules];
   }
@@ -35,15 +35,15 @@ const separationRules = ({ pageType, rules, creationRules, updateRules }) => {
     return null;
   }
 
-  // استفاده از Map برای جلوگیری از تکرار
+  // Use a Map to avoid duplicates
   const rulesMap = new Map();
 
-  // پردازش هر rule
+  // Process each rule
   allRules.forEach((rule) => {
     if (typeof rule === "string") {
-      // اگر rule یک رشته است، آن را پردازش کن
+      // If the rule is a string, parse it
       if (rule.includes("|")) {
-        // اگر شامل | است، آن را تقسیم کن
+        // If it contains |, split it
         const parts = rule.split("|").map((part) => part.trim());
         parts.forEach((part) => {
           const ruleObj = parseRuleString(part);
@@ -52,25 +52,25 @@ const separationRules = ({ pageType, rules, creationRules, updateRules }) => {
           }
         });
       } else {
-        // اگر شامل | نیست، مستقیماً پردازش کن
+        // If it does not contain |, parse it directly
         const ruleObj = parseRuleString(rule);
         if (ruleObj) {
           mergeRule(rulesMap, ruleObj);
         }
       }
     } else if (typeof rule === "object") {
-      // اگر rule یک آبجکت است، مستقیماً اضافه کن
+      // If the rule is an object, add it directly
       mergeRule(rulesMap, rule);
     }
   });
 
-  // تبدیل Map به آرایه
+  // Convert the Map to an array
   const newRules = Array.from(rulesMap.values());
 
   return newRules.length > 0 ? newRules : null;
 };
 
-// تابع کمکی برای merge کردن rules و جلوگیری از تکرار
+// Helper to merge rules and avoid duplicates
 const mergeRule = (rulesMap, ruleObj) => {
   if (!ruleObj || typeof ruleObj !== "object") {
     return;
@@ -80,12 +80,12 @@ const mergeRule = (rulesMap, ruleObj) => {
 
   keys.forEach((key) => {
     if (key === "required") {
-      // برای required، اگر true است، همیشه true نگه دار
+      // For required, keep true if any rule is true
       if (ruleObj[key] === true) {
         rulesMap.set(key, { required: true });
       }
     } else if (key === "min") {
-      // برای min، مقدار بزرگتر را نگه دار (سخت‌گیرانه‌تر)
+      // For min, keep the larger value (stricter)
       const existing = rulesMap.get(key);
       if (!existing) {
         rulesMap.set(key, { min: ruleObj[key] });
@@ -93,7 +93,7 @@ const mergeRule = (rulesMap, ruleObj) => {
         rulesMap.set(key, { min: Math.max(existing.min, ruleObj[key]) });
       }
     } else if (key === "max") {
-      // برای max، مقدار کوچکتر را نگه دار (سخت‌گیرانه‌تر)
+      // For max, keep the smaller value (stricter)
       const existing = rulesMap.get(key);
       if (!existing) {
         rulesMap.set(key, { max: ruleObj[key] });
@@ -101,8 +101,8 @@ const mergeRule = (rulesMap, ruleObj) => {
         rulesMap.set(key, { max: Math.min(existing.max, ruleObj[key]) });
       }
     } else {
-      // برای سایر rules، اگر قبلاً وجود نداشته باشد اضافه کن
-      // اگر وجود داشته باشد، merge کن (برای patterns و messages)
+      // For other rules, add if missing
+      // If present, merge (for patterns and messages)
       if (!rulesMap.has(key)) {
         rulesMap.set(key, ruleObj);
       } else {
@@ -113,7 +113,7 @@ const mergeRule = (rulesMap, ruleObj) => {
   });
 };
 
-// تابع کمکی برای پردازش رشته‌های rule Laravel
+// Helper to parse Laravel rule strings
 const parseRuleString = (ruleString) => {
   if (!ruleString || typeof ruleString !== "string") {
     return null;
@@ -128,7 +128,7 @@ const parseRuleString = (ruleString) => {
 
   // nullable
   if (trimmedRule === "nullable") {
-    return null; // nullable یعنی required نیست
+    return null; // nullable means not required
   }
 
   // numeric

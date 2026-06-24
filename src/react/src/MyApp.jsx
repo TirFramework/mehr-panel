@@ -134,7 +134,7 @@ function MyApp() {
                 />
             </Route>
 
-            {/* 404 Route - باید در آخر باشد */}
+            {/* 404 Route - must be last */}
             <Route
               path="*"
               element={<NotFoundPage />}

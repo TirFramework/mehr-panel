@@ -31,14 +31,14 @@ function Export({ data, loading, columns, pagination }) {
       .then((response) => {
         setLo(false);
         setAllData(response.data);
-        setExportAllTrigger(true); // فعال کردن دانلود بعد از دریافت داده‌ها
+        setExportAllTrigger(true); // Trigger download after data is received
       });
   };
 
   const handleShare = async () => {
     const url = `${window.location.href}?${objectToQueryString(pagination, columns)}`;
 
-    // ابتدا بررسی می‌کنیم که آیا Web Share API در مرورگر پشتیبانی می‌شود یا خیر.
+    // First check whether the browser supports the Web Share API.
     if (navigator.share) {
       try {
         await navigator.share({
@@ -74,7 +74,7 @@ function Export({ data, loading, columns, pagination }) {
   };
 
   const getData = (d) => {
-    // ایجاد یک کپی عمیق از داده‌ها برای جلوگیری از تغییر داده‌های اصلی
+    // Create a deep copy of the data to avoid mutating the original
     const newData = d.map((item) => ({ ...item }));
 
     orgColumns.forEach((element) => {

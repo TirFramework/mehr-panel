@@ -23,7 +23,7 @@ import Editor from "./Editor";
 import Checkbox from "./Checkbox";
 import SaveAndClose from "./SaveAndClose";
 
-// Map از component های موجود برای دسترسی سریع
+// Map of built-in components for fast lookup
 const fieldComponents = {
   Group,
   Cancel,
@@ -49,11 +49,11 @@ const fieldComponents = {
   Textarea,
 };
 
-// نگهداری lazy components (نه cache، فقط برای جلوگیری از re-creation)
+// Hold lazy components (not a cache; only prevents re-creation)
 const lazyFields = {};
 
-// استفاده از import.meta.glob برای پشتیبانی امن از dynamic import توسط Vite
-// همه فایل‌های jsx موجود در همین دایرکتوری (به‌جز خود Field.jsx) را map می‌کنیم
+// Use import.meta.glob for safe dynamic imports with Vite
+// Map all jsx files in this directory (except Field.jsx itself)
 const dynamicFieldModules = import.meta.glob(["./*.jsx", "!./Field.jsx"]);
 
 const Field = (props) => {
@@ -63,14 +63,14 @@ const Field = (props) => {
 
   const { type } = props;
 
-  // اگر type در map موجود باشد، مستقیماً از آن استفاده می‌کنیم
+  // If type exists in the map, use it directly
   if (fieldComponents[type]) {
     const Component = fieldComponents[type];
     return <Component {...props} />;
   }
 
-  // اگر type در map نباشد، از lazy import استفاده می‌کنیم
-  // فقط یک بار برای هر type ساخته می‌شود
+  // If type is not in the map, use lazy import
+  // Created only once per type
   if (!lazyFields[type]) {
     const key = `./${type}.jsx`;
     const loader = dynamicFieldModules[key];
@@ -82,14 +82,14 @@ const Field = (props) => {
         })
       );
     } else {
-      // اگر ماژول موجود نبود، یک کامپوننت خطا برگردانیم
+      // If the module is missing, return an error component
       lazyFields[type] = () => <div>Error loading the field: {type}</div>;
     }
   }
 
   const DynamicField = lazyFields[type];
 
-  // Fallback برای Group
+  // Fallback for Group
   const fallback =
     type === "Group" ? (
       <Card title={props.display}>

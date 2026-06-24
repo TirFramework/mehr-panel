@@ -11,7 +11,7 @@ const { Header } = Layout;
 const panelSpecificLayouts = import.meta.glob("../dynamic-layouts/*/*.jsx");
 const sharedLayouts = import.meta.glob("../dynamic-layouts/*.jsx");
 
-/* --- نسخه پیش‌فرض --- */
+/* --- Default version --- */
 const DefaultTopHeader = ({ username, name }) => {
   const navigate = useNavigate();
 

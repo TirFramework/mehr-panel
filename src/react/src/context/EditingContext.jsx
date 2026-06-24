@@ -1,18 +1,18 @@
 import React, { createContext, useContext, useState } from "react";
 
-// 1. ایجاد Context
+// 1. Create Context
 const EditingContext = createContext(null);
 
-// 2. ایجاد Provider
+// 2. Create Provider
 export const EditingProvider = ({ children }) => {
   const [editingId, setEditingId] = useState(null);
 
-  // تابعی برای شروع ویرایش
+  // Start editing
   const startEditing = (id) => {
     setEditingId(id);
   };
 
-  // تابعی برای پایان ویرایش
+  // Stop editing
   const cancelEditing = () => {
     setEditingId(null);
   };
@@ -28,7 +28,7 @@ export const EditingProvider = ({ children }) => {
   );
 };
 
-// 3. ایجاد هوک سفارشی برای استفاده راحت‌تر
+// 3. Custom hook for easier consumption
 export const useEditing = () => {
   const context = useContext(EditingContext);
   if (context === undefined) {

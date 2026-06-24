@@ -30,9 +30,9 @@ const Submit = (props) => {
 
   useEffect(() => {
     const handleKeyDown = (e) => {
-      // استفاده از code برای مستقل بودن از زبان کیبورد
+      // Use code so the shortcut is keyboard-layout independent
       if ((e.ctrlKey || e.metaKey) && e.code === "KeyS") {
-        e.preventDefault(); // جلوگیری از Save Page مرورگر
+        e.preventDefault(); // Prevent the browser's Save Page action
         handleSubmit();
       }
     };

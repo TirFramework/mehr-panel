@@ -12,10 +12,10 @@ function useGetParams(key, defaultFilter) {
   const [searchParams, setSearchParams] = useSearchParams();
 
   useEffect(() => {
-    // فرض بر این است که searchParams در این scope وجود دارد
+    // Assumes searchParams is available in this scope
     const newQueryParams = extractQueryParams();
 
-    // به‌روزرسانی state با آبجکت ساخته شده
+    // Update state with the constructed object
     if (hasQueryParams(newQueryParams)) {
       setStoredValue({
         ...newQueryParams,
