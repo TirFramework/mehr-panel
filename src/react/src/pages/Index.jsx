@@ -62,10 +62,9 @@ function Index() {
   const handleChangeTable = useCallback(
     (p, filters, sorter) => {
       filters = helpers.removeNullFromObject(filters);
-      const orderBy = {
-        field: sorter?.column?.fieldName,
-        order: sorter.order,
-      };
+      const orderBy = sorter?.order
+        ? { field: sorter?.column?.fieldName, order: sorter.order }
+        : pagination?.sorter;
 
       setPagination({
         ...pagination,

@@ -20,8 +20,6 @@ function useGetParams(key, defaultFilter) {
       setStoredValue({
         ...newQueryParams,
         key: key,
-        total: 0,
-        search: null,
       });
     } else {
       const item = window.localStorage.getItem(key);

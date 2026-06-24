@@ -18,11 +18,19 @@ export const useTableColumns = (pageData, pagination, form) => {
       return [];
     }
 
-    // Handle URL column params
+    // Handle URL column params (custom view)
     if (urlParams.get("columns")) {
       const columns = urlParams.get("columns").split(",");
-      const filteredCols = pageData.cols.filter((col) => columns.includes(col.fieldName));
-      // Add actions column
+      const filteredCols = pageData.cols
+        .filter((col) => columns.includes(col.fieldName))
+        .map((col) => ({
+          ...col,
+          filteredValue: pagination.filters?.[col.fieldName] || null,
+          defaultSortOrder:
+            pagination?.sorter?.field === col.fieldName
+              ? pagination?.sorter.order
+              : null,
+        }));
       filteredCols.push(createActionsColumn(pageData.configs, pageModule, form));
       return filteredCols;
     }

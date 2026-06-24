@@ -318,12 +318,14 @@ export function objectToQueryString(obj, columns = []) {
 
 // تابع بررسی وجود پارامترهای جستجو
 export function hasQueryParams(newQueryParams) {
+  const searchParams = new URLSearchParams(window.location.search);
   return (
     newQueryParams.current ||
     newQueryParams.pageSize ||
     newQueryParams.total ||
     newQueryParams.search ||
-    // newQueryParams.key ||
+    newQueryParams.key ||
+    searchParams.get("columns") ||
     Object.keys(newQueryParams.filters).length > 0 ||
     Object.keys(newQueryParams.sorter).length > 0
   );
