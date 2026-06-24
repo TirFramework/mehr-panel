@@ -29,6 +29,7 @@ import {
   isCustomView,
 } from "../lib/utils";
 import { useLanguage } from "../context/LanguageContext";
+import NotFoundPage from "./NotFoundPage";
 
 const { Title } = Typography;
 
@@ -173,7 +174,10 @@ function Index() {
     });
   }, [columns, isEditing]);
 
-  // debugger;
+  if (pageDataQuery.isError && pageDataQuery.error?.response?.status === 404) {
+    return <NotFoundPage />;
+  }
+
   return (
     <div className={`${pageModule}-index page-index`}>
       <Form

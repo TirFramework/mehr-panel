@@ -575,6 +575,138 @@ body.dark-mode .header-page .ant-col  .ant-col {
   width: 100%;
 }
 
+/* ─── 404 page ─── */
+.not-found-page {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: clamp(420px, 72vh, 100vh);
+  padding: 48px 24px;
+  overflow: hidden;
+  text-align: center;
+}
+
+.not-found-page__glow {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  filter: blur(80px);
+  opacity: 0.55;
+}
+
+.not-found-page__glow--1 {
+  width: 320px;
+  height: 320px;
+  top: 10%;
+  left: 15%;
+  background: rgba(99, 102, 241, 0.22);
+  animation: not-found-float 8s ease-in-out infinite;
+}
+
+.not-found-page__glow--2 {
+  width: 280px;
+  height: 280px;
+  bottom: 8%;
+  right: 12%;
+  background: rgba(139, 92, 246, 0.18);
+  animation: not-found-float 10s ease-in-out infinite reverse;
+}
+
+body.dark-mode .not-found-page__glow--1 {
+  background: rgba(99, 102, 241, 0.14);
+}
+
+body.dark-mode .not-found-page__glow--2 {
+  background: rgba(139, 92, 246, 0.12);
+}
+
+.not-found-page__content {
+  position: relative;
+  z-index: 1;
+  max-width: 480px;
+  width: 100%;
+}
+
+.not-found-page__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 72px;
+  height: 72px;
+  margin-bottom: 8px;
+  border-radius: 20px;
+  font-size: 32px;
+  color: var(--mp-primary);
+  background: linear-gradient(
+    135deg,
+    rgba(99, 102, 241, 0.12) 0%,
+    rgba(139, 92, 246, 0.08) 100%
+  );
+  border: 1px solid rgba(99, 102, 241, 0.18);
+  box-shadow: var(--mp-shadow-sm);
+}
+
+.not-found-page__code {
+  font-size: clamp(96px, 18vw, 140px);
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.04em;
+  margin: 0 0 8px;
+  background: linear-gradient(
+    135deg,
+    var(--mp-primary) 0%,
+    var(--mp-accent) 50%,
+    var(--mp-primary-light) 100%
+  );
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: not-found-shimmer 6s ease-in-out infinite;
+}
+
+.not-found-page__title.ant-typography {
+  margin: 0 0 12px !important;
+  font-weight: 700 !important;
+  color: var(--mp-text) !important;
+}
+
+.not-found-page__desc.ant-typography {
+  margin: 0 auto 32px !important;
+  max-width: 380px;
+  font-size: 15px;
+  line-height: 1.7;
+  color: var(--mp-text-muted) !important;
+}
+
+.not-found-page__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: center;
+}
+
+@keyframes not-found-float {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+  50% {
+    transform: translate(24px, -18px) scale(1.06);
+  }
+}
+
+@keyframes not-found-shimmer {
+  0%,
+  100% {
+    background-position: 0% center;
+  }
+  50% {
+    background-position: 100% center;
+  }
+}
+
 /* ─── Theme toggle ─── */
 .toggle-theme {
   position: fixed;

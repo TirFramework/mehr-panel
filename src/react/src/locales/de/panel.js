@@ -17,6 +17,12 @@ export default {
   CONFIRM:           "Bestätigen",
   NO_RESULTS_FOUND:  "Keine Ergebnisse gefunden",
 
+  // 404 page
+  NOT_FOUND_TITLE:   "Seite nicht gefunden",
+  NOT_FOUND_DESC:    "Die gesuchte Seite existiert nicht oder wurde verschoben.",
+  GO_BACK:           "Zurück",
+  GO_HOME:           "Zum Dashboard",
+
   // Reservation timeline
   RESERVATION_QUEUE:          "Reservierungswarteschlange",
   NO_ACTIVE_RESERVATIONS:     "Keine aktiven Reservierungen",

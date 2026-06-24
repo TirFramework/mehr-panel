@@ -17,6 +17,12 @@ export default {
   CONFIRM:           "تایید",
   NO_RESULTS_FOUND:  "موردی یافت نشد",
 
+  // 404 page
+  NOT_FOUND_TITLE:   "صفحه یافت نشد",
+  NOT_FOUND_DESC:    "صفحه‌ای که به دنبال آن هستید وجود ندارد یا ممکن است جابه‌جا شده باشد.",
+  GO_BACK:           "بازگشت",
+  GO_HOME:           "رفتن به داشبورد",
+
   // AI Search
   AI_SEARCH_PLACEHOLDER:      "آنچه را که می‌خواهید جستجو کنید توضیح دهید…",
 };
