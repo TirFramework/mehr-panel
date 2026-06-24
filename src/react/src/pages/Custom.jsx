@@ -1,6 +1,7 @@
 import React, { lazy, Suspense } from "react";
 import { useParams } from "react-router-dom";
 import { Skeleton } from "antd";
+import Config from "../constants/config";
 import Detail from "./Detail";
 import Create from "./Create";
 import Index from "./Index";
@@ -19,25 +20,26 @@ const getFallbackComponent = (type) => {
 const Custom = ({ type, ...props }) => {
   const { pageModule } = useParams();
 
-  // اگر pageModule وجود ندارد، مستقیماً fallback را render می‌کنیم
+  // اگر 
+  // pageModule
+  //  وجود ندارد،
+  //  مستقیماً 
+  // fallback
+  //  را 
+  // render
+  //  می‌کنیم
   if (!pageModule) {
     const FallbackComponent = getFallbackComponent(type);
     return <FallbackComponent {...props} />;
   }
 
-  // استفاده از env برای چک سریع (اختیاری - اگر env موجود نباشد، باز هم کار می‌کند)
-  let dynamicPages = [];
-  try {
-    if (process.env.VITE_DYNAMIC_PAGES) {
-      dynamicPages = JSON.parse(process.env.VITE_DYNAMIC_PAGES);
-      // اگر env موجود باشد و pageModule در لیست نباشد، fallback را render می‌کنیم
-      if (!dynamicPages.includes(pageModule)) {
-        const FallbackComponent = getFallbackComponent(type);
-        return <FallbackComponent {...props} />;
-      }
-    }
-  } catch (error) {
-    console.error("❌ Error parsing VITE_DYNAMIC_PAGES:", error);
+  console.log("🚀 ~ Custom ~ Config.dynamicPages:", Config.dynamicPages)
+  console.log("🚀 ~ Custom ~ pageModule:", pageModule)
+  if (
+    !Config.dynamicPages.includes(pageModule)
+  ) {
+    const FallbackComponent = getFallbackComponent(type);
+    return <FallbackComponent {...props} />;
   }
 
   // اگر lazy component قبلاً ساخته شده، از cache استفاده می‌کنیم

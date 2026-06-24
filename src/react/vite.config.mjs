@@ -1,43 +1,15 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
+import { resolve, dirname } from "path";
+import { fileURLToPath } from "url";
+import { loadDynamicPages, dynamicPagesDefine } from "../vite-helpers.js";
 
-// https://vite.dev/config/
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+const dynamicPages = loadDynamicPages(resolve(__dirname, "src/dynamic-pages"));
+
 export default defineConfig({
   plugins: [react()],
-  define: {
-    "process.env": JSON.stringify({
-      MIX_APP_DEFAULT_LANG: process.env.MIX_APP_DEFAULT_LANG,
-      REACT_APP_DEFAULT_LANG: process.env.REACT_APP_DEFAULT_LANG,
-      MIX_APP_API_BASE_URL: process.env.MIX_APP_API_BASE_URL,
-      REACT_APP_API_BASE_URL: process.env.REACT_APP_API_BASE_URL,
-      MIX_APP_API_STORAGE: process.env.MIX_APP_API_STORAGE,
-      REACT_APP_API_STORAGE: process.env.REACT_APP_API_STORAGE,
-      MIX_APP_TINYEMC: process.env.MIX_APP_TINYEMC,
-      REACT_APP_TINYEMC: process.env.REACT_APP_TINYEMC,
-      MIX_APP_INTERACTION_CHARACTER: process.env.MIX_APP_INTERACTION_CHARACTER,
-      REACT_APP_INTERACTION_CHARACTER:
-        process.env.REACT_APP_INTERACTION_CHARACTER,
-      MIX_APP_FIREBASE_API_KEY: process.env.MIX_APP_FIREBASE_API_KEY,
-      REACT_APP_FIREBASE_API_KEY: process.env.REACT_APP_FIREBASE_API_KEY,
-      MIX_APP_FIREBASE_AUTH_DOMAIN: process.env.MIX_APP_FIREBASE_AUTH_DOMAIN,
-      REACT_APP_FIREBASE_AUTH_DOMAIN:
-        process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,
-      MIX_APP_FIREBASE_AUTH_PROJECT_ID:
-        process.env.MIX_APP_FIREBASE_AUTH_PROJECT_ID,
-      REACT_APP_FIREBASE_AUTH_PROJECT_ID:
-        process.env.REACT_APP_FIREBASE_AUTH_PROJECT_ID,
-      MIX_APP_FIREBASE_STORAGE_BUCKET:
-        process.env.MIX_APP_FIREBASE_STORAGE_BUCKET,
-      REACT_APP_FIREBASE_STORAGE_BUCKET:
-        process.env.REACT_APP_FIREBASE_STORAGE_BUCKET,
-      MIX_APP_FIREBASE_MESSAGEING_SENDER_ID:
-        process.env.MIX_APP_FIREBASE_MESSAGEING_SENDER_ID,
-      REACT_APP_FIREBASE_MESSAGEING_SENDER_ID:
-        process.env.REACT_APP_FIREBASE_MESSAGEING_SENDER_ID,
-      MIX_APP_FIREBASE_APP_ID: process.env.MIX_APP_FIREBASE_APP_ID,
-      REACT_APP_FIREBASE_APP_ID: process.env.REACT_APP_FIREBASE_APP_ID,
-      MIX_APP_FIREBASE_VAPID_KEY: process.env.MIX_APP_FIREBASE_VAPID_KEY,
-      REACT_APP_FIREBASE_VAPID_KEY: process.env.REACT_APP_FIREBASE_VAPID_KEY,
-    }),
-  },
+  define: dynamicPagesDefine(dynamicPages),
 });

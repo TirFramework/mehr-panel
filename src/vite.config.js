@@ -1,76 +1,18 @@
 import { defineConfig } from "vite";
 import laravel from "laravel-vite-plugin";
 import react from "@vitejs/plugin-react";
-import { readFileSync, readdirSync, mkdirSync, writeFileSync } from "fs";
-import { resolve, dirname, extname } from "path";
+import { mkdirSync, writeFileSync } from "fs";
+import { resolve, dirname } from "path";
 import { fileURLToPath } from "url";
+import { loadDynamicPages, dynamicPagesDefine } from "./vite-helpers.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-// خواندن فایل .env لاراول
-function loadLaravelEnv() {
-  const envPath = resolve(__dirname, ".env");
-  const env = {};
+const dynamicPages = loadDynamicPages(
+  resolve(__dirname, "resources/admin/src/dynamic-pages")
+);
 
-  try {
-    const envFile = readFileSync(envPath, "utf-8");
-    envFile.split("\n").forEach((line) => {
-      const trimmedLine = line.trim();
-      if (trimmedLine && !trimmedLine.startsWith("#")) {
-        const [key, ...valueParts] = trimmedLine.split("=");
-        if (key) {
-          const value = valueParts.join("=").trim();
-          const cleanValue = value.replace(/^["']|["']$/g, "");
-          const trimmedKey = key.trim();
-          // فقط متغیرهایی که با VITE_ شروع می‌شوند را وارد کن
-          if (trimmedKey.startsWith("VITE_")) {
-            env[trimmedKey] = cleanValue;
-          }
-        }
-      }
-    });
-  } catch (error) {
-    console.warn("⚠️  Could not read .env file:", error.message);
-  }
-
-  return env;
-}
-
-const laravelEnv = loadLaravelEnv();
-
-// خواندن فایل‌های dynamic pages
-function loadDynamicPages() {
-  const dynamicPagesPath = resolve(
-    __dirname,
-    "resources/admin/src/dynamic-pages"
-  );
-  const dynamicPages = [];
-
-  try {
-    // خواندن فایل‌های موجود در پوشه dynamic-pages
-    const files = readdirSync(dynamicPagesPath);
-
-    // فیلتر کردن فایل‌های .jsx و .js و استخراج نام آن‌ها (بدون پسوند)
-    files.forEach((file) => {
-      const ext = extname(file);
-      if (ext === ".jsx" || ext === ".js") {
-        const fileName = file.replace(ext, "");
-        dynamicPages.push(fileName);
-      }
-    });
-
-    console.log("📦 Dynamic pages found:", dynamicPages);
-  } catch (error) {
-    console.warn("⚠️  Could not read dynamic-pages directory:", error.message);
-  }
-
-  return dynamicPages;
-}
-
-const dynamicPages = loadDynamicPages();
-
-// Plugin: ensure .gitignore exists in public/build-panel after each build
 function ensureBuildPanelGitignore() {
   return {
     name: "ensure-build-panel-gitignore",
@@ -92,6 +34,7 @@ function ensureBuildPanelGitignore() {
 
 export default defineConfig({
   plugins: [
+    react(),
     laravel({
       input: [
         "resources/admin/src/assets/index.css",
@@ -106,15 +49,7 @@ export default defineConfig({
     ensureBuildPanelGitignore(),
   ],
 
-  define: {
-    "process.env": JSON.stringify({
-      // اولویت با process.env Node.js، سپس .env لاراول
-      ...laravelEnv,
-      // اضافه کردن لیست dynamic pages به process.env
-      // مقدار به صورت JSON stringified array خواهد بود و باید در کد با JSON.parse() parse شود
-      VITE_DYNAMIC_PAGES: JSON.stringify(dynamicPages),
-    }),
-  },
+  define: dynamicPagesDefine(dynamicPages),
 
   server: {
     https: false,

@@ -2,50 +2,35 @@ const path = window.location.pathname; // "/panelName/pageModule"
 const parts = path.split("/");
 const panelName = parts[1];
 
+function parseDynamicPages() {
+  try {
+    const raw = import.meta.env.VITE_DYNAMIC_PAGES;
+    return raw ? JSON.parse(raw) : [];
+  } catch {
+    return [];
+  }
+}
+
 const Config = {
-  defaultLang:
-    process.env.VITE_APP_DEFAULT_LANG ||
-    process.env.REACT_APP_DEFAULT_LANG ||
-    "en",
-  apiBaseUrl:
-    process.env.VITE_APP_API_BASE_URL ||
-    process.env.REACT_APP_API_BASE_URL ||
-    `/api/v1`,
-  storage:
-    process.env.VITE_APP_API_STORAGE ||
-    process.env.REACT_APP_API_STORAGE ||
-    "/storage",
-  tinyemcApiKey: process.env.VITE_APP_TINYEMC || process.env.REACT_APP_TINYEMC,
+  defaultLang: import.meta.env.VITE_APP_DEFAULT_LANG || "en",
+  apiBaseUrl: import.meta.env.VITE_APP_API_BASE_URL || `/api/v1`,
+  storage: import.meta.env.VITE_APP_API_STORAGE || "/storage",
+  tinyemcApiKey: import.meta.env.VITE_APP_TINYEMC,
   perfix: panelName,
   panelVersion: "12.6",
-  interactionCharacter:
-    process.env.VITE_APP_INTERACTION_CHARACTER ||
-    process.env.REACT_APP_INTERACTION_CHARACTER ||
-    "id",
+  interactionCharacter: import.meta.env.VITE_APP_INTERACTION_CHARACTER || "id",
   firebase: {
-    apiKey:
-      process.env.VITE_APP_FIREBASE_API_KEY ||
-      process.env.REACT_APP_FIREBASE_API_KEY,
-    authDomain:
-      process.env.VITE_APP_FIREBASE_AUTH_DOMAIN ||
-      process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,
-    projectId:
-      process.env.VITE_APP_FIREBASE_AUTH_PROJECT_ID ||
-      process.env.REACT_APP_FIREBASE_AUTH_PROJECT_ID,
-    storageBucket:
-      process.env.VITE_APP_FIREBASE_STORAGE_BUCKET ||
-      process.env.REACT_APP_FIREBASE_STORAGE_BUCKET,
-    messagingSenderId:
-      process.env.VITE_APP_FIREBASE_MESSAGEING_SENDER_ID ||
-      process.env.REACT_APP_FIREBASE_MESSAGEING_SENDER_ID,
-    appId:
-      process.env.VITE_APP_FIREBASE_APP_ID ||
-      process.env.REACT_APP_FIREBASE_APP_ID,
+    apiKey: import.meta.env.VITE_APP_FIREBASE_API_KEY,
+    authDomain: import.meta.env.VITE_APP_FIREBASE_AUTH_DOMAIN,
+    projectId: import.meta.env.VITE_APP_FIREBASE_AUTH_PROJECT_ID,
+    storageBucket: import.meta.env.VITE_APP_FIREBASE_STORAGE_BUCKET,
+    messagingSenderId: import.meta.env.VITE_APP_FIREBASE_MESSAGEING_SENDER_ID,
+    appId: import.meta.env.VITE_APP_FIREBASE_APP_ID,
   },
-  firebaseVapidKey:
-    process.env.VITE_APP_FIREBASE_VAPID_KEY ||
-    process.env.REACT_APP_FIREBASE_VAPID_KEY,
+  firebaseVapidKey: import.meta.env.VITE_APP_FIREBASE_VAPID_KEY,
+  dynamicPages: parseDynamicPages(),
 };
+console.log("🚀 ~ Config:", Config);
 
 export default Config;
 
