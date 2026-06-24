@@ -65,9 +65,7 @@ const Login = () => {
       });
   };
 
-  const onFinishFailed = (errorInfo) => {
-    console.log("Failed:", errorInfo);
-  };
+  const onFinishFailed = () => {};
 
   const login = (token) => {
     if (!setApiToken(token)) {
@@ -81,14 +79,18 @@ const Login = () => {
 
     if (version !== Config.panelVersion) {
       const savedToken = localStorage.getItem("api_token");
-      localStorage.clear();
+      Object.keys(localStorage).forEach((key) => {
+        if (key !== "api_token") {
+          localStorage.removeItem(key);
+        }
+      });
       window.localStorage.setItem("version", Config.panelVersion);
       if (savedToken) {
         localStorage.setItem("api_token", savedToken);
       }
     }
 
-    navigate(`/${Config.perfix}/dashboard`);
+    navigate(`/${Config.prefix}/dashboard`);
   };
 
   return (
@@ -187,7 +189,7 @@ const Login = () => {
               <Button
                 type="link"
                 onClick={() => {
-                  navigate(`/${Config.perfix}/forgot-password`);
+                  navigate(`/${Config.prefix}/forgot-password`);
                 }}
               >
                 {t.FORGOT_PASSWORD}

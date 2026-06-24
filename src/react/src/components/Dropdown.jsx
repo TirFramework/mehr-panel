@@ -21,7 +21,7 @@ const DropdownComponent = (props) => {
         </>
       ),
       onclick: () => {
-        props.form.redirect = `${Config.perfix}/${pageModule}`;
+        props.form.redirect = `/${Config.prefix}/${pageModule}`;
         if (props.path) {
           props.form.redirect = props.path;
         }

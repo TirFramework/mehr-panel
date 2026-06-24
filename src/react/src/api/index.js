@@ -102,8 +102,13 @@ export const postEditOrCreate = async (module, id, body, requestBy) => {
 };
 
 export const getSelect = async (dataUrl, q) => {
-  const { data } = await axios.get(`${dataUrl}&locale=all&search=${q}`);
-  return await data;
+  const { data } = await axios.get(dataUrl, {
+    params: {
+      locale: "all",
+      search: q,
+    },
+  });
+  return data;
 };
 
 export const getSelectValue = async (dataUrl, id) => {

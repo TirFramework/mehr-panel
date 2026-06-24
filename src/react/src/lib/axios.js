@@ -1,6 +1,6 @@
 import axios from "axios";
 import Config from "../constants/config";
-import responseErrorHandler from "./helpers/responseErrorHandler";
+import { handleErrorSideEffects } from "./helpers/responseErrorHandler";
 import { applyAuthHeader, getApiToken } from "./authToken";
 import { parseJsonResponse } from "./parseJsonResponse";
 
@@ -8,7 +8,7 @@ import { parseJsonResponse } from "./parseJsonResponse";
  * Axios defaults
  */
 
-axios.defaults.baseURL = Config.apiBaseUrl + "/" + Config.perfix;
+axios.defaults.baseURL = Config.apiBaseUrl + "/" + Config.prefix;
 
 // Headers
 axios.defaults.headers.common["Content-Type"] = "application/json";
@@ -52,11 +52,19 @@ axios.interceptors.response.use(
         response.data = parseJsonResponse(response.data);
         return response;
     },
-    function (error) {
-        if (error?.response?.data !== undefined) {
+    async (error) => {
+        if (error?.response?.data instanceof Blob) {
+            try {
+                const text = await error.response.data.text();
+                error.response.data = JSON.parse(text);
+            } catch {
+                // Keep the original blob if parsing fails
+            }
+        } else if (error?.response?.data !== undefined) {
             error.response.data = parseJsonResponse(error.response.data);
         }
-        responseErrorHandler(error);
+
+        handleErrorSideEffects(error);
         return Promise.reject(error);
     },
 );

@@ -43,7 +43,7 @@ const SubmitGroup = (props) => {
                 <Button
                   onClick={() => {
                     navigate(
-                      `/${Config.perfix}/${pageModule}/create-edit?id=${pageId}`
+                      `/${Config.prefix}/${pageModule}/create-edit?id=${pageId}`
                     );
                   }}
                 >

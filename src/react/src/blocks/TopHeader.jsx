@@ -20,7 +20,7 @@ const DefaultTopHeader = ({ username, name }) => {
   const logout = () => {
     api.postLogout().then(() => {
       clearApiToken();
-      navigate(`/${Config.perfix}/login`);
+      navigate(`/${Config.prefix}/login`);
     });
   };
 
@@ -50,7 +50,7 @@ const DefaultTopHeader = ({ username, name }) => {
   );
 };
 
-const panel = Config.perfix;
+const panel = Config.prefix;
 const CustomTopHeader = "CustomTopHeader";
 const panelSpecificKey = `../dynamic-layouts/${panel}/${CustomTopHeader}.jsx`;
 const sharedKey = `../dynamic-layouts/${CustomTopHeader}.jsx`;

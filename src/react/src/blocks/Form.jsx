@@ -130,9 +130,7 @@ const CreateForm = ({ type }) => {
   }, []);
 
   // Handle form submission failure
-  const handleFinishFailed = useCallback((errorInfo) => {
-    console.log("Form validation failed:", errorInfo);
-  }, []);
+  const handleFinishFailed = useCallback(() => {}, []);
 
   // Handle form submission success
   const handleFinish = useCallback(

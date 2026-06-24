@@ -26,7 +26,7 @@ export const DetailRow = ({ id }) => {
   }
 
   return (
-    <Link to={`/${Config.perfix}/${pageModule}/detail?id=${id}`}>
+    <Link to={`/${Config.prefix}/${pageModule}/detail?id=${id}`}>
       <Button type="link" size="small">
         <EyeOutlined />
         <span className="action-text">{t.DETAIL}</span>
@@ -45,7 +45,7 @@ export const EditRow = ({ id }) => {
   }
 
   return (
-    <Link to={`/${Config.perfix}/${pageModule}/create-edit?id=${id}`}>
+    <Link to={`/${Config.prefix}/${pageModule}/create-edit?id=${id}`}>
       <Button type="link" size="small">
         <FormOutlined />
         <span className="action-text">{t.EDIT}</span>
@@ -89,7 +89,7 @@ export const DeleteRow = ({ id, interactionCharacter }) => {
       <Button
         type="link"
         danger
-        loading={deleteRow.isLoading}
+        loading={deleteRow.isPending}
         size="small"
         icon={<DeleteOutlined />}
       >

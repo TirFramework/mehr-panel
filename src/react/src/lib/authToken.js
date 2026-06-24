@@ -1,7 +1,12 @@
 const API_TOKEN_KEY = "api_token";
+export const API_TOKEN_CHANGED = "api_token_changed";
 
 function isValidToken(token) {
     return Boolean(token) && token !== "undefined" && token !== "null";
+}
+
+function notifyTokenChange() {
+    window.dispatchEvent(new Event(API_TOKEN_CHANGED));
 }
 
 export function purgeInvalidApiToken() {
@@ -9,6 +14,7 @@ export function purgeInvalidApiToken() {
 
     if (token !== null && !isValidToken(token)) {
         localStorage.removeItem(API_TOKEN_KEY);
+        notifyTokenChange();
     }
 }
 
@@ -25,11 +31,13 @@ export function setApiToken(token) {
     }
 
     localStorage.setItem(API_TOKEN_KEY, token);
+    notifyTokenChange();
     return true;
 }
 
 export function clearApiToken() {
     localStorage.removeItem(API_TOKEN_KEY);
+    notifyTokenChange();
 }
 
 export function applyAuthHeader(headers, token = getApiToken()) {

@@ -51,7 +51,7 @@ const Submit = (props) => {
       // disabled: clicked ? false : props.loading,
       // loading: props.loading && clicked ,
       onClick: () => {
-        handleSubmit( `/${Config.perfix}/${pageModule}`);
+        handleSubmit( `/${Config.prefix}/${pageModule}`);
       },
     },
     {
@@ -61,7 +61,7 @@ const Submit = (props) => {
       // loading: props.loading && clicked ,
 
       onClick: () => {
-        handleSubmit( `/${Config.perfix}/${pageModule}/create-edit`);
+        handleSubmit( `/${Config.prefix}/${pageModule}/create-edit`);
       },
     },
   ];

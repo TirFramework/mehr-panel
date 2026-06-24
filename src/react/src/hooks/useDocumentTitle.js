@@ -24,7 +24,7 @@ export default function useDocumentTitle(pageTitle, options = {}) {
   const { data: generalData } = useQuery({
     queryKey: ["general"],
     queryFn: getGeneral,
-    enabled: false,
+    staleTime: 5 * 60 * 1000,
   });
 
   const siteName = generalData?.name;

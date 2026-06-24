@@ -402,7 +402,7 @@ function Index() {
               <Col className="gutter-row text-right">
                 <Space>
                   {pageData?.configs?.actions?.create && (
-                    <Link to={`/${Config.perfix}/${pageModule}/create-edit`}>
+                    <Link to={`/${Config.prefix}/${pageModule}/create-edit`}>
                       <Button
                         size="large"
                         type="primary"

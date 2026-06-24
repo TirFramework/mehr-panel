@@ -47,7 +47,7 @@ const Render = (props) => {
     return (
       <>
         <label>{props.display}:</label>
-        <div className="read-only__value">{props.value}</div>
+        <div className="read-only__value">{"•".repeat(8)}</div>
       </>
     );
   } else if (props.type === "Radio") {
@@ -71,7 +71,7 @@ const Render = (props) => {
           <label>{props.display}:</label>
           <div>
             {props.value.map((i) => (
-              <Tag>{props.dataSet[i]}</Tag>
+              <Tag key={i}>{props.dataSet[i]}</Tag>
             ))}
           </div>
         </>

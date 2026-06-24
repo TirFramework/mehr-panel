@@ -106,7 +106,6 @@ export const onFinish = ({
     })
     .catch((err) => {
       const error = responseErrorHandler(err);
-      console.log("🚀 ~ onFinish ~ error:", error);
       notification.error({
         message: error.message,
         duration: error.duration,

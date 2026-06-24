@@ -31,7 +31,7 @@ function DefaultLayout(props) {
 
   return (
     <>
-      <div className={`flex panel-${Config.perfix}`}>
+      <div className={`flex panel-${Config.prefix}`}>
         {isFetching ? (
           <Spin
             className="isFetching"
@@ -115,12 +115,7 @@ function DefaultLayout(props) {
                                 // );
                               }
                             })
-                            .catch((e) => {
-                              console.log(
-                                "🚀 ~ .then ~ Permission not granted",
-                                e
-                              );
-                            });
+                            .catch(() => {});
                         }}
                       >
                         {t.ENABLE}

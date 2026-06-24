@@ -13,7 +13,7 @@ const Cancel = (props) => {
     <Button
       disabled={props.loading}
       onClick={() => {
-        navigate(props.path || `/${Config.perfix}/${pageModule}`);
+        navigate(props.path || `/${Config.prefix}/${pageModule}`);
       }}
     >
       {props.display || t.CANCEL}

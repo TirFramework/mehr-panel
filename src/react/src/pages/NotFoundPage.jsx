@@ -22,8 +22,8 @@ const NotFoundPage = () => {
   const handleGoHome = () => {
     navigate(
       isAuthenticated
-        ? `/${Config.perfix}/dashboard`
-        : `/${Config.perfix}/login`
+        ? `/${Config.prefix}/dashboard`
+        : `/${Config.prefix}/login`
     );
   };
 

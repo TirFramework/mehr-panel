@@ -16,7 +16,7 @@ const Config = {
   apiBaseUrl: import.meta.env.VITE_APP_API_BASE_URL || `/api/v1`,
   storage: import.meta.env.VITE_APP_API_STORAGE || "/storage",
   tinyemcApiKey: import.meta.env.VITE_APP_TINYEMC,
-  perfix: panelName,
+  prefix: panelName,
   panelVersion: "12.6",
   interactionCharacter: import.meta.env.VITE_APP_INTERACTION_CHARACTER || "id",
   firebase: {
@@ -30,7 +30,6 @@ const Config = {
   firebaseVapidKey: import.meta.env.VITE_APP_FIREBASE_VAPID_KEY,
   dynamicPages: parseDynamicPages(),
 };
-console.log("🚀 ~ Config:", Config);
 
 export default Config;
 
