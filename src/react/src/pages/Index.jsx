@@ -313,7 +313,7 @@ function Index() {
                                 aiFilterKeys: isAi ? aiFilterKeys.filter((k) => k !== key) : aiFilterKeys,
                                 key: pageModule,
                               });
-                            }} style={{ margin: 0, fontSize: 10 }}>
+                            }} className="page-index__filter-tag">
                               <strong>{titleText}{display ? ": " : ""}</strong>{display}
                             </Tag>
                           );
@@ -420,21 +420,17 @@ function Index() {
                 pageSizeOptions: ["10", "15", "30", "50", "100", "500"],
                 total: indexData?.total,
                 showTotal: (total) => (
-                  <>
-                    <Row justify={"space-between"}>
-                      <Col>
-                        <Export
-                          loading={dataQuery.isLoading || dataQuery.isFetching}
-                          data={indexData?.data}
-                          columns={columns}
-                          pagination={pagination}
-                        />
-                      </Col>
-                      <Col>
-                        <Button>Total: {indexData?.total}</Button>
-                      </Col>
-                    </Row>
-                  </>
+                  <div className="page-index__pagination-footer">
+                    <Export
+                      loading={dataQuery.isLoading || dataQuery.isFetching}
+                      data={indexData?.data}
+                      columns={columns}
+                      pagination={pagination}
+                    />
+                    <span className="page-index__total">
+                      Total: {total}
+                    </span>
+                  </div>
                 ),
               }}
               loading={dataQuery.isLoading && !indexData}

@@ -1,7 +1,6 @@
 import React from "react";
 import { useSearchParams } from "react-router-dom";
-import { Breadcrumb, Typography } from "antd";
-const Header = ({ pageTitle, type }) => {
+import { Breadcrumb, Typography } from "antd"; const Header = ({ pageTitle, type }) => {
   //   const { pageModule } = useParams();
   //   const { pageType } = useParams();
   const [urlParams] = useSearchParams();
@@ -26,7 +25,7 @@ const Header = ({ pageTitle, type }) => {
   return (
     <header className="create-edit__header">
       <Breadcrumb items={items} />
-      <Typography.Title className=" create-edit__title">
+      <Typography.Title level={2} className="create-edit__title">
         {pageTitle}
       </Typography.Title>
     </header>

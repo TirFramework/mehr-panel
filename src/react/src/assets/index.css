@@ -192,6 +192,25 @@ body.dark-mode .ant-layout-content {
   min-height: 0;
   overflow-x: hidden;
   overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.18) transparent;
+}
+
+.menu__sidebar-scroll::-webkit-scrollbar {
+  width: 5px;
+}
+
+.menu__sidebar-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.menu__sidebar-scroll::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.14);
+  border-radius: 999px;
+}
+
+.menu__sidebar-scroll::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.26);
 }
 
 .menu__sidebar-scroll--loading {
@@ -279,6 +298,10 @@ body.dark-mode .ant-layout-content {
   box-shadow: var(--mp-shadow-md) !important;
 }
 
+.index-page__card.ant-card:hover {
+  box-shadow: var(--mp-shadow-sm) !important;
+}
+
 .ant-card-head {
   border-bottom: 1px solid var(--mp-border-subtle) !important;
   min-height: 52px;
@@ -300,7 +323,7 @@ body.dark-mode .ant-layout-content {
 }
 
 .index-page__card .ant-pagination {
-  /* padding: 12px 20px; */
+  padding: 10px 16px;
   border-top: 1px solid var(--mp-border-subtle);
 }
 
@@ -369,6 +392,35 @@ body.dark-mode .ant-layout-content {
   color: var(--mp-text-muted);
 }
 
+.page-index__pagination-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  gap: 12px;
+}
+
+.page-index__total {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--mp-text-muted);
+  padding: 6px 14px;
+  background: var(--mp-border-subtle);
+  border-radius: 8px;
+  white-space: nowrap;
+}
+
+.index-page__card .ant-table-tbody > tr > td .table-cell,
+.index-page__card .ant-table-tbody > tr > td .read-only__value {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.index-page__card .ant-table-tbody > tr > td {
+  vertical-align: middle;
+}
+
 .index-page__card .ant-empty {
   height: calc(100vh - 437px);
 }
@@ -399,6 +451,15 @@ body.dark-mode .ant-layout-content {
 
 .page-index__header {
   margin-bottom: 16px;
+  row-gap: 12px;
+}
+
+.page-index__filter-tag {
+  margin: 0 !important;
+  font-size: 11px;
+  border-radius: 6px;
+  padding: 1px 8px;
+  line-height: 20px;
 }
 
 .page-index__title {
@@ -407,37 +468,27 @@ body.dark-mode .ant-layout-content {
   text-transform: capitalize;
   font-weight: 700 !important;
   letter-spacing: -0.02em;
-  line-height: 1 !important;
+  line-height: 1.2 !important;
+  font-size: clamp(22px, 2.5vw, 28px) !important;
 }
 
-.header-page {
-  position: sticky;
-  top: 0px;
-  z-index: 9;
-  margin-top: -50px;
-  height: 50px;
+/* ─── Form pages (detail / create / edit) ─── */
+.create-edit__header .ant-breadcrumb {
+  margin-bottom: 6px;
 }
 
-.header-page .ant-col  .ant-col{
-  backdrop-filter: blur(12px);
-  /* background: rgba(241, 245, 249, 0.85); */
-  border-radius: var(--mp-radius);
-  padding: 12px;
-  margin-top: -16px;
-}
-
-body.dark-mode .header-page .ant-col  .ant-col {
-  /* background: rgba(15, 23, 42, 0.85); */
-}
-
-.header-page .ant-typography {
-  margin-bottom: 0;
+.create-edit__header .ant-breadcrumb-link,
+.create-edit__header .ant-breadcrumb-separator {
+  color: var(--mp-text-muted) !important;
+  font-size: 13px;
 }
 
 .create-edit__title {
   margin-top: 0;
   margin-bottom: 0 !important;
   font-weight: 700 !important;
+  letter-spacing: -0.02em;
+  line-height: 1.2 !important;
 }
 
 .create-edit__header {
@@ -448,7 +499,96 @@ body.dark-mode .header-page .ant-col  .ant-col {
   text-transform: capitalize;
 }
 
-/* ─── Forms ─── */
+.create-edit__card > .ant-card-body {
+  padding: 20px 24px !important;
+}
+
+.page-form .group.ant-card {
+  height: 100%;
+}
+
+.page-form .group.ant-card .ant-card-head {
+  background: var(--mp-border-subtle);
+  border-bottom: 1px solid var(--mp-border) !important;
+}
+
+.page-form .group.ant-card .ant-card-head-title {
+  font-weight: 600;
+  font-size: 15px;
+}
+
+.page-form .group.ant-card:hover {
+  box-shadow: var(--mp-shadow-sm) !important;
+}
+
+.page-form .read-only {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-height: 38px;
+  justify-content: center;
+}
+
+.page-form .read-only > div:first-child:not(.read-only__value) {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--mp-text-muted);
+  line-height: 1.4;
+}
+
+.page-form .read-only__value {
+  padding-inline-start: 0;
+  font-size: 14px;
+  line-height: 1.5;
+  word-break: break-word;
+}
+
+.page-form--detail .read-only__value {
+  color: var(--mp-text);
+}
+
+.field-load-error {
+  padding: 12px 16px;
+  border-radius: var(--mp-radius);
+  background: rgba(239, 68, 68, 0.06);
+  border: 1px solid rgba(239, 68, 68, 0.18);
+  color: #dc2626;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+body.dark-mode .field-load-error {
+  background: rgba(239, 68, 68, 0.1);
+  border-color: rgba(239, 68, 68, 0.25);
+  color: #f87171;
+}
+
+.header-page {
+  position: sticky;
+  top: 0;
+  z-index: 9;
+  margin-top: -50px;
+  height: 50px;
+}
+
+.header-page > .ant-col {
+  backdrop-filter: blur(12px);
+  background: rgba(241, 245, 249, 0.88);
+  border-radius: var(--mp-radius);
+  padding: 8px 12px;
+  margin-top: -16px;
+  box-shadow: var(--mp-shadow-sm);
+}
+
+body.dark-mode .header-page > .ant-col {
+  background: rgba(15, 23, 42, 0.88);
+}
+
+.header-page .ant-typography {
+  margin-bottom: 0;
+}
+
+/* legacy — kept for any external overrides */
 .ant-form-item {
   position: relative;
 }
@@ -499,6 +639,21 @@ body.dark-mode .header-page .ant-col  .ant-col {
 
 .action-text {
   display: none !important;
+}
+
+.action-td .ant-btn-link {
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  transition: background var(--mp-transition);
+}
+
+.action-td .ant-btn-link:hover {
+  background: var(--mp-border-subtle);
 }
 
 .action-td a {
@@ -1028,7 +1183,6 @@ body.dark-mode .not-found-page__glow--2 {
 /* ─── Scrollbar ─── */
 .ant-layout-content::-webkit-scrollbar,
 .ant-table-body::-webkit-scrollbar,
-.menu__sidebar-scroll::-webkit-scrollbar,
 .filter-checkbox-list__scroll::-webkit-scrollbar,
 .mp-scrollbar::-webkit-scrollbar {
   width: 6px;
@@ -1037,7 +1191,6 @@ body.dark-mode .not-found-page__glow--2 {
 
 .ant-layout-content::-webkit-scrollbar-thumb,
 .ant-table-body::-webkit-scrollbar-thumb,
-.menu__sidebar-scroll::-webkit-scrollbar-thumb,
 .filter-checkbox-list__scroll::-webkit-scrollbar-thumb,
 .mp-scrollbar::-webkit-scrollbar-thumb {
   background: var(--mp-border);

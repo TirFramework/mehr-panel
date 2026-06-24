@@ -78,12 +78,16 @@ const Field = (props) => {
       lazyFields[type] = lazy(() =>
         loader().then((mod) => ({ default: mod.default })).catch((error) => {
           console.error(`❌ خطا در بارگذاری component ${type}.jsx:`, error);
-          return { default: () => <div>Error loading the field: {type}</div> };
+          return { default: () => (
+            <div className="field-load-error">Error loading the field: {type}</div>
+          ) };
         })
       );
     } else {
       // If the module is missing, return an error component
-      lazyFields[type] = () => <div>Error loading the field: {type}</div>;
+      lazyFields[type] = () => (
+        <div className="field-load-error">Error loading the field: {type}</div>
+      );
     }
   }
 

@@ -93,7 +93,7 @@ export const getColsNormalize = (res) => {
         : { minWidth: optMinWidth ?? cellCalcMin, maxWidth: optMaxWidth };
 
       return (
-        <div style={cellStyle}>
+        <div className="table-cell" style={cellStyle} title={typeof value === "string" ? value : undefined}>
           <Render
             value={value}
             item={col}

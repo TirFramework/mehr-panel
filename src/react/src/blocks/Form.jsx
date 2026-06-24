@@ -149,8 +149,7 @@ const CreateForm = ({ type }) => {
   const isLoading = dataQuery.isLoading && !fieldsData;
 
   return (
-    <>
-      {/* Loading skeleton for header */}
+    <div className={`page-form page-form--${type}`}>
       {isLoading ? (
         <>
           <div>
@@ -176,7 +175,6 @@ const CreateForm = ({ type }) => {
         <Header type={type} pageTitle={fieldsData?.configs?.module_title} />
       )}
 
-      {/* Main form */}
       <Form
         form={form}
         validateMessages={fieldsData?.validationMsg}
@@ -190,20 +188,20 @@ const CreateForm = ({ type }) => {
         onFinish={handleFinish}
         onFinishFailed={handleFinishFailed}
       >
-        {/* Submit buttons row */}
-        <Row justify="end" align="middle" className="header-page">
-          <Col>
-            <SubmitGroup
-              buttons={fieldsData?.buttons}
-              actions={fieldsData?.configs?.actions}
-              form={form}
-              pageId={pageId}
-              type={type}
-            />
-          </Col>
-        </Row>
+        {!isLoading && (
+          <Row justify="end" align="middle" className="header-page">
+            <Col>
+              <SubmitGroup
+                buttons={fieldsData?.buttons}
+                actions={fieldsData?.configs?.actions}
+                form={form}
+                pageId={pageId}
+                type={type}
+              />
+            </Col>
+          </Row>
+        )}
 
-        {/* Form fields card */}
         <Card className="create-edit__card" loading={isLoading}>
           <Row gutter={[16, 16]}>
             {fieldsData?.fields?.map((field, index) => (
@@ -219,7 +217,7 @@ const CreateForm = ({ type }) => {
           </Row>
         </Card>
       </Form>
-    </>
+    </div>
   );
 };
 
