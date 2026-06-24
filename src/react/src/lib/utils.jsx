@@ -26,7 +26,7 @@ export const getColsNormalize = (res) => {
     // -----------------------------------
     // add data for filter
     if (col.filters !== undefined) {
-      if (["DatePicker", "Slider", "Search"].includes(col.filterType)) {
+      if (["DatePicker", "Slider", "Search", 'Select'].includes(col.filterType)) {
         col.filterDropdown = (props) => {
           return (
             <FilterDate
@@ -63,7 +63,7 @@ export const getColsNormalize = (res) => {
     //   options.minWidth → minimum width (can grow)
     //   options.maxWidth → maximum width (default 400; caps wide multi-tag cells)
     // Without any option the calculated label/content width is used as the minimum.
-    const fixedWidth  = col.field.options?.width    ?? null;
+    const fixedWidth = col.field.options?.width ?? null;
     const optMinWidth = col.field.options?.minWidth ?? null;
     const optMaxWidth = col.field.options?.maxWidth ?? 400;
 
@@ -108,11 +108,11 @@ export const getColsNormalize = (res) => {
     col.title = (
       <div
         title={col.title}
-        // style={{
-        //   minWidth:
-        //     col.field.options?.minWidth ||
-        //     calculatWidth(col.field.display, null, false, false),
-        // }}
+      // style={{
+      //   minWidth:
+      //     col.field.options?.minWidth ||
+      //     calculatWidth(col.field.display, null, false, false),
+      // }}
       >
         {col.title}
         {col.comment?.content !== undefined && (
@@ -171,7 +171,6 @@ const Render = ({ item, value, rowIndex, data, id, minWidth }) => {
 };
 
 const calculatWidth = (th, td, isFilter, sortable) => {
-  // console.log("🚀 ~ calculatWidth ~ th:", th);
   let icon = 0;
   if (isFilter) {
     icon = 28;
@@ -189,41 +188,83 @@ const calculatWidth = (th, td, isFilter, sortable) => {
 
   let finallyWidth = 100;
 
-  const thWidth = getTextWidth(
-    th,
-    "600 14px -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,'Noto Sans',sans-serif,'Apple Color Emoji','Segoe UI Emoji','Segoe UI Symbol','Noto Color Emoji'"
-  );
+  const headerMeasure = getTableHeaderMeasureOpts();
+  const cellMeasure = getTableCellMeasureOpts();
 
-  const tdWidth = getTextWidth(
-    safeText,
-    "600 14px -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,'Noto Sans',sans-serif,'Apple Color Emoji','Segoe UI Emoji','Segoe UI Symbol','Noto Color Emoji'"
-  );
+  const thWidth = getTextWidth(th, headerMeasure.font, {
+    letterSpacingEm: headerMeasure.letterSpacingEm,
+    uppercase: true,
+  });
+
+  const tdWidth = getTextWidth(safeText, cellMeasure.font);
 
   if (tdWidth > thWidth + icon) {
-    finallyWidth = tdWidth + 32; // 32px cell padding
+    finallyWidth = tdWidth + 32; // 32px cell padding (16px each side)
     if (finallyWidth > 400) {
       finallyWidth = 400;
     }
   } else {
-    finallyWidth = thWidth + icon + 32; // 32px cell padding
+    finallyWidth = thWidth + icon + 32;
   }
 
-  // Never go below 80px so short headers (e.g. "Photo") stay readable
   finallyWidth = Math.max(80, finallyWidth);
 
-  // console.log("🚀 ~ calculatWidth ~ thWidth:", thWidth);
   return finallyWidth;
 };
 
-function getTextWidth(text, font) {
-  // re-use canvas object for better performance
+function parseLetterSpacingEm(value, fontSize) {
+  const size = parseFloat(fontSize) || 14;
+  if (!value) return 0;
+  if (value.endsWith("em")) return parseFloat(value);
+  if (value.endsWith("px")) return parseFloat(value) / size;
+  return parseFloat(value) || 0;
+}
+
+function getTableHeaderMeasureOpts() {
+  const root = getComputedStyle(document.documentElement);
+  const fontSize =
+    root.getPropertyValue("--mp-table-header-font-size").trim() || "13px";
+  const fontWeight =
+    root.getPropertyValue("--mp-table-header-font-weight").trim() || "600";
+  const letterSpacing =
+    root.getPropertyValue("--mp-table-header-letter-spacing").trim() || "0em";
+  const fontFamily = getCssStyle(document.body, "font-family");
+
+  return {
+    font: `${fontWeight} ${fontSize} ${fontFamily}`,
+    letterSpacingEm: parseLetterSpacingEm(letterSpacing, fontSize),
+  };
+}
+
+function getTableCellMeasureOpts() {
+  const root = getComputedStyle(document.documentElement);
+  const fontSize =
+    root.getPropertyValue("--mp-table-cell-font-size").trim() || "14px";
+  const fontWeight =
+    root.getPropertyValue("--mp-table-cell-font-weight").trim() || "400";
+  const fontFamily = getCssStyle(document.body, "font-family");
+
+  return {
+    font: `${fontWeight} ${fontSize} ${fontFamily}`,
+  };
+}
+
+function getTextWidth(text, font, { letterSpacingEm = 0, uppercase = false } = {}) {
+  const displayText = uppercase ? String(text).toUpperCase() : String(text);
   const canvas =
     getTextWidth.canvas ||
     (getTextWidth.canvas = document.createElement("canvas"));
   const context = canvas.getContext("2d");
   context.font = font;
-  const metrics = context.measureText(text);
-  return metrics.width;
+  let width = context.measureText(displayText).width;
+
+  // canvas font string does not include letter-spacing
+  if (letterSpacingEm && displayText.length > 1) {
+    const fontSize = parseFloat(font.match(/(\d+(?:\.\d+)?)px/)?.[1] || 14);
+    width += (displayText.length - 1) * letterSpacingEm * fontSize;
+  }
+
+  return width;
 }
 
 export function getPlacementsForSearch(cols) {
@@ -312,10 +353,10 @@ export function extractQueryParams() {
   return newQueryParams;
 }
 
-export function extractFromlocalhost() {}
+export function extractFromlocalhost() { }
 
 export function objectToQueryString(obj, columns = []) {
-  if(columns === null){
+  if (columns === null) {
     columns = []
   }
   const newColumns = [...columns];

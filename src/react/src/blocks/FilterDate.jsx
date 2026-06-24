@@ -2,6 +2,8 @@ import React from "react";
 import { Button, Col, DatePicker, Divider, Input, Row, Slider } from "antd";
 import dayjs from "dayjs";
 
+import FilterCheckboxList from "./FilterCheckboxList";
+
 function FilterDate({
   setSelectedKeys,
   selectedKeys,
@@ -30,8 +32,14 @@ function FilterDate({
     return d[d.length - 1].value;
   };
 
+  const hasSelection = Array.isArray(selectedKeys)
+    ? selectedKeys.length > 0
+    : selectedKeys != null && selectedKeys !== "";
+
   return (
-    <div className="custom-filter">
+    <div
+      className={`custom-filter${filtersType === "Select" ? " custom-filter--select" : ""}`}
+    >
       <>
         {filtersType === "DatePicker" && (
           <DatePicker.RangePicker
@@ -89,6 +97,16 @@ function FilterDate({
           />
         </>
       )}
+
+      {filtersType === "Select" && (
+        <FilterCheckboxList
+          data={data}
+          selectedKeys={selectedKeys}
+          setSelectedKeys={setSelectedKeys}
+        />
+      )}
+
+      
       <div>
         <Divider style={{ margin: "8px" }} />
       </div>
@@ -97,6 +115,7 @@ function FilterDate({
           <Button
             type="link"
             size="small"
+            disabled={!hasSelection}
             onClick={() => {
               clearFilters();
             }}
