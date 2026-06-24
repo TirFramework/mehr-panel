@@ -209,18 +209,21 @@ const Sidebar = memo(function App() {
         }}
       >
         {menusQuery.isLoading ? (
-          <>loading ....</>
+          <div className="menu__sidebar-scroll menu__sidebar-scroll--loading">
+            loading ....
+          </div>
         ) : (
-          <Menu
-            theme="dark"
-            className="menu__sidebar"
-            defaultSelectedKeys={["0"]}
-            selectedKeys={activeMenuKeys.activeKeys}
-            openKeys={openKeys}
-            onOpenChange={onOpenChange}
-            onClick={onMenuClick}
-            mode="inline"
-            items={menus.map(
+          <div className="menu__sidebar-scroll">
+            <Menu
+              theme="dark"
+              className="menu__sidebar"
+              defaultSelectedKeys={["0"]}
+              selectedKeys={activeMenuKeys.activeKeys}
+              openKeys={openKeys}
+              onOpenChange={onOpenChange}
+              onClick={onMenuClick}
+              mode="inline"
+              items={menus.map(
               ({ link, icon, title, name, badge, children = [] }) => ({
                 icon: icon ? (
                   <Tooltip title={title} placement="right">
@@ -262,6 +265,7 @@ const Sidebar = memo(function App() {
               })
             )}
           />
+          </div>
         )}
         {!isMobile && (
           <div className="menu__sidebar-footer">
