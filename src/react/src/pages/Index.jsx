@@ -253,7 +253,7 @@ function Index() {
                         loading={dataQuery.isLoading}
                         value={pagination?.search}
                         onSearch={onSearch}
-                        placeholder={getPlacementsForSearch(pageData?.cols)}
+                        placeholder={getPlacementsForSearch(pageData?.cols, t)}
                       />
                     )}
 
@@ -389,11 +389,12 @@ function Index() {
               columns={mergedColumns}
               rowKey={(record) => record.id || record._id}
               dataSource={indexData?.data}
-              noDataContent={
-                helpers.notEmpty(pagination?.filters) || pagination?.search
-                  ? "remove filter "
-                  : "nodata"
-              }
+              locale={{
+                emptyText:
+                  helpers.notEmpty(pagination?.filters) || pagination?.search
+                    ? t.REMOVE_FILTER
+                    : t.NO_DATA,
+              }}
               // components={{
               //   header: {
               //     cell: (headerCell, data) => {
@@ -428,7 +429,7 @@ function Index() {
                       pagination={pagination}
                     />
                     <span className="page-index__total">
-                      Total: {total}
+                      {t.TOTAL_COUNT.replace("{total}", total)}
                     </span>
                   </div>
                 ),

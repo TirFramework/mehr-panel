@@ -5,6 +5,7 @@ import { LogoutOutlined, ExportOutlined } from "@ant-design/icons";
 import { clearApiToken } from "../lib/authToken";
 import * as api from "../api";
 import Config from "../constants/config";
+import { useLanguage } from "../context/LanguageContext";
 
 const { Header } = Layout;
 
@@ -14,6 +15,7 @@ const sharedLayouts = import.meta.glob("../dynamic-layouts/*.jsx");
 /* --- Default version --- */
 const DefaultTopHeader = ({ username, name }) => {
   const navigate = useNavigate();
+  const { t } = useLanguage();
 
   const logout = () => {
     api.postLogout().then(() => {
@@ -39,7 +41,7 @@ const DefaultTopHeader = ({ username, name }) => {
           <Space>
             <div className="username">{username}</div>
             <Button onClick={logout} icon={<LogoutOutlined />}>
-              <span className="logout-text">Logout</span>
+              <span className="logout-text">{t.LOGOUT}</span>
             </Button>
           </Space>
         </Col>

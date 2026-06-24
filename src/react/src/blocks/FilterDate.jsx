@@ -3,6 +3,7 @@ import { Button, Col, DatePicker, Divider, Input, Row, Slider } from "antd";
 import dayjs from "dayjs";
 
 import FilterCheckboxList from "./FilterCheckboxList";
+import { useLanguage } from "../context/LanguageContext";
 
 function FilterDate({
   setSelectedKeys,
@@ -14,6 +15,8 @@ function FilterDate({
   filtersType,
   data,
 }) {
+  const { t } = useLanguage();
+
   const getMarks = (d) => {
     const transformedObject = {};
 
@@ -89,7 +92,7 @@ function FilterDate({
         <>
           <Input
             value={selectedKeys}
-            placeholder="Search"
+            placeholder={t.SEARCH}
             size="small"
             onChange={(e) => {
               setSelectedKeys(e.target.value);
@@ -120,7 +123,7 @@ function FilterDate({
               clearFilters();
             }}
           >
-            Reset
+            {t.RESET}
           </Button>
         </Col>
         <Col>
@@ -132,7 +135,7 @@ function FilterDate({
               close();
             }}
           >
-            Filter
+            {t.FILTER}
           </Button>
         </Col>
       </Row>

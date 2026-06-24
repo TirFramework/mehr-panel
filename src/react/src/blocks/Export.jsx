@@ -62,9 +62,9 @@ function Export({ data, loading, columns, pagination }) {
         document.execCommand("copy");
         document.body.removeChild(textArea);
       }
-      message.success("Link copied to clipboard");
+      message.success(t.LINK_COPIED);
     } catch (error) {
-      message.error("Failed to copy link");
+      message.error(t.LINK_COPY_FAILED);
     }
   };
   const getHeader = () => {
@@ -105,14 +105,14 @@ function Export({ data, loading, columns, pagination }) {
           data={getData(orgData)}
           headers={getHeader()}
         >
-          <div>Export this Table</div>
+          <div>{t.EXPORT_THIS_TABLE}</div>
         </CSVLink>
       ),
       key: "1",
       icon: <FileExcelOutlined />,
     },
     {
-      label: <div onClick={exportCSV}>Export All Data</div>,
+      label: <div onClick={exportCSV}>{t.EXPORT_ALL_DATA}</div>,
       key: "2",
       icon: <FileExcelOutlined />,
       disabled: lo,

@@ -14,10 +14,12 @@ import { useDeleteRow } from "../Request";
 import useGetParams from "../hooks/useGetParams";
 import Config, { defaultFilter } from "../constants/config";
 import * as helpers from "../lib/helpers";
+import { useLanguage } from "../context/LanguageContext";
 
 export const DetailRow = ({ id }) => {
   const { pageModule } = useParams();
   const { editingId } = useEditing();
+  const { t } = useLanguage();
 
   if (editingId === id) {
     return null;
@@ -27,7 +29,7 @@ export const DetailRow = ({ id }) => {
     <Link to={`/${Config.perfix}/${pageModule}/detail?id=${id}`}>
       <Button type="link" size="small">
         <EyeOutlined />
-        <span className="action-text">Detail</span>
+        <span className="action-text">{t.DETAIL}</span>
       </Button>
     </Link>
   );
@@ -36,6 +38,7 @@ export const DetailRow = ({ id }) => {
 export const EditRow = ({ id }) => {
   const { pageModule } = useParams();
   const { editingId } = useEditing();
+  const { t } = useLanguage();
 
   if (editingId === id) {
     return null;
@@ -45,7 +48,7 @@ export const EditRow = ({ id }) => {
     <Link to={`/${Config.perfix}/${pageModule}/create-edit?id=${id}`}>
       <Button type="link" size="small">
         <FormOutlined />
-        <span className="action-text">Edit</span>
+        <span className="action-text">{t.EDIT}</span>
       </Button>
     </Link>
   );
@@ -55,6 +58,7 @@ export const DeleteRow = ({ id, interactionCharacter }) => {
   const { pageModule } = useParams();
   const { editingId } = useEditing();
   const deleteRow = useDeleteRow();
+  const { t } = useLanguage();
 
   const [pagination] = useGetParams(pageModule, {
     ...defaultFilter,
@@ -81,7 +85,7 @@ export const DeleteRow = ({ id, interactionCharacter }) => {
   }
 
   return (
-    <Popconfirm title="Sure to delete?" onConfirm={handleDelete}>
+    <Popconfirm title={t.SURE_TO_DELETE} onConfirm={handleDelete}>
       <Button
         type="link"
         danger
@@ -89,7 +93,7 @@ export const DeleteRow = ({ id, interactionCharacter }) => {
         size="small"
         icon={<DeleteOutlined />}
       >
-        <span className="action-text">Delete</span>
+        <span className="action-text">{t.DELETE}</span>
       </Button>
     </Popconfirm>
   );
@@ -105,6 +109,7 @@ export const InlineEdit = ({ id, form, data }) => {
   });
   const queryClient = useQueryClient();
   const { message } = App.useApp();
+  const { t } = useLanguage();
 
   const handleFormSubmit = () => {
     form
@@ -144,10 +149,10 @@ export const InlineEdit = ({ id, form, data }) => {
           loading={saveLoading}
           style={{ width: "85px" }}
         >
-          Save
+          {t.SAVE}
         </Button>
         <Button type="link" onClick={cancelEditing}>
-          Cancel
+          {t.CANCEL}
         </Button>
       </>
     );
@@ -160,12 +165,12 @@ export const InlineEdit = ({ id, form, data }) => {
       size="small"
       icon={<EditOutlined />}
     >
-      <span className="action-text">Inline Edit</span>
+      <span className="action-text">{t.INLINE_EDIT}</span>
     </Button>
   );
 };
 
-export const createActionsColumn = (configs, pageModule, form) => {
+export const createActionsColumn = (configs, pageModule, form, t) => {
   const moduleActions = configs.actions;
   const interactionCharacter =
     configs.primary_key || Config.interactionCharacter;
@@ -175,7 +180,7 @@ export const createActionsColumn = (configs, pageModule, form) => {
   const deleteAction = moduleActions.destroy;
 
   return {
-    title: "Actions",
+    title: t.ACTIONS,
     dataIndex: interactionCharacter,
     align: "center",
     fixed: "right",

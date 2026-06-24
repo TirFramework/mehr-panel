@@ -9,6 +9,7 @@ import { Checkbox, Input, Typography } from "antd";
 import { LoadingOutlined } from "@ant-design/icons";
 
 import { useDebouncedValue } from "../hooks/useDebouncedValue";
+import { useLanguage } from "../context/LanguageContext";
 
 const LARGE_DATASET_THRESHOLD = 100;
 const INITIAL_SCAN_COUNT = 20;
@@ -215,13 +216,13 @@ const FilterScrollList = React.memo(function FilterScrollList({
   );
 });
 
-function FilterStatus({ mode, totalCount, matchCount, hasMore, isLoadingMore }) {
+function FilterStatus({ mode, totalCount, matchCount, hasMore, isLoadingMore, t }) {
   const formattedTotal = totalCount.toLocaleString();
 
   if (mode === "empty") {
     return (
       <Typography.Text type="secondary" className="filter-checkbox-list__status">
-        No results
+        {t.FILTER_NO_RESULTS}
       </Typography.Text>
     );
   }
@@ -229,7 +230,7 @@ function FilterStatus({ mode, totalCount, matchCount, hasMore, isLoadingMore }) 
   if (mode === "browse") {
     return (
       <Typography.Text type="secondary" className="filter-checkbox-list__status">
-        {formattedTotal} items
+        {t.FILTER_ITEMS_COUNT.replace("{count}", formattedTotal)}
         {isLoadingMore ? " …" : ""}
       </Typography.Text>
     );
@@ -239,11 +240,11 @@ function FilterStatus({ mode, totalCount, matchCount, hasMore, isLoadingMore }) 
     return (
       <Typography.Text type="secondary" className="filter-checkbox-list__status">
         {matchCount > 0
-          ? `${matchCount.toLocaleString()} result${matchCount === 1 ? "" : "s"}`
+          ? t.FILTER_RESULTS_COUNT.replace("{count}", matchCount.toLocaleString())
           : isLoadingMore
-            ? "Searching…"
-            : `${formattedTotal} items`}
-        {hasMore && matchCount > 0 ? " — scroll for more" : ""}
+            ? t.FILTER_SEARCHING
+            : t.FILTER_ITEMS_COUNT.replace("{count}", formattedTotal)}
+        {hasMore && matchCount > 0 ? t.FILTER_SCROLL_FOR_MORE : ""}
         {isLoadingMore && matchCount > 0 ? " …" : ""}
       </Typography.Text>
     );
@@ -253,6 +254,7 @@ function FilterStatus({ mode, totalCount, matchCount, hasMore, isLoadingMore }) 
 }
 
 function FilterCheckboxList({ data, selectedKeys, setSelectedKeys }) {
+  const { t } = useLanguage();
   const [search, setSearch] = useState("");
   const debouncedSearch = useDebouncedValue(search, SEARCH_DEBOUNCE_MS);
   const [scanTarget, setScanTarget] = useState(INITIAL_SCAN_COUNT);
@@ -387,7 +389,7 @@ function FilterCheckboxList({ data, selectedKeys, setSelectedKeys }) {
   );
 
   const showSearch = totalCount > 10 || search.length > 0;
-  const emptyText = statusMode === "empty" ? "No results" : "No items";
+  const emptyText = statusMode === "empty" ? t.FILTER_NO_RESULTS : t.FILTER_NO_ITEMS;
 
   return (
     <div
@@ -400,8 +402,8 @@ function FilterCheckboxList({ data, selectedKeys, setSelectedKeys }) {
           className="filter-checkbox-list__search"
           placeholder={
             isLarge
-              ? `Search ${totalCount.toLocaleString()} items…`
-              : "Search in filters"
+              ? t.FILTER_SEARCH_ITEMS.replace("{count}", totalCount.toLocaleString())
+              : t.FILTER_SEARCH_IN
           }
           value={search}
           onChange={(e) => setSearch(e.target.value)}
@@ -417,6 +419,7 @@ function FilterCheckboxList({ data, selectedKeys, setSelectedKeys }) {
           matchCount={searchPool.length}
           hasMore={searchHasMore}
           isLoadingMore={isLoadingMore}
+          t={t}
         />
       )}
 

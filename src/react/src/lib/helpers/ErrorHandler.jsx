@@ -2,6 +2,7 @@ import { notification } from "antd";
 import { clearApiToken } from "../authToken";
 import Config from "../../constants/config";
 import { getNotificationApi } from "../notificationService";
+import { getT } from "../../context/LanguageContext";
 
 const DEFAULT_DURATION = 10;
 
@@ -33,13 +34,14 @@ const normalizeDuration = (value) => {
 const ErrorHandler = async (error) => {
   const response = error?.response;
   const data = response?.data;
+  const t = getT(document.documentElement.lang || "en");
 
   const notifier = getNotificationApi() || notification;
 
   if (!response) {
     notifier.warning({
-      message: "Unknown error",
-      description: "No response received from the server.",
+      message: t.ERROR_UNKNOWN,
+      description: t.ERROR_NO_RESPONSE,
       duration: DEFAULT_DURATION,
     });
     return null;
@@ -53,8 +55,8 @@ const ErrorHandler = async (error) => {
       response.data = JSON.parse(jsonData);
     } catch (parseError) {
       notifier.warning({
-        message: "Response parsing error",
-        description: "Unable to read the error response from the server.",
+        message: t.ERROR_PARSE,
+        description: t.ERROR_PARSE_DESC,
         duration: DEFAULT_DURATION,
       });
       return null;
@@ -78,14 +80,14 @@ const ErrorHandler = async (error) => {
     }
 
     notifier.warning({
-      message: normalizedData.title || "Error",
+      message: normalizedData.title || t.ERROR_TITLE,
       description: buildDescription(messages),
       duration: normalizeDuration(normalizedData.duration),
     });
   } else {
     notifier.warning({
-      message: "Unknown error",
-      description: "An error occurred. Please try again.",
+      message: t.ERROR_UNKNOWN,
+      description: t.ERROR_GENERIC,
       duration: normalizeDuration(normalizedData.duration),
     });
   }

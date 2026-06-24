@@ -1,6 +1,7 @@
 import React, { useMemo } from "react";
 import { useParams, useSearchParams } from "react-router-dom";
 import { createActionsColumn } from "../components/TableActions";
+import { useLanguage } from "../context/LanguageContext";
 
 /**
  * Hook to manage table columns with filtering and showAllSwitch support
@@ -8,6 +9,7 @@ import { createActionsColumn } from "../components/TableActions";
 export const useTableColumns = (pageData, pagination, form) => {
   const { pageModule } = useParams();
   const [urlParams] = useSearchParams();
+  const { t } = useLanguage();
 
   return useMemo(() => {
     if (
@@ -31,7 +33,7 @@ export const useTableColumns = (pageData, pagination, form) => {
               ? pagination?.sorter.order
               : null,
         }));
-      filteredCols.push(createActionsColumn(pageData.configs, pageModule, form));
+      filteredCols.push(createActionsColumn(pageData.configs, pageModule, form, t));
       return filteredCols;
     }
 
@@ -58,7 +60,7 @@ export const useTableColumns = (pageData, pagination, form) => {
 
     // If showAllSwitch is enabled, return all columns
     if (showAllSwitch) {
-      newData.push(createActionsColumn(pageData.configs, pageModule, form));
+      newData.push(createActionsColumn(pageData.configs, pageModule, form, t));
       return newData;
     }
 
@@ -77,7 +79,7 @@ export const useTableColumns = (pageData, pagination, form) => {
             activeColsArray.includes(item.field.display)
           );
           filteredList.push(
-            createActionsColumn(pageData.configs, pageModule, form)
+            createActionsColumn(pageData.configs, pageModule, form, t)
           );
           return filteredList;
         }
@@ -87,7 +89,7 @@ export const useTableColumns = (pageData, pagination, form) => {
     }
 
     // Default: return all columns
-    newData.push(createActionsColumn(pageData.configs, pageModule, form));
+    newData.push(createActionsColumn(pageData.configs, pageModule, form, t));
     return newData;
-  }, [pageData, pagination, pageModule, form, urlParams]);
+  }, [pageData, pagination, pageModule, form, urlParams, t]);
 };

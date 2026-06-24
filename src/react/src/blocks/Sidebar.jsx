@@ -5,6 +5,7 @@ import { LoadingOutlined } from "@ant-design/icons";
 import * as antdIcons from "@ant-design/icons"; // Import all icons
 import { useSidebar } from "../Request";
 import useLocalStorage from "../hooks/useLocalStorage";
+import { useLanguage } from "../context/LanguageContext";
 
 const { Sider } = Layout;
 
@@ -36,6 +37,7 @@ const MyIcon = memo(
 
 // Memoized Sidebar Component
 const Sidebar = memo(function App() {
+  const { t } = useLanguage();
   const { data: menus, ...menusQuery } = useSidebar();
   const [isCollapsible, setIsCollapsible] = useLocalStorage("collapsible", {
     status: false,
@@ -210,7 +212,7 @@ const Sidebar = memo(function App() {
       >
         {menusQuery.isLoading ? (
           <div className="menu__sidebar-scroll menu__sidebar-scroll--loading">
-            loading ....
+            {t.SIDEBAR_LOADING}
           </div>
         ) : (
           <div className="menu__sidebar-scroll">

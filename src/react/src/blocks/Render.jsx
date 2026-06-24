@@ -2,8 +2,10 @@ import React from "react";
 import { Card, Tag } from "antd";
 import dayjs from "dayjs";
 import Field from "../components/Field";
+import { useLanguage } from "../context/LanguageContext";
 
 const Render = (props) => {
+  const { t } = useLanguage();
   if (props.type === "DatePicker") {
     return (
       <>
@@ -123,7 +125,7 @@ const Render = (props) => {
       <>
         <label>{props.display}:</label>
         <div className="read-only__value">
-          <Tag>{props.value ? "Yes" : "No"}</Tag>
+          <Tag>{props.value ? t.YES : t.NO}</Tag>
         </div>
       </>
     );

@@ -21,9 +21,11 @@ import {
 } from "@ant-design/icons";
 import * as api from "../api";
 import Config from "../constants/config";
+import { useLanguage } from "../context/LanguageContext";
 
 const ForgotPassword = () => {
   const navigate = useNavigate();
+  const { t } = useLanguage();
   const [loading, setLoading] = useState(false);
   const [showSetPassword, setShowSetPassword] = useState("");
 
@@ -61,7 +63,7 @@ const ForgotPassword = () => {
       <Layout.Content className="login-page">
         <Card>
           <div className="illustration-wrapper">
-            <img src="" alt="Login" />
+            <img src="" alt={t.LOGIN_ALT_IMAGE} />
           </div>
 
           {!showSetPassword ? (
@@ -72,7 +74,7 @@ const ForgotPassword = () => {
               onFinish={onFinishForgotPassword}
             >
               <Typography.Title className="page-index__title">
-                Forget Password
+                {t.FORGET_PASSWORD_TITLE}
               </Typography.Title>
 
               <Form.Item
@@ -80,13 +82,13 @@ const ForgotPassword = () => {
                 rules={[
                   {
                     required: true,
-                    message: "Please input your email!",
+                    message: t.VALIDATION_EMAIL,
                   },
                 ]}
               >
                 <Input
                   size="large"
-                  placeholder="Email"
+                  placeholder={t.EMAIL}
                   prefix={<UserOutlined />}
                 />
               </Form.Item>
@@ -99,7 +101,7 @@ const ForgotPassword = () => {
                   htmlType="submit"
                   loading={loading}
                 >
-                  Submit
+                  {t.SUBMIT}
                 </Button>
               </Form.Item>
               <Flex gap="middle" justify="center">
@@ -110,7 +112,7 @@ const ForgotPassword = () => {
                     navigate(`/${Config.perfix}/login`);
                   }}
                 >
-                  Back to login
+                  {t.BACK_TO_LOGIN}
                 </Button>
               </Flex>
             </Form>
@@ -122,7 +124,7 @@ const ForgotPassword = () => {
               autoComplete="off"
             >
               <Typography.Title className="page-index__title">
-                Reset Password
+                {t.RESET_PASSWORD_TITLE}
               </Typography.Title>
 
               <Form.Item
@@ -130,7 +132,7 @@ const ForgotPassword = () => {
                 rules={[
                   {
                     required: true,
-                    message: "Please input your code!",
+                    message: t.VALIDATION_CODE,
                   },
                 ]}
               >
@@ -148,13 +150,13 @@ const ForgotPassword = () => {
                 rules={[
                   {
                     required: true,
-                    message: "Please input your password!",
+                    message: t.VALIDATION_PASSWORD,
                   },
                 ]}
               >
                 <Input.Password
                   size="large"
-                  placeholder="Password"
+                  placeholder={t.PASSWORD}
                   prefix={<LockOutlined />}
                 />
               </Form.Item>
@@ -166,7 +168,7 @@ const ForgotPassword = () => {
                 rules={[
                   {
                     required: true,
-                    message: "Please input your password confirmation",
+                    message: t.VALIDATION_PASSWORD_CONFIRM,
                   },
                   ({ getFieldValue }) => ({
                     validator(_, value) {
@@ -174,7 +176,7 @@ const ForgotPassword = () => {
                         return Promise.resolve();
                       }
                       return Promise.reject(
-                        new Error("The two passwords do not match!")
+                        new Error(t.PASSWORDS_DONT_MATCH)
                       );
                     },
                   }),
@@ -182,7 +184,7 @@ const ForgotPassword = () => {
               >
                 <Input.Password
                   size="large"
-                  placeholder="Password"
+                  placeholder={t.PASSWORD}
                   prefix={<LockOutlined />}
                 />
               </Form.Item>
@@ -195,7 +197,7 @@ const ForgotPassword = () => {
                   htmlType="submit"
                   loading={loading}
                 >
-                  Submit
+                  {t.SUBMIT}
                 </Button>
               </Form.Item>
 
@@ -207,7 +209,7 @@ const ForgotPassword = () => {
                     navigate(`/${Config.perfix}/login`);
                   }}
                 >
-                  Back to login
+                  {t.BACK_TO_LOGIN}
                 </Button>
                 <Button
                   type="link"
@@ -215,7 +217,7 @@ const ForgotPassword = () => {
                     setShowSetPassword("");
                   }}
                 >
-                  Change Email
+                  {t.CHANGE_EMAIL}
                 </Button>
               </Flex>
             </Form>

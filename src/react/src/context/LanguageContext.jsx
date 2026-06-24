@@ -84,3 +84,5 @@ export const LanguageProvider = ({ children }) => {
 };
 
 export const useLanguage = () => useContext(LanguageContext);
+
+export const getT = (lang) => allTranslations[lang] ?? allTranslations.en;

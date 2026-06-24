@@ -21,9 +21,11 @@ import {
 } from "@ant-design/icons";
 import * as api from "../api";
 import Config from "../constants/config";
+import { useLanguage } from "../context/LanguageContext";
 
 const Login = () => {
   const navigate = useNavigate();
+  const { t } = useLanguage();
   const [mustVerify, setMustVerify] = useState(false);
   const [loading, setLoading] = useState(false);
 
@@ -47,11 +49,11 @@ const Login = () => {
           });
         } else if (!res?.api_token) {
           notification.error({
-            message: "Login failed: no token received from server",
+            message: t.LOGIN_NO_TOKEN,
           });
         } else {
           notification["success"]({
-            message: "You have successfully logged",
+            message: t.LOGIN_SUCCESS,
           });
           login(res.api_token);
         }
@@ -68,7 +70,7 @@ const Login = () => {
   const login = (token) => {
     if (!setApiToken(token)) {
       notification.error({
-        message: "Login failed: no token received from server",
+        message: t.LOGIN_NO_TOKEN,
       });
       return;
     }
@@ -100,23 +102,23 @@ const Login = () => {
             onFinishFailed={onFinishFailed}
           >
             <Typography.Title className="page-index__title">
-              Welcome back
+              {t.LOGIN_WELCOME}
             </Typography.Title>
 
-            <Typography.Paragraph>Login to the Dashboard</Typography.Paragraph>
+            <Typography.Paragraph>{t.LOGIN_SUBTITLE}</Typography.Paragraph>
 
             <Form.Item
               name="email"
               rules={[
                 {
                   required: true,
-                  message: "Please input your email!",
+                  message: t.VALIDATION_EMAIL,
                 },
               ]}
             >
               <Input
                 size="large"
-                placeholder="Email"
+                placeholder={t.EMAIL}
                 prefix={<UserOutlined />}
               />
             </Form.Item>
@@ -126,13 +128,13 @@ const Login = () => {
               rules={[
                 {
                   required: true,
-                  message: "Please input your password!",
+                  message: t.VALIDATION_PASSWORD,
                 },
               ]}
             >
               <Input.Password
                 size="large"
-                placeholder="Password"
+                placeholder={t.PASSWORD}
                 prefix={<LockOutlined />}
               />
             </Form.Item>
@@ -143,13 +145,13 @@ const Login = () => {
                 rules={[
                   {
                     required: true,
-                    message: "Please input your verification code!",
+                    message: t.VALIDATION_CODE,
                   },
                 ]}
               >
                 <Input
                   size="large"
-                  placeholder="Verification Code"
+                  placeholder={t.VERIFICATION_CODE}
                   prefix={<KeyOutlined />}
                 />
               </Form.Item>
@@ -163,7 +165,7 @@ const Login = () => {
                 htmlType="submit"
                 loading={loading}
               >
-                Sign In
+                {t.SIGN_IN}
               </Button>
             </Form.Item>
 
@@ -174,7 +176,7 @@ const Login = () => {
                   className="w-full"
                   type="secondary"
                 >
-                  Did not received the code? Try Again
+                  {t.TRY_AGAIN_CODE}
                 </Button>
               </Form.Item>
             )}
@@ -186,7 +188,7 @@ const Login = () => {
                   navigate(`/${Config.perfix}/forgot-password`);
                 }}
               >
-                Forgot Password
+                {t.FORGOT_PASSWORD}
               </Button>
             </Flex>
           </Form>

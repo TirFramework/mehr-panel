@@ -18,7 +18,7 @@ function DefaultLayout(props) {
   const isFetching = useIsFetching();
   const [token, setToken] = useLocalStorage("fcmToken");
   const [loading, setLoading] = useState(false);
-  const { changeLanguage } = useLanguage();
+  const { changeLanguage, t } = useLanguage();
 
   const { data, ...generalQuery } = useGeneralQuery();
 
@@ -48,7 +48,7 @@ function DefaultLayout(props) {
                 <Spin size="large" />
 
                 <Typography.Title level={3} className="loading-container__text">
-                  Loading
+                  {t.LOADING}
                 </Typography.Title>
               </Layout.Content>
             </Layout>
@@ -72,7 +72,7 @@ function DefaultLayout(props) {
             message={
               <>
                 <div className="firebase-notification-confirm__title">
-                  Do you want to enable device notifications?
+                  {t.NOTIFICATIONS_PROMPT}
                 </div>
                 <Row justify={"end"}>
                   <Col>
@@ -82,7 +82,7 @@ function DefaultLayout(props) {
                           setToken({ token: "close" });
                         }}
                       >
-                        Close
+                        {t.CLOSE}
                       </Button>
                       <Button
                         type="primary"
@@ -123,7 +123,7 @@ function DefaultLayout(props) {
                             });
                         }}
                       >
-                        Enable
+                        {t.ENABLE}
                       </Button>
                     </Space>
                   </Col>

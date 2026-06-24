@@ -267,16 +267,14 @@ function getTextWidth(text, font, { letterSpacingEm = 0, uppercase = false } = {
   return width;
 }
 
-export function getPlacementsForSearch(cols) {
+export function getPlacementsForSearch(cols, t) {
   const searchableFields = getSearchableFromCols(cols);
 
-  //TODO: add translate
   if (!searchableFields || searchableFields.length === 0) {
-    return "Search...";
+    return t.SEARCH_PLACEHOLDER;
   }
 
-  //TODO: add translate
-  return `Search: ${searchableFields}`;
+  return t.SEARCH_FIELDS.replace("{fields}", searchableFields);
 }
 export const isCustomView = () => {
   const newQueryParams = extractQueryParams();

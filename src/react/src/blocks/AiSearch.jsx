@@ -35,7 +35,7 @@ function AiSearch({ module, onFilters, onClear, onModeChange, activeFilters = {}
 
   return (
     <Space size={4} align="center">
-      <Tooltip title={aiMode ? "Disable AI search" : "AI natural language search"}>
+      <Tooltip title={aiMode ? t.AI_SEARCH_DISABLE : t.AI_SEARCH_ENABLE}>
         <Button
           size="large"
           icon={<RobotOutlined />}

@@ -1,9 +1,11 @@
 import Config from "../../constants/config";
 import { clearApiToken } from "../authToken";
+import { getT } from "../../context/LanguageContext";
 
 const responseErrorHandler = (error) => {
     console.log("🚀 ~ responseErrorHandler ~ error:", error);
     let mes = [];
+    const t = getT(document.documentElement.lang || "en");
 
     if (error.response.data?.redirect !== undefined) {
         const page = window.location.pathname + window.location.search;
@@ -49,7 +51,7 @@ const responseErrorHandler = (error) => {
             mes.push(error?.response?.data?.message);
         }
         return {
-            message: error.response.data.title || "Error",
+            message: error.response.data.title || t.ERROR_TITLE,
             description:
                 mes.length > 0
                     ? // <ul className="pl-2">
@@ -66,7 +68,7 @@ const responseErrorHandler = (error) => {
         };
     } else {
         return {
-            message: "Unknown error",
+            message: t.ERROR_UNKNOWN,
             duration:
                 error.response.data.duration === "undefined"
                     ? 10

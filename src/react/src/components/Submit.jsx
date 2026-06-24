@@ -46,7 +46,7 @@ const Submit = (props) => {
 
   const items = [
     {
-      label: 'Submit and Close',
+      label: t.SUBMIT_AND_CLOSE,
       key: '1',
       // disabled: clicked ? false : props.loading,
       // loading: props.loading && clicked ,
@@ -55,7 +55,7 @@ const Submit = (props) => {
       },
     },
     {
-      label: 'Submit and New',
+      label: t.SUBMIT_AND_NEW,
       key: '2',
       // disabled: clicked ? false : props.loading ,
       // loading: props.loading && clicked ,
