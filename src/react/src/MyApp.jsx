@@ -61,7 +61,7 @@ const sharedTheme = {
     },
     Layout: {
       headerHeight: 64,
-      siderBg: "#0f172a",
+      siderBg: "#1e1b4b",
     },
   },
 };
@@ -102,6 +102,7 @@ function MyApp() {
           ...sharedTheme.components,
           Layout: {
             ...sharedTheme.components.Layout,
+            siderBg: isDarkMode.mode ? "#12102e" : "#1e1b4b",
             bodyBg: isDarkMode.mode ? "#0f172a" : "#f1f5f9",
           },
         },

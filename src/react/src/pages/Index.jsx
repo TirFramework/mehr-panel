@@ -15,6 +15,7 @@ import {
   Tag,
   Flex,
   Empty,
+  Pagination,
 } from "antd";
 import * as helpers from "../lib/helpers";
 import { useGetColumns, useGetData } from "../Request";
@@ -174,6 +175,75 @@ function Index() {
       };
     });
   }, [columns, isEditing]);
+
+  const emptyDescription = useMemo(
+    () =>
+      helpers.notEmpty(pagination?.filters) || pagination?.search
+        ? t.REMOVE_FILTER
+        : t.NO_DATA,
+    [pagination?.filters, pagination?.search, t]
+  );
+
+  const isTableEmpty = useMemo(
+    () =>
+      !pageDataQuery.isLoading &&
+      !!pageData &&
+      !dataQuery.isLoading &&
+      !!indexData &&
+      (!indexData.data || indexData.data.length === 0),
+    [pageDataQuery.isLoading, pageData, dataQuery.isLoading, indexData]
+  );
+
+  const handlePaginationChange = useCallback(
+    (current, pageSize) => {
+      handleChangeTable(
+        { current, pageSize },
+        pagination?.filters || {},
+        pagination?.sorter?.field
+          ? {
+              column: { fieldName: pagination.sorter.field },
+              order: pagination.sorter.order,
+            }
+          : {}
+      );
+    },
+    [handleChangeTable, pagination]
+  );
+
+  const tablePagination = useMemo(
+    () => ({
+      current: pagination?.current ?? 1,
+      pageSize: pagination?.pageSize ?? 15,
+      pageSizeOptions: ["10", "15", "30", "50", "100", "500"],
+      total: indexData?.total ?? 0,
+      hideOnSinglePage: false,
+      showSizeChanger: true,
+      showTotal: (total) => (
+        <div className="page-index__pagination-footer">
+          <Export
+            loading={dataQuery.isLoading || dataQuery.isFetching}
+            data={indexData?.data}
+            columns={columns}
+            pagination={pagination}
+          />
+          <span className="page-index__total">
+            {t.TOTAL_COUNT.replace("{total}", total)}
+          </span>
+        </div>
+      ),
+      onChange: handlePaginationChange,
+    }),
+    [
+      pagination,
+      indexData?.total,
+      indexData?.data,
+      dataQuery.isLoading,
+      dataQuery.isFetching,
+      columns,
+      t,
+      handlePaginationChange,
+    ]
+  );
 
   if (pageDataQuery.isError && pageDataQuery.error?.response?.status === 404) {
     return <NotFoundPage />;
@@ -347,7 +417,11 @@ function Index() {
 
           </>
         )}
-        <Card className="index-page__card">
+        <Card
+          className={`index-page__card${
+            isTableEmpty ? " index-page__card--empty" : ""
+          }`}
+        >
           {pageDataQuery.isLoading && !pageData ? (
             <div className="table-loading">
               <div className="table-loading__header">
@@ -383,67 +457,37 @@ function Index() {
               </div>
             </div>
           ) : (
-            <Table
+            <>
+              {isTableEmpty && (
+                <div className="table-empty-state">
+                  <Empty
+                    image={Empty.PRESENTED_IMAGE_SIMPLE}
+                    description={emptyDescription}
+                  />
+                </div>
+              )}
+              <Table
               tableLayout={"auto"}
               // tableLayout={"fixed"}
               scroll={{ x: "max-content", y: "calc(100vh - 340px)" }}
               columns={mergedColumns}
               rowKey={(record) => record.id || record._id}
-              dataSource={indexData?.data}
+              dataSource={indexData?.data ?? []}
               locale={{
                 emptyText: (
-                  <Empty
-                    image={Empty.PRESENTED_IMAGE_SIMPLE}
-                    description={
-                      helpers.notEmpty(pagination?.filters) || pagination?.search
-                        ? t.REMOVE_FILTER
-                        : t.NO_DATA
-                    }
-                  />
+                  <div className="table-empty-placeholder" aria-hidden="true" />
                 ),
               }}
-              // components={{
-              //   header: {
-              //     cell: (headerCell, data) => {
-              //       return (
-              //         <th
-              //           className={headerCell.className}
-              //           style={headerCell.style}
-              //         >
-              //           <Tooltip
-              //             placement="left"
-              //             overlayClassName="table_tooltip"
-              //             title={<div>{headerCell.children}</div>}
-              //           >
-              //             <div>{headerCell.children}</div>
-              //           </Tooltip>
-              //         </th>
-              //       );
-              //     },
-              //   },
-              // }}
-              pagination={{
-                pageSize: pagination?.pageSize,
-                current: pagination?.current,
-                pageSizeOptions: ["10", "15", "30", "50", "100", "500"],
-                total: indexData?.total,
-                showTotal: (total) => (
-                  <div className="page-index__pagination-footer">
-                    <Export
-                      loading={dataQuery.isLoading || dataQuery.isFetching}
-                      data={indexData?.data}
-                      columns={columns}
-                      pagination={pagination}
-                    />
-                    <span className="page-index__total">
-                      {t.TOTAL_COUNT.replace("{total}", total)}
-                    </span>
-                  </div>
-                ),
-              }}
+              pagination={isTableEmpty ? false : tablePagination}
               loading={dataQuery.isLoading && !indexData}
               onChange={handleChangeTable}
             />
+              {isTableEmpty && (
+                <div className="index-page__table-footer ant-table-pagination">
+                  <Pagination {...tablePagination} />
+                </div>
+              )}
+            </>
           )}
         </Card>
       </Form>

@@ -173,11 +173,11 @@ const Render = ({ item, value, rowIndex, data, id, minWidth }) => {
 const calculatWidth = (th, td, isFilter, sortable) => {
   let icon = 0;
   if (isFilter) {
-    icon = 28;
+    icon += 16;
   }
 
   if (sortable) {
-    icon = 30;
+    icon += 16;
   }
 
   // When the table is empty td is null/undefined — fall back to a safe
