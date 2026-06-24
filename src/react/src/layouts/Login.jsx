@@ -22,10 +22,12 @@ import {
 import * as api from "../api";
 import Config from "../constants/config";
 import { useLanguage } from "../context/LanguageContext";
+import useDocumentTitle from "../hooks/useDocumentTitle";
 
 const Login = () => {
   const navigate = useNavigate();
   const { t } = useLanguage();
+  useDocumentTitle(t.LOGIN_WELCOME);
   const [mustVerify, setMustVerify] = useState(false);
   const [loading, setLoading] = useState(false);
 

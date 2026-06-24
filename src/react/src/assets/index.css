@@ -468,7 +468,7 @@ body.dark-mode .ant-layout-content {
   font-size: 13px;
   font-weight: 500;
   color: var(--mp-text-muted);
-  padding: 6px 14px;
+  padding: 1px 14px;
   background: var(--mp-border-subtle);
   border-radius: 8px;
   white-space: nowrap;

@@ -7,6 +7,7 @@ import {
   CompassOutlined,
 } from "@ant-design/icons";
 import { useLanguage } from "../context/LanguageContext";
+import useDocumentTitle from "../hooks/useDocumentTitle";
 import Config from "../constants/config";
 import { getApiToken } from "../lib/authToken";
 
@@ -14,6 +15,7 @@ const { Title, Paragraph } = Typography;
 
 const NotFoundPage = () => {
   const { t } = useLanguage();
+  useDocumentTitle(t.NOT_FOUND_TITLE);
   const navigate = useNavigate();
   const isAuthenticated = !!getApiToken();
 

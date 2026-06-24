@@ -31,6 +31,7 @@ import {
   isCustomView,
 } from "../lib/utils";
 import { useLanguage } from "../context/LanguageContext";
+import useDocumentTitle from "../hooks/useDocumentTitle";
 import NotFoundPage from "./NotFoundPage";
 
 const { Title } = Typography;
@@ -60,6 +61,10 @@ function Index() {
   const { data: pageData, ...pageDataQuery } = useGetColumns(
     pageModule,
     pagination
+  );
+
+  useDocumentTitle(
+    pageDataQuery.isLoading ? t.LOADING : pageData?.configs?.module_title
   );
 
   // Use custom hook for column management

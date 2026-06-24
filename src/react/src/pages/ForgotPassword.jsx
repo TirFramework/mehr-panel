@@ -22,12 +22,17 @@ import {
 import * as api from "../api";
 import Config from "../constants/config";
 import { useLanguage } from "../context/LanguageContext";
+import useDocumentTitle from "../hooks/useDocumentTitle";
 
 const ForgotPassword = () => {
   const navigate = useNavigate();
   const { t } = useLanguage();
   const [loading, setLoading] = useState(false);
   const [showSetPassword, setShowSetPassword] = useState("");
+
+  useDocumentTitle(
+    showSetPassword ? t.RESET_PASSWORD_TITLE : t.FORGET_PASSWORD_TITLE
+  );
 
   const onFinishForgotPassword = (values) => {
     setLoading(true);

@@ -10,6 +10,7 @@ import Header from "./Header";
 import { useMyContext } from "../context/MyContext";
 import { useFieldsQuery } from "../Request";
 import { useLanguage } from "../context/LanguageContext";
+import useDocumentTitle from "../hooks/useDocumentTitle";
 
 /**
  * Helper function to traverse fields and extract initial values
@@ -61,7 +62,7 @@ const CreateForm = ({ type }) => {
     }
   );
 
-  const { antdLocale } = useLanguage();
+  const { antdLocale, t } = useLanguage();
 
   const validateMessages = useMemo(
     () => ({
@@ -158,6 +159,18 @@ const CreateForm = ({ type }) => {
 
   // Memoize loading state to prevent unnecessary re-renders
   const isLoading = dataQuery.isLoading && !fieldsData;
+
+  const moduleTitle = fieldsData?.configs?.module_title;
+  const titleSuffix =
+    type === "detail"
+      ? t.DETAILS
+      : pageId || newId
+        ? t.EDIT
+        : t.CREATE;
+
+  useDocumentTitle(isLoading ? t.LOADING : moduleTitle, {
+    suffix: isLoading ? undefined : titleSuffix,
+  });
 
   return (
     <div className={`page-form page-form--${type}`}>
