@@ -1,5 +1,5 @@
-import Cookies from "js-cookie";
 import { notification } from "antd";
+import { clearApiToken } from "../authToken";
 import Config from "../../constants/config";
 import { getNotificationApi } from "../notificationService";
 
@@ -108,7 +108,7 @@ const ErrorHandler = async (error) => {
       }
     }, 1000);
 
-    Cookies.remove("api_token");
+    clearApiToken();
   }
 
   return null;

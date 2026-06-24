@@ -28,7 +28,7 @@ const SwitchIndex = (props) => {
       <Form.Item
         label={props.display}
         name={props.name}
-        initialValue={props.value}
+        initialValue={props.value || props.defaultValue || false}
         valuePropName="checked"
         rules={rules}
         labelCol={{

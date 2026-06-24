@@ -36,6 +36,7 @@ const CreateForm = ({ type }) => {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   const { message } = App.useApp();
+  const { notification } = App.useApp();
 
   const [urlParams, setUrlParams] = useSearchParams();
   const { pageModule } = useParams();
@@ -113,6 +114,7 @@ const CreateForm = ({ type }) => {
     (values) => {
       onFinish({
         message: message,
+        notification: notification,
         values: values,
         setSubmitLoad: updateMyState,
         pageModule: pageModule,

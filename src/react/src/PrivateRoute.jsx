@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import Cookies from "js-cookie";
+import { getApiToken } from "./lib/authToken";
 import { Outlet, useNavigate } from "react-router-dom";
 
 import DefaultLayout from "./layouts/DefaultLayout";
@@ -10,7 +10,7 @@ import Config from "./constants/config";
 // screen if you're not yet authenticated.
 const PrivateRoute = ({ component, ...rest }) => {
   const navigate = useNavigate();
-  let auth = Cookies.get("api_token");
+  let auth = getApiToken();
 
   useEffect(() => {
     (async () => {

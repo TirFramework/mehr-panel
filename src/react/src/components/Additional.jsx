@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button, Row, Form } from "antd";
 import { PlusOutlined, CloseOutlined } from "@ant-design/icons";
 import { replaceLastNumberFromString } from "../lib/helpers";
@@ -7,9 +7,9 @@ import FormGroup from "./FormGroup";
 const Additional = (props) => {
     const [fields, setFields] = useState(props.children);
 
-    //   useEffect(() => {
-    //     setFields(props.children);
-    //   }, [props]);
+    useEffect(() => {
+        setFields(props.children);
+    }, [props.children]);
 
     const removeRow = (index) => {
         const newData = [...fields];
@@ -56,27 +56,35 @@ const Additional = (props) => {
     };
     return (
         <>
-            <div className={ props.readonly ? "readOnly " : '' + props.className} >
+            <div className={`${props.readonly ? "readOnly " : ""}${props.className || ""}`}>
                 {fields && fields.length > 0 ? (
                     <>
                         {fields.map((child, index) => (
                             <Row
                                 gutter={[16, 16]}
-                                className="relative"
+                                className={`relative ${props.options.noBorder ? 'no-border' : 'border'}` }
                                 key={`additional-group-${index}`}
                             >
-                                <Button
-                                    icon={<CloseOutlined />}
-                                    type="text"
-                                    className="remove-btn"
-                                    disabled={props.loading}
-                                    onClick={() => {
-                                        removeRow(index);
-                                    }}
-                                    danger
-                                />
+                                {!props.readonly && (
+                                    <Button
+                                        icon={<CloseOutlined />}
+                                        className="remove-btn"
+                                        disabled={props.loading}
+                                        onClick={() => {
+                                            removeRow(index);
+                                        }}
+                                        danger
+                                    />
+                                )}
                                 {child.map((f, i) => (
-                                    <FormGroup key={`additional-field-${i}`} {...f} form={props.form}/>
+                                    <FormGroup
+                                        key={`additional-field-${i}`}
+                                        {...f}
+                                        form={props.form}
+                                        readonly={props.readonly}
+                                        loading={props.loading}
+                                        pageType={props.pageType}
+                                    />
                                 ))}
                             </Row>
                         ))}
@@ -86,17 +94,20 @@ const Additional = (props) => {
                 )}
             </div>
 
-            <Button
-                // shape="circle"
-                className="w-full add-new-row-btn"
-                disabled={props.loading}
-                icon={!props.display && <PlusOutlined />}
-                onClick={() => {
-                    duplicate();
-                }}
-            >
-                {props.display}
-            </Button>
+            {!props.readonly && (
+                <Button
+                    className="w-full add-new-row-btn"
+                    size="small"
+                    color="danger"
+                    disabled={props.loading}
+                    icon={!props.display && <PlusOutlined />}
+                    onClick={() => {
+                        duplicate();
+                    }}
+                >
+                    {props.display}
+                </Button>
+            )}
         </>
     );
 };

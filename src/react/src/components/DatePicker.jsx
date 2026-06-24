@@ -15,18 +15,20 @@ const CustomDatePicker = ({
   defaultValue,
   ...props
 }) => {
+  // console.log("🚀 ~ CustomDatePicker ~ props:", props)
+  const IsShowTime = Object.keys(props.showTime).length > 0;
   let formattedValue = null;
   if (value) {
-    if (props.enableTimezone || props.options?.showTime?.length > 0) {
+    if (props.enableTimezone || IsShowTime) {
       formattedValue = dayjs(value);
     } else {
-      formattedValue = dayjs(value, "YYYY-MM-DDTHH:mm:ss.000[Z]");
+      formattedValue = dayjs(value, "YYYY-MM-DDTHH:mm:ss.SSSSSSZ");
     }
   } else if (defaultValue) {
-    if (props.enableTimezone || props.options?.showTime?.length > 0) {
-      formattedValue = dayjs(defaultValue);
+    if (props.enableTimezone || IsShowTime) {
+      formattedValue = dayjs(defaultValue).utc();
     } else {
-      formattedValue = dayjs(defaultValue, "YYYY-MM-DDTHH:mm:ss.000[Z]");
+      formattedValue = dayjs(defaultValue, "YYYY-MM-DDTHH:mm:ss.SSSSSSZ");
     }
   }
 
@@ -35,13 +37,19 @@ const CustomDatePicker = ({
       {...props}
       format={format}
       onChange={(data) => {
-        if (props.enableTimezone || Object.keys(props.showTime).length > 0) {
-          onChange(data ? dayjs(data).format("YYYY-MM-DDTHH:mm:ss.000[Z]") : null);
-          console.log("🚀 ~ CustomDatePicker ~ dayjs(data):", dayjs(data));
+        console.log("🚀 ~ CustomDatePicker ~ data:", data)
+        if (props.enableTimezone || IsShowTime) {
+          let formattedData = null;
+          if (data) {
+            formattedData = dayjs(data).utc().format("YYYY-MM-DDTHH:mm:ss.SSSSSSZ");
+          }
+          console.log("🚀 ~ CustomDatePicker ~ formattedData:", formattedData)
+          onChange(formattedData);
         } else {
           onChange(
             data
-              ? dayjs(data).startOf("day").format("YYYY-MM-DDTHH:mm:ss.000[Z]")
+              ? dayjs(data).startOf("day").format("YYYY-MM-DD") +
+              "T00:00:00.000000Z"
               : null
           );
         }
@@ -82,9 +90,9 @@ const DatePickerComponent = (props) => {
 
               {props.options.showTime &&
                 " " +
-                  dayjs(props.value).format(
-                    props?.options?.showTime || "HH:mm:ss"
-                  )}
+                dayjs(props.value).format(
+                  props?.options?.showTime || "HH:mm:ss"
+                )}
             </>
           )}
         </div>
@@ -101,8 +109,8 @@ const DatePickerComponent = (props) => {
           props.value
             ? dayjs(props.value)
             : props.defaultValue
-            ? dayjs(props.defaultValue)
-            : undefined
+              ? dayjs(props.defaultValue)
+              : undefined
         }
         rules={rules}
       >

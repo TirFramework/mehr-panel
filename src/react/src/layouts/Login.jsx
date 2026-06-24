@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import Cookies from "js-cookie";
 import axios from "../lib/axios";
+import { setApiToken } from "../lib/authToken";
 import { useNavigate } from "react-router-dom";
 import {
   Form,
@@ -45,6 +45,10 @@ const Login = () => {
             message: res.message.error,
             duration: 20,
           });
+        } else if (!res?.api_token) {
+          notification.error({
+            message: "Login failed: no token received from server",
+          });
         } else {
           notification["success"]({
             message: "You have successfully logged",
@@ -62,14 +66,24 @@ const Login = () => {
   };
 
   const login = (token) => {
-    Cookies.set("api_token", token);
-    axios.defaults.headers.common = { Authorization: `Bearer ${token}` };
+    if (!setApiToken(token)) {
+      notification.error({
+        message: "Login failed: no token received from server",
+      });
+      return;
+    }
+
     const version = window.localStorage.getItem("version");
 
     if (version !== Config.panelVersion) {
+      const savedToken = localStorage.getItem("api_token");
       localStorage.clear();
       window.localStorage.setItem("version", Config.panelVersion);
+      if (savedToken) {
+        localStorage.setItem("api_token", savedToken);
+      }
     }
+
     navigate(`/${Config.perfix}/dashboard`);
   };
 

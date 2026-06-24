@@ -1,5 +1,5 @@
 import React from "react";
-import { Button, Dropdown } from "antd";
+import { Button, Dropdown, message } from "antd";
 import { CSVDownload, CSVLink } from "react-csv";
 import { useParams } from "react-router-dom";
 import { useState } from "react";
@@ -36,23 +36,35 @@ function Export({ data, loading, columns, pagination }) {
   };
 
   const handleShare = async () => {
+    const url = `${window.location.href}?${objectToQueryString(pagination, columns)}`;
+
     // ابتدا بررسی می‌کنیم که آیا Web Share API در مرورگر پشتیبانی می‌شود یا خیر.
     if (navigator.share) {
       try {
-        // اگر پشتیبانی می‌شود، از متد share استفاده می‌کنیم.
         await navigator.share({
-          // title: document.title,
-          // text: "Check out this table!",
-          url: `${window.location.href}?${objectToQueryString(
-            pagination,
-            columns
-          )}`,
+          url,
         });
       } catch (error) {}
-    } else {
-      navigator.clipboard.writeText(
-        `${window.location.href}?${objectToQueryString(pagination, columns)}`
-      );
+      return;
+    }
+
+    // Fallback: Clipboard API (requires secure context) or execCommand
+    try {
+      if (navigator.clipboard != null && typeof navigator.clipboard.writeText === "function") {
+        await navigator.clipboard.writeText(url);
+      } else {
+        const textArea = document.createElement("textarea");
+        textArea.value = url;
+        textArea.style.position = "fixed";
+        textArea.style.left = "-9999px";
+        document.body.appendChild(textArea);
+        textArea.select();
+        document.execCommand("copy");
+        document.body.removeChild(textArea);
+      }
+      message.success("Link copied to clipboard");
+    } catch (error) {
+      message.error("Failed to copy link");
     }
   };
   const getHeader = () => {

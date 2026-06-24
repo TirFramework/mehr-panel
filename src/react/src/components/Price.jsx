@@ -3,7 +3,18 @@ import { Form, InputNumber } from "antd";
 
 import { separationRules } from "../lib/helpers";
 
+const formatPrice = (value) => {
+  if (value === undefined || value === null || value === "") {
+    return "";
+  }
+
+  return `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+};
+
 const Price = (props) => {
+  const currency = props.currency ?? props.options?.currency;
+  const { currency: _currency, ...inputOptions } = props.options ?? {};
+
   const rules = separationRules({
     pageType: props.pageType,
     rules: props.rules,
@@ -11,11 +22,22 @@ const Price = (props) => {
     updateRules: props.updateRules,
   });
 
+  const priceRules =
+    rules?.map((rule) => {
+      if (rule.required) {
+        return rule;
+      }
+      return {
+        ...rule,
+        type: "number",
+      };
+    }) || [];
+
   if (props.readonly) {
     return (
       <>
         {props.hideLable ?? <div>{props.display}</div>}
-        {props.currency} {props.value}
+        {currency} {formatPrice(props.value)}
       </>
     );
   }
@@ -32,26 +54,24 @@ const Price = (props) => {
             ? Number(props.defaultValue)
             : ""
         }
-        rules={rules}
+        rules={priceRules}
       >
         <InputNumber
-          {...props.options}
-          placeholder={props.options.placeholder}
+          {...inputOptions}
+          placeholder={inputOptions.placeholder}
           disabled={props.disabled}
           style={{ width: "100%" }}
           className={`w-full`}
           addonBefore={
-            props.currency ? (
-              props.currency.trim().startsWith("<svg") ? (
-                <span dangerouslySetInnerHTML={{ __html: props.currency }} />
+            currency ? (
+              currency.trim().startsWith("<svg") ? (
+                <span dangerouslySetInnerHTML={{ __html: currency }} />
               ) : (
-                <span>{props.currency}</span>
+                <span>{currency}</span>
               )
             ) : null
           }
-          formatter={(value) =>
-            `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
-          }
+          formatter={formatPrice}
         />
       </Form.Item>
     </>

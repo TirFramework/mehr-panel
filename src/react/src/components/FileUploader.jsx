@@ -1,13 +1,13 @@
 import React, { useState, useCallback } from "react";
 import { Upload, Button, Tooltip, Form, Space, Popover } from "antd";
-import { DndProvider, useDrag, useDrop } from "react-dnd";
+import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
+import { useDrag, useDrop } from "react-dnd";
 import update from "immutability-helper";
-import { QuestionCircleOutlined, UploadOutlined } from "@ant-design/icons";
+import { FileOutlined, QuestionCircleOutlined, UploadOutlined } from "@ant-design/icons";
 
 import { getAccept, separationRules } from "../lib/helpers";
-
-import Cookies from "js-cookie";
+import { getApiToken } from "../lib/authToken";
 
 const type = "DragableUploadList";
 
@@ -45,9 +45,8 @@ const DragableUploadListItem = ({ originNode, moveRow, file, fileList }) => {
   return (
     <div
       ref={ref}
-      className={`ant-upload-draggable-list-item ${
-        isOver ? dropClassName : ""
-      }`}
+      className={`ant-upload-draggable-list-item ${isOver ? dropClassName : ""
+        }`}
       style={{ cursor: "move" }}
     >
       {file.status === "error" ? errorNode : originNode}
@@ -59,12 +58,13 @@ const DragSortingUpload = (props) => {
   const initialValueHandeling = (data) => {
     let newData = [];
     if (data === undefined || data === null) {
-      return null;
+      return [];
     }
     if (!Array.isArray(data)) {
       newData.push({
         uid: 1,
         name: data,
+        status: "done",
         value: `${data}`,
         url: `${props.basePath}/${data}`,
       });
@@ -72,6 +72,7 @@ const DragSortingUpload = (props) => {
       newData = data.map((item, index) => ({
         uid: index,
         name: item,
+        status: "done",
         value: `${item}`,
         url: `${props.basePath}/${item}`,
       }));
@@ -80,36 +81,39 @@ const DragSortingUpload = (props) => {
   };
 
   const [fileList, setFileList] = useState(initialValueHandeling(props.value));
+  const isInternalChange = React.useRef(false);
+
+  React.useEffect(() => {
+    if (!isInternalChange.current) {
+      setFileList(initialValueHandeling(props.value));
+    }
+    isInternalChange.current = false;
+  }, [props.value]);
 
   const moveRow = useCallback(
     (dragIndex, hoverIndex) => {
       const dragRow = fileList[dragIndex];
-      setFileList(
-        update(fileList, {
-          $splice: [
-            [dragIndex, 1],
-            [hoverIndex, 0, dragRow],
-          ],
-        })
-      );
-      props.onChange(
-        update(fileList, {
-          $splice: [
-            [dragIndex, 1],
-            [hoverIndex, 0, dragRow],
-          ],
-        })
-      );
+      const newFileList = update(fileList, {
+        $splice: [
+          [dragIndex, 1],
+          [hoverIndex, 0, dragRow],
+        ],
+      });
+      setFileList(newFileList);
+      isInternalChange.current = true;
+      props.onChange(newFileList);
     },
-    [fileList]
+    [fileList, props]
   );
 
   const onChange = ({ fileList: newFileList }) => {
     setFileList(newFileList);
+    isInternalChange.current = true;
     props.onChange(newFileList);
   };
 
-  const token = Cookies.get("api_token");
+  const token = getApiToken();
+  const uploadHeaders = token ? { Authorization: `Bearer ${token}` } : {};
 
   return (
     <>
@@ -118,15 +122,13 @@ const DragSortingUpload = (props) => {
           data-cy={props.testId}
           accept={getAccept([props.fileRules])}
           action={props.postUrl}
-          headers={{ Authorization: `Bearer ${token}` }}
-          // defaultFileList={initialValueHandeling(props.value)}
+          headers={uploadHeaders}
           fileList={fileList}
           listType="picture"
           maxCount={props.maxCount}
           onChange={onChange}
           disabled={props.disable}
           className={props.readonly ? "readOnly" : " "}
-          //   {...props}
           itemRender={(originNode, file, currFileList) => (
             <DragableUploadListItem
               disabled={props.disable}
@@ -146,6 +148,40 @@ const DragSortingUpload = (props) => {
   );
 };
 
+
+
+const ReadonlyFileUploader = ({ value, basePath, display }) => {
+  if (!value) {
+    return null;
+  }
+
+  const fileUrl = `${basePath}/${value}`;
+
+  const isPicture =
+    value.includes(".png") ||
+    value.includes(".jpg") ||
+    value.includes(".jpeg") ||
+    value.includes(".gif") ||
+    value.includes(".svg") ||
+    value.includes(".webp");
+
+  if (isPicture) {
+    return (
+      <a href={fileUrl} target="_blank" rel="noreferrer" style={{ cursor: "pointer" }}>
+        <img src={fileUrl} alt={display} width={45} height={45} style={{ objectFit: "cover" }} />
+      </a>
+    );
+  }
+
+  return (
+    <a href={fileUrl} target="_blank" rel="noreferrer">
+      <FileOutlined />
+    </a>
+  );
+};
+
+
+
 const CustomUpload = ({ defaultValue, ...props }) => {
   const rules = separationRules({
     pageType: props.pageType,
@@ -155,13 +191,14 @@ const CustomUpload = ({ defaultValue, ...props }) => {
   });
 
   const normFile = (e) => {
-    // return e.fileList
-    if (e.length === 1) {
-      if (e[0].response !== undefined) {
-        return `${e[0].response.path}`;
-      }
-      if (e[0].value !== undefined) {
-        return `${e[0].value}`;
+    if (props.maxCount === 1) {
+      if (e.length === 1) {
+        if (e[0].response !== undefined) {
+          return `${e[0].response.path}`;
+        }
+        if (e[0].value !== undefined) {
+          return `${e[0].value}`;
+        }
       }
     }
     return e.map((item) => {
@@ -173,6 +210,45 @@ const CustomUpload = ({ defaultValue, ...props }) => {
       }
     });
   };
+
+
+  if (props.readonly) {
+    const placeholder = props.options?.placeholder;
+
+    if (Array.isArray(props.value)) {
+      if (props.value.length === 0) {
+        return placeholder ? (
+          <ReadonlyFileUploader
+            value={placeholder}
+            basePath={props.basePath}
+            display={props.display}
+          />
+        ) : (
+          <div>No Found</div>
+        );
+      }
+      return (
+        <Space wrap>
+          {props.value.map((item, index) => (
+            <ReadonlyFileUploader
+              key={`${item}-${index}`}
+              value={item}
+              basePath={props.basePath}
+              display={props.display}
+            />
+          ))}
+        </Space>
+      );
+    }
+    return (
+      <ReadonlyFileUploader
+        value={props.value || placeholder}
+        basePath={props.basePath}
+        display={props.display}
+      />
+    );
+  }
+
   return (
     <Form.Item
       name={props.name}
@@ -181,22 +257,23 @@ const CustomUpload = ({ defaultValue, ...props }) => {
           {props.display}
           {props.comment?.content !== undefined && (
             <Popover
-              content={"props.comment.content"}
-              title={"props.comment.title"}
+              content={props.comment.content}
+              title={props.comment.title}
             >
               <QuestionCircleOutlined />
             </Popover>
           )}
         </Space>
       }
-      // valuePropName="fileList"
       initialValue={props.value || defaultValue}
       rules={rules}
       getValueFromEvent={normFile}
-      // setFieldsValue={fileList}
     >
       <DragSortingUpload {...props} />
     </Form.Item>
   );
 };
+
+
+
 export default CustomUpload;

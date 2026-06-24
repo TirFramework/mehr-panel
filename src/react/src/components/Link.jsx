@@ -1,12 +1,33 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useMemo } from "react";
+import { Button } from "antd";
+import { useNavigate } from "react-router-dom";
+import * as antdIcons from "@ant-design/icons";
 
-const Btn = (props) => {
+const resolveIcon = (icon) => {
+  if (!icon) return undefined;
+  if (React.isValidElement(icon)) return icon;
+  if (typeof icon === "string") {
+    const IconComponent = antdIcons[icon];
+    if (IconComponent) return <IconComponent />;
+  }
+  return undefined;
+};
+
+const Link = (props) => {
+  const navigate = useNavigate();
+  const { icon, ...buttonOptions } = props.options ?? {};
+  const resolvedIcon = useMemo(() => resolveIcon(icon), [icon]);
+
   return (
-    <>
-      <Link to={props.path}>{props.display}</Link>
-    </>
+    <Button
+      {...buttonOptions}
+      icon={resolvedIcon}
+      data-cy={props.testId}
+      onClick={() => navigate(props.path)}
+    >
+      {props.display}
+    </Button>
   );
 };
 
-export default Btn;
+export default Link;

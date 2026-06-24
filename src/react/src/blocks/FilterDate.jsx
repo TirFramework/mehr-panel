@@ -40,14 +40,17 @@ function FilterDate({
             value={
               selectedKeys.length > 0
                 ? [dayjs(selectedKeys[0]), dayjs(selectedKeys[1])]
-                : ""
+                : null
             }
-            onChange={(e) => {
-              setSelectedKeys([
-                //   e[0].format("YYYY-MM-DDT00:00:00Z"),
-                e[0],
-                e[1],
-              ]);
+            onChange={(dates) => {
+              setSelectedKeys(
+                dates
+                  ? [
+                      dates[0].startOf("day").toISOString(),
+                      dates[1].endOf("day").toISOString(),
+                    ]
+                  : []
+              );
             }}
             allowClear={false}
           />

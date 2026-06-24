@@ -1,8 +1,7 @@
-import { App } from "antd";
-import { replaceLastNumberFromString, stringToObject } from ".";
-
+import { replaceLastNumberFromString } from ".";
 import * as api from "../../api";
 import { ifExistNumberFromString } from "./duplicate";
+import responseErrorHandler from "./responseErrorHandler";
 
 export const fixNumber = (obj) => {
   //object should sort before this function
@@ -59,6 +58,7 @@ export const onFinish = ({
   pageId,
   setUrlParams,
   message,
+  notification,
   afterSubmit = () => {},
   queryClient,
   queryClientKey = null,
@@ -101,11 +101,17 @@ export const onFinish = ({
         });
       }
 
-      afterSubmit();
-
       message.success(res.message);
+      afterSubmit();
     })
     .catch((err) => {
+      const error = responseErrorHandler(err);
+      console.log("🚀 ~ onFinish ~ error:", error);
+      notification.error({
+        message: error.message,
+        duration: error.duration,
+        description: error.description,
+      });
       setSubmitLoad({ isLoading: false, isSuccess: false });
     });
 };

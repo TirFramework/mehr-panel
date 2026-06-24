@@ -110,7 +110,7 @@ const Text = ({
           data-cy={testId}
           {...props.options}
           placeholder={placeholder || options.placeholder}
-          disabled={props.disable}
+          disabled={disable}
         />
       </Form.Item>
     </>

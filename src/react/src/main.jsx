@@ -2,7 +2,8 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
-import { App } from "antd";
+import { App, notification } from "antd";
+import responseErrorHandler from "./lib/helpers/responseErrorHandler";
 
 import MyApp from "./MyApp";
 import { LanguageProvider } from "./context/LanguageContext";
@@ -22,6 +23,17 @@ const queryClient = new QueryClient({
       // some of the queries will refetch and app flow will be ruined !!!
       onError: (err) => {
         // console.log("🚀 ~ file: index.js:29 ~ err:", err);
+      },
+    },
+    mutations: {
+      onError: (err) => {
+        const error = responseErrorHandler(err);
+        notification.error({
+          message: error.message,
+          duration: error.duration,
+          description: error.description,
+        });
+
       },
     },
   },

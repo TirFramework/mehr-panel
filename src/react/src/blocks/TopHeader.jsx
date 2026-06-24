@@ -1,8 +1,8 @@
-import React, { lazy, memo, Suspense } from "react";
+import React, { lazy, memo, Suspense, useState, useEffect } from "react";
 import { Layout, Row, Typography, Button, Col, Space } from "antd";
 import { useNavigate } from "react-router-dom";
 import { LogoutOutlined, ExportOutlined } from "@ant-design/icons";
-import Cookies from "js-cookie";
+import { clearApiToken } from "../lib/authToken";
 import * as api from "../api";
 import Config from "../constants/config";
 
@@ -14,7 +14,7 @@ const DefaultTopHeader = ({ username, name }) => {
 
   const logout = () => {
     api.postLogout().then(() => {
-      Cookies.remove("api_token");
+      clearApiToken();
       navigate(`/${Config.perfix}/login`);
     });
   };
@@ -46,19 +46,32 @@ const DefaultTopHeader = ({ username, name }) => {
 };
 
 const TopHeader = (props) => {
-  const DynamicField = lazy(() =>
-    import("../dynamic-layouts/CustomTopHeader.jsx").catch((error) => {
-      console.error("❌ Failed to load CustomTopHeader:", error);
-      return { default: () => <DefaultTopHeader {...props} /> };
-    })
-  );
+  const [CustomComponent, setCustomComponent] = React.useState(null);
+  const [loading, setLoading] = React.useState(true);
+  let CustomTopHeader = 'CustomTopHeader'
+  React.useEffect(() => {
+    import(`../dynamic-layouts/${CustomTopHeader}.jsx`)
+      .then((module) => {
+        setCustomComponent(() => module.default);
+        setLoading(false);
+      })
+      .catch(() => {
+        setCustomComponent(() => DefaultTopHeader);
+        setLoading(false);
+      });
+  }, []);
+
+  if (loading) {
+    return <DefaultTopHeader {...props} />;
+  }
+
+  const DynamicComponent = CustomComponent;
+
   return (
-    <Suspense fallback={<DefaultTopHeader {...props} />}>
-      <DynamicField
-        {...props}
-        // showInIndex={props.id != pageId}
-      />
-    </Suspense>
+    <DynamicComponent
+      {...props}
+      // showInIndex={props.id != pageId}
+    />
   );
 };
 
