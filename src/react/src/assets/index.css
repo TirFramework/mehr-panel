@@ -393,9 +393,9 @@ body.dark-mode .ant-layout-content {
 }
 
 /* ─── Tables ─── */
-.ant-table-container {
+/* .ant-table-container {
   overflow: auto;
-}
+} */
 
 .ant-table-wrapper .ant-table {
   border-radius: var(--mp-radius) !important;
