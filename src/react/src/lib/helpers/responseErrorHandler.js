@@ -1,6 +1,6 @@
 import Config from "../../constants/config";
 import { clearApiToken } from "../authToken";
-import { getT } from "../../context/LanguageContext";
+import { getT } from "../../context/translations";
 
 const DEFAULT_DURATION = 10;
 
