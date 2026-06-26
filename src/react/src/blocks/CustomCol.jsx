@@ -111,9 +111,11 @@ function CustomCol({ column, onChange }) {
         >
           <Space direction="vertical" size="middle" style={{ width: "100%" }}>
             {/* Show All Switch */}
-            <Row justify="space-between" align="middle">
+            <Row align="middle" gutter={8}>
               <Col>
-                <span style={{ marginRight: 8 }}>{t.SHOW_ALL_COLUMNS}</span>
+                <span>{t.SHOW_ALL_COLUMNS}</span>
+              </Col>
+              <Col>
                 <Switch
                   checked={showAllSwitch}
                   onChange={handleShowAllChange}
@@ -222,8 +224,8 @@ function CustomCol({ column, onChange }) {
                       showAllSwitch
                         ? true
                         : Object.values(columnList).includes(
-                            item.field.display
-                          )
+                          item.field.display
+                        )
                     );
                     onChange(filteredList);
                     setIsModalOpen(false);

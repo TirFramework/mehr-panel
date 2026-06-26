@@ -633,16 +633,16 @@ body.dark-mode .field-load-error {
 
 .header-page > .ant-col {
   backdrop-filter: blur(12px);
-  background: rgba(241, 245, 249, 0.88);
+  /* background: rgba(241, 245, 249, 0.88); */
   border-radius: var(--mp-radius);
   padding: 8px 12px;
   margin-top: -16px;
   box-shadow: var(--mp-shadow-sm);
 }
 
-body.dark-mode .header-page > .ant-col {
+/* body.dark-mode .header-page > .ant-col {
   background: rgba(15, 23, 42, 0.88);
-}
+} */
 
 .header-page .ant-typography {
   margin-bottom: 0;

@@ -10,6 +10,12 @@ A Laravel package for managing an admin panel.
    composer require mehr-panel/mehr-panel
    ```
 
+   or for update
+
+   ```bash
+   composer require tir/mehr-panel:12.7.
+   ```
+
 2. Publish the configuration file (optional, to customize prefixes):
 
    ```bash
@@ -19,7 +25,7 @@ A Laravel package for managing an admin panel.
 3. Publish assets:
 
    ```bash
-   php artisan vendor:publish --tag=mehr-panel-assets --force
+   php artisan vendor:publish --tag=mehr-panel --force
    ```
 
 4. Publish customization files (optional):
