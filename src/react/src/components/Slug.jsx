@@ -3,6 +3,7 @@ import { Form, Input, Button } from "antd";
 import { EditOutlined } from "@ant-design/icons";
 
 import { separationRules, isRequired } from "../lib/helpers";
+import InputAddonWrapper, { extractAddonOptions } from "./InputAddon";
 
 const Slug = (props) => {
   const rules = separationRules({
@@ -17,6 +18,10 @@ const Slug = (props) => {
   const editingHandel = () => {
     setEditing(true);
   };
+  const { addonBefore, addonAfter, inputOptions } = extractAddonOptions(
+    props.options
+  );
+
   return (
     <>
       {!editing ? (
@@ -31,11 +36,14 @@ const Slug = (props) => {
           rules={rules}
           initialValue={props.value}
         >
-          <Input
-            placeholder={props.options.placeholder}
-            disabled={props.disabled}
-            className={props.readonly && "readOnly"}
-          />
+          <InputAddonWrapper addonBefore={addonBefore} addonAfter={addonAfter}>
+            <Input
+              placeholder={inputOptions.placeholder}
+              disabled={props.disabled}
+              className={props.readonly && "readOnly"}
+              {...inputOptions}
+            />
+          </InputAddonWrapper>
         </Form.Item>
       )}
     </>

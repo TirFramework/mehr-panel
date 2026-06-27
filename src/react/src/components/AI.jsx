@@ -30,6 +30,7 @@ import { useMutation } from '@tanstack/react-query';
 import axios from '../lib/axios';
 import { separationRules } from '../lib/helpers';
 import Readonly from '../blocks/Readonly';
+import InputAddonWrapper, { extractAddonOptions } from './InputAddon';
 
 const { TextArea } = Input;
 const { Text } = Typography;
@@ -165,6 +166,9 @@ const AI = ({
         creationRules,
         updateRules,
     });
+
+    const { addonBefore, addonAfter, inputOptions: addonInputOptions } =
+        extractAddonOptions(options);
 
     // Filter available actions based on scaffolder config
     const availableActions = aiActions?.length > 0
@@ -562,14 +566,16 @@ const AI = ({
                     initialValue={value || defaultValue}
                     rules={formRules}
                 >
-                    <Input
-                        data-cy={testId}
-                        placeholder={placeholder || options?.placeholder}
-                        disabled={disable}
-                        suffix={AiButton}
-                        onChange={handleFieldChange}
-                        {...options}
-                    />
+                    <InputAddonWrapper addonBefore={addonBefore} addonAfter={addonAfter}>
+                        <Input
+                            data-cy={testId}
+                            placeholder={placeholder || addonInputOptions?.placeholder}
+                            disabled={disable}
+                            suffix={AiButton}
+                            onChange={handleFieldChange}
+                            {...addonInputOptions}
+                        />
+                    </InputAddonWrapper>
                 </Form.Item>
                 {FloatingResultCard}
             </>
@@ -585,14 +591,16 @@ const AI = ({
                 initialValue={value || defaultValue}
                 rules={formRules}
             >
-                <TextArea
-                    data-cy={testId}
-                    placeholder={placeholder || options?.placeholder}
-                    disabled={disable}
-                    rows={rows}
-                    onChange={handleFieldChange}
-                    {...options}
-                />
+                <InputAddonWrapper addonBefore={addonBefore} addonAfter={addonAfter}>
+                    <TextArea
+                        data-cy={testId}
+                        placeholder={placeholder || addonInputOptions?.placeholder}
+                        disabled={disable}
+                        rows={rows}
+                        onChange={handleFieldChange}
+                        {...addonInputOptions}
+                    />
+                </InputAddonWrapper>
             </Form.Item>
             <div style={{
                 position: 'relative',

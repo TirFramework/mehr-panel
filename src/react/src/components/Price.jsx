@@ -2,18 +2,18 @@ import React from "react";
 import { Form, InputNumber } from "antd";
 
 import { separationRules } from "../lib/helpers";
-
-const formatPrice = (value) => {
-  if (value === undefined || value === null || value === "") {
-    return "";
-  }
-
-  return `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-};
+import {
+  formatNumberWithSeparator,
+  parseNumberWithSeparator,
+} from "../lib/helpers/numberSeparator";
+import InputAddonWrapper, { extractAddonOptions } from "./InputAddon";
 
 const Price = (props) => {
   const currency = props.currency ?? props.options?.currency;
-  const { currency: _currency, ...inputOptions } = props.options ?? {};
+  const { addonBefore, addonAfter, inputOptions } = extractAddonOptions(
+    props.options
+  );
+  const { currency: _currency, ...restInputOptions } = inputOptions;
 
   const rules = separationRules({
     pageType: props.pageType,
@@ -37,44 +37,39 @@ const Price = (props) => {
     return (
       <>
         {props.hideLable ?? <div>{props.display}</div>}
-        {currency} {formatPrice(props.value)}
+        {currency} {formatNumberWithSeparator(props.value)}
       </>
     );
   }
 
   return (
-    <>
-      <Form.Item
-        label={props.display}
-        name={props.name}
-        initialValue={
-          props.value !== undefined
-            ? Number(props.value)
-            : Number(props.defaultValue)
+    <Form.Item
+      label={props.display}
+      name={props.name}
+      initialValue={
+        props.value !== undefined
+          ? Number(props.value)
+          : Number(props.defaultValue)
             ? Number(props.defaultValue)
             : ""
-        }
-        rules={priceRules}
+      }
+      rules={priceRules}
+    >
+      <InputAddonWrapper
+        addonBefore={addonBefore ?? currency}
+        addonAfter={addonAfter}
       >
         <InputNumber
-          {...inputOptions}
-          placeholder={inputOptions.placeholder}
+          {...restInputOptions}
+          placeholder={restInputOptions.placeholder}
           disabled={props.disabled}
           style={{ width: "100%" }}
-          className={`w-full`}
-          addonBefore={
-            currency ? (
-              currency.trim().startsWith("<svg") ? (
-                <span dangerouslySetInnerHTML={{ __html: currency }} />
-              ) : (
-                <span>{currency}</span>
-              )
-            ) : null
-          }
-          formatter={formatPrice}
+          className="w-full"
+          formatter={formatNumberWithSeparator}
+          parser={parseNumberWithSeparator}
         />
-      </Form.Item>
-    </>
+      </InputAddonWrapper>
+    </Form.Item>
   );
 };
 

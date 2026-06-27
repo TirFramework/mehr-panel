@@ -3,30 +3,38 @@ import { Form, Select, Tag } from "antd";
 
 import { separationRules } from "../lib/helpers";
 import Readonly from "../blocks/Readonly";
+import InputAddonWrapper, { extractAddonOptions } from "./InputAddon";
 
 const MySelect = (props) => {
+  const { addonBefore, addonAfter, inputOptions } = extractAddonOptions(
+    props.options
+  );
+
   return (
-    <Select
-      {...props.options}
-      data-cy={props.testId}
-      showSearch
-      filterOption={(input, option) =>
-        option.label.toLowerCase().indexOf(input.toLowerCase()) >= 0
-      }
-      mode={props.multiple ? "multiple" : false}
-      options={props.data.sort((a, b) => a.label.localeCompare(b.label))}
-      disabled={props.disable}
-      allowClear={!props.readonly && true}
-      value={props.value}
-      onChange={(val) => {
-        if (val !== undefined) {
-          props.onChange(val);
+    <InputAddonWrapper addonBefore={addonBefore} addonAfter={addonAfter}>
+      <Select
+        {...inputOptions}
+        data-cy={props.testId}
+        showSearch
+        filterOption={(input, option) =>
+          option.label.toLowerCase().indexOf(input.toLowerCase()) >= 0
         }
-      }}
-      onClear={() => {
-        props.onChange(null);
-      }}
-    />
+        mode={props.multiple ? "multiple" : false}
+        options={props.data.sort((a, b) => a.label.localeCompare(b.label))}
+        disabled={props.disable}
+        allowClear={!props.readonly && true}
+        value={props.value}
+        style={{ width: "100%", ...inputOptions.style }}
+        onChange={(val) => {
+          if (val !== undefined) {
+            props.onChange(val);
+          }
+        }}
+        onClear={() => {
+          props.onChange(null);
+        }}
+      />
+    </InputAddonWrapper>
   );
 };
 

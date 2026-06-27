@@ -2,6 +2,7 @@ import React from "react";
 import { Form, Input } from "antd";
 
 import { separationRules } from "../lib/helpers";
+import InputAddonWrapper, { extractAddonOptions } from "./InputAddon";
 
 const { TextArea: Textarea } = Input;
 
@@ -22,6 +23,10 @@ const TextareaComponent = (props) => {
     );
   }
 
+  const { addonBefore, addonAfter, inputOptions } = extractAddonOptions(
+    props.options
+  );
+
   return (
     <>
       <Form.Item
@@ -30,12 +35,15 @@ const TextareaComponent = (props) => {
         initialValue={props.value}
         rules={rules}
       >
-        <Textarea
-          disabled={props.disabled}
-          placeholder={props.options.placeholder}
-          rows={props.row}
-          className={props.readonly && "readOnly"}
-        />
+        <InputAddonWrapper addonBefore={addonBefore} addonAfter={addonAfter}>
+          <Textarea
+            disabled={props.disabled}
+            placeholder={inputOptions.placeholder}
+            rows={props.row}
+            className={props.readonly && "readOnly"}
+            {...inputOptions}
+          />
+        </InputAddonWrapper>
       </Form.Item>
     </>
   );

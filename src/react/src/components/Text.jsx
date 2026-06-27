@@ -4,6 +4,7 @@ import { QuestionCircleOutlined } from "@ant-design/icons";
 
 import { separationRules } from "../lib/helpers";
 import Readonly from "../blocks/Readonly";
+import InputAddonWrapper, { extractAddonOptions } from "./InputAddon";
 
 const fieldCommentTooltip = (comment) => {
   if (comment?.content === undefined) {
@@ -105,6 +106,8 @@ const Text = ({
     );
   }
 
+  const { addonBefore, addonAfter, inputOptions } = extractAddonOptions(options);
+
   return (
     <>
       <Form.Item
@@ -114,12 +117,14 @@ const Text = ({
         initialValue={value || defaultValue}
         rules={formRules}
       >
-        <Input
-          data-cy={testId}
-          {...props.options}
-          placeholder={placeholder || options.placeholder}
-          disabled={disable}
-        />
+        <InputAddonWrapper addonBefore={addonBefore} addonAfter={addonAfter}>
+          <Input
+            data-cy={testId}
+            {...inputOptions}
+            placeholder={placeholder || inputOptions.placeholder}
+            disabled={disable}
+          />
+        </InputAddonWrapper>
       </Form.Item>
     </>
   );

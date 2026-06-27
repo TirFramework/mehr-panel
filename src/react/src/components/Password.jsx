@@ -3,6 +3,7 @@ import { Form, Input, Button } from "antd";
 import { EyeInvisibleOutlined, EyeTwoTone } from "@ant-design/icons";
 
 import { separationRules, isRequired } from "../lib/helpers";
+import InputAddonWrapper, { extractAddonOptions } from "./InputAddon";
 
 const Text = (props) => {
   // console.log("🚀 ~ file: text.js ~ line 6 ~ Text ~ data", data)
@@ -22,6 +23,10 @@ const Text = (props) => {
   const editingHandel = () => {
     setEditing(true);
   };
+  const { addonBefore, addonAfter, inputOptions } = extractAddonOptions(
+    props.options
+  );
+
   return (
     <>
       {!editing ? (
@@ -30,12 +35,14 @@ const Text = (props) => {
         </Button>
       ) : (
         <Form.Item label={props.display} name={props.name} rules={rules}>
-          <Input.Password
-            {...props.options}
-            iconRender={(visible) =>
-              visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />
-            }
-          />
+          <InputAddonWrapper addonBefore={addonBefore} addonAfter={addonAfter}>
+            <Input.Password
+              {...inputOptions}
+              iconRender={(visible) =>
+                visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />
+              }
+            />
+          </InputAddonWrapper>
         </Form.Item>
       )}
     </>
