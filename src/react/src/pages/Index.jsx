@@ -36,6 +36,9 @@ import NotFoundPage from "./NotFoundPage";
 
 const { Title } = Typography;
 
+const isQueryNotFound = (query) =>
+  query?.isError && query.error?.response?.status === 404;
+
 function Index() {
   const [form] = Form.useForm();
   const { t } = useLanguage();
@@ -250,7 +253,7 @@ function Index() {
     ]
   );
 
-  if (pageDataQuery.isError && pageDataQuery.error?.response?.status === 404) {
+  if (isQueryNotFound(pageDataQuery) || isQueryNotFound(dataQuery)) {
     return <NotFoundPage />;
   }
 
