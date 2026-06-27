@@ -18,10 +18,8 @@ const queryClient = new QueryClient({
     queries: {
       gcTime: 1000 * 60 * 60 * 24,
       retry: false,
+      retryOnMount: false,
       refetchOnWindowFocus: false,
-      onError: (err) => {
-        // console.log("🚀 ~ file: index.js:29 ~ err:", err);
-      },
     },
     mutations: {
       onError: (err) => {

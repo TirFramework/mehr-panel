@@ -18,16 +18,16 @@ function DefaultLayout(props) {
   const isFetching = useIsFetching();
   const [token, setToken] = useLocalStorage("fcmToken");
   const [loading, setLoading] = useState(false);
-  const { changeLanguage, t } = useLanguage();
+  const { changeLanguage, t, lang } = useLanguage();
 
   const { data, ...generalQuery } = useGeneralQuery();
 
   // Apply the language sent by the backend as soon as the topbar data loads
   useEffect(() => {
-    if (data?.lang) {
+    if (data?.lang && data.lang !== lang) {
       changeLanguage(data.lang);
     }
-  }, [data?.lang]);
+  }, [data?.lang, lang, changeLanguage]);
 
   return (
     <>
@@ -53,6 +53,14 @@ function DefaultLayout(props) {
               </Layout.Content>
             </Layout>
           </>
+        ) : generalQuery.isError ? (
+          <Layout>
+            <Layout.Content className="loading-container">
+              <Typography.Title level={3} className="loading-container__text">
+                {t.ERROR_TITLE}
+              </Typography.Title>
+            </Layout.Content>
+          </Layout>
         ) : (
           <Layout>
             <TopHeader {...data} />

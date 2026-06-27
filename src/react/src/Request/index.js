@@ -1,81 +1,167 @@
-import { useMutation, useQuery } from "@tanstack/react-query";
-import {
-  deleteRow,
-  getCols,
-  getData,
-  getFields,
-  getGeneral,
-  getSidebar,
-  postAddFcmToken,
-} from "../api";
-import { notification } from "antd";
-
-export const useGetData = (pageModule, filter, options) => {
-  const serializedFilter = JSON.stringify(filter || {});
-
-  const query = useQuery({
-    queryKey: [`index-data-${pageModule}`, serializedFilter],
-    queryFn: () => getData(pageModule, filter),
-    ...options,
-  });
-
-  return query;
-};
-
-export const useGetColumns = (pageModule, filter, options) => {
-  const query = useQuery({
-    queryKey: [`index-columns-${pageModule}`],
-    queryFn: () => getCols(pageModule, filter),
-    ...options,
-  });
-
-  return query;
-};
-
-export const useDeleteRow = () => {
-  const mutation = useMutation({
-    mutationFn: deleteRow,
-    onSuccess: (data) => {
-      notification.success({
-        message: data.message,
-      });
-    },
-  });
-
-  return mutation;
-};
-
-export const useSidebar = () => {
-  const query = useQuery({
-    queryKey: [`sidebar`],
-    queryFn: () => getSidebar(),
-    staleTime: 5 * 60 * 1000,
-    refetchInterval: 5 * 60 * 1000,
-  });
-  return query;
-};
-
-export const useFieldsQuery = ({ pageModule, id, type }, options) => {
-  const query = useQuery({
-    queryKey: [`${pageModule}-${id}-${type}`],
-    queryFn: () => getFields(pageModule, id, type),
-    ...options,
-  });
-
-  return query;
-};
-
-export const useGeneralQuery = () => {
-  const query = useQuery({
-    queryKey: [`general`],
-    queryFn: () => getGeneral(),
-  });
-  return query;
-};
-
-export const useAddFcmToken = () => {
-  const mutation = useMutation({
-    mutationFn: postAddFcmToken,
-  });
-  return mutation;
-};
+import { useMutation, useQuery } from "@tanstack/react-query";
+
+import {
+
+  deleteRow,
+
+  getCols,
+
+  getData,
+
+  getFields,
+
+  getGeneral,
+
+  getSidebar,
+
+  postAddFcmToken,
+
+} from "../api";
+
+import { notification } from "antd";
+
+
+
+export const useGetData = (pageModule, filter, options) => {
+
+  const serializedFilter = JSON.stringify(filter || {});
+
+
+
+  const query = useQuery({
+
+    queryKey: [`index-data-${pageModule}`, serializedFilter],
+
+    queryFn: () => getData(pageModule, filter),
+
+    ...options,
+
+  });
+
+
+
+  return query;
+
+};
+
+
+
+export const useGetColumns = (pageModule, filter, options) => {
+
+  const query = useQuery({
+
+    queryKey: [`index-columns-${pageModule}`],
+
+    queryFn: () => getCols(pageModule, filter),
+
+    ...options,
+
+  });
+
+
+
+  return query;
+
+};
+
+
+
+export const useDeleteRow = () => {
+
+  const mutation = useMutation({
+
+    mutationFn: deleteRow,
+
+    onSuccess: (data) => {
+
+      notification.success({
+
+        message: data.message,
+
+      });
+
+    },
+
+  });
+
+
+
+  return mutation;
+
+};
+
+
+
+export const useSidebar = () => {
+
+  const query = useQuery({
+
+    queryKey: [`sidebar`],
+
+    queryFn: () => getSidebar(),
+
+    staleTime: 5 * 60 * 1000,
+
+    refetchInterval: (query) =>
+      query.state.status === "success" ? 5 * 60 * 1000 : false,
+
+  });
+
+  return query;
+
+};
+
+
+
+export const useFieldsQuery = ({ pageModule, id, type }, options) => {
+
+  const query = useQuery({
+
+    queryKey: [`${pageModule}-${id}-${type}`],
+
+    queryFn: () => getFields(pageModule, id, type),
+
+    ...options,
+
+  });
+
+
+
+  return query;
+
+};
+
+
+
+export const useGeneralQuery = () => {
+
+  const query = useQuery({
+
+    queryKey: [`general`],
+
+    queryFn: () => getGeneral(),
+
+    staleTime: 5 * 60 * 1000,
+
+    retryOnMount: false,
+
+  });
+
+  return query;
+
+};
+
+
+
+export const useAddFcmToken = () => {
+
+  const mutation = useMutation({
+
+    mutationFn: postAddFcmToken,
+
+  });
+
+  return mutation;
+
+};
+

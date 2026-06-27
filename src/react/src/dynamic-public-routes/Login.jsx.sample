@@ -1,0 +1,17 @@
+// Custom login page (shared across all panels).
+// Copy to Login.jsx in this folder, or place a panel-specific version at:
+//   dynamic-public-routes/{prefix}/Login.jsx
+//
+// Priority:
+//   1. dynamic-public-routes/{prefix}/Login.jsx
+//   2. dynamic-public-routes/Login.jsx
+//   3. default layouts/Login.jsx
+//
+// import React from "react";
+// import DefaultLogin from "../layouts/Login";
+//
+// function Login() {
+//   return <DefaultLogin />;
+// }
+//
+// export default Login;

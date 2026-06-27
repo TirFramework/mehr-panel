@@ -10,12 +10,11 @@ import { useSearchParams } from "react-router-dom";
 function useGetParams(key, defaultFilter) {
   const [storedValue, setStoredValue] = useState({});
   const [searchParams, setSearchParams] = useSearchParams();
+  const searchParamsKey = searchParams.toString();
 
   useEffect(() => {
-    // Assumes searchParams is available in this scope
     const newQueryParams = extractQueryParams();
 
-    // Update state with the constructed object
     if (hasQueryParams(newQueryParams)) {
       setStoredValue({
         ...newQueryParams,
@@ -25,7 +24,7 @@ function useGetParams(key, defaultFilter) {
       const item = window.localStorage.getItem(key);
       setStoredValue(item ? JSON.parse(item) : { ...defaultFilter });
     }
-  }, [key, searchParams]);
+  }, [key, searchParamsKey]);
 
   const setValue = (value) => {
     // console.log("🚀 ~ setValue ~ value:", value);

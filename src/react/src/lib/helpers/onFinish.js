@@ -2,6 +2,7 @@ import { replaceLastNumberFromString } from ".";
 import * as api from "../../api";
 import { ifExistNumberFromString } from "./duplicate";
 import responseErrorHandler from "./responseErrorHandler";
+import { getNotificationApi } from "../notificationService";
 
 export const fixNumber = (obj) => {
   //object should sort before this function
@@ -75,38 +76,50 @@ export const onFinish = ({
     .then((res) => {
       setSubmitLoad({ isLoading: false, isSuccess: true });
 
-      if (!pageId) {
-        setUrlParams({ id: res.id });
-      }
-      types.forEach((type) => {
-        const queryKeyToGet = `${pageModule}-${pageId}-${type}`;
+      const payload = res && typeof res === "object" ? res : {};
+      const savedId = payload.id ?? pageId;
 
-        queryClient.setQueryData([queryKeyToGet], (oldData) => {
-          return res.scaffolder;
+      try {
+        if (!pageId && savedId != null && setUrlParams) {
+          setUrlParams({ id: String(savedId) });
+        }
+
+        types.forEach((type) => {
+          const queryKeyToGet = `${pageModule}-${savedId}-${type}`;
+          queryClient.setQueryData([queryKeyToGet], () => payload.scaffolder);
         });
-      });
 
-      if (queryClientKey) {
-        queryClient.setQueryData(queryClientKey, (oldData) => {
-          const newData = { ...oldData };
-
-          newData?.data.forEach((item) => {
-            if (item.id == pageId) {
-              for (const [key, value] of Object.entries(values)) {
-                item[key] = value;
-              }
+        if (queryClientKey) {
+          queryClient.setQueryData(queryClientKey, (oldData) => {
+            if (!Array.isArray(oldData?.data)) {
+              return oldData;
             }
-          });
-          return newData;
-        });
-      }
 
-      message.success(res.message);
-      afterSubmit();
+            return {
+              ...oldData,
+              data: oldData.data.map((item) =>
+                item.id == pageId ? { ...item, ...values } : item
+              ),
+            };
+          });
+        }
+
+        if (payload.message) {
+          message?.success(payload.message);
+        }
+
+        afterSubmit();
+      } catch (postSuccessError) {
+        console.error("Post-save handling failed:", postSuccessError);
+        if (payload.message) {
+          message?.success(payload.message);
+        }
+      }
     })
     .catch((err) => {
       const error = responseErrorHandler(err);
-      notification.error({
+      const notify = notification ?? getNotificationApi();
+      notify?.error({
         message: error.message,
         duration: error.duration,
         description: error.description,

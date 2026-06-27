@@ -21,7 +21,7 @@ const Submit = (props) => {
     <Button
       type="primary"
       loading={props.loading && clicked}
-      disabled={clicked ? false : props.loading}
+      disabled={props.loading}
       onClick={() => {
         setClicked(true);
         props.form.redirect = `/${Config.prefix}/${pageModule}`;

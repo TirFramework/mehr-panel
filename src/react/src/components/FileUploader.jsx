@@ -8,6 +8,7 @@ import { FileOutlined, QuestionCircleOutlined, UploadOutlined } from "@ant-desig
 
 import { getAccept, separationRules } from "../lib/helpers";
 import { getApiToken } from "../lib/authToken";
+import { useLanguage } from "../context/LanguageContext";
 
 const fieldCommentTooltip = (comment) => {
   if (comment?.content === undefined) {
@@ -71,6 +72,7 @@ const DragableUploadListItem = ({ originNode, moveRow, file, fileList }) => {
 };
 
 const DragSortingUpload = (props) => {
+  const { t } = useLanguage();
   const initialValueHandeling = (data) => {
     let newData = [];
     if (data === undefined || data === null) {
@@ -156,7 +158,7 @@ const DragSortingUpload = (props) => {
           )}
         >
           <Button icon={<UploadOutlined />} disabled={props.disable} data-cy={`${props.testId}-button`}>
-            Click to upload file for {props.display}
+            {(t.UPLOAD_CLICK_FOR || "").replace("{display}", props.name)}
           </Button>
         </Upload>
       </DndProvider>

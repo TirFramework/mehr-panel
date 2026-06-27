@@ -1,4 +1,11 @@
-import React, { createContext, useState, useContext, useEffect, useMemo } from "react";
+import React, {
+  createContext,
+  useState,
+  useContext,
+  useEffect,
+  useMemo,
+  useCallback,
+} from "react";
 import dayjs from "dayjs";
 import "dayjs/locale/fa";
 import "dayjs/locale/de";
@@ -27,12 +34,14 @@ export const LanguageProvider = ({ children }) => {
     setT(updatedLangTranslations);
   };
 
-  const changeLanguage = (newLang) => {
-    if (allTranslations[newLang]) {
-      setLang(newLang);
-      setT(allTranslations[newLang]);
+  const changeLanguage = useCallback((newLang) => {
+    if (!allTranslations[newLang]) {
+      return;
     }
-  };
+
+    setLang(newLang);
+    setT(allTranslations[newLang]);
+  }, []);
 
   const localeMeta = useMemo(() => getLocaleMeta(lang), [lang]);
 

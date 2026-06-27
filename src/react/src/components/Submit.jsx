@@ -72,7 +72,7 @@ const Submit = (props) => {
         type="primary"
         data-cy={props.testId}
         loading={props.loading && clicked}
-        disabled={clicked ? false : props.loading}
+        disabled={props.loading}
         onClick={handleSubmit}
       >
         {props.display ? props.display : props.pageId ? t.UPDATE : t.CREATE}

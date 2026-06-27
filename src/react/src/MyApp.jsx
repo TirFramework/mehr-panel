@@ -3,9 +3,10 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { App, ConfigProvider, theme, Button } from "antd";
 
 import Custom from "./pages/Custom";
-import Login from "./layouts/Login";
+import DynamicPublicPage from "./pages/DynamicPublicPage";
+import DefaultLogin from "./layouts/Login";
 import NotFoundPage from "./pages/NotFoundPage";
-import ForgotPassword from "./pages/ForgotPassword";
+import DefaultForgotPassword from "./pages/ForgotPassword";
 
 // core components
 import { BulbOutlined, BulbFilled } from "@ant-design/icons";
@@ -128,12 +129,22 @@ function MyApp() {
             <Route element={<PublicRoute />}>
               <Route
                 path="/:panelName/login"
-                element={<Login />}
+                element={
+                  <DynamicPublicPage
+                    pageName="Login"
+                    DefaultComponent={DefaultLogin}
+                  />
+                }
               />
-                <Route
+              <Route
                 path="/:panelName/forgot-password"
-                element={<ForgotPassword />}
-                />
+                element={
+                  <DynamicPublicPage
+                    pageName="ForgotPassword"
+                    DefaultComponent={DefaultForgotPassword}
+                  />
+                }
+              />
             </Route>
 
             {/* Private Routes */}

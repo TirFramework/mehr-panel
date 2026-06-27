@@ -1,0 +1,14 @@
+// Panel-specific login page for the "admin" prefix.
+// Copy to Login.jsx in this folder.
+//
+// import React from "react";
+//
+// function Login() {
+//   return (
+//     <>
+//       <h1>Custom admin login</h1>
+//     </>
+//   );
+// }
+//
+// export default Login;
