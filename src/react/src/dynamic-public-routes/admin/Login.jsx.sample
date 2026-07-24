@@ -1,14 +1,25 @@
-// Panel-specific login page for the "admin" prefix.
-// Copy to Login.jsx in this folder.
-//
-// import React from "react";
-//
-// function Login() {
-//   return (
-//     <>
-//       <h1>Custom admin login</h1>
-//     </>
-//   );
-// }
-//
-// export default Login;
+/**
+ * Panel-specific custom login for prefix "admin".
+ *
+ * How to use:
+ *   1. Copy this file to: Login.jsx  (remove .sample)
+ *   2. Or rename the "admin" folder to your panel prefix
+ *   3. Rebuild / restart Vite
+ *
+ * This file wins over:
+ *   - dynamic-public-routes/Login.jsx
+ *   - layouts/Login.jsx
+ */
+
+import React from "react";
+import DefaultLogin from "../../layouts/Login";
+
+function Login() {
+  return (
+    <div className="custom-login-admin">
+      <DefaultLogin />
+    </div>
+  );
+}
+
+export default Login;

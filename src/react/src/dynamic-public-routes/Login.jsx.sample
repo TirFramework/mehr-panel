@@ -1,17 +1,36 @@
-// Custom login page (shared across all panels).
-// Copy to Login.jsx in this folder, or place a panel-specific version at:
-//   dynamic-public-routes/{prefix}/Login.jsx
-//
-// Priority:
-//   1. dynamic-public-routes/{prefix}/Login.jsx
-//   2. dynamic-public-routes/Login.jsx
-//   3. default layouts/Login.jsx
-//
-// import React from "react";
-// import DefaultLogin from "../layouts/Login";
-//
-// function Login() {
-//   return <DefaultLogin />;
-// }
-//
-// export default Login;
+/**
+ * Shared custom login (all panels).
+ *
+ * How to use:
+ *   1. Copy this file to: Login.jsx  (remove .sample)
+ *   2. Rebuild / restart Vite
+ *
+ * Priority:
+ *   1. dynamic-public-routes/{prefix}/Login.jsx   ← panel-specific (highest)
+ *   2. dynamic-public-routes/Login.jsx            ← this file (shared)
+ *   3. layouts/Login.jsx                          ← default
+ *
+ * Panel-specific example:
+ *   dynamic-public-routes/admin/Login.jsx
+ */
+
+import React from "react";
+import DefaultLogin from "../layouts/Login";
+
+function Login() {
+  // Option A: wrap / restyle the default login
+  return (
+    <div className="custom-login">
+      <DefaultLogin />
+    </div>
+  );
+
+  // Option B: build a fully custom login UI from scratch
+  // return (
+  //   <div>
+  //     <h1>My Custom Login</h1>
+  //   </div>
+  // );
+}
+
+export default Login;
