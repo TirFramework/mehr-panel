@@ -17,7 +17,7 @@ const Config = {
   storage: import.meta.env.VITE_APP_API_STORAGE || "/storage",
   tinyemcApiKey: import.meta.env.VITE_APP_TINYEMC,
   prefix: panelName,
-  panelVersion: "12.8.1",
+  panelVersion: "12.8.2",
   interactionCharacter: import.meta.env.VITE_APP_INTERACTION_CHARACTER || "id",
   firebase: {
     apiKey: import.meta.env.VITE_APP_FIREBASE_API_KEY,
