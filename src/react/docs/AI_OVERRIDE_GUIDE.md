@@ -2,13 +2,66 @@
 
 > **Audience:** AI coding agents and developers customizing the React admin panel **without forking core files**.
 >
-> **Base path:** all paths below are relative to `src/react/src/` unless noted.
+> **Base path:** all paths below are relative to `src/react/src/` in this package, or `resources/admin/src/` after publish into a Laravel app.
 >
 > **Rule of thumb:** copy a `*.sample` → remove `.sample` → export `default`. Vite ignores `.sample` files.
 
 ---
 
-## 0. Decision tree (what should I override?)
+## 0. Core vs custom — what you may NEVER edit
+
+The panel ships a full React app. **Everything that comes from the package is core.** On upgrade / re-publish, core is replaced. **Do not modify core files for project-specific behavior.** Use file-drop overrides only.
+
+### Forbidden (panel core — never change for customization)
+
+Treat these as **read-only** when implementing features for a product / tenant / client:
+
+| Area | Paths (under `…/src/`) |
+|------|-------------------------|
+| App entry & routing | `main.jsx`, `MyApp.jsx` |
+| Built-in pages | `pages/**` (`Index`, `List`, `Detail`, `Create`, `Custom`, `Login` wiring, …) |
+| Layouts | `layouts/**` (`DefaultLayout`, `Login`, `AuthShell`, …) |
+| Blocks / UI chrome | `blocks/**` (`IndexShell`, `IndexTableBody`, `Sidebar`, `Form`, `Filter*`, …) |
+| Hooks | `hooks/**` (`useIndexPage`, `useLogin`, `useTableColumns`, …) |
+| Built-in field components | `components/Field.jsx`, `Text.jsx`, `Select.jsx`, `Submit.jsx`, and every other **existing** built-in type |
+| Lib / resolvers | `lib/**` (`utils`, `resolveDynamicPage`, `resolveOverride`, helpers, …) |
+| Context / config / API | `context/**`, `constants/**`, `Request/**` (and similar) |
+| Default theme merge | `theme/default.js`, `theme/mergeTheme.js` |
+| Base styles | `assets/index.css` (and other shipped CSS except `custom.css`) |
+| Shipped locale dictionaries | `locales/en/panel.js`, `locales/fa/panel.js`, `locales/de/panel.js` (and other package locale files) |
+| Samples (templates only) | any `*.sample` — **copy**, don’t “fix” the sample in place for production |
+| Package PHP / publish stubs | outside React: ServiceProvider, routes, views, `src/dashboard.jsx` publish stub, etc. (unless you are developing the **package** itself) |
+
+**Also forbidden:** editing a file under `dynamic-*` that is still named `*.sample`, or renaming core files, or patching `node_modules`.
+
+If the task seems to require editing a forbidden path, **stop** and use an allowlisted override instead (or ask the user if they are intentionally developing the panel package core).
+
+### Allowed (project customization only)
+
+Create or edit **only** these:
+
+| Purpose | Path |
+|---------|------|
+| Module screens | `dynamic-pages/**/*.jsx` (real files, not `.sample`) |
+| Injection slots | `dynamic-slots/**/*.jsx` |
+| Top header | `dynamic-layouts/**/CustomTopHeader.jsx` |
+| Login / forgot page | `dynamic-public-routes/**/*.jsx` |
+| Theme tokens | `theme/override.js` |
+| Extra CSS | `assets/custom.css` |
+| **New** field type (new backend `type` name) | `components/{NewType}.jsx` — **add only**; never replace built-in `Text`/`Select`/… |
+| Extra translation keys | new files under `locales/{en\|fa\|de}/*.js` (merge); don’t rewrite shipped `panel.js` |
+| Docs / Cursor rules for the team | `docs/AI_OVERRIDE_GUIDE.md`, `.cursor/rules/*` (optional) |
+
+**Compose, don’t fork:** override pages should `import` core hooks/blocks (`useIndexPage`, `IndexShell`, …) and leave those core files untouched.
+
+### Working in the `mehr-panel` package repo
+
+- **Product customization** → same rules: only allowlisted paths (or samples as templates).
+- **Developing the panel itself** (bugfix / new core feature) → core edits are allowed **only when the user explicitly asks to change the package core**.
+
+---
+
+## 1. Decision tree (what should I override?)
 
 | Goal | Mechanism | Where |
 |------|-----------|--------|
@@ -28,7 +81,7 @@
 
 ---
 
-## 1. Dynamic pages (module screens)
+## 2. Dynamic pages (module screens)
 
 ### Routes (`MyApp.jsx` → `pages/Custom.jsx`)
 
@@ -131,7 +184,7 @@ function Client({ type, ...props }) {
 
 ---
 
-## 2. Dynamic slots (injection points)
+## 3. Dynamic slots (injection points)
 
 Resolver: `components/Slot.jsx` + `lib/resolveOverride.js`.
 
@@ -187,7 +240,7 @@ export default function IndexBody({ index }) {
 
 ---
 
-## 3. Index composition API
+## 4. Index composition API
 
 ```
 useIndexPage()  →  object "index"
@@ -218,7 +271,7 @@ IndexShell      →  title, search, AI, CustomCol, filter tags, Create, IndexToo
 
 ---
 
-## 4. Custom field components
+## 5. Custom field components
 
 Dispatcher: `components/Field.jsx`.
 
@@ -294,7 +347,7 @@ export default function RatingStars(props) {
 
 ---
 
-## 5. Auth overrides
+## 6. Auth overrides
 
 ### Layers (compose)
 
@@ -323,7 +376,7 @@ Samples: `dynamic-public-routes/Login.jsx.sample`, `admin/Login.jsx.sample`, `Fo
 
 ---
 
-## 6. Top header layout
+## 7. Top header layout
 
 - Drop: `dynamic-layouts/CustomTopHeader.jsx` or `dynamic-layouts/{panel}/CustomTopHeader.jsx`
 - Fallback: `blocks/DefaultTopHeader.jsx`
@@ -334,7 +387,7 @@ Receives the same props as `DefaultTopHeader` (general query data spread).
 
 ---
 
-## 7. Theme override
+## 8. Theme override
 
 1. Copy `theme/override.js.sample` → `theme/override.js`
 2. Export Ant Design theme partial:
@@ -351,7 +404,7 @@ export default {
 
 ---
 
-## 8. CSS override
+## 9. CSS override
 
 1. Copy `assets/custom.css.sample` → `assets/custom.css`
 2. Loaded via `import.meta.glob` in `main.jsx`
@@ -359,13 +412,13 @@ export default {
 
 ---
 
-## 9. Locales (soft extension)
+## 10. Locales (soft extension)
 
 `context/translations.js` merges `locales/{en|de|fa}/*.js` (eager). Add a new `*.js` exporting a default object of translation keys.
 
 ---
 
-## 10. Shared resolvers
+## 11. Shared resolvers
 
 ### `lib/resolveOverride.js` (slots, public routes, layouts)
 
@@ -383,24 +436,25 @@ Almost all overrides are `React.lazy`. Expect Skeleton / default fallback while 
 
 ---
 
-## 11. Checklist for AI agents
+## 12. Checklist for AI agents
 
 When asked to customize the panel:
 
-1. **Identify the smallest override** (slot vs page vs field vs theme).
-2. **Copy from `*.sample`**, rename by removing `.sample` — never edit core unless unavoidable.
-3. **Compose** `useIndexPage` / `IndexShell` / existing bodies when possible.
-4. For flat dynamic pages, **always handle `type` including `"list"`**.
-5. New fields: **new type name** + `components/{Type}.jsx`; don’t try to replace built-in Text/Select.
-6. Table cells: use **`record`**, not `data`, for the row.
-7. **Restart Vite** after adding new override files.
-8. Panel folder name must match URL (`/admin/...` → `admin/`).
-9. Do not commit `node_modules` or secrets; only the new override files.
-10. Prefer English code/comments consistent with the repo; UI strings via `t` / locales when available.
+1. **Read §0** — if the change targets a forbidden/core path, refuse and use an allowlisted override.
+2. **Identify the smallest override** (slot vs page vs field vs theme).
+3. **Copy from `*.sample`**, rename by removing `.sample` — never edit core; never “fix” by patching `pages/` / `blocks/` / `hooks/`.
+4. **Compose** `useIndexPage` / `IndexShell` / existing bodies when possible.
+5. For flat dynamic pages, **always handle `type` including `"list"`**.
+6. New fields: **new type name** + `components/{Type}.jsx`; don’t try to replace built-in Text/Select.
+7. Table cells: use **`record`**, not `data`, for the row.
+8. **Restart Vite** after adding new override files.
+9. Panel folder name must match URL (`/admin/...` → `admin/`).
+10. Do not commit `node_modules` or secrets; only the new override files.
+11. Prefer English code/comments consistent with the repo; UI strings via `t` / locales when available.
 
 ---
 
-## 12. Quick reference — all sample files
+## 13. Quick reference — all sample files
 
 ```
 dynamic-pages/client.jsx.sample
@@ -424,7 +478,7 @@ assets/custom.css.sample
 
 ---
 
-## 13. Minimal recipes
+## 14. Minimal recipes
 
 ### A) Cards on index URL for all modules
 

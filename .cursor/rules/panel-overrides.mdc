@@ -9,11 +9,16 @@ Before adding custom UI, pages, fields, slots, theme, or login overrides for thi
 
 `src/react/docs/AI_OVERRIDE_GUIDE.md`
 
+Especially **§0 Core vs custom** — which files are panel core (never edit) vs allowlisted override paths.
+
 ## Hard rules
 
+- **Never edit panel core for product customization:** `pages/`, `blocks/`, `hooks/`, `layouts/`, `lib/`, `MyApp.jsx`, `main.jsx`, built-in `components/*` (Text, Select, Field, …), `theme/default.js`, `assets/index.css`, shipped `locales/*/panel.js`.
+- Customize **only** via: `dynamic-pages/`, `dynamic-slots/`, `dynamic-layouts/`, `dynamic-public-routes/`, `theme/override.js`, `assets/custom.css`, and **new** `components/{NewType}.jsx` files.
 - Prefer file-drop overrides (`*.sample` → remove `.sample`) over editing core pages.
 - Compose `useIndexPage` + `IndexShell` + body blocks; don’t reimplement fetching.
 - Flat `dynamic-pages/{module}.jsx` must branch on `type` including `"list"`.
 - Field prop `data` = Select options; table row = `record` (never overwrite `data` with the row).
 - Built-in field types (Text, Select, …) cannot be replaced by same-named files — use a new `type` name.
 - Restart Vite after adding new glob-matched override files.
+- Core edits are allowed **only** when the user explicitly asks to develop the panel package itself.
