@@ -1,0 +1,31 @@
+/**
+ * Panel-specific INDEX override for prefix "admin".
+ *
+ * Copy to: dynamic-pages/admin/client/index.jsx  (remove .sample)
+ * Route:   /admin/client
+ *
+ * For cards: /admin/client/list
+ * Override:  dynamic-pages/admin/client/list.jsx
+ */
+
+import React from "react";
+import useIndexPage from "../../../hooks/useIndexPage";
+import IndexShell from "../../../blocks/IndexShell";
+import IndexTableBody from "../../../blocks/IndexTableBody";
+import NotFoundPage from "../../../pages/NotFoundPage";
+
+function ClientIndex() {
+  const index = useIndexPage();
+
+  if (index.notFound) {
+    return <NotFoundPage />;
+  }
+
+  return (
+    <IndexShell index={index} className="custom-admin-client-index">
+      <IndexTableBody index={index} />
+    </IndexShell>
+  );
+}
+
+export default ClientIndex;

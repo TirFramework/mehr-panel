@@ -6,6 +6,7 @@ import * as antdIcons from "@ant-design/icons"; // Import all icons
 import { useSidebar } from "../Request";
 import useLocalStorage from "../hooks/useLocalStorage";
 import { useLanguage } from "../context/LanguageContext";
+import Slot from "../components/Slot";
 
 const { Sider } = Layout;
 
@@ -269,26 +270,27 @@ const Sidebar = memo(function App() {
           />
           </div>
         )}
-        {!isMobile && (
           <div className="menu__sidebar-footer">
-            <Button
-              type="link"
-              shape="circle"
-              block
-              size="large"
-              onClick={toggleSidebarMobile}
-              color="white"
-              style={{ color: "white" }}
-              icon={
-                isCollapsible.status ? (
-                  <antdIcons.MenuFoldOutlined />
-                ) : (
-                  <antdIcons.MenuUnfoldOutlined />
-                )
-              }
-            />
+            <Slot name="SidebarFooter" />
+            {!isMobile && (
+              <Button
+                type="link"
+                shape="circle"
+                block
+                size="large"
+                onClick={toggleSidebarMobile}
+                color="white"
+                style={{ color: "white" }}
+                icon={
+                  isCollapsible.status ? (
+                    <antdIcons.MenuFoldOutlined />
+                  ) : (
+                    <antdIcons.MenuUnfoldOutlined />
+                  )
+                }
+              />
+            )}
           </div>
-        )}
       </Sider>
     </>
   );

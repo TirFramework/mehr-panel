@@ -146,7 +146,10 @@ export default {
   // Filters & search
   SEARCH: "Search",
   RESET: "Reset",
+  RESET_ALL: "Reset all",
   FILTER: "Filter",
+  SORT: "Sort",
+  APPLY_FILTERS: "Apply filters",
   FILTER_NO_RESULTS: "No results",
   FILTER_NO_ITEMS: "No items",
   FILTER_SEARCH_IN: "Search in filters",

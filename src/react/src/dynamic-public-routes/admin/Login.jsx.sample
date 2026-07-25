@@ -1,24 +1,96 @@
 /**
  * Panel-specific custom login for prefix "admin".
  *
- * How to use:
- *   1. Copy this file to: Login.jsx  (remove .sample)
- *   2. Or rename the "admin" folder to your panel prefix
- *   3. Rebuild / restart Vite
+ * Copy to Login.jsx (remove .sample). Rename folder to your panel prefix if needed.
  *
- * This file wins over:
- *   - dynamic-public-routes/Login.jsx
- *   - layouts/Login.jsx
+ * Prefer AuthShell + useLogin() — override fields/labels here only.
  */
 
 import React from "react";
-import DefaultLogin from "../../layouts/Login";
+import { Form, Input, Button, notification } from "antd";
+import { LockOutlined, UserOutlined } from "@ant-design/icons";
+import { useNavigate } from "react-router-dom";
+import Config from "../../constants/config";
+import { useLanguage } from "../../context/LanguageContext";
+import useDocumentTitle from "../../hooks/useDocumentTitle";
+import useLogin from "../../hooks/useLogin";
+import AuthShell from "../../layouts/AuthShell";
+import responseErrorHandler from "../../lib/helpers/responseErrorHandler";
 
 function Login() {
+  const navigate = useNavigate();
+  const { t } = useLanguage();
+  const { loading, mustVerify, login, resetVerification } = useLogin();
+
+  useDocumentTitle(t.LOGIN_WELCOME);
+
+  const onFinish = async (values) => {
+    const result = await login(values);
+
+    if (result.status === "must_verify") {
+      notification.warning({ message: result.message, duration: 20 });
+      return;
+    }
+    if (result.status === "no_token") {
+      notification.error({ message: t.LOGIN_NO_TOKEN });
+      return;
+    }
+    if (result.status === "error") {
+      const error = responseErrorHandler(result.error);
+      notification.error({
+        message: error.message || t.ERROR_GENERIC,
+        description: error.description,
+        duration: error.duration,
+      });
+      return;
+    }
+    if (result.status === "success") {
+      notification.success({ message: t.LOGIN_SUCCESS });
+      navigate(`/${Config.prefix}/dashboard`);
+    }
+  };
+
   return (
-    <div className="custom-login-admin">
-      <DefaultLogin />
-    </div>
+    <AuthShell className="custom-login-admin" title={t.LOGIN_WELCOME}>
+      <Form onFinish={onFinish} initialValues={{ remember: true }}>
+        <Form.Item
+          name="email"
+          rules={[{ required: true, message: t.VALIDATION_EMAIL }]}
+        >
+          <Input size="large" placeholder={t.EMAIL} prefix={<UserOutlined />} />
+        </Form.Item>
+
+        <Form.Item
+          name="password"
+          rules={[{ required: true, message: t.VALIDATION_PASSWORD }]}
+        >
+          <Input.Password
+            size="large"
+            placeholder={t.PASSWORD}
+            prefix={<LockOutlined />}
+          />
+        </Form.Item>
+
+        {mustVerify && (
+          <Form.Item
+            name="code"
+            rules={[{ required: true, message: t.VALIDATION_CODE }]}
+          >
+            <Input size="large" placeholder={t.VERIFICATION_CODE} />
+          </Form.Item>
+        )}
+
+        <Button block type="primary" htmlType="submit" loading={loading} size="large">
+          {t.SIGN_IN}
+        </Button>
+
+        {mustVerify && (
+          <Button block onClick={resetVerification} style={{ marginTop: 8 }}>
+            {t.TRY_AGAIN_CODE}
+          </Button>
+        )}
+      </Form>
+    </AuthShell>
   );
 }
 

@@ -6,6 +6,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { onFinish } from "../lib/helpers";
 import SubmitGroup from "../components/SubmitGroup";
 import FormGroup from "../components/FormGroup";
+import Slot from "../components/Slot";
 import Header from "./Header";
 import { useMyContext } from "../context/MyContext";
 import { useFieldsQuery } from "../Request";
@@ -225,6 +226,12 @@ const CreateForm = ({ type }) => {
         )}
 
         <Card className="create-edit__card" loading={isLoading}>
+          <Slot
+            name="FormBeforeFields"
+            pageModule={pageModule}
+            pageType={pageType}
+            form={form}
+          />
           <Row gutter={[16, 16]}>
             {fieldsData?.fields?.map((field, index) => (
               <FormGroup

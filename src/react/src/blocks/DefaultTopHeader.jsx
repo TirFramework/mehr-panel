@@ -1,20 +1,22 @@
-import React, { lazy, memo, Suspense } from "react";
+import React from "react";
 import { Layout, Row, Typography, Button, Col, Space } from "antd";
 import { useNavigate } from "react-router-dom";
 import { LogoutOutlined, ExportOutlined } from "@ant-design/icons";
-import Cookies from "js-cookie";
+import { clearApiToken } from "../lib/authToken";
 import * as api from "../api";
 import Config from "../constants/config";
+import { useLanguage } from "../context/LanguageContext";
 
 const { Header } = Layout;
 
-/* --- نسخه پیش‌فرض --- */
-const TopHeader = ({ username, name }) => {
+/** Built-in header — import in a CustomTopHeader override to compose. */
+export default function DefaultTopHeader({ username, name }) {
   const navigate = useNavigate();
+  const { t } = useLanguage();
 
   const logout = () => {
     api.postLogout().then(() => {
-      Cookies.remove("api_token");
+      clearApiToken();
       navigate(`/${Config.prefix}/login`);
     });
   };
@@ -25,7 +27,7 @@ const TopHeader = ({ username, name }) => {
         <Col>
           <Typography.Title level={2} className="logo">
             <a href="/" target="_blank" rel="noreferrer">
-              {name}
+              <span className="logo-text">{name}</span>
               <small>
                 <ExportOutlined />
               </small>
@@ -36,15 +38,11 @@ const TopHeader = ({ username, name }) => {
           <Space>
             <div className="username">{username}</div>
             <Button onClick={logout} icon={<LogoutOutlined />}>
-              Logout
+              <span className="logout-text">{t.LOGOUT}</span>
             </Button>
           </Space>
         </Col>
       </Row>
     </Header>
   );
-};
-
-
-
-export default TopHeader;
+}

@@ -1,0 +1,19 @@
+---
+description: How to override Mehr Panel UI (dynamic pages, slots, fields, theme). Read before customizing.
+alwaysApply: true
+---
+
+# Panel overrides
+
+Before adding custom UI, pages, fields, slots, theme, or login overrides for this React panel, **read and follow**:
+
+`src/react/docs/AI_OVERRIDE_GUIDE.md`
+
+## Hard rules
+
+- Prefer file-drop overrides (`*.sample` → remove `.sample`) over editing core pages.
+- Compose `useIndexPage` + `IndexShell` + body blocks; don’t reimplement fetching.
+- Flat `dynamic-pages/{module}.jsx` must branch on `type` including `"list"`.
+- Field prop `data` = Select options; table row = `record` (never overwrite `data` with the row).
+- Built-in field types (Text, Select, …) cannot be replaced by same-named files — use a new `type` name.
+- Restart Vite after adding new glob-matched override files.

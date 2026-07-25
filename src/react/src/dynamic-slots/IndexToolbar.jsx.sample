@@ -1,0 +1,26 @@
+/**
+ * Slot: IndexToolbar
+ *
+ * Copy to IndexToolbar.jsx (remove .sample).
+ * Renders in the index page header (right side), before the Create button.
+ *
+ * To replace the table with cards (keep filters/pagination), see:
+ *   dynamic-slots/IndexBody.jsx.sample
+ *
+ * Also available:
+ *   FormBeforeFields, LayoutBeforeContent, SidebarFooter,
+ *   LoginHeader, LoginExtra, IndexBody
+ */
+
+import React from "react";
+import { Button } from "antd";
+
+function IndexToolbar({ pageModule }) {
+  return (
+    <Button type="default" size="large" onClick={() => console.log(pageModule)}>
+      Custom action
+    </Button>
+  );
+}
+
+export default IndexToolbar;

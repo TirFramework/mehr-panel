@@ -1,0 +1,22 @@
+/**
+ * Folder-style module override — DETAIL view only.
+ *
+ * Copy to: dynamic-pages/client/detail.jsx
+ * Route:   /:panel/client/detail
+ *
+ * Also see: create-edit.jsx.sample for the create/edit route.
+ */
+
+import React from "react";
+import DefaultDetail from "../../pages/Detail";
+
+function ClientDetail(props) {
+  return (
+    <div className="custom-client-detail">
+      {/* Wrap default, or replace entirely */}
+      <DefaultDetail {...props} />
+    </div>
+  );
+}
+
+export default ClientDetail;

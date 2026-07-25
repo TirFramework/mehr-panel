@@ -1,36 +1,113 @@
 /**
- * Shared custom login (all panels).
+ * Shared custom login (all panels) — prefer compose over full rewrite.
  *
- * How to use:
- *   1. Copy this file to: Login.jsx  (remove .sample)
- *   2. Rebuild / restart Vite
+ * Copy to Login.jsx (remove .sample).
  *
- * Priority:
- *   1. dynamic-public-routes/{prefix}/Login.jsx   ← panel-specific (highest)
- *   2. dynamic-public-routes/Login.jsx            ← this file (shared)
- *   3. layouts/Login.jsx                          ← default
- *
- * Panel-specific example:
- *   dynamic-public-routes/admin/Login.jsx
+ * Layers:
+ *   useLogin()     → auth only
+ *   AuthShell      → chrome + LoginHeader / LoginExtra slots
+ *   This file      → fields, labels, rules, notifications
  */
 
 import React from "react";
-import DefaultLogin from "../layouts/Login";
+import { Form, Input, Button, Flex, notification } from "antd";
+import { LockOutlined, UserOutlined } from "@ant-design/icons";
+import { useNavigate } from "react-router-dom";
+import Config from "../constants/config";
+import { useLanguage } from "../context/LanguageContext";
+import useDocumentTitle from "../hooks/useDocumentTitle";
+import useLogin from "../hooks/useLogin";
+import AuthShell from "../layouts/AuthShell";
+import responseErrorHandler from "../lib/helpers/responseErrorHandler";
 
 function Login() {
-  // Option A: wrap / restyle the default login
-  return (
-    <div className="custom-login">
-      <DefaultLogin />
-    </div>
-  );
+  const navigate = useNavigate();
+  const { t } = useLanguage();
+  const { loading, mustVerify, login, resetVerification } = useLogin();
 
-  // Option B: build a fully custom login UI from scratch
-  // return (
-  //   <div>
-  //     <h1>My Custom Login</h1>
-  //   </div>
-  // );
+  useDocumentTitle(t.LOGIN_WELCOME);
+
+  const onFinish = async (values) => {
+    const result = await login(values);
+
+    if (result.status === "must_verify") {
+      notification.warning({ message: result.message, duration: 20 });
+      return;
+    }
+    if (result.status === "no_token") {
+      notification.error({ message: t.LOGIN_NO_TOKEN });
+      return;
+    }
+    if (result.status === "error") {
+      const error = responseErrorHandler(result.error);
+      notification.error({
+        message: error.message || t.ERROR_GENERIC,
+        description: error.description,
+        duration: error.duration,
+      });
+      return;
+    }
+    if (result.status === "success") {
+      notification.success({ message: t.LOGIN_SUCCESS });
+      navigate(`/${Config.prefix}/dashboard`);
+    }
+  };
+
+  return (
+    <AuthShell
+      className="custom-login"
+      title={t.LOGIN_WELCOME}
+      subtitle={t.LOGIN_SUBTITLE}
+    >
+      <Form onFinish={onFinish} initialValues={{ remember: true }}>
+        <Form.Item
+          name="email"
+          rules={[{ required: true, message: t.VALIDATION_EMAIL }]}
+        >
+          <Input size="large" placeholder={t.EMAIL} prefix={<UserOutlined />} />
+        </Form.Item>
+
+        <Form.Item
+          name="password"
+          rules={[{ required: true, message: t.VALIDATION_PASSWORD }]}
+        >
+          <Input.Password
+            size="large"
+            placeholder={t.PASSWORD}
+            prefix={<LockOutlined />}
+          />
+        </Form.Item>
+
+        {mustVerify && (
+          <Form.Item
+            name="code"
+            rules={[{ required: true, message: t.VALIDATION_CODE }]}
+          >
+            <Input size="large" placeholder={t.VERIFICATION_CODE} />
+          </Form.Item>
+        )}
+
+        <Button block type="primary" htmlType="submit" loading={loading} size="large">
+          {t.SIGN_IN}
+        </Button>
+
+        {mustVerify && (
+          <Button block onClick={resetVerification} style={{ marginTop: 8 }}>
+            {t.TRY_AGAIN_CODE}
+          </Button>
+        )}
+
+        <Flex justify="center">
+          <Button
+            type="link"
+            onClick={() => navigate(`/${Config.prefix}/forgot-password`)}
+          >
+            {t.FORGOT_PASSWORD}
+          </Button>
+        </Flex>
+      </Form>
+    </AuthShell>
+  );
 }
 
 export default Login;

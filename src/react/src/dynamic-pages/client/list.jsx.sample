@@ -1,0 +1,47 @@
+import React from "react";
+import { Space } from "antd";
+import useIndexPage from "../../hooks/useIndexPage";
+import IndexShell from "../../blocks/IndexShell";
+import IndexCardsBody from "../../blocks/IndexCardsBody";
+import {
+  useIndexCardsFilters,
+  useIndexCardsSort,
+} from "../../blocks/IndexCardsFilters";
+import NotFoundPage from "../../pages/NotFoundPage";
+
+/**
+ * Optional override for /:panel/client/list
+ * Built-in List page already uses cards — only copy this to customize.
+ */
+
+function ClientList() {
+  const index = useIndexPage();
+  const { button: filterButton, panel } = useIndexCardsFilters(index);
+  const { control: sortControl } = useIndexCardsSort(index);
+
+  if (index.notFound) {
+    return <NotFoundPage />;
+  }
+
+  const afterSearch =
+    filterButton || sortControl ? (
+      <Space wrap>
+        {sortControl}
+        {filterButton}
+      </Space>
+    ) : null;
+
+  return (
+    <IndexShell
+      index={index}
+      className="custom-client-list"
+      afterSearch={afterSearch}
+      belowToolbar={panel}
+      hideCustomCol
+    >
+      <IndexCardsBody index={index} />
+    </IndexShell>
+  );
+}
+
+export default ClientList;

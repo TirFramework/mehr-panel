@@ -1,26 +1,24 @@
-import React from "react";
+import React, { useEffect, useState, useCallback, useMemo } from "react";
 import { Button, Dropdown, Space } from "antd";
-import { useLanguage } from "../context/LanguageContext";
-import { useEffect, useState, useCallback } from "react";
 import { DownOutlined } from "@ant-design/icons";
-import Config from "../constants/config";
 import { useParams } from "react-router-dom";
-
-
-
+import { useLanguage } from "../context/LanguageContext";
+import Config from "../constants/config";
 
 const Submit = (props) => {
   const { pageModule } = useParams();
-
   const { t } = useLanguage();
   const [clicked, setClicked] = useState(false);
 
-  const handleSubmit = useCallback((redirect = false) => {
-    if (!props.form) return;
-    setClicked(true);
-    props.form.redirect = redirect;
-    props.form.submit();
-  }, [props.form]);
+  const handleSubmit = useCallback(
+    (redirect = false) => {
+      if (!props.form) return;
+      setClicked(true);
+      props.form.redirect = redirect;
+      props.form.submit();
+    },
+    [props.form]
+  );
 
   useEffect(() => {
     if (props.loading === false) {
@@ -30,9 +28,8 @@ const Submit = (props) => {
 
   useEffect(() => {
     const handleKeyDown = (e) => {
-      // Use code so the shortcut is keyboard-layout independent
       if ((e.ctrlKey || e.metaKey) && e.code === "KeyS") {
-        e.preventDefault(); // Prevent the browser's Save Page action
+        e.preventDefault();
         handleSubmit();
       }
     };
@@ -43,28 +40,34 @@ const Submit = (props) => {
     };
   }, [handleSubmit]);
 
+  const items = useMemo(() => {
+    const ed = props.actions || {};
+    const menu = [];
 
-  const items = [
-    {
-      label: t.SUBMIT_AND_CLOSE,
-      key: '1',
-      // disabled: clicked ? false : props.loading,
-      // loading: props.loading && clicked ,
-      onClick: () => {
-        handleSubmit( `/${Config.prefix}/${pageModule}`);
-      },
-    },
-    {
-      label: t.SUBMIT_AND_NEW,
-      key: '2',
-      // disabled: clicked ? false : props.loading ,
-      // loading: props.loading && clicked ,
+    // Submit and close → index page
+    if (ed.index === true) {
+      menu.push({
+        label: t.SUBMIT_AND_CLOSE,
+        key: "submit-close",
+        onClick: () => {
+          handleSubmit(`/${Config.prefix}/${pageModule}`);
+        },
+      });
+    }
 
-      onClick: () => {
-        handleSubmit( `/${Config.prefix}/${pageModule}/create-edit`);
-      },
-    },
-  ];
+    // Submit and new → create page
+    if (ed.create === true) {
+      menu.push({
+        label: t.SUBMIT_AND_NEW,
+        key: "submit-new",
+        onClick: () => {
+          handleSubmit(`/${Config.prefix}/${pageModule}/create-edit`);
+        },
+      });
+    }
+
+    return menu;
+  }, [props.actions, t, handleSubmit, pageModule]);
 
   return (
     <Space.Compact>
@@ -73,15 +76,16 @@ const Submit = (props) => {
         data-cy={props.testId}
         loading={props.loading && clicked}
         disabled={props.loading}
-        onClick={handleSubmit}
+        onClick={() => handleSubmit()}
       >
         {props.display ? props.display : props.pageId ? t.UPDATE : t.CREATE}
       </Button>
-      <Dropdown menu={{ items }}>
-        <Button type="primary" icon={<DownOutlined   />} />
-      </Dropdown>    
+      {items.length > 0 && (
+        <Dropdown menu={{ items }}>
+          <Button type="primary" icon={<DownOutlined />} />
+        </Dropdown>
+      )}
     </Space.Compact>
-
   );
 };
 

@@ -1,0 +1,22 @@
+/**
+ * Slot: LoginHeader
+ *
+ * Copy to LoginHeader.jsx — injects above the login title (AuthShell).
+ * Same pattern for LoginExtra (below the form).
+ */
+
+import React from "react";
+import { Alert } from "antd";
+
+function LoginHeader() {
+  return (
+    <Alert
+      type="info"
+      showIcon
+      message="Custom login banner"
+      style={{ marginBottom: 16 }}
+    />
+  );
+}
+
+export default LoginHeader;

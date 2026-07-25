@@ -1,0 +1,109 @@
+/**
+ * Slot: IndexBody — replace the table with cards (or any list UI).
+ *
+ * Copy to IndexBody.jsx (remove .sample).
+ *
+ * You keep IndexShell (search, filters, AI, create, filter tags).
+ * `index` comes from useIndexPage().
+ *
+ * Priority:
+ *   1. dynamic-slots/{prefix}/IndexBody.jsx
+ *   2. dynamic-slots/IndexBody.jsx
+ *   3. built-in IndexTableBody
+ */
+
+import React from "react";
+import { Card, Col, Empty, Pagination, Row, Skeleton, Spin, Typography } from "antd";
+import IndexPaginationTotal from "../blocks/IndexPaginationTotal";
+
+const { Text } = Typography;
+
+function cellText(row, col) {
+  const key = col.dataIndex ?? col.fieldName;
+  const value = key != null ? row[key] : undefined;
+  if (typeof col.render === "function") {
+    try {
+      const rendered = col.render(value, row, 0);
+      if (typeof rendered === "string" || typeof rendered === "number") {
+        return rendered;
+      }
+    } catch {
+      /* fall through */
+    }
+  }
+  if (value == null || value === "") return "—";
+  if (typeof value === "object") return JSON.stringify(value);
+  return String(value);
+}
+
+function IndexBody({ index }) {
+  const {
+    rows,
+    columns,
+    isEmpty,
+    emptyDescription,
+    listPagination,
+    bodyLoading,
+    headerLoading,
+  } = index;
+
+  const pagination = {
+    ...listPagination,
+    showTotal: (total) => <IndexPaginationTotal index={index} total={total} />,
+  };
+
+  if (headerLoading) {
+    return (
+      <div className="table-loading">
+        <Spin />
+      </div>
+    );
+  }
+
+  return (
+    <div className="index-page__cards">
+      {bodyLoading && !rows.length ? (
+        <Skeleton active paragraph={{ rows: 4 }} />
+      ) : isEmpty ? (
+        <Empty
+          image={Empty.PRESENTED_IMAGE_SIMPLE}
+          description={emptyDescription}
+        />
+      ) : (
+        <Row gutter={[16, 16]}>
+          {rows.map((row) => (
+            <Col key={row.id || row._id} xs={24} sm={12} lg={8} xl={6}>
+              <Card size="small" className="index-page__row-card">
+                {columns
+                  .filter((col) => col.dataIndex || col.fieldName)
+                  .slice(0, 6)
+                  .map((col) => {
+                    const label =
+                      typeof col.title === "string"
+                        ? col.title
+                        : (col.title?.props?.title ??
+                          col.fieldName ??
+                          col.dataIndex);
+                    return (
+                      <div key={col.key || col.dataIndex || col.fieldName} style={{ marginBottom: 8 }}>
+                        <Text type="secondary" style={{ fontSize: 12 }}>
+                          {label}
+                        </Text>
+                        <div>{cellText(row, col)}</div>
+                      </div>
+                    );
+                  })}
+              </Card>
+            </Col>
+          ))}
+        </Row>
+      )}
+
+      <div className="index-page__table-footer ant-table-pagination" style={{ marginTop: 16 }}>
+        <Pagination {...pagination} />
+      </div>
+    </div>
+  );
+}
+
+export default IndexBody;

@@ -10,9 +10,9 @@ import { objectToQueryString } from "../lib/utils";
 import { useLanguage } from "../context/LanguageContext";
 
 function Export({ data, loading, columns, pagination }) {
-  const orgData = [...data];
+  const orgData = [...(Array.isArray(data) ? data : [])];
   const { t } = useLanguage();
-  const orgColumns = [...columns];
+  const orgColumns = [...(Array.isArray(columns) ? columns : [])];
   const { pageModule } = useParams();
   const [allData, setAllData] = useState([]);
   const [lo, setLo] = useState(false);

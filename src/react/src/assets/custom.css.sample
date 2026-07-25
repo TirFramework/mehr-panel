@@ -1,0 +1,8 @@
+/**
+ * Optional panel CSS.
+ * Copy to custom.css (remove .sample). Loaded automatically from main.jsx when present.
+ *
+ * Body also gets class dark-mode and panel-{prefix} for scoping.
+ */
+
+/* .panel-admin .top-header { ... } */

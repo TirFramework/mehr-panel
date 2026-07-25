@@ -1,0 +1,16 @@
+/**
+ * Ant Design theme override.
+ *
+ * Copy to override.js (remove .sample), then rebuild / restart Vite.
+ * Merged on top of theme/default.js (token + components shallow-merged).
+ *
+ * @see https://ant.design/docs/react/customize-theme
+ */
+export default {
+  token: {
+    // colorPrimary: "#0ea5e9",
+  },
+  components: {
+    // Button: { borderRadius: 6 },
+  },
+};

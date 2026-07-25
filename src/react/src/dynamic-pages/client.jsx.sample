@@ -1,0 +1,26 @@
+/**
+ * Flat module override (all views).
+ *
+ * Copy to: dynamic-pages/client.jsx
+ *
+ * Prefer folder style when views differ:
+ *   client/index.jsx | client/list.jsx | client/detail.jsx | client/create-edit.jsx
+ *
+ * IMPORTANT: a flat file wins for EVERY view that has no folder override.
+ * Always branch on `type`, including "list".
+ */
+
+import React from "react";
+import Index from "../pages/Index";
+import List from "../pages/List";
+import Create from "../pages/Create";
+import Detail from "../pages/Detail";
+
+function Client({ type, ...props }) {
+  if (type === "detail") return <Detail {...props} />;
+  if (type === "create") return <Create {...props} />;
+  if (type === "list") return <List {...props} />;
+  return <Index {...props} />;
+}
+
+export default Client;

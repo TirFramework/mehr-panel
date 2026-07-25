@@ -176,7 +176,7 @@ const FilterScrollList = React.memo(function FilterScrollList({
       <div
         ref={scrollRef}
         className="filter-checkbox-list__scroll mp-scrollbar"
-        style={{ height: LIST_HEIGHT }}
+        style={{ maxHeight: LIST_HEIGHT }}
       >
         <div className="filter-checkbox-list__empty">{emptyText}</div>
       </div>
@@ -187,12 +187,16 @@ const FilterScrollList = React.memo(function FilterScrollList({
     <div
       ref={scrollRef}
       className="filter-checkbox-list__scroll mp-scrollbar"
-      style={{ height: LIST_HEIGHT }}
+      style={{ maxHeight: LIST_HEIGHT }}
       onScroll={handleScroll}
     >
       <div
         className="filter-checkbox-list__inner"
-        style={{ height: windowRange.totalHeight }}
+        style={{
+          // Must be `height` (not maxHeight) so long lists get a real scrollbar.
+          // Short lists stay short: totalHeight = n * ITEM_HEIGHT (< LIST_HEIGHT).
+          height: useVirtual ? windowRange.totalHeight : undefined,
+        }}
       >
         <div style={{ paddingTop: windowRange.offsetY }}>
           {visibleItems.map((item) => (

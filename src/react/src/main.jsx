@@ -10,6 +10,8 @@ import { LanguageProvider } from "./context/LanguageContext";
 import { getNotificationApi } from "./lib/notificationService";
 
 import "./assets/index.css";
+// Optional: copy assets/custom.css.sample → custom.css
+import.meta.glob("./assets/custom.css", { eager: true });
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 

@@ -3,8 +3,7 @@ import { Popover, Tag } from "antd";
 import dayjs from "dayjs";
 import { QuestionCircleOutlined, SearchOutlined } from "@ant-design/icons";
 
-import { useSearchParams } from "react-router-dom";
-import Config from "../constants/config";
+import Config, { defaultFilter } from "../constants/config";
 import Field from "../components/Field";
 import FilterDate from "../blocks/FilterDate";
 import { useEditing } from "../context/EditingContext";
@@ -108,6 +107,11 @@ export const getColsNormalize = (res) => {
     col.title = (
       <div
         title={col.title}
+        style={{
+          display: "inline-flex",
+          alignItems: "center",
+          gap: 6,
+        }}
       // style={{
       //   minWidth:
       //     col.field.options?.minWidth ||
@@ -164,7 +168,10 @@ const Render = ({ item, value, rowIndex, data, id, minWidth }) => {
       {...item.field}
       hideLable={true}
       table={true}
-      // 2. Update readonly condition to use editingId
+      id={id}
+      // Do not pass row as `data` — field.data is Select/Radio options.
+      record={data}
+      rowIndex={rowIndex}
       readonly={!(id === editingId)}
     />
   );
@@ -277,11 +284,7 @@ export function getPlacementsForSearch(cols, t) {
   return t.SEARCH_FIELDS.replace("{fields}", searchableFields);
 }
 export const isCustomView = () => {
-  const newQueryParams = extractQueryParams();
-  if (hasQueryParams(newQueryParams)) {
-    return true;
-  }
-  return false;
+  return new URLSearchParams(window.location.search).has("columns");
 };
 
 export function getSearchableFromCols(cols) {
@@ -316,13 +319,39 @@ function getCanvasFont(el = document.body) {
 
 export function extractQueryParams() {
   const searchParams = new URLSearchParams(window.location.search);
-  const newQueryParams = {};
+  const newQueryParams = {
+    current: defaultFilter.current,
+    pageSize: defaultFilter.pageSize,
+    total: defaultFilter.total,
+    search: defaultFilter.search,
+    filters: {},
+    sorter: {},
+  };
 
-  newQueryParams.current = Number(searchParams.get("current"));
-  newQueryParams.pageSize = Number(searchParams.get("pageSize"));
-  newQueryParams.total = searchParams.get("total");
-  newQueryParams.search = searchParams.get("search");
-  newQueryParams.key = searchParams.get("key");
+  const current = searchParams.get("current");
+  if (current) {
+    newQueryParams.current = Number(current) || defaultFilter.current;
+  }
+
+  const pageSize = searchParams.get("pageSize");
+  if (pageSize) {
+    newQueryParams.pageSize = Number(pageSize) || defaultFilter.pageSize;
+  }
+
+  const total = searchParams.get("total");
+  if (total != null) {
+    newQueryParams.total = total;
+  }
+
+  const search = searchParams.get("search");
+  if (search != null && search !== "") {
+    newQueryParams.search = search;
+  }
+
+  const key = searchParams.get("key");
+  if (key) {
+    newQueryParams.key = key;
+  }
 
   const filtersParam = searchParams.get("filters");
   if (filtersParam) {
@@ -332,68 +361,83 @@ export function extractQueryParams() {
       console.error("Failed to parse filters:", e);
       newQueryParams.filters = {};
     }
-  } else {
-    newQueryParams.filters = {};
   }
 
   const sorterParam = searchParams.get("sorter");
   if (sorterParam) {
     try {
-      newQueryParams.sorter = JSON.parse(decodeURIComponent(sorterParam));
+      const parsed = JSON.parse(decodeURIComponent(sorterParam));
+      newQueryParams.sorter =
+        parsed && typeof parsed === "object" && parsed.field
+          ? parsed
+          : {};
     } catch (e) {
       console.error("Failed to parse sorter:", e);
       newQueryParams.sorter = {};
     }
-  } else {
-    newQueryParams.sorter = {};
   }
 
   return newQueryParams;
 }
 
-export function extractFromlocalhost() { }
+export function extractFromlocalhost() {}
 
 export function objectToQueryString(obj, columns = []) {
   if (columns === null) {
-    columns = []
+    columns = [];
   }
   const newColumns = [...columns];
   const params = new URLSearchParams();
 
   for (const key in obj) {
-    if (obj.hasOwnProperty(key)) {
-      const value = obj[key];
+    if (!Object.prototype.hasOwnProperty.call(obj, key)) continue;
+    if (key === "aiFilterKeys" || key === "aiQuery" || key === "aiMode") {
+      // Keep AI state in memory/localStorage path only; not needed in share URL shape beyond filters
+      continue;
+    }
 
-      if (value === null || typeof value === "undefined") {
-        continue;
-      }
+    const value = obj[key];
 
-      if (typeof value === "object") {
-        const jsonString = JSON.stringify(value);
-        params.append(key, jsonString);
-      } else {
-        // For simple values (string, number, boolean)
-        params.append(key, value.toString());
-      }
+    if (value === null || typeof value === "undefined" || value === "") {
+      continue;
+    }
+
+    if (typeof value === "object") {
+      if (Array.isArray(value) && value.length === 0) continue;
+      if (!Array.isArray(value) && Object.keys(value).length === 0) continue;
+      params.append(key, JSON.stringify(value));
+    } else {
+      params.append(key, value.toString());
     }
   }
 
-  params.append(
-    "columns",
-    newColumns.map((column) => column.fieldName).join(",")
-  );
+  if (newColumns.length > 0) {
+    params.append(
+      "columns",
+      newColumns.map((column) => column.fieldName).join(",")
+    );
+  }
+
   return params.toString();
 }
 
-// Check whether query parameters exist
+// Custom view / URL-driven state present?
 export function hasQueryParams(newQueryParams) {
+  const searchParams = new URLSearchParams(window.location.search);
+  if (
+    searchParams.has("columns") ||
+    searchParams.has("filters") ||
+    searchParams.has("sorter") ||
+    searchParams.has("search") ||
+    searchParams.has("current") ||
+    searchParams.has("pageSize")
+  ) {
+    return true;
+  }
+
   return (
-    newQueryParams.current ||
-    newQueryParams.pageSize ||
-    newQueryParams.total ||
-    newQueryParams.search ||
-    // newQueryParams.key ||
-    Object.keys(newQueryParams.filters).length > 0 ||
-    Object.keys(newQueryParams.sorter).length > 0
+    !!newQueryParams?.search ||
+    Object.keys(newQueryParams?.filters || {}).length > 0 ||
+    Object.keys(newQueryParams?.sorter || {}).length > 0
   );
 }

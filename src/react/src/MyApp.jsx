@@ -8,10 +8,7 @@ import DefaultLogin from "./layouts/Login";
 import NotFoundPage from "./pages/NotFoundPage";
 import DefaultForgotPassword from "./pages/ForgotPassword";
 
-// core components
 import { BulbOutlined, BulbFilled } from "@ant-design/icons";
-
-// import reportWebVitals from "./reportWebVitals";
 
 import PrivateRoute from "./PrivateRoute";
 import PublicRoute from "./PublicRoute";
@@ -20,52 +17,17 @@ import useLocalStorage from "./hooks/useLocalStorage";
 import { EditingProvider } from "./context/EditingContext";
 import { useLanguage } from "./context/LanguageContext";
 import { setNotificationApi } from "./lib/notificationService";
+import sharedTheme from "./theme/default";
+import mergeTheme from "./theme/mergeTheme";
+
 const { defaultAlgorithm, darkAlgorithm } = theme;
 
-const fontFamily =
-  "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif";
-
-const sharedTheme = {
-  token: {
-    colorPrimary: "#6366f1",
-    colorInfo: "#6366f1",
-    colorSuccess: "#10b981",
-    colorWarning: "#f59e0b",
-    colorError: "#ef4444",
-    borderRadius: 10,
-    borderRadiusLG: 14,
-    fontFamily,
-    controlHeight: 38,
-    wireframe: false,
-    motionDurationMid: "0.2s",
-  },
-  components: {
-    Button: {
-      primaryShadow: "0 4px 14px rgba(99, 102, 241, 0.25)",
-      fontWeight: 500,
-    },
-    Card: {
-      paddingLG: 24,
-    },
-    Table: {
-      headerBorderRadius: 10,
-      cellPaddingBlock: 14,
-      cellPaddingInline: 16,
-    },
-    Menu: {
-      itemBorderRadius: 8,
-      itemMarginInline: 8,
-      itemMarginBlock: 4,
-    },
-    Input: {
-      activeShadow: "0 0 0 2px rgba(99, 102, 241, 0.12)",
-    },
-    Layout: {
-      headerHeight: 64,
-      siderBg: "#1e1b4b",
-    },
-  },
-};
+const themeOverrideModules = import.meta.glob("./theme/override.js", {
+  eager: true,
+});
+const themeOverride =
+  themeOverrideModules["./theme/override.js"]?.default ?? {};
+const baseTheme = mergeTheme(sharedTheme, themeOverride);
 
 const NotificationInitializer = () => {
   const { notification } = App.useApp();
@@ -81,7 +43,6 @@ function MyApp() {
   const { dir, antdLocale } = useLanguage();
   const [isDarkMode, setIsDarkMode] = useLocalStorage("mode", { mode: false });
 
-  // Stamp a class on <body> so plain CSS/SCSS can target dark mode
   useEffect(() => {
     document.body.classList.toggle("dark-mode", !!isDarkMode.mode);
   }, [isDarkMode.mode]);
@@ -91,18 +52,18 @@ function MyApp() {
       direction={dir}
       locale={antdLocale}
       theme={{
-        ...sharedTheme,
+        ...baseTheme,
         algorithm: isDarkMode.mode ? darkAlgorithm : defaultAlgorithm,
         token: {
-          ...sharedTheme.token,
+          ...baseTheme.token,
           ...(isDarkMode.mode
             ? { colorBgContainer: "#1e293b", colorBgLayout: "#0f172a" }
             : { colorBgContainer: "#ffffff", colorBgLayout: "#f1f5f9" }),
         },
         components: {
-          ...sharedTheme.components,
+          ...baseTheme.components,
           Layout: {
-            ...sharedTheme.components.Layout,
+            ...baseTheme.components?.Layout,
             siderBg: isDarkMode.mode ? "#12102e" : "#1e1b4b",
             bodyBg: isDarkMode.mode ? "#0f172a" : "#f1f5f9",
           },
@@ -125,7 +86,6 @@ function MyApp() {
             icon={isDarkMode.mode ? <BulbOutlined /> : <BulbFilled />}
           />
           <Routes>
-            {/* Public Routes */}
             <Route element={<PublicRoute />}>
               <Route
                 path="/:panelName/login"
@@ -147,7 +107,6 @@ function MyApp() {
               />
             </Route>
 
-            {/* Private Routes */}
             <Route element={<PrivateRoute />}>
               <Route
                 path="/:panelName/:pageModule/detail"
@@ -157,13 +116,16 @@ function MyApp() {
                 path="/:panelName/:pageModule/create-edit"
                 element={<Custom type="create" />}
               />
-                <Route
+              <Route
+                path="/:panelName/:pageModule/list"
+                element={<Custom type="list" />}
+              />
+              <Route
                 path="/:panelName/:pageModule"
                 element={<Custom type="index" />}
-                />
+              />
             </Route>
 
-            {/* 404 Route - must be last */}
             <Route
               path="*"
               element={<NotFoundPage />}

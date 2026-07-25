@@ -34,6 +34,8 @@ const SubmitGroup = (props) => {
               type={btn.action}
               form={props.form}
               loading={myState?.isLoading}
+              actions={props.actions}
+              pageId={props.pageId}
             />
           ))}
 

@@ -1,0 +1,32 @@
+/**
+ * Folder-style module override — INDEX (table) view.
+ *
+ * Copy to: dynamic-pages/client/index.jsx
+ * Route:   /:panel/client
+ *
+ * For cards use the built-in list route instead:
+ *   /:panel/client/list
+ * Override: dynamic-pages/client/list.jsx
+ */
+
+import React from "react";
+import useIndexPage from "../../hooks/useIndexPage";
+import IndexShell from "../../blocks/IndexShell";
+import IndexTableBody from "../../blocks/IndexTableBody";
+import NotFoundPage from "../../pages/NotFoundPage";
+
+function ClientIndex() {
+  const index = useIndexPage();
+
+  if (index.notFound) {
+    return <NotFoundPage />;
+  }
+
+  return (
+    <IndexShell index={index} className="custom-client-index">
+      <IndexTableBody index={index} />
+    </IndexShell>
+  );
+}
+
+export default ClientIndex;

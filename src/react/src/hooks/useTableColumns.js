@@ -28,7 +28,7 @@ export const useTableColumns = (pageData, pagination, form) => {
         .map((col) => ({
           ...col,
           filteredValue: pagination.filters?.[col.fieldName] || null,
-          defaultSortOrder:
+          sortOrder:
             pagination?.sorter?.field === col.fieldName
               ? pagination?.sorter.order
               : null,
@@ -41,7 +41,7 @@ export const useTableColumns = (pageData, pagination, form) => {
     const newData = pageData.cols.map((col) => ({
       ...col,
       filteredValue: pagination.filters?.[col.fieldName] || null,
-      defaultSortOrder:
+      sortOrder:
         pagination?.sorter?.field === col.fieldName
           ? pagination?.sorter.order
           : null,

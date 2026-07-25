@@ -6,6 +6,7 @@ import { Alert, Button, Col, Layout, Row, Space, Spin, Typography } from "antd";
 import { LoadingOutlined } from "@ant-design/icons";
 import Sidebar from "../blocks/Sidebar";
 import TopHeader from "../blocks/TopHeader";
+import Slot from "../components/Slot";
 import { useIsFetching } from "@tanstack/react-query";
 import { useAddFcmToken, useGeneralQuery } from "../Request/index";
 import useLocalStorage from "../hooks/useLocalStorage";
@@ -67,6 +68,7 @@ function DefaultLayout(props) {
             <Layout>
               <Sidebar />
               <Layout.Content>
+                <Slot name="LayoutBeforeContent" />
                 <Outlet />
               </Layout.Content>
             </Layout>

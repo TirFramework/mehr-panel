@@ -1,0 +1,19 @@
+/**
+ * Folder-style module override — CREATE / EDIT view only.
+ *
+ * Copy to: dynamic-pages/client/create-edit.jsx
+ * Route:   /:panel/client/create-edit
+ */
+
+import React from "react";
+import DefaultCreate from "../../pages/Create";
+
+function ClientCreateEdit(props) {
+  return (
+    <div className="custom-client-create-edit">
+      <DefaultCreate {...props} />
+    </div>
+  );
+}
+
+export default ClientCreateEdit;

@@ -1,0 +1,23 @@
+/**
+ * Custom top header override.
+ *
+ * Copy to CustomTopHeader.jsx (remove .sample).
+ * Prefer composing DefaultTopHeader instead of copying the whole UI.
+ *
+ * Priority:
+ *   1. dynamic-layouts/{prefix}/CustomTopHeader.jsx
+ *   2. dynamic-layouts/CustomTopHeader.jsx
+ */
+
+import React from "react";
+import DefaultTopHeader from "../blocks/DefaultTopHeader";
+
+function CustomTopHeader(props) {
+  return (
+    <div className="custom-top-header">
+      <DefaultTopHeader {...props} />
+    </div>
+  );
+}
+
+export default CustomTopHeader;

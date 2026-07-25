@@ -49,7 +49,7 @@ function AiSearch({ module, onFilters, onClear, onModeChange, activeFilters = {}
       </Tooltip>
 
       {aiMode && (
-        <Space direction="vertical" size={0}>
+        <Space orientation="vertical" size={0}>
           <Space.Compact size="large" className="search-input" style={{ borderRadius: 8, boxShadow: `0 0 0 2px ${AI_COLOR}33` }}>
             <Input
               prefix={<ThunderboltOutlined style={{ color: AI_COLOR }} />}
