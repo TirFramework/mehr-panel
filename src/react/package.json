@@ -1,6 +1,6 @@
 {
   "name": "mehr-panel",
-  "version": "12.8.2",
+  "version": "12.8.3",
   "private": true,
   "type": "module",
   "dependencies": {
