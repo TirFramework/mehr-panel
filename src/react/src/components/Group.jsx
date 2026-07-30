@@ -3,6 +3,7 @@ import { Button, Card, Row } from "antd";
 import { DownOutlined, UpOutlined } from "@ant-design/icons";
 
 import FormGroup from "./FormGroup";
+import { resolveFieldClassName } from "../lib/fieldLabel";
 
 const Group = ({ showCard = true, ...props }) => {
   if (!showCard) {
@@ -46,10 +47,17 @@ const Group = ({ showCard = true, ...props }) => {
     </Row>
   );
 
+  const groupClassName = resolveFieldClassName({
+    className: props.className,
+    class: props.class,
+    options: props.options,
+    extra: "group",
+  });
+
   return (
     <Card
       title={props.display}
-      className={`group ${props.class}`}
+      className={groupClassName}
       data-cy={props.testId}
       extra={
         hasCollapseOption ? (

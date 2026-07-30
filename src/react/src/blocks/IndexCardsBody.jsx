@@ -23,7 +23,10 @@ import Config from "../constants/config";
 import { useLanguage } from "../context/LanguageContext";
 import { useDeleteRow } from "../Request";
 import IndexPaginationTotal from "./IndexPaginationTotal";
-import { resolveHideLabel, resolveInlineLabel } from "../lib/fieldLabel";
+import {
+  resolveFieldClassName,
+  resolveLabelType,
+} from "../lib/fieldLabel";
 import { resolveFieldColProps } from "../lib/helpers/fieldCol";
 
 const { Text } = Typography;
@@ -157,9 +160,17 @@ function IndexCardItem({ row, columns, configs, pageModule, t }) {
     >
       <Row gutter={[16, 12]} style={{ flex: 1 }}>
         {fields.map((col) => {
-          const fieldOptions = col.field?.options;
-          const hideLabel = resolveHideLabel({ options: fieldOptions });
-          const inlineLabel = resolveInlineLabel(fieldOptions);
+          const field = col.field;
+          const fieldOptions = field?.options;
+          const labelMode = resolveLabelType({
+            labelType: field?.labelType,
+            options: fieldOptions,
+          });
+          const fieldClassName = resolveFieldClassName({
+            className: field?.className,
+            class: field?.class,
+            options: fieldOptions,
+          });
           const label = columnLabel(col);
           const value = cellText(row, col);
 
@@ -167,10 +178,11 @@ function IndexCardItem({ row, columns, configs, pageModule, t }) {
             <Col
               key={col.key || col.fieldName || String(col.dataIndex)}
               {...fieldColProps(col)}
+              className={fieldClassName}
             >
-              {hideLabel ? (
+              {labelMode === "hidden" ? (
                 <div className="index-card-field__value">{value}</div>
-              ) : inlineLabel ? (
+              ) : labelMode === "inline" ? (
                 <div className="index-card-field index-card-field--inline">
                   <Text
                     type="secondary"

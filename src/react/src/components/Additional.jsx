@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button, Row, Form } from "antd";
 import { PlusOutlined, CloseOutlined } from "@ant-design/icons";
 import { replaceLastNumberFromString } from "../lib/helpers";
+import { resolveFieldClassName } from "../lib/fieldLabel";
 import FormGroup from "./FormGroup";
 
 const Additional = (props) => {
@@ -68,7 +69,20 @@ const Additional = (props) => {
     };
     return (
         <div data-cy={props.testId || `Field-Additional-${props.name.replace(/\./g, '-')}`}>
-            <div className={`${props.readonly ? "readOnly " : ""}${props.className || ""}`}>
+            <div
+              className={
+                [
+                  props.readonly ? "readOnly" : null,
+                  resolveFieldClassName({
+                    className: props.className,
+                    class: props.class,
+                    options: props.options,
+                  }),
+                ]
+                  .filter(Boolean)
+                  .join(" ") || undefined
+              }
+            >
                 {fields && fields.length > 0 ? (
                     <>
                         {fields.map((child, index) => (

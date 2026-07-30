@@ -4,12 +4,15 @@ import { QuestionCircleOutlined } from "@ant-design/icons";
 
 /**
  * Label options:
- *   options.hideLabel  — hide the label entirely
- *   options.inlineLabel — label + control on one row, colon after label
+ *   options.labelType — "default" | "inline" | "hidden" (preferred)
+ *   options.hideLabel / options.inlineLabel — legacy flags (still accepted)
+ *
+ * Presentation:
+ *   options.className — CSS class on the field wrapper (also top-level className / class)
  *
  * Top-level `hideLabel` is only for table cells (forced hide).
  * Legacy API typo `hideLable` is still accepted when reading.
- * Top-level `inlineLabel` is also accepted.
+ * Top-level `inlineLabel` / `labelType` are also accepted.
  */
 
 /** Ant Design Form.Item `tooltip` prop from field.comment */
@@ -113,28 +116,132 @@ function isOptionEnabled(value) {
   return false;
 }
 
-export function resolveHideLabel({ hideLabel, hideLable, options } = {}) {
-  const opts = normalizeOptions(options);
-  return Boolean(
-    hideLabel ||
-      hideLable ||
-      isOptionEnabled(opts.hideLabel) ||
-      isOptionEnabled(opts.hideLable)
-  );
+const LABEL_TYPE_HIDDEN = new Set(["hidden", "hide", "none"]);
+const LABEL_TYPE_INLINE = new Set(["inline"]);
+const LABEL_TYPE_DEFAULT = new Set(["default", "normal", ""]);
+
+/**
+ * Normalize labelType to "hidden" | "inline" | "default" | null (unset).
+ */
+export function normalizeLabelType(value) {
+  if (value == null) {
+    return null;
+  }
+
+  const normalized = String(value).trim().toLowerCase();
+  if (!normalized) {
+    return null;
+  }
+  if (LABEL_TYPE_HIDDEN.has(normalized)) {
+    return "hidden";
+  }
+  if (LABEL_TYPE_INLINE.has(normalized)) {
+    return "inline";
+  }
+  if (LABEL_TYPE_DEFAULT.has(normalized)) {
+    return "default";
+  }
+
+  return null;
 }
 
-export function resolveInlineLabel(options = {}) {
+/**
+ * Resolve effective label mode.
+ * Prefers `labelType` (top-level or options); falls back to legacy hide/inline flags.
+ * Returns "hidden" | "inline" | "default".
+ */
+export function resolveLabelType({
+  labelType,
+  hideLabel,
+  hideLable,
+  inlineLabel,
+  options,
+} = {}) {
+  // Table cells force-hide via top-level hideLabel.
+  if (hideLabel || hideLable) {
+    return "hidden";
+  }
+
   const opts = normalizeOptions(options);
-  return (
+  const fromLabelType = normalizeLabelType(
+    labelType ?? opts.labelType ?? opts.label_type
+  );
+
+  if (fromLabelType) {
+    return fromLabelType;
+  }
+
+  if (isOptionEnabled(opts.hideLabel) || isOptionEnabled(opts.hideLable)) {
+    return "hidden";
+  }
+
+  if (
+    isOptionEnabled(inlineLabel) ||
     isOptionEnabled(opts.inlineLabel) ||
     isOptionEnabled(opts.inline_label)
+  ) {
+    return "inline";
+  }
+
+  return "default";
+}
+
+export function resolveHideLabel({
+  labelType,
+  hideLabel,
+  hideLable,
+  inlineLabel,
+  options,
+} = {}) {
+  return (
+    resolveLabelType({
+      labelType,
+      hideLabel,
+      hideLable,
+      inlineLabel,
+      options,
+    }) === "hidden"
   );
 }
 
-function isInlineLabel({ inlineLabel, options } = {}) {
-  return (
-    isOptionEnabled(inlineLabel) || resolveInlineLabel(options)
-  );
+/** True when effective label mode is inline (options bag or legacy flags). */
+export function resolveInlineLabel(options = {}) {
+  return resolveLabelType({ options }) === "inline";
+}
+
+/**
+ * Merge field CSS classes from top-level `className` / `class` and `options.className`.
+ */
+export function resolveFieldClassName({
+  className,
+  class: classAlias,
+  options,
+  extra,
+} = {}) {
+  const opts = normalizeOptions(options);
+  const parts = [className, classAlias, opts.className, opts.class, extra]
+    .flatMap((value) => {
+      if (value == null || value === false) return [];
+      if (Array.isArray(value)) {
+        return value.flatMap((item) => {
+          if (item == null || item === false) return [];
+          if (typeof item === "string") {
+            return item.trim().split(/\s+/).filter(Boolean);
+          }
+          return [];
+        });
+      }
+      if (typeof value === "string") {
+        return value.trim().split(/\s+/).filter(Boolean);
+      }
+      return [];
+    });
+
+  if (parts.length === 0) {
+    return undefined;
+  }
+
+  return [...new Set(parts)].join(" ");
 }
 
 /**
@@ -157,10 +264,11 @@ const InlineLabelShell = forwardRef(function InlineLabelShell(
 });
 
 /**
- * Form.Item with hideLabel / inlineLabel support that does not fight Ant Design layout.
+ * Form.Item with labelType / hideLabel / inlineLabel support that does not fight Ant Design layout.
  */
 export function LabeledFormItem({
   display,
+  labelType,
   hideLabel,
   hideLable,
   inlineLabel,
@@ -169,10 +277,15 @@ export function LabeledFormItem({
   children,
   ...rest
 }) {
-  const hide = resolveHideLabel({ hideLabel, hideLable, options });
-  const inline = !hide && isInlineLabel({ inlineLabel, options });
+  const mode = resolveLabelType({
+    labelType,
+    hideLabel,
+    hideLable,
+    inlineLabel,
+    options,
+  });
 
-  if (hide) {
+  if (mode === "hidden") {
     return (
       <Form.Item
         {...rest}
@@ -185,7 +298,7 @@ export function LabeledFormItem({
     );
   }
 
-  if (inline) {
+  if (mode === "inline") {
     return (
       <Form.Item
         {...rest}
@@ -214,16 +327,22 @@ export function LabeledFormItem({
  */
 export function formItemLabelProps({
   display,
+  labelType,
   hideLabel,
   hideLable,
   inlineLabel,
   options,
   className,
 } = {}) {
-  const hide = resolveHideLabel({ hideLabel, hideLable, options });
-  const inline = !hide && isInlineLabel({ inlineLabel, options });
+  const mode = resolveLabelType({
+    labelType,
+    hideLabel,
+    hideLable,
+    inlineLabel,
+    options,
+  });
 
-  if (hide) {
+  if (mode === "hidden") {
     return {
       label: null,
       colon: false,
@@ -231,7 +350,7 @@ export function formItemLabelProps({
     };
   }
 
-  if (inline) {
+  if (mode === "inline") {
     // Signal only — real inline UI is LabeledFormItem + InlineLabelShell.
     // Kept so callers that still spread props at least get the class.
     return {
@@ -254,18 +373,25 @@ export function formItemLabelProps({
  */
 export function resolveReadonlyLabel({
   display,
+  labelType,
   hideLabel,
   hideLable,
   inlineLabel,
   options,
 } = {}) {
-  if (resolveHideLabel({ hideLabel, hideLable, options })) {
+  const mode = resolveLabelType({
+    labelType,
+    hideLabel,
+    hideLable,
+    inlineLabel,
+    options,
+  });
+
+  if (mode === "hidden") {
     return { label: null, inline: false, hidden: true };
   }
 
-  const inline = isInlineLabel({ inlineLabel, options });
-
-  if (inline) {
+  if (mode === "inline") {
     return {
       hidden: false,
       inline: true,
@@ -297,6 +423,8 @@ export function readonlyFieldLabel(props = {}) {
 export function stripLabelOptions(options = {}) {
   const opts = normalizeOptions(options);
   const {
+    labelType,
+    label_type,
     hideLabel,
     hideLable,
     inlineLabel,

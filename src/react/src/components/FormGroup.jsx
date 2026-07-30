@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Col } from "antd";
 
 import Field from "./Field";
+import { resolveFieldClassName } from "../lib/fieldLabel";
 import { resolveFieldColProps } from "../lib/helpers/fieldCol";
 
 const FormGroup = (props) => {
@@ -13,11 +14,18 @@ const FormGroup = (props) => {
     }
   }, [props]);
 
+  const fieldClassName = resolveFieldClassName({
+    className: props.className,
+    class: props.class,
+    options: props.options,
+    extra: ["formGroup", `formGroup-${props.type}`],
+  });
+
   return (
     <>
       <Col
         {...resolveFieldColProps(props.col)}
-        className={`${props.className} formGroup formGroup-${props.type}`}
+        className={fieldClassName}
       >
         <Field
           addrow={props.addrow}

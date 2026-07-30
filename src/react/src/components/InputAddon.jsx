@@ -30,10 +30,14 @@ export function extractAddonOptions(options = {}) {
   const {
     addonBefore,
     addonAfter,
+    labelType,
+    label_type,
     hideLabel,
     hideLable,
     inlineLabel,
     inline_label,
+    className,
+    class: classAlias,
     from,
     ...inputOptions
   } = typeof opts === "object" && opts && !Array.isArray(opts) ? opts : {};
