@@ -44,35 +44,33 @@ export function FieldCommentIcon({ comment }) {
 
   return (
     <Tooltip title={title}>
-      <QuestionCircleOutlined className="field-readonly-comment" />
+      <span className="field-readonly-comment" role="img" aria-label="comment">
+        <QuestionCircleOutlined />
+      </span>
     </Tooltip>
   );
 }
 
 /** Append comment icon inside a readonly label node (keeps colon after icon for inline). */
 export function appendCommentToReadonlyLabel(label, comment) {
-  if (comment?.content === undefined) {
-    return label;
-  }
-
-  const icon = <FieldCommentIcon comment={comment} />;
-
-  if (!label) {
-    return <div className="field-readonly-label">{icon}</div>;
+  if (comment?.content === undefined || !label) {
+    return label ?? null;
   }
 
   if (!React.isValidElement(label)) {
     return label;
   }
 
+  const icon = <FieldCommentIcon comment={comment} />;
   const isInline = String(label.props.className || "").includes(
     "field-readonly-label--inline"
   );
   const parts = React.Children.toArray(label.props.children);
 
+  // inline: Label [icon] :value  — icon before colon, with gap via CSS
   if (isInline && parts.length > 0 && parts[parts.length - 1] === ":") {
     return React.cloneElement(label, {
-      children: [...parts.slice(0, -1), " ", icon, ":"],
+      children: [...parts.slice(0, -1), icon, ":"],
     });
   }
 

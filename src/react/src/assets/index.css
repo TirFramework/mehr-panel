@@ -632,9 +632,9 @@ body.dark-mode .ant-layout-content {
 
 .page-form .read-only--inline {
   flex-direction: row !important;
-  flex-wrap: nowrap;
-  align-items: baseline;
-  gap: 8px;
+  flex-wrap: nowrap !important;
+  align-items: center;
+  gap: 6px;
 }
 
 .page-form .read-only > .field-readonly-label,
@@ -657,12 +657,14 @@ body.dark-mode .ant-layout-content {
   font-weight: 400;
   color: var(--mp-text);
   flex: 0 0 auto;
+  white-space: nowrap;
 }
 
 .page-form .read-only--inline > .read-only__value {
-  flex: 1 1 auto;
+  flex: 0 1 auto;
   min-width: 0;
   padding-inline-start: 0;
+  white-space: nowrap;
 }
 
 .page-form .read-only__value {
@@ -677,23 +679,61 @@ body.dark-mode .ant-layout-content {
 }
 
 .field-readonly-comment {
+  display: inline-flex;
+  align-items: center;
   margin-inline-start: 4px;
   color: rgba(0, 0, 0, 0.45);
   cursor: help;
   font-size: 12px;
+  vertical-align: middle;
+  line-height: 1;
+}
+
+/* inline label: space between comment icon and the colon */
+.field-readonly-label--inline .field-readonly-comment {
+  margin-inline-start: 4px;
+  margin-inline-end: 0.4em;
 }
 
 body.dark-mode .field-readonly-comment {
   color: rgba(255, 255, 255, 0.45);
 }
 
-.read-only__value-text {
-  display: flex;
+/* hideLabel + comment: value and icon on one line */
+.read-only--comment-end .read-only__value,
+.read-only__value-row {
+  display: inline-flex;
   align-items: center;
-  min-height: 32px;
-  padding: 4px 11px;
-  width: 100%;
-  word-break: break-word;
+  gap: 6px;
+  flex-wrap: nowrap;
+  max-width: 100%;
+  vertical-align: middle;
+}
+
+.read-only__addon {
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+  color: var(--mp-text-muted, rgba(0, 0, 0, 0.45));
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.read-only__addon svg {
+  display: block;
+  width: 1em;
+  height: 1em;
+}
+
+.read-only__value-text {
+  min-width: 0;
+  word-break: normal;
+  white-space: nowrap;
+}
+
+.read-only--comment-end .field-readonly-comment {
+  margin-inline-start: 2px;
+  flex-shrink: 0;
 }
 
 .field-load-error {
@@ -802,17 +842,18 @@ body.dark-mode .field-load-error {
 .read-only--inline {
   display: flex !important;
   flex-direction: row !important;
-  flex-wrap: nowrap;
-  align-items: baseline;
-  gap: 8px;
+  flex-wrap: nowrap !important;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
 }
 
 .read-only__value:has(.field-readonly-label--inline),
 .read-only:has(> .field-readonly-label--inline) {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  align-items: baseline;
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: nowrap !important;
+  align-items: center;
   gap: 6px;
 }
 
