@@ -3,7 +3,7 @@ import { Card, Form } from "antd";
 
 import AntdTinymce from "./AntdTinymce";
 import { separationRules } from "../lib/helpers";
-import { formItemLabelProps, readonlyFieldLabel } from "../lib/fiروeldLabel";
+import { formItemLabelProps, readonlyFieldLabel } from "../lib/fieldLabel";
 
 export default function App(props) {
   const rules = separationRules({
