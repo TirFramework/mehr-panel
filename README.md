@@ -13,7 +13,7 @@ A Laravel package for managing an admin panel.
    or for update
 
    ```bash
-   composer require tir/mehr-panel:12.8.8
+   composer require tir/mehr-panel:12.8.81
    ```
 
 2. Publish the configuration file (optional, to customize prefixes):

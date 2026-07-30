@@ -878,6 +878,26 @@ body.dark-mode .field-load-error {
   display: none;
 }
 
+.mp-upload-dragger.ant-upload-wrapper,
+.mp-upload-dragger .ant-upload-drag {
+  width: 100%;
+}
+
+.mp-upload-dragger .ant-upload-drag {
+  border-radius: var(--mp-radius, 8px);
+}
+
+.mp-upload-dragger .ant-upload-drag-icon {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.mp-upload-dragger .ant-upload-drag-icon svg {
+  width: 48px;
+  height: 48px;
+}
+
 .read-only__value--editor {
   font-size: 80%;
 }

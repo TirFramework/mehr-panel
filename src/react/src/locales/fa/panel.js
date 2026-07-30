@@ -159,6 +159,8 @@ export default {
   ERROR_GENERIC: "خطایی رخ داد. لطفاً دوباره تلاش کنید.",
   UPLOAD_ERROR: "خطای آپلود",
   UPLOAD_CLICK_FOR: "برای آپلود فایل {display} کلیک کنید",
+  UPLOAD_DRAG_TEXT: "فایل را بکشید و اینجا رها کنید یا کلیک کنید",
+  UPLOAD_DRAG_HINT: "امکان آپلود یک یا چند فایل",
   NOT_FOUND: "یافت نشد",
   TRANSFER_SOURCE: "مبدأ",
   TRANSFER_TARGET: "مقصد",

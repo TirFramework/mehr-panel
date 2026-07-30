@@ -1,17 +1,65 @@
 import React, { useState, useCallback } from "react";
-import { Upload, Button, Tooltip, Space, Popover } from "antd";
+import { Upload, Button, Tooltip, Space } from "antd";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import { useDrag, useDrop } from "react-dnd";
 import update from "immutability-helper";
-import { FileOutlined, UploadOutlined } from "@ant-design/icons";
+import {
+  FileOutlined,
+  InboxOutlined,
+  UploadOutlined,
+} from "@ant-design/icons";
 
 import { getAccept, separationRules } from "../lib/helpers";
 import { LabeledFormItem, fieldCommentTooltip } from "../lib/fieldLabel";
 import { getApiToken } from "../lib/authToken";
 import { useLanguage } from "../context/LanguageContext";
+import { renderAddonContent } from "./InputAddon";
 
 const type = "DragableUploadList";
+
+function normalizeFieldOptions(options) {
+  let opts = options;
+  if (!opts) return {};
+  for (let i = 0; i < 2 && typeof opts === "string"; i += 1) {
+    try {
+      opts = JSON.parse(opts);
+    } catch {
+      return {};
+    }
+  }
+  if (opts && typeof opts === "object" && !Array.isArray(opts)) {
+    return opts;
+  }
+  return {};
+}
+
+function isOptionEnabled(value) {
+  if (value === true || value === 1 || value === "1" || value === "true") {
+    return true;
+  }
+  if (typeof value === "string" && value.toLowerCase() === "true") {
+    return true;
+  }
+  return false;
+}
+
+/** options.dragAndDrop / options.dragger → show Upload.Dragger drop zone */
+function resolveDragAndDrop(options) {
+  const opts = normalizeFieldOptions(options);
+  return isOptionEnabled(opts.dragAndDrop) || isOptionEnabled(opts.dragger);
+}
+
+/** options.icon / options.dragIcon → custom SVG (or node) for Dragger */
+function resolveDragIcon(options) {
+  const opts = normalizeFieldOptions(options);
+  const custom = opts.icon ?? opts.dragIcon;
+  if (custom == null || custom === "") {
+    return <InboxOutlined />;
+  }
+  const rendered = renderAddonContent(custom);
+  return rendered ?? <InboxOutlined />;
+}
 
 const DragableUploadListItem = ({ originNode, moveRow, file, fileList }) => {
   const ref = React.useRef();
@@ -47,8 +95,9 @@ const DragableUploadListItem = ({ originNode, moveRow, file, fileList }) => {
   return (
     <div
       ref={ref}
-      className={`ant-upload-draggable-list-item ${isOver ? dropClassName : ""
-        }`}
+      className={`ant-upload-draggable-list-item ${
+        isOver ? dropClassName : ""
+      }`}
       style={{ cursor: "move" }}
     >
       {file.status === "error" ? errorNode : originNode}
@@ -58,32 +107,56 @@ const DragableUploadListItem = ({ originNode, moveRow, file, fileList }) => {
 
 const DragSortingUpload = (props) => {
   const { t } = useLanguage();
+  const dragAndDrop = resolveDragAndDrop(props.options);
+
   const initialValueHandeling = (data) => {
-    let newData = [];
-    if (data === undefined || data === null) {
+    if (data === undefined || data === null || data === "") {
       return [];
     }
-    if (!Array.isArray(data)) {
-      newData.push({
+    // Ignore in-progress / invalid form values like [undefined]
+    if (Array.isArray(data)) {
+      return data
+        .filter((item) => item != null && item !== "")
+        .map((item, index) => {
+          if (typeof item === "object") {
+            return {
+              uid: item.uid ?? index,
+              name: item.name ?? item.value ?? String(index),
+              status: item.status ?? "done",
+              value: item.value ?? item.response?.path,
+              url:
+                item.url ??
+                (item.value || item.response?.path
+                  ? `${props.basePath}/${item.value || item.response?.path}`
+                  : undefined),
+              response: item.response,
+              thumbUrl: item.thumbUrl,
+              originFileObj: item.originFileObj,
+            };
+          }
+          return {
+            uid: index,
+            name: String(item),
+            status: "done",
+            value: `${item}`,
+            url: `${props.basePath}/${item}`,
+          };
+        });
+    }
+    return [
+      {
         uid: 1,
-        name: data,
+        name: String(data),
         status: "done",
         value: `${data}`,
         url: `${props.basePath}/${data}`,
-      });
-    } else {
-      newData = data.map((item, index) => ({
-        uid: index,
-        name: item,
-        status: "done",
-        value: `${item}`,
-        url: `${props.basePath}/${item}`,
-      }));
-    }
-    return newData;
+      },
+    ];
   };
 
-  const [fileList, setFileList] = useState(initialValueHandeling(props.value));
+  const [fileList, setFileList] = useState(() =>
+    initialValueHandeling(props.value)
+  );
   const isInternalChange = React.useRef(false);
 
   React.useEffect(() => {
@@ -95,8 +168,9 @@ const DragSortingUpload = (props) => {
 
   const moveRow = useCallback(
     (dragIndex, hoverIndex) => {
-      const dragRow = fileList[dragIndex];
-      const newFileList = update(fileList, {
+      const list = Array.isArray(fileList) ? fileList : [];
+      const dragRow = list[dragIndex];
+      const newFileList = update(list, {
         $splice: [
           [dragIndex, 1],
           [hoverIndex, 0, dragRow],
@@ -104,54 +178,80 @@ const DragSortingUpload = (props) => {
       });
       setFileList(newFileList);
       isInternalChange.current = true;
-      props.onChange(newFileList);
+      props.onChange?.(newFileList);
     },
     [fileList, props]
   );
 
-  const onChange = ({ fileList: newFileList }) => {
-    setFileList(newFileList);
+  const onChange = (info) => {
+    const nextList = Array.isArray(info?.fileList) ? info.fileList : [];
+    setFileList(nextList);
     isInternalChange.current = true;
-    props.onChange(newFileList);
+    props.onChange?.(nextList);
   };
 
   const token = getApiToken();
   const uploadHeaders = token ? { Authorization: `Bearer ${token}` } : {};
 
-  return (
-    <>
-      <DndProvider backend={HTML5Backend}>
-        <Upload
-          data-cy={props.testId}
-          accept={getAccept([props.fileRules])}
-          action={props.postUrl}
-          headers={uploadHeaders}
-          fileList={fileList}
-          listType="picture"
-          maxCount={props.maxCount}
-          onChange={onChange}
-          disabled={props.disable}
-          className={props.readonly ? "readOnly" : " "}
-          itemRender={(originNode, file, currFileList) => (
-            <DragableUploadListItem
-              disabled={props.disable}
-              originNode={originNode}
-              file={file}
-              fileList={currFileList}
-              moveRow={moveRow}
-            />
-          )}
-        >
-          <Button icon={<UploadOutlined />} disabled={props.disable} data-cy={`${props.testId}-button`}>
-            {(t.UPLOAD_CLICK_FOR || "").replace("{display}", props.display)}
-          </Button>
-        </Upload>
-      </DndProvider>
-    </>
+  const accept = getAccept(
+    Array.isArray(props.fileRules) ? props.fileRules : [props.fileRules]
   );
+
+  const sharedUploadProps = {
+    "data-cy": props.testId,
+    accept: accept || undefined,
+    action: props.postUrl,
+    headers: uploadHeaders,
+    fileList: Array.isArray(fileList) ? fileList : [],
+    listType: "picture",
+    maxCount: props.maxCount,
+    onChange,
+    disabled: props.disable,
+    className: props.readonly
+      ? "readOnly"
+      : dragAndDrop
+        ? "mp-upload-dragger"
+        : " ",
+  };
+
+  // List reordering uses react-dnd HTML5Backend, which can block native file
+  // drops — only enable it for the button uploader.
+  if (!dragAndDrop) {
+    sharedUploadProps.itemRender = (originNode, file, currFileList) => (
+      <DragableUploadListItem
+        disabled={props.disable}
+        originNode={originNode}
+        file={file}
+        fileList={Array.isArray(currFileList) ? currFileList : []}
+        moveRow={moveRow}
+      />
+    );
+  }
+
+  const uploadControl = dragAndDrop ? (
+    <Upload.Dragger {...sharedUploadProps}>
+      <p className="ant-upload-drag-icon">{resolveDragIcon(props.options)}</p>
+      <p className="ant-upload-text">{t.UPLOAD_DRAG_TEXT}</p>
+      <p className="ant-upload-hint">{t.UPLOAD_DRAG_HINT}</p>
+    </Upload.Dragger>
+  ) : (
+    <Upload {...sharedUploadProps}>
+      <Button
+        icon={<UploadOutlined />}
+        disabled={props.disable}
+        data-cy={`${props.testId}-button`}
+      >
+        {(t.UPLOAD_CLICK_FOR || "").replace("{display}", props.display)}
+      </Button>
+    </Upload>
+  );
+
+  if (dragAndDrop) {
+    return uploadControl;
+  }
+
+  return <DndProvider backend={HTML5Backend}>{uploadControl}</DndProvider>;
 };
-
-
 
 const ReadonlyFileUploader = ({ value, basePath, display }) => {
   if (!value) {
@@ -170,8 +270,19 @@ const ReadonlyFileUploader = ({ value, basePath, display }) => {
 
   if (isPicture) {
     return (
-      <a href={fileUrl} target="_blank" rel="noreferrer" style={{ cursor: "pointer" }}>
-        <img src={fileUrl} alt={display} width={45} height={45} style={{ objectFit: "cover" }} />
+      <a
+        href={fileUrl}
+        target="_blank"
+        rel="noreferrer"
+        style={{ cursor: "pointer" }}
+      >
+        <img
+          src={fileUrl}
+          alt={display}
+          width={45}
+          height={45}
+          style={{ objectFit: "cover" }}
+        />
       </a>
     );
   }
@@ -183,8 +294,6 @@ const ReadonlyFileUploader = ({ value, basePath, display }) => {
   );
 };
 
-
-
 const CustomUpload = ({ defaultValue, ...props }) => {
   const rules = separationRules({
     pageType: props.pageType,
@@ -194,26 +303,32 @@ const CustomUpload = ({ defaultValue, ...props }) => {
   });
 
   const normFile = (e) => {
-    if (props.maxCount === 1) {
-      if (e.length === 1) {
-        if (e[0].response !== undefined) {
-          return `${e[0].response.path}`;
-        }
-        if (e[0].value !== undefined) {
-          return `${e[0].value}`;
-        }
-      }
+    const list = Array.isArray(e) ? e : e?.fileList;
+    if (!Array.isArray(list)) {
+      return Number(props.maxCount) === 1 ? undefined : [];
     }
-    return e.map((item) => {
-      if (item.response !== undefined) {
-        return `${item.response.path}`;
-      }
-      if (item.value !== undefined) {
-        return `${item.value}`;
-      }
-    });
-  };
 
+    const toPath = (item) => {
+      if (item == null) return undefined;
+      if (item.response?.path != null && item.response.path !== "") {
+        return String(item.response.path);
+      }
+      if (item.value != null && item.value !== "") {
+        return String(item.value);
+      }
+      return undefined;
+    };
+
+    if (Number(props.maxCount) === 1) {
+      const path = toPath(list[0]);
+      // While uploading, keep fileList in form so antd never gets null/undefined
+      return path !== undefined ? path : list;
+    }
+
+    const paths = list.map(toPath);
+    const allReady = list.every((_, i) => paths[i] !== undefined);
+    return allReady ? paths : list;
+  };
 
   if (props.readonly) {
     const placeholder = props.options?.placeholder;
@@ -268,7 +383,5 @@ const CustomUpload = ({ defaultValue, ...props }) => {
     </LabeledFormItem>
   );
 };
-
-
 
 export default CustomUpload;

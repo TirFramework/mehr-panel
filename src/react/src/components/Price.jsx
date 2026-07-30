@@ -91,8 +91,8 @@ const Price = (props) => {
           disabled={props.disabled}
           style={{ width: "100%" }}
           className="w-full"
-          formatter={formatNumberWithSeparator}
-          parser={parseNumberWithSeparator}
+          formatter={(value) => formatNumberWithSeparator(value)}
+          parser={(value) => parseNumberWithSeparator(value)}
         />
       </InputAddonWrapper>
     </LabeledFormItem>

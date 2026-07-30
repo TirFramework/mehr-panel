@@ -178,6 +178,8 @@ export default {
   // Upload & fields
   UPLOAD_ERROR: "Upload error",
   UPLOAD_CLICK_FOR: "Click to upload file for {display}",
+  UPLOAD_DRAG_TEXT: "Click or drag file to this area to upload",
+  UPLOAD_DRAG_HINT: "Support for single or bulk upload",
   NOT_FOUND: "Not found",
   TRANSFER_SOURCE: "Source",
   TRANSFER_TARGET: "Target",

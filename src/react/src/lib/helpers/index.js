@@ -216,13 +216,14 @@ const parseRuleString = (ruleString) => {
 };
 
 export const getAccept = (rules) => {
-  const format = {
-    mp4: "video/mp4",
-    png: "video/mp4",
-  };
   let acceptFormat = [];
-  rules.forEach((rule) => {
-    if (rule.search(":")) {
+  const list = Array.isArray(rules) ? rules : rules != null ? [rules] : [];
+
+  list.forEach((rule) => {
+    if (typeof rule !== "string") {
+      return;
+    }
+    if (rule.includes(":")) {
       const ruleArr = rule.split(":");
       const ruleKey = ruleArr[0];
 
@@ -236,7 +237,7 @@ export const getAccept = (rules) => {
     }
   });
 
-  return acceptFormat;
+  return acceptFormat.join(",");
 };
 
 const findValue = (string) => {

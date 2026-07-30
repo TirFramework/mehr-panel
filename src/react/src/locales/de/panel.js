@@ -165,6 +165,8 @@ export default {
   ERROR_GENERIC: "Ein Fehler ist aufgetreten. Bitte versuchen Sie es erneut.",
   UPLOAD_ERROR: "Upload-Fehler",
   UPLOAD_CLICK_FOR: "Klicken Sie, um eine Datei für {display} hochzuladen",
+  UPLOAD_DRAG_TEXT: "Datei hierher ziehen oder klicken zum Hochladen",
+  UPLOAD_DRAG_HINT: "Einzel- oder Mehrfach-Upload möglich",
   NOT_FOUND: "Nicht gefunden",
   TRANSFER_SOURCE: "Quelle",
   TRANSFER_TARGET: "Ziel",
