@@ -23,6 +23,7 @@ import Config from "../constants/config";
 import { useLanguage } from "../context/LanguageContext";
 import { useDeleteRow } from "../Request";
 import IndexPaginationTotal from "./IndexPaginationTotal";
+import { resolveHideLabel } from "../lib/fieldLabel";
 
 const { Text } = Typography;
 
@@ -179,14 +180,17 @@ function IndexCardItem({ row, columns, configs, pageModule, t }) {
     >
       <Row gutter={[16, 12]} style={{ flex: 1 }}>
         {fields.map((col) => {
+          const hideLabel = resolveHideLabel({ options: col.field?.options });
           return (
             <Col
               key={col.key || col.fieldName || String(col.dataIndex)}
               {...fieldColProps(col)}
             >
-              <Text type="secondary" style={{ fontSize: 12 }}>
-                {columnLabel(col)}
-              </Text>
+              {!hideLabel ? (
+                <Text type="secondary" style={{ fontSize: 12 }}>
+                  {columnLabel(col)}
+                </Text>
+              ) : null}
               <div>{cellText(row, col)}</div>
             </Col>
           );

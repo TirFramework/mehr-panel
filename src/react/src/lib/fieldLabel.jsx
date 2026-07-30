@@ -8,16 +8,21 @@
  */
 
 function normalizeOptions(options) {
-  if (!options) return {};
-  if (typeof options === "string") {
+  let opts = options;
+  if (!opts) return {};
+
+  // API may send JSON string (sometimes double-encoded)
+  for (let i = 0; i < 2 && typeof opts === "string"; i += 1) {
     try {
-      const parsed = JSON.parse(options);
-      return parsed && typeof parsed === "object" ? parsed : {};
+      opts = JSON.parse(opts);
     } catch {
       return {};
     }
   }
-  if (typeof options === "object") return options;
+
+  if (opts && typeof opts === "object" && !Array.isArray(opts)) {
+    return opts;
+  }
   return {};
 }
 
@@ -62,7 +67,7 @@ export function formItemLabelProps({
     return {
       label: null,
       colon: false,
-      className: className || undefined,
+      className: [className, "field-item--hide-label"].filter(Boolean).join(" "),
     };
   }
 

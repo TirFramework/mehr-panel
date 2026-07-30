@@ -159,7 +159,7 @@ const DragSortingUpload = (props) => {
           )}
         >
           <Button icon={<UploadOutlined />} disabled={props.disable} data-cy={`${props.testId}-button`}>
-            {(t.UPLOAD_CLICK_FOR || "").replace("{display}", props.name)}
+            {(t.UPLOAD_CLICK_FOR || "").replace("{display}", props.display)}
           </Button>
         </Upload>
       </DndProvider>

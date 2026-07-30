@@ -25,6 +25,7 @@ export function extractAddonOptions(options = {}) {
     hideLable,
     inlineLabel,
     inline_label,
+    from,
     ...inputOptions
   } = typeof options === "object" && options ? options : {};
 

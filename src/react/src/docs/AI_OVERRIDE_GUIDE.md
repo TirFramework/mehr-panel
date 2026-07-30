@@ -349,6 +349,7 @@ export default function RatingStars(props) {
 | Option | Effect |
 |--------|--------|
 | `options.inlineLabel` | Label and control on one row; colon after the label |
+| `options.from` (Slug) | Sync slug from that form field. Starts locked; pencil unlocks for manual edit; lock re-syncs from source |
 
 Example:
 
@@ -358,6 +359,10 @@ Example:
 
 ```json
 { "type": "Text", "display": "Name", "options": { "inlineLabel": true } }
+```
+
+```json
+{ "type": "Slug", "name": "slug", "display": "Slug", "options": { "from": "title" } }
 ```
 
 ### `data` vs `record` (CRITICAL)

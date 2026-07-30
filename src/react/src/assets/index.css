@@ -694,6 +694,11 @@ body.dark-mode .field-load-error {
   position: relative;
 }
 
+/* options.hideLabel — hide Form.Item label entirely */
+.field-item--hide-label.ant-form-item .ant-form-item-label {
+  display: none !important;
+}
+
 /* options.inlineLabel — label and control on one row */
 .field-item--inline-label.ant-form-item .ant-form-item-row,
 .field-item--inline-label.ant-form-item > .ant-row {
