@@ -3,6 +3,7 @@ import { Card, Form } from "antd";
 
 import AntdTinymce from "./AntdTinymce";
 import { separationRules } from "../lib/helpers";
+import { formItemLabelProps, readonlyFieldLabel } from "../lib/fiروeldLabel";
 
 export default function App(props) {
   const rules = separationRules({
@@ -15,7 +16,11 @@ export default function App(props) {
   if (props.readonly) {
     return (
       <>
-        {props.hideLable ?? <div>{props.display}</div>}
+        {readonlyFieldLabel({
+          display: props.display,
+          hideLable: props.hideLable,
+          options: props.options,
+        })}
         <Card size="small" className="read-only__value--editor">
           <div dangerouslySetInnerHTML={{ __html: props.value }} />
         </Card>
@@ -26,7 +31,11 @@ export default function App(props) {
   return (
     <>
       <Form.Item
-        label={props.display}
+        {...formItemLabelProps({
+          display: props.display,
+          hideLable: props.hideLable,
+          options: props.options,
+        })}
         name={props.name}
         initialValue={props.value || props.defaultValue}
         rules={rules}

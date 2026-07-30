@@ -8,9 +8,7 @@ import useGetParams from "./useGetParams";
 import { useTableColumns } from "./useTableColumns";
 import { useLanguage } from "../context/LanguageContext";
 import useDocumentTitle from "./useDocumentTitle";
-
-const isQueryNotFound = (query) =>
-  query?.isError && query.error?.response?.status === 404;
+import { getLoadBlockedStatus, isQueryLoadBlocked } from "../lib/queryErrors";
 
 /**
  * Index list logic only — pagination, filters, search, columns, rows.
@@ -39,7 +37,10 @@ export default function useIndexPage() {
 
   const { data: pageData, ...pageDataQuery } = useGetColumns(
     pageModule,
-    pagination
+    pagination,
+    {
+      enabled: !!pageModule,
+    }
   );
 
   useDocumentTitle(
@@ -53,11 +54,17 @@ export default function useIndexPage() {
     [pageId]
   );
 
+  const columnsBlocked = isQueryLoadBlocked(pageDataQuery);
+
   const { data: indexData, ...dataQuery } = useGetData(
     pagination?.key || pageModule,
     pagination,
     {
-      enabled: !!pagination?.key,
+      // Wait for columns OK — don't hammer /data after a 403/404 on the module
+      enabled:
+        !!pagination?.key &&
+        pageDataQuery.isSuccess &&
+        !columnsBlocked,
     }
   );
 
@@ -247,8 +254,8 @@ export default function useIndexPage() {
 
   const rows = indexData?.data ?? [];
 
-  const notFound =
-    isQueryNotFound(pageDataQuery) || isQueryNotFound(dataQuery);
+  const loadErrorStatus = getLoadBlockedStatus(pageDataQuery, dataQuery);
+  const notFound = loadErrorStatus != null;
 
   const headerLoading = pageDataQuery.isLoading && !pageData;
   const bodyLoading = dataQuery.isLoading && !indexData;
@@ -274,6 +281,7 @@ export default function useIndexPage() {
     emptyDescription,
     listPagination,
     notFound,
+    loadErrorStatus,
     headerLoading,
     bodyLoading,
     handleChangeTable,

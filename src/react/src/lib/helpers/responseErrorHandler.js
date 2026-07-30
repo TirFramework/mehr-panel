@@ -32,12 +32,20 @@ export const handleErrorSideEffects = (error) => {
     }
 
     if (response.status === 401) {
-        clearApiToken();
-        setTimeout(() => {
-            if (window.location.pathname !== `/${Config.prefix}/login`) {
-                window.location.replace(`/${Config.prefix}/login`);
-            }
-        }, 1000);
+        // Don't wipe a freshly stored session when a public page
+        // (e.g. login document-title probe) got an unauthenticated 401.
+        const onLoginPage =
+            window.location.pathname === `/${Config.prefix}/login` ||
+            window.location.pathname.endsWith("/login");
+
+        if (!onLoginPage) {
+            clearApiToken();
+            setTimeout(() => {
+                if (window.location.pathname !== `/${Config.prefix}/login`) {
+                    window.location.replace(`/${Config.prefix}/login`);
+                }
+            }, 1000);
+        }
     }
 };
 

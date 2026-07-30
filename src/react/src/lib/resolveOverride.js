@@ -56,3 +56,25 @@ export function createLazyCache(panelGlobs, sharedGlobs, folder) {
     return cache[key];
   };
 }
+
+/**
+ * Eager module cache for first-paint overrides (e.g. Login).
+ * Pass maps from `import.meta.glob(..., { eager: true })`.
+ * Returns the default export component, or null.
+ */
+export function createEagerCache(panelModules, sharedModules, folder) {
+  const cache = {};
+
+  return (name, panel = Config.prefix) => {
+    const key = `${panel}__${folder}__${name}`;
+    if (key in cache) {
+      return cache[key];
+    }
+
+    const panelKey = `../${folder}/${panel}/${name}.jsx`;
+    const sharedKey = `../${folder}/${name}.jsx`;
+    const mod = panelModules[panelKey] ?? sharedModules[sharedKey] ?? null;
+    cache[key] = mod?.default ?? null;
+    return cache[key];
+  };
+}

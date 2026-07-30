@@ -3,6 +3,7 @@ import { Form, Input, Button } from "antd";
 import { EditOutlined } from "@ant-design/icons";
 
 import { separationRules, isRequired } from "../lib/helpers";
+import { formItemLabelProps } from "../lib/fieldLabel";
 import InputAddonWrapper, { extractAddonOptions } from "./InputAddon";
 
 const Slug = (props) => {
@@ -31,7 +32,11 @@ const Slug = (props) => {
         </>
       ) : (
         <Form.Item
-          label={props.display}
+          {...formItemLabelProps({
+            display: props.display,
+            hideLable: props.hideLable,
+            options: props.options,
+          })}
           name={props.name}
           rules={rules}
           initialValue={props.value}

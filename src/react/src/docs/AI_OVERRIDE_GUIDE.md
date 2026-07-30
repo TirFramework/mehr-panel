@@ -2,7 +2,12 @@
 
 > **Audience:** AI coding agents and developers customizing the React admin panel **without forking core files**.
 >
-> **Base path:** all paths below are relative to `src/react/src/` in this package, or `resources/admin/src/` after publish into a Laravel app.
+> **Where this file lives (ships with the panel into the app):**
+> - In the package: `src/react/src/docs/AI_OVERRIDE_GUIDE.md`
+> - After `php artisan vendor:publish --tag=mehr-panel`: `resources/admin/src/docs/AI_OVERRIDE_GUIDE.md`
+>
+> **Base path for code paths below:** relative to the React `src/` folder  
+> (`src/react/src/` in the package, or `resources/admin/src/` in the Laravel app).
 >
 > **Rule of thumb:** copy a `*.sample` → remove `.sample` → export `default`. Vite ignores `.sample` files.
 
@@ -50,7 +55,7 @@ Create or edit **only** these:
 | Extra CSS | `assets/custom.css` |
 | **New** field type (new backend `type` name) | `components/{NewType}.jsx` — **add only**; never replace built-in `Text`/`Select`/… |
 | Extra translation keys | new files under `locales/{en\|fa\|de}/*.js` (merge); don’t rewrite shipped `panel.js` |
-| Docs / Cursor rules for the team | `docs/AI_OVERRIDE_GUIDE.md`, `.cursor/rules/*` (optional) |
+| Docs / Cursor rules for the team | `docs/AI_OVERRIDE_GUIDE.md` (this file — ships with publish); optional project `.cursor/rules` from publish tag |
 
 **Compose, don’t fork:** override pages should `import` core hooks/blocks (`useIndexPage`, `IndexShell`, …) and leave those core files untouched.
 
@@ -260,7 +265,7 @@ IndexShell      →  title, search, AI, CustomCol, filter tags, Create, IndexToo
 
 ### Useful `index` fields
 
-`form`, `t`, `pageModule`, `pageData`, `indexData`, `columns`, `mergedColumns`, `rows`, `pagination`, `setPagination`, `listPagination`, `isEmpty`, `emptyDescription`, `notFound`, `headerLoading`, `bodyLoading`, `handleChangeTable`, `onSearch`, `handleClearFilters`, `handleAiFilters`, `handleAiClear`, `handleAiModeChange`, `handleColumnChange`, `handlePaginationChange`, `removeFilterKey`, queries, …
+`form`, `t`, `pageModule`, `pageData`, `indexData`, `columns`, `mergedColumns`, `rows`, `pagination`, `setPagination`, `listPagination`, `isEmpty`, `emptyDescription`, `notFound`, `loadErrorStatus` (404 \| 403), `headerLoading`, `bodyLoading`, `handleChangeTable`, `onSearch`, `handleClearFilters`, `handleAiFilters`, `handleAiClear`, `handleAiModeChange`, `handleColumnChange`, `handlePaginationChange`, `removeFilterKey`, queries, …
 
 ### `IndexShell` extra props (list-style)
 
@@ -331,6 +336,23 @@ export default function RatingStars(props) {
 ### Typical props
 
 `name`, `type`, `display`, `value`, `rules`, `creationRules`, `updateRules`, `pageType`, `readonly`, `disable`, `options`, `data`, `dataSet`, `col`, `existent`, `form`, `relation`, `table`, `hideLable`, `testId`, …
+
+**Label options** (on field `options` from schema — not top-level props):
+
+| Option | Effect |
+|--------|--------|
+| `options.hideLabel` | Hide the field label |
+| `options.inlineLabel` | Label and control on one row; colon after the label |
+
+Example:
+
+```json
+{ "type": "Text", "display": "Name", "options": { "hideLabel": true } }
+```
+
+```json
+{ "type": "Text", "display": "Name", "options": { "inlineLabel": true } }
+```
 
 ### `data` vs `record` (CRITICAL)
 
@@ -432,7 +454,9 @@ Four-level priority (see §1). Uses `panelName` from `useParams()` in `Custom.js
 
 ### Suspense
 
-Almost all overrides are `React.lazy`. Expect Skeleton / default fallback while loading. Prefer stable default exports.
+Module pages (`dynamic-pages`) and most slots are `React.lazy` (Skeleton / empty fallback while loading).
+
+**Public auth pages** (`dynamic-public-routes` Login / ForgotPassword) are loaded **eagerly** so a custom login paints on the first frame — no flash of the built-in default.
 
 ---
 

@@ -108,9 +108,10 @@ function IndexShell({
               align="bottom"
               className="page-index__header"
               justify="space-between"
+              wrap={false}
             >
-              <Col className="gutter-row">
-                <Space>
+              <Col flex="auto" className="gutter-row" style={{ minWidth: 0 }}>
+                <Space wrap>
                   {pageData?.configs?.ai_search && (
                     <AiSearch
                       module={pageModule}
@@ -225,14 +226,16 @@ function IndexShell({
                   )}
                 </Space>
               </Col>
-              <Col className="gutter-row text-right">
+              <Col flex="none" className="gutter-row page-index__actions">
                 <Space>
                   <Slot name="IndexToolbar" pageModule={pageModule} />
-                  {pageData?.configs?.ed?.create && (
+                  {(pageData?.configs?.ed?.create ||
+                    pageData?.configs?.actions?.create) && (
                     <Link to={`/${Config.prefix}/${pageModule}/create-edit`}>
                       <Button
                         size="large"
                         type="primary"
+                        htmlType="button"
                         icon={<PlusOutlined />}
                         loading={pageDataQuery.isLoading}
                       >

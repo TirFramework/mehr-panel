@@ -17,9 +17,11 @@ export default {
   CONFIRM:           "Confirm",
   NO_RESULTS_FOUND:  "No results found",
 
-  // 404 page
+  // 404 / 403 page
   NOT_FOUND_TITLE:   "Page not found",
   NOT_FOUND_DESC:    "The page you're looking for doesn't exist or may have been moved.",
+  FORBIDDEN_TITLE:   "Access denied",
+  FORBIDDEN_DESC:    "You don't have permission to view this page.",
   GO_BACK:           "Go back",
   GO_HOME:           "Go to dashboard",
 

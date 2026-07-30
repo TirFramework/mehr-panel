@@ -2,6 +2,7 @@ import React from "react";
 import { Form, Input, InputNumber } from "antd";
 
 import { separationRules } from "../lib/helpers";
+import { formItemLabelProps, readonlyFieldLabel } from "../lib/fieldLabel";
 import InputAddonWrapper, { extractAddonOptions } from "./InputAddon";
 import {
   buildLeadingZeroRules,
@@ -54,7 +55,11 @@ const NumberIndex = (props) => {
 
     return (
       <div data-cy={props.testId} className="read-only">
-        {props.hideLable ?? <div>{props.display}</div>}
+        {readonlyFieldLabel({
+          display: props.display,
+          hideLable: props.hideLable,
+          options: props.options,
+        })}
         {displayValue}
       </div>
     );
@@ -63,7 +68,11 @@ const NumberIndex = (props) => {
   if (allowLeadingZeros) {
     return (
       <Form.Item
-        label={props.display}
+        {...formItemLabelProps({
+          display: props.display,
+          hideLable: props.hideLable,
+          options: props.options,
+        })}
         name={props.name}
         initialValue={resolveStringInitialValue(
           props.value,
@@ -87,7 +96,11 @@ const NumberIndex = (props) => {
 
   return (
     <Form.Item
-      label={props.display}
+      {...formItemLabelProps({
+        display: props.display,
+        hideLable: props.hideLable,
+        options: props.options,
+      })}
       name={props.name}
       initialValue={props.value || props.defaultValue}
       rules={numberRules}

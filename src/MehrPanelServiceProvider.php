@@ -46,6 +46,8 @@ class MehrPanelServiceProvider extends ServiceProvider
             __DIR__ . '/vite.config.js' => base_path('vite.config.js'),
             __DIR__ . '/vite-helpers.js' => base_path('vite-helpers.js'),
             __DIR__ . '/public' => base_path('public'),
+            // Cursor rule for AI agents in the consuming Laravel app
+            __DIR__ . '/react/.cursor/rules/panel-overrides.mdc' => base_path('.cursor/rules/mehr-panel-overrides.mdc'),
         ], 'mehr-panel');
 
         $this->publishes([

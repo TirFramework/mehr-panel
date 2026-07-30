@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 import * as api from "../api";
 import { persistLoginSession } from "../lib/loginSession";
 
@@ -21,6 +22,7 @@ import { persistLoginSession } from "../lib/loginSession";
  * }}
  */
 export default function useLogin() {
+  const queryClient = useQueryClient();
   const [mustVerify, setMustVerify] = useState(false);
   const [loading, setLoading] = useState(false);
 
@@ -45,6 +47,11 @@ export default function useLogin() {
       if (!res?.api_token || !persistLoginSession(res.api_token)) {
         return { status: "no_token" };
       }
+
+      // Drop any anonymous/failed panel queries from the login screen
+      // so DefaultLayout does not reuse a cached 401 for ["general"].
+      queryClient.removeQueries({ queryKey: ["general"] });
+      queryClient.removeQueries({ queryKey: ["sidebar"] });
 
       return { status: "success" };
     } catch (error) {

@@ -514,12 +514,53 @@ body.dark-mode .ant-layout-content {
   row-gap: 12px;
 }
 
+.page-index__actions {
+  flex-shrink: 0;
+  margin-inline-start: 12px;
+}
+
 .page-index__filter-tag {
   margin: 0 !important;
   font-size: 11px;
   border-radius: 6px;
   padding: 1px 8px;
   line-height: 20px;
+}
+
+/* Customize columns modal */
+.custom-col-modal__body {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.custom-col-modal__toolbar,
+.custom-col-modal__select-row,
+.custom-col-modal__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.custom-col-modal__footer {
+  justify-content: center;
+}
+
+.custom-col-modal__group.ant-checkbox-group {
+  display: block;
+  width: 100%;
+}
+
+.custom-col-modal__group .ant-checkbox-wrapper {
+  margin-inline-end: 0;
+  width: 100%;
+}
+
+.custom-col-modal__empty {
+  text-align: center;
+  padding: 20px;
+  color: var(--mp-text-muted, #64748b);
 }
 
 .page-index__title {
@@ -651,6 +692,46 @@ body.dark-mode .field-load-error {
 /* legacy — kept for any external overrides */
 .ant-form-item {
   position: relative;
+}
+
+/* options.inlineLabel — label and control on one row */
+.field-item--inline-label.ant-form-item .ant-form-item-row,
+.field-item--inline-label.ant-form-item > .ant-row {
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-items: center;
+  column-gap: 8px;
+}
+
+.field-item--inline-label.ant-form-item .ant-form-item-label {
+  padding: 0 !important;
+  white-space: nowrap;
+  flex: none;
+}
+
+.field-item--inline-label.ant-form-item .ant-form-item-label > label {
+  height: auto;
+  margin-inline-end: 0;
+}
+
+.field-item--inline-label.ant-form-item .ant-form-item-control {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.field-readonly-label--inline {
+  display: inline;
+  margin-inline-end: 6px;
+  white-space: nowrap;
+}
+
+.read-only__value:has(.field-readonly-label--inline),
+.read-only:has(> .field-readonly-label--inline) {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 6px;
 }
 
 .formGroup-Additional > div > div > .ant-row.relative {

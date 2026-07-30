@@ -29,6 +29,7 @@ import {
 import { useMutation } from '@tanstack/react-query';
 import axios from '../lib/axios';
 import { separationRules } from '../lib/helpers';
+import { formItemLabelProps, readonlyFieldLabel } from '../lib/fieldLabel';
 import Readonly from '../blocks/Readonly';
 import InputAddonWrapper, { extractAddonOptions } from './InputAddon';
 
@@ -490,10 +491,9 @@ const AI = ({
 
     // Readonly display
     if (readonly) {
-        const label = hideLable ? null : <div>{display}</div>;
         return (
             <Readonly data-cy={testId}>
-                {label}
+                {readonlyFieldLabel({ display, hideLable, options })}
                 <div>{value}</div>
             </Readonly>
         );
@@ -502,7 +502,7 @@ const AI = ({
     // Loading state for dynamic component
     if (!isBuiltinType && componentLoading) {
         return (
-            <Form.Item label={display} name={name}>
+            <Form.Item {...formItemLabelProps({ display, hideLable, options })} name={name}>
                 <Spin size="small" /> Loading component...
             </Form.Item>
         );
@@ -511,7 +511,7 @@ const AI = ({
     // Error state for dynamic component
     if (!isBuiltinType && componentError) {
         return (
-            <Form.Item label={display} name={name}>
+            <Form.Item {...formItemLabelProps({ display, hideLable, options })} name={name}>
                 <Text type="danger">{componentError}</Text>
             </Form.Item>
         );
@@ -561,7 +561,7 @@ const AI = ({
         return (
             <>
                 <Form.Item
-                    label={display}
+                    {...formItemLabelProps({ display, hideLable, options })}
                     name={name}
                     initialValue={value || defaultValue}
                     rules={formRules}
@@ -586,7 +586,7 @@ const AI = ({
     return (
         <>
             <Form.Item
-                label={display}
+                {...formItemLabelProps({ display, hideLable, options })}
                 name={name}
                 initialValue={value || defaultValue}
                 rules={formRules}

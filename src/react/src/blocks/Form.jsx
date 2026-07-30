@@ -12,6 +12,8 @@ import { useMyContext } from "../context/MyContext";
 import { useFieldsQuery } from "../Request";
 import { useLanguage } from "../context/LanguageContext";
 import useDocumentTitle from "../hooks/useDocumentTitle";
+import NotFoundPage from "../pages/NotFoundPage";
+import { getLoadBlockedStatus } from "../lib/queryErrors";
 
 /**
  * Helper function to traverse fields and extract initial values
@@ -158,6 +160,7 @@ const CreateForm = ({ type }) => {
 
   // Memoize loading state to prevent unnecessary re-renders
   const isLoading = dataQuery.isLoading && !fieldsData;
+  const loadErrorStatus = getLoadBlockedStatus(dataQuery);
 
   const moduleTitle = fieldsData?.configs?.module_title;
   const titleSuffix =
@@ -170,6 +173,10 @@ const CreateForm = ({ type }) => {
   useDocumentTitle(isLoading ? t.LOADING : moduleTitle, {
     suffix: isLoading ? undefined : titleSuffix,
   });
+
+  if (loadErrorStatus) {
+    return <NotFoundPage status={loadErrorStatus} />;
+  }
 
   return (
     <div className={`page-form page-form--${type}`}>

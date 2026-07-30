@@ -171,7 +171,7 @@ export const InlineEdit = ({ id, form, data }) => {
 };
 
 export const createActionsColumn = (configs, pageModule, form, t) => {
-  const moduleActions = configs.actions;
+  const moduleActions = (configs && configs.actions) || {};
   const interactionCharacter =
     configs.primary_key || Config.interactionCharacter;
   const showAction = moduleActions.show;

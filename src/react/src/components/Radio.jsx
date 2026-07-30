@@ -2,6 +2,7 @@ import React from "react";
 import { Form, Radio, Tag } from "antd";
 
 import { separationRules } from "../lib/helpers";
+import { formItemLabelProps, readonlyFieldLabel } from "../lib/fieldLabel";
 
 const Field = (props) => {
   const rules = separationRules({
@@ -15,7 +16,11 @@ const Field = (props) => {
     if (typeof props.value === "object") {
       return (
         <div data-cy={props.testId} className="read-only">
-          {props.hideLable ?? <div>{props.display}</div>}
+          {readonlyFieldLabel({
+            display: props.display,
+            hideLable: props.hideLable,
+            options: props.options,
+          })}
           <div>
             {props.value.map((i) => (
               <Tag>{props.dataSet[i]}</Tag>
@@ -26,7 +31,11 @@ const Field = (props) => {
     } else {
       return (
         <div data-cy={props.testId} className="read-only">
-          {props.hideLable ?? <div>{props.display}</div>}
+          {readonlyFieldLabel({
+            display: props.display,
+            hideLable: props.hideLable,
+            options: props.options,
+          })}
           <div>
             <Tag>{props.dataSet[props.value]}</Tag>
           </div>
@@ -39,7 +48,11 @@ const Field = (props) => {
     <>
       <Form.Item
         name={props.name}
-        label={props.display}
+        {...formItemLabelProps({
+          display: props.display,
+          hideLable: props.hideLable,
+          options: props.options,
+        })}
         initialValue={props.value}
         rules={rules}
       >

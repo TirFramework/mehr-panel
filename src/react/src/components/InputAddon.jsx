@@ -18,7 +18,16 @@ export function renderAddonContent(addon) {
 }
 
 export function extractAddonOptions(options = {}) {
-  const { addonBefore, addonAfter, ...inputOptions } = options;
+  const {
+    addonBefore,
+    addonAfter,
+    hideLabel,
+    hideLable,
+    hide_label,
+    inlineLabel,
+    inline_label,
+    ...inputOptions
+  } = typeof options === "object" && options ? options : {};
 
   return { addonBefore, addonAfter, inputOptions };
 }

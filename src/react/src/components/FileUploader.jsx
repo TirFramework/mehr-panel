@@ -7,6 +7,7 @@ import update from "immutability-helper";
 import { FileOutlined, QuestionCircleOutlined, UploadOutlined } from "@ant-design/icons";
 
 import { getAccept, separationRules } from "../lib/helpers";
+import { formItemLabelProps } from "../lib/fieldLabel";
 import { getApiToken } from "../lib/authToken";
 import { useLanguage } from "../context/LanguageContext";
 
@@ -270,7 +271,11 @@ const CustomUpload = ({ defaultValue, ...props }) => {
   return (
     <Form.Item
       name={props.name}
-      label={props.display}
+      {...formItemLabelProps({
+        display: props.display,
+        hideLable: props.hideLable,
+        options: props.options,
+      })}
       tooltip={fieldCommentTooltip(props.comment)}
       initialValue={props.value || defaultValue}
       rules={rules}

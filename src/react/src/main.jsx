@@ -21,7 +21,9 @@ const queryClient = new QueryClient({
       gcTime: 1000 * 60 * 60 * 24,
       retry: false,
       retryOnMount: false,
+      refetchOnMount: false,
       refetchOnWindowFocus: false,
+      refetchOnReconnect: false,
     },
     mutations: {
       onError: (err) => {

@@ -1,6 +1,7 @@
 import React from "react";
 import { Form, ColorPicker as AntdColorPicker } from "antd";
 import { separationRules } from "../lib/helpers";
+import { formItemLabelProps } from "../lib/fieldLabel";
 
 const ColorPicker = (props) => {
   const rules = separationRules({
@@ -13,7 +14,11 @@ const ColorPicker = (props) => {
   return (
     <>
       <Form.Item
-        label={props.display}
+        {...formItemLabelProps({
+          display: props.display,
+          hideLable: props.hideLable,
+          options: props.options,
+        })}
         name={props.name}
         initialValue={props.value || props.defaultValue}
         rules={rules}

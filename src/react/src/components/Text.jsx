@@ -3,6 +3,7 @@ import { Form, Input, Tag } from "antd";
 import { QuestionCircleOutlined } from "@ant-design/icons";
 
 import { separationRules } from "../lib/helpers";
+import { formItemLabelProps, readonlyFieldLabel } from "../lib/fieldLabel";
 import Readonly from "../blocks/Readonly";
 import InputAddonWrapper, { extractAddonOptions } from "./InputAddon";
 
@@ -48,7 +49,6 @@ const Text = ({
     updateRules: updateRules,
   });
 
-  // Extract the display field name from relation if available
   const getDisplayFieldName = () => {
     if (relation && relation.field) {
       return relation.field;
@@ -56,51 +56,38 @@ const Text = ({
     return null;
   };
 
-  // Extract value from relation object using the defined display field
-  // Handles both MongoDB objects and MySQL strings
   const extractRelationValue = (val) => {
-    // If it's already a string or number, return as-is (MySQL case)
-    if (typeof val === 'string' || typeof val === 'number') {
+    if (typeof val === "string" || typeof val === "number") {
       return val;
     }
 
-    // If it's an object (MongoDB case), extract the display field
-    if (typeof val === 'object' && val !== null) {
+    if (typeof val === "object" && val !== null) {
       const displayField = getDisplayFieldName();
-      // If relation field is defined, use it; otherwise use first non-null value
       if (displayField && val[displayField] !== undefined) {
         return val[displayField];
       }
-      return Object.values(val).find(v => v !== null);
+      return Object.values(val).find((v) => v !== null);
     }
 
     return val;
   };
 
-  // Display readonly mode for detail/view pages
   if (readonly) {
-    // Show label unless hideLable is true
-    const label = hideLable ? null : <div>{display}</div>;
-
-    // Handle different value types
     let valueContent;
     if (Array.isArray(value)) {
-      // For arrays: display each item as a tag
       valueContent = value.map((val, index) => {
         const displayValue = extractRelationValue(val);
         return <Tag key={index}>{displayValue}</Tag>;
       });
     } else if (value === null) {
-      // For null values: display nothing
       valueContent = null;
     } else {
-      // For object and simple values: extract using relation field
       valueContent = extractRelationValue(value);
     }
 
     return (
       <Readonly data-cy={testId}>
-        {label}
+        {readonlyFieldLabel({ display, hideLable, options })}
         {valueContent}
       </Readonly>
     );
@@ -111,7 +98,7 @@ const Text = ({
   return (
     <>
       <Form.Item
-        label={display}
+        {...formItemLabelProps({ display, hideLable, options })}
         tooltip={fieldCommentTooltip(comment)}
         name={name}
         initialValue={value || defaultValue}

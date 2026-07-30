@@ -7,9 +7,9 @@ alwaysApply: true
 
 Before adding custom UI, pages, fields, slots, theme, or login overrides for this React panel, **read and follow**:
 
-`src/react/src/docs/AI_OVERRIDE_GUIDE.md`
+`resources/admin/src/docs/AI_OVERRIDE_GUIDE.md`
 
-(After publish into a Laravel app: `resources/admin/src/docs/AI_OVERRIDE_GUIDE.md`.)
+(In the mehr-panel package repo the same file is at `src/react/src/docs/AI_OVERRIDE_GUIDE.md`.)
 
 Especially **§0 Core vs custom** — which files are panel core (never edit) vs allowlisted override paths.
 

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Form, Select, Tag } from "antd";
 
 import { separationRules } from "../lib/helpers";
+import { formItemLabelProps, readonlyFieldLabel } from "../lib/fieldLabel";
 import Readonly from "../blocks/Readonly";
 import InputAddonWrapper, { extractAddonOptions } from "./InputAddon";
 
@@ -89,7 +90,11 @@ const SelcetIndex = ({ defaultValue, ...props }) => {
       if (typeof props.value === "object" && Array.isArray(props.value)) {
         return (
           <Readonly data-cy={props.testId}>
-            {props.hideLable ?? <div>{props.display}</div>}
+            {readonlyFieldLabel({
+              display: props.display,
+              hideLable: props.hideLable,
+              options: props.options,
+            })}
             <div>
               {props.value.map((i) => {
                 // Extract ID from MongoDB relation object if needed
@@ -107,7 +112,11 @@ const SelcetIndex = ({ defaultValue, ...props }) => {
         const displayValue = extractRelationValue(props.value);
         return (
           <Readonly data-cy={props.testId}>
-            {props.hideLable ?? <div>{props.display}</div>}
+            {readonlyFieldLabel({
+              display: props.display,
+              hideLable: props.hideLable,
+              options: props.options,
+            })}
             <div>
               <Tag>{props.dataSet[displayValue] || displayValue}</Tag>
             </div>
@@ -122,7 +131,11 @@ const SelcetIndex = ({ defaultValue, ...props }) => {
     <>
       <Form.Item
         name={props.name}
-        label={props.display}
+        {...formItemLabelProps({
+          display: props.display,
+          hideLable: props.hideLable,
+          options: props.options,
+        })}
         initialValue={value}
         rules={rules}
       >

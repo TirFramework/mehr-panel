@@ -1,6 +1,7 @@
 import React from "react";
 import { Form, DatePicker } from "antd";
 import { separationRules } from "../lib/helpers";
+import { formItemLabelProps, readonlyFieldLabel } from "../lib/fieldLabel";
 import utc from "dayjs/plugin/utc";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 import dayjs from "dayjs";
@@ -79,7 +80,11 @@ const DatePickerComponent = (props) => {
   if (props.readonly) {
     return (
       <>
-        {props.hideLable ?? <div>{props.display}</div>}
+        {readonlyFieldLabel({
+          display: props.display,
+          hideLable: props.hideLable,
+          options: props.options,
+        })}
         <div data-cy={props.testId}>
           {props.value ? (
             <>
@@ -103,7 +108,11 @@ const DatePickerComponent = (props) => {
   return (
     <>
       <Form.Item
-        label={props.display}
+        {...formItemLabelProps({
+          display: props.display,
+          hideLable: props.hideLable,
+          options: props.options,
+        })}
         name={props.name}
         initialValue={
           props.value

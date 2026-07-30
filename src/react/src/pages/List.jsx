@@ -21,7 +21,7 @@ function List() {
   const { control: sortControl } = useIndexCardsSort(index);
 
   if (index.notFound) {
-    return <NotFoundPage />;
+    return <NotFoundPage status={index.loadErrorStatus || 404} />;
   }
 
   const afterSearch =

@@ -15,7 +15,7 @@ function Index() {
   const index = useIndexPage();
 
   if (index.notFound) {
-    return <NotFoundPage />;
+    return <NotFoundPage status={index.loadErrorStatus || 404} />;
   }
 
   return (

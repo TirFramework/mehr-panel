@@ -3,6 +3,7 @@ import { Form, Input, Button } from "antd";
 import { EyeInvisibleOutlined, EyeTwoTone } from "@ant-design/icons";
 
 import { separationRules, isRequired } from "../lib/helpers";
+import { formItemLabelProps } from "../lib/fieldLabel";
 import InputAddonWrapper, { extractAddonOptions } from "./InputAddon";
 
 const Text = (props) => {
@@ -34,7 +35,15 @@ const Text = (props) => {
           Change Password
         </Button>
       ) : (
-        <Form.Item label={props.display} name={props.name} rules={rules}>
+        <Form.Item
+          {...formItemLabelProps({
+            display: props.display,
+            hideLable: props.hideLable,
+            options: props.options,
+          })}
+          name={props.name}
+          rules={rules}
+        >
           <InputAddonWrapper addonBefore={addonBefore} addonAfter={addonAfter}>
             <Input.Password
               {...inputOptions}

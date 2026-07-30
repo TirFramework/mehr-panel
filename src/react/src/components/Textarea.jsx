@@ -2,6 +2,7 @@ import React from "react";
 import { Form, Input } from "antd";
 
 import { separationRules } from "../lib/helpers";
+import { formItemLabelProps, readonlyFieldLabel } from "../lib/fieldLabel";
 import InputAddonWrapper, { extractAddonOptions } from "./InputAddon";
 
 const { TextArea: Textarea } = Input;
@@ -17,7 +18,11 @@ const TextareaComponent = (props) => {
   if (props.readonly) {
     return (
       <>
-        {props.hideLable ?? <div>{props.display}</div>}
+        {readonlyFieldLabel({
+          display: props.display,
+          hideLable: props.hideLable,
+          options: props.options,
+        })}
         {props.value}
       </>
     );
@@ -30,7 +35,11 @@ const TextareaComponent = (props) => {
   return (
     <>
       <Form.Item
-        label={props.display}
+        {...formItemLabelProps({
+          display: props.display,
+          hideLable: props.hideLable,
+          options: props.options,
+        })}
         name={props.name}
         initialValue={props.value}
         rules={rules}

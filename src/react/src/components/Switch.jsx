@@ -3,6 +3,7 @@ import { Form, Switch } from "antd";
 import { CheckOutlined, CloseOutlined } from "@ant-design/icons";
 
 import { separationRules } from "../lib/helpers";
+import { formItemLabelProps, readonlyFieldLabel } from "../lib/fieldLabel";
 
 const SwitchIndex = (props) => {
   const rules = separationRules({
@@ -15,7 +16,11 @@ const SwitchIndex = (props) => {
   if (props.readonly) {
     return (
       <>
-        {props.hideLable ?? <div>{props.display}</div>}
+        {readonlyFieldLabel({
+          display: props.display,
+          hideLable: props.hideLable,
+          options: props.options,
+        })}
         <div className="read-only__value">
           {props.value ? <CheckOutlined /> : <CloseOutlined />}
         </div>
@@ -26,7 +31,11 @@ const SwitchIndex = (props) => {
   return (
     <>
       <Form.Item
-        label={props.display}
+        {...formItemLabelProps({
+          display: props.display,
+          hideLable: props.hideLable,
+          options: props.options,
+        })}
         name={props.name}
         initialValue={props.value || props.defaultValue || false}
         valuePropName="checked"
