@@ -24,6 +24,7 @@ import { useLanguage } from "../context/LanguageContext";
 import { useDeleteRow } from "../Request";
 import IndexPaginationTotal from "./IndexPaginationTotal";
 import { resolveHideLabel, resolveInlineLabel } from "../lib/fieldLabel";
+import { resolveFieldColProps } from "../lib/helpers/fieldCol";
 
 const { Text } = Typography;
 
@@ -59,35 +60,11 @@ function columnLabel(col) {
   return col.title?.props?.title ?? col.fieldName ?? col.dataIndex;
 }
 
-/**
- * Grid props from field.col (same idea as FormGroup).
- * col === 0 → auto width (content-sized)
- * missing / invalid → full row (24)
- */
 function fieldColProps(col) {
-  const raw = col?.field?.col ?? col?.col;
-  const span = Number(raw);
-
-  if (raw === 0 || raw === "0" || span === 0) {
-    return {
-      flex: "none",
-      style: { width: "auto", maxWidth: "100%" },
-    };
-  }
-
-  if (!Number.isFinite(span) || span < 0) {
-    return { xs: 24, sm: 24, md: 24, lg: 24, xl: 24, xxl: 24 };
-  }
-
-  const clamped = Math.min(24, Math.max(1, span));
-  return {
-    xs: 24,
-    sm: 24,
-    md: clamped,
-    lg: clamped,
-    xl: clamped,
-    xxl: clamped,
-  };
+  return resolveFieldColProps(col?.field?.col ?? col?.col, {
+    from: "md",
+    defaultFull: true,
+  });
 }
 
 function IndexCardItem({ row, columns, configs, pageModule, t }) {
@@ -232,7 +209,7 @@ function IndexCardItem({ row, columns, configs, pageModule, t }) {
 
 
 /**
- * Index body as cards — uses field.col (1–24) for each field width inside the card.
+ * Index body as cards — uses field.col (0 = auto, 1–24 = span) for field width inside the card.
  */
 function IndexCardsBody({ index }) {
   const { t } = useLanguage();

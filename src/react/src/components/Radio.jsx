@@ -23,7 +23,13 @@ const Field = (props) => {
 
     if (typeof props.value === "object") {
       return (
-        <Readonly data-cy={props.testId} label={label} inline={inline} options={props.options}>
+        <Readonly
+          data-cy={props.testId}
+          label={label}
+          inline={inline}
+          options={props.options}
+          comment={props.comment}
+        >
           <div>
             {props.value.map((i) => (
               <Tag>{props.dataSet[i]}</Tag>
@@ -33,7 +39,13 @@ const Field = (props) => {
       );
     } else {
       return (
-        <Readonly data-cy={props.testId} label={label} inline={inline} options={props.options}>
+        <Readonly
+          data-cy={props.testId}
+          label={label}
+          inline={inline}
+          options={props.options}
+          comment={props.comment}
+        >
           <div>
             <Tag>{props.dataSet[props.value]}</Tag>
           </div>

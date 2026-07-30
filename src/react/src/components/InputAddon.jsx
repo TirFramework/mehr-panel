@@ -18,6 +18,15 @@ export function renderAddonContent(addon) {
 }
 
 export function extractAddonOptions(options = {}) {
+  let opts = options;
+  if (typeof opts === "string") {
+    try {
+      opts = JSON.parse(opts);
+    } catch {
+      opts = {};
+    }
+  }
+
   const {
     addonBefore,
     addonAfter,
@@ -27,7 +36,7 @@ export function extractAddonOptions(options = {}) {
     inline_label,
     from,
     ...inputOptions
-  } = typeof options === "object" && options ? options : {};
+  } = typeof opts === "object" && opts && !Array.isArray(opts) ? opts : {};
 
   return { addonBefore, addonAfter, inputOptions };
 }

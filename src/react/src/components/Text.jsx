@@ -1,30 +1,14 @@
 import React from "react";
 import { Input, Tag } from "antd";
-import { QuestionCircleOutlined } from "@ant-design/icons";
 
 import { separationRules } from "../lib/helpers";
 import {
   LabeledFormItem,
   resolveReadonlyLabel,
+  fieldCommentTooltip,
 } from "../lib/fieldLabel";
 import Readonly from "../blocks/Readonly";
 import InputAddonWrapper, { extractAddonOptions } from "./InputAddon";
-
-const fieldCommentTooltip = (comment) => {
-  if (comment?.content === undefined) {
-    return undefined;
-  }
-
-  return {
-    title: (
-      <>
-        {comment.title ? <div>{comment.title}</div> : null}
-        <div>{comment.content}</div>
-      </>
-    ),
-    icon: <QuestionCircleOutlined />,
-  };
-};
 
 const Text = ({
   defaultValue,
@@ -96,7 +80,13 @@ const Text = ({
     });
 
     return (
-      <Readonly data-cy={testId} label={label} inline={inline} options={options}>
+      <Readonly
+        data-cy={testId}
+        label={label}
+        inline={inline}
+        options={options}
+        comment={comment}
+      >
         {valueContent}
       </Readonly>
     );

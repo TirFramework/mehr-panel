@@ -4,28 +4,12 @@ import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import { useDrag, useDrop } from "react-dnd";
 import update from "immutability-helper";
-import { FileOutlined, QuestionCircleOutlined, UploadOutlined } from "@ant-design/icons";
+import { FileOutlined, UploadOutlined } from "@ant-design/icons";
 
 import { getAccept, separationRules } from "../lib/helpers";
-import { LabeledFormItem } from "../lib/fieldLabel";
+import { LabeledFormItem, fieldCommentTooltip } from "../lib/fieldLabel";
 import { getApiToken } from "../lib/authToken";
 import { useLanguage } from "../context/LanguageContext";
-
-const fieldCommentTooltip = (comment) => {
-  if (comment?.content === undefined) {
-    return undefined;
-  }
-
-  return {
-    title: (
-      <>
-        {comment.title ? <div>{comment.title}</div> : null}
-        <div>{comment.content}</div>
-      </>
-    ),
-    icon: <QuestionCircleOutlined />,
-  };
-};
 
 const type = "DragableUploadList";
 

@@ -1,5 +1,6 @@
 import React, { forwardRef } from "react";
-import { Form } from "antd";
+import { Form, Tooltip } from "antd";
+import { QuestionCircleOutlined } from "@ant-design/icons";
 
 /**
  * Label options:
@@ -10,6 +11,80 @@ import { Form } from "antd";
  * Legacy API typo `hideLable` is still accepted when reading.
  * Top-level `inlineLabel` is also accepted.
  */
+
+/** Ant Design Form.Item `tooltip` prop from field.comment */
+export function fieldCommentTooltip(comment) {
+  if (comment?.content === undefined) {
+    return undefined;
+  }
+
+  return {
+    title: (
+      <>
+        {comment.title ? <div>{comment.title}</div> : null}
+        <div>{comment.content}</div>
+      </>
+    ),
+    icon: <QuestionCircleOutlined />,
+  };
+}
+
+/** Question-mark icon for readonly / detail labels */
+export function FieldCommentIcon({ comment }) {
+  if (comment?.content === undefined) {
+    return null;
+  }
+
+  const title = (
+    <>
+      {comment.title ? <div>{comment.title}</div> : null}
+      <div>{comment.content}</div>
+    </>
+  );
+
+  return (
+    <Tooltip title={title}>
+      <QuestionCircleOutlined className="field-readonly-comment" />
+    </Tooltip>
+  );
+}
+
+/** Append comment icon inside a readonly label node (keeps colon after icon for inline). */
+export function appendCommentToReadonlyLabel(label, comment) {
+  if (comment?.content === undefined) {
+    return label;
+  }
+
+  const icon = <FieldCommentIcon comment={comment} />;
+
+  if (!label) {
+    return <div className="field-readonly-label">{icon}</div>;
+  }
+
+  if (!React.isValidElement(label)) {
+    return label;
+  }
+
+  const isInline = String(label.props.className || "").includes(
+    "field-readonly-label--inline"
+  );
+  const parts = React.Children.toArray(label.props.children);
+
+  if (isInline && parts.length > 0 && parts[parts.length - 1] === ":") {
+    return React.cloneElement(label, {
+      children: [...parts.slice(0, -1), " ", icon, ":"],
+    });
+  }
+
+  return React.cloneElement(label, {
+    children: (
+      <>
+        {label.props.children}
+        {icon}
+      </>
+    ),
+  });
+}
 
 function normalizeOptions(options) {
   let opts = options;

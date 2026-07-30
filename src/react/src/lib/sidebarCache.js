@@ -3,11 +3,16 @@ import { getApiToken } from "./authToken";
 /** Keep in sync with clearApiToken() in authToken.js */
 export const SIDEBAR_CACHE_KEY = "mp-sidebar-cache";
 
+/** Persistent sidebar cache is production-only (skip in Vite DEV). */
+const persistEnabled = !import.meta.env.DEV;
+
 /**
  * Persist sidebar menu across full page reloads (sidebar-only).
  * Entries are scoped to the current api_token so users never share menus.
  */
 export function readSidebarCache() {
+  if (!persistEnabled) return null;
+
   const token = getApiToken();
   if (!token) return null;
 
@@ -29,6 +34,8 @@ export function readSidebarCache() {
 }
 
 export function writeSidebarCache(data) {
+  if (!persistEnabled) return;
+
   const token = getApiToken();
   if (!token || !Array.isArray(data)) return;
 

@@ -23,7 +23,13 @@ const SwitchIndex = (props) => {
     });
 
     return (
-      <Readonly data-cy={props.testId} label={label} inline={inline} options={props.options}>
+      <Readonly
+        data-cy={props.testId}
+        label={label}
+        inline={inline}
+        options={props.options}
+        comment={props.comment}
+      >
         {props.value ? <CheckOutlined /> : <CloseOutlined />}
       </Readonly>
     );

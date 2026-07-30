@@ -29,7 +29,7 @@ import {
 import { useMutation } from '@tanstack/react-query';
 import axios from '../lib/axios';
 import { separationRules } from '../lib/helpers';
-import { LabeledFormItem, resolveReadonlyLabel } from '../lib/fieldLabel';
+import { LabeledFormItem, resolveReadonlyLabel, fieldCommentTooltip } from '../lib/fieldLabel';
 import Readonly from '../blocks/Readonly';
 import InputAddonWrapper, { extractAddonOptions } from './InputAddon';
 
@@ -499,7 +499,13 @@ const AI = ({
         });
 
         return (
-            <Readonly data-cy={testId} label={label} inline={inline} options={options}>
+            <Readonly
+                data-cy={testId}
+                label={label}
+                inline={inline}
+                options={options}
+                comment={comment}
+            >
                 <div>{value}</div>
             </Readonly>
         );
@@ -571,6 +577,7 @@ const AI = ({
                     hideLabel={hideLabel}
                     inlineLabel={props.inlineLabel}
                     options={options}
+                    tooltip={fieldCommentTooltip(comment)}
                     name={name}
                     initialValue={value || defaultValue}
                     rules={formRules}
@@ -599,6 +606,7 @@ const AI = ({
                 hideLabel={hideLabel}
                 inlineLabel={props.inlineLabel}
                 options={options}
+                tooltip={fieldCommentTooltip(comment)}
                 name={name}
                 initialValue={value || defaultValue}
                 rules={formRules}

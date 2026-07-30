@@ -3,7 +3,7 @@ import { Form, Input, Button, Space } from "antd";
 import { EditOutlined, LockOutlined } from "@ant-design/icons";
 
 import { separationRules } from "../lib/helpers";
-import { LabeledFormItem, resolveReadonlyLabel } from "../lib/fieldLabel";
+import { LabeledFormItem, resolveReadonlyLabel, fieldCommentTooltip } from "../lib/fieldLabel";
 import Readonly from "../blocks/Readonly";
 import InputAddonWrapper, { extractAddonOptions } from "./InputAddon";
 
@@ -128,7 +128,13 @@ const Slug = (props) => {
     });
 
     return (
-      <Readonly data-cy={props.testId} label={label} inline={inline} options={props.options}>
+      <Readonly
+        data-cy={props.testId}
+        label={label}
+        inline={inline}
+        options={props.options}
+        comment={props.comment}
+      >
         {props.value}
       </Readonly>
     );
@@ -143,6 +149,7 @@ const Slug = (props) => {
       hideLabel={props.hideLabel}
       inlineLabel={props.inlineLabel}
       options={props.options}
+      tooltip={fieldCommentTooltip(props.comment)}
       name={props.name}
       rules={rules}
       initialValue={toSlug(props.value)}

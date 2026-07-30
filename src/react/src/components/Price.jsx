@@ -2,7 +2,7 @@ import React from "react";
 import { InputNumber } from "antd";
 
 import { separationRules } from "../lib/helpers";
-import { LabeledFormItem, resolveReadonlyLabel } from "../lib/fieldLabel";
+import { LabeledFormItem, resolveReadonlyLabel, fieldCommentTooltip } from "../lib/fieldLabel";
 import Readonly from "../blocks/Readonly";
 import {
   formatNumberWithSeparator,
@@ -43,9 +43,23 @@ const Price = (props) => {
       options: props.options,
     });
 
+    const readonlyOptions = {
+      ...(typeof props.options === "object" && props.options
+        ? props.options
+        : {}),
+      addonBefore: addonBefore ?? currency,
+      addonAfter,
+    };
+
     return (
-      <Readonly data-cy={props.testId} label={label} inline={inline} options={props.options}>
-        {currency} {formatNumberWithSeparator(props.value)}
+      <Readonly
+        data-cy={props.testId}
+        label={label}
+        inline={inline}
+        options={readonlyOptions}
+        comment={props.comment}
+      >
+        {formatNumberWithSeparator(props.value)}
       </Readonly>
     );
   }
@@ -56,6 +70,7 @@ const Price = (props) => {
       hideLabel={props.hideLabel}
       inlineLabel={props.inlineLabel}
       options={props.options}
+      tooltip={fieldCommentTooltip(props.comment)}
       name={props.name}
       initialValue={
         props.value !== undefined

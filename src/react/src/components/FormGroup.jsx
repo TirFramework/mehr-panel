@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Col } from "antd";
 
 import Field from "./Field";
+import { resolveFieldColProps } from "../lib/helpers/fieldCol";
 
 const FormGroup = (props) => {
   const [, setFields] = useState([]);
@@ -15,13 +16,7 @@ const FormGroup = (props) => {
   return (
     <>
       <Col
-        // span={props.col}
-        xs={24}
-        sm={24}
-        md={24}
-        lg={props.col}
-        xl={props.col}
-        xxl={props.col}
+        {...resolveFieldColProps(props.col)}
         className={`${props.className} formGroup formGroup-${props.type}`}
       >
         <Field

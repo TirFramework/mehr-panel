@@ -676,6 +676,26 @@ body.dark-mode .ant-layout-content {
   color: var(--mp-text);
 }
 
+.field-readonly-comment {
+  margin-inline-start: 4px;
+  color: rgba(0, 0, 0, 0.45);
+  cursor: help;
+  font-size: 12px;
+}
+
+body.dark-mode .field-readonly-comment {
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.read-only__value-text {
+  display: flex;
+  align-items: center;
+  min-height: 32px;
+  padding: 4px 11px;
+  width: 100%;
+  word-break: break-word;
+}
+
 .field-load-error {
   padding: 12px 16px;
   border-radius: var(--mp-radius);

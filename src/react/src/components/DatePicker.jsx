@@ -87,7 +87,13 @@ const DatePickerComponent = (props) => {
     });
 
     return (
-      <Readonly data-cy={props.testId} label={label} inline={inline} options={props.options}>
+      <Readonly
+        data-cy={props.testId}
+        label={label}
+        inline={inline}
+        options={props.options}
+        comment={props.comment}
+      >
         {props.value ? (
           <>
             {dayjs(props.value).format(props?.options?.dateFormat) ||

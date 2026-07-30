@@ -1,6 +1,7 @@
 import Config from "../../constants/config";
 
 export { onFinish } from "./onFinish";
+export { resolveFieldColProps } from "./fieldCol";
 export {
   replaceLastNumberFromString,
   findNextName,

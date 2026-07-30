@@ -23,7 +23,13 @@ export default function App(props) {
     });
 
     return (
-      <Readonly data-cy={props.testId} label={label} inline={inline} options={props.options}>
+      <Readonly
+        data-cy={props.testId}
+        label={label}
+        inline={inline}
+        options={props.options}
+        comment={props.comment}
+      >
         <Card size="small" className="read-only__value--editor">
           <div dangerouslySetInnerHTML={{ __html: props.value }} />
         </Card>

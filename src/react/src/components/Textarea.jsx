@@ -2,7 +2,7 @@ import React from "react";
 import { Input } from "antd";
 
 import { separationRules } from "../lib/helpers";
-import { LabeledFormItem, resolveReadonlyLabel } from "../lib/fieldLabel";
+import { LabeledFormItem, resolveReadonlyLabel, fieldCommentTooltip } from "../lib/fieldLabel";
 import Readonly from "../blocks/Readonly";
 import InputAddonWrapper, { extractAddonOptions } from "./InputAddon";
 
@@ -25,7 +25,13 @@ const TextareaComponent = (props) => {
     });
 
     return (
-      <Readonly data-cy={props.testId} label={label} inline={inline} options={props.options}>
+      <Readonly
+        data-cy={props.testId}
+        label={label}
+        inline={inline}
+        options={props.options}
+        comment={props.comment}
+      >
         {props.value}
       </Readonly>
     );
@@ -42,6 +48,7 @@ const TextareaComponent = (props) => {
         hideLabel={props.hideLabel}
         inlineLabel={props.inlineLabel}
         options={props.options}
+        tooltip={fieldCommentTooltip(props.comment)}
         name={props.name}
         initialValue={props.value}
         rules={rules}

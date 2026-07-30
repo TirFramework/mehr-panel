@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Select, Tag } from "antd";
 
 import { separationRules } from "../lib/helpers";
-import { LabeledFormItem, resolveReadonlyLabel } from "../lib/fieldLabel";
+import { LabeledFormItem, resolveReadonlyLabel, fieldCommentTooltip } from "../lib/fieldLabel";
 import Readonly from "../blocks/Readonly";
 import InputAddonWrapper, { extractAddonOptions } from "./InputAddon";
 
@@ -138,17 +138,23 @@ const SelcetIndex = ({ defaultValue, ...props }) => {
   };
 
   if (props.readonly) {
-    if (props.value) {
-      const { label, inline } = resolveReadonlyLabel({
-        display: props.display,
-        hideLabel: props.hideLabel,
-        inlineLabel: props.inlineLabel,
-        options: props.options,
-      });
+    const { label, inline } = resolveReadonlyLabel({
+      display: props.display,
+      hideLabel: props.hideLabel,
+      inlineLabel: props.inlineLabel,
+      options: props.options,
+    });
 
+    if (props.value) {
       if (typeof props.value === "object" && Array.isArray(props.value)) {
         return (
-          <Readonly data-cy={props.testId} label={label} inline={inline} options={props.options}>
+          <Readonly
+            data-cy={props.testId}
+            label={label}
+            inline={inline}
+            options={props.options}
+            comment={props.comment}
+          >
             <div>
               {props.value.map((i) => {
                 // Extract ID from MongoDB relation object if needed
@@ -170,22 +176,39 @@ const SelcetIndex = ({ defaultValue, ...props }) => {
             </div>
           </Readonly>
         );
-      } else {
-        // Extract ID from MongoDB relation object if needed
-        const displayValue = extractRelationValue(props.value);
-        const color = findOptionColor(props.data, displayValue);
-        return (
-          <Readonly data-cy={props.testId} label={label} inline={inline} options={props.options}>
-            <div>
-              <Tag color={color}>
-                {props.dataSet[displayValue] || displayValue}
-              </Tag>
-            </div>
-          </Readonly>
-        );
       }
+
+      // Extract ID from MongoDB relation object if needed
+      const displayValue = extractRelationValue(props.value);
+      const color = findOptionColor(props.data, displayValue);
+      return (
+        <Readonly
+          data-cy={props.testId}
+          label={label}
+          inline={inline}
+          options={props.options}
+          comment={props.comment}
+        >
+          <div>
+            <Tag color={color}>
+              {props.dataSet[displayValue] || displayValue}
+            </Tag>
+          </div>
+        </Readonly>
+      );
     }
-    return;
+
+    return (
+      <Readonly
+        data-cy={props.testId}
+        label={label}
+        inline={inline}
+        options={props.options}
+        comment={props.comment}
+      >
+        {null}
+      </Readonly>
+    );
   }
 
   return (
@@ -196,6 +219,7 @@ const SelcetIndex = ({ defaultValue, ...props }) => {
         hideLabel={props.hideLabel}
         inlineLabel={props.inlineLabel}
         options={props.options}
+        tooltip={fieldCommentTooltip(props.comment)}
         initialValue={value}
         rules={rules}
       >
