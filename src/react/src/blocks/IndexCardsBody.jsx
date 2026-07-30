@@ -207,7 +207,7 @@ function IndexCardItem({ row, columns, configs, pageModule, t }) {
       </Row>
 
       {showDetail && (
-        <div style={{ display: "flex", justifyContent: "flex-end" }}>
+        <div className="index-card-actions" style={{ display: "flex", justifyContent: "flex-end" }}>
           <Link to={`/${Config.prefix}/${pageModule}/detail?id=${id}`}>
             <Button type="primary" size="small">
               {t.DETAIL}
