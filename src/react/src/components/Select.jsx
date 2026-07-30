@@ -1,14 +1,45 @@
 import React, { useState, useEffect } from "react";
-import { Form, Select, Tag } from "antd";
+import { Select, Tag } from "antd";
 
 import { separationRules } from "../lib/helpers";
-import { formItemLabelProps, readonlyFieldLabel } from "../lib/fieldLabel";
+import { LabeledFormItem, resolveReadonlyLabel } from "../lib/fieldLabel";
 import Readonly from "../blocks/Readonly";
 import InputAddonWrapper, { extractAddonOptions } from "./InputAddon";
+
+const findOptionColor = (data, value) => {
+  if (!Array.isArray(data) || value === undefined || value === null) {
+    return undefined;
+  }
+  const opt = data.find((o) => String(o.value) === String(value));
+  return opt?.color;
+};
+
+const OptionLabel = ({ label, color }) => {
+  if (!color) return label;
+  return (
+    <span className="mp-select-option" style={{ display: "inline-flex", alignItems: "center", gap: 8 }}>
+      <span
+        className="mp-select-option__swatch"
+        style={{
+          width: 8,
+          height: 8,
+          borderRadius: "50%",
+          backgroundColor: color,
+          flexShrink: 0,
+        }}
+      />
+      {label}
+    </span>
+  );
+};
 
 const MySelect = (props) => {
   const { addonBefore, addonAfter, inputOptions } = extractAddonOptions(
     props.options
+  );
+
+  const sortedOptions = [...(props.data || [])].sort((a, b) =>
+    String(a.label ?? "").localeCompare(String(b.label ?? ""))
   );
 
   return (
@@ -18,10 +49,31 @@ const MySelect = (props) => {
         data-cy={props.testId}
         showSearch
         filterOption={(input, option) =>
-          option.label.toLowerCase().indexOf(input.toLowerCase()) >= 0
+          String(option?.label ?? "")
+            .toLowerCase()
+            .indexOf(input.toLowerCase()) >= 0
         }
         mode={props.multiple ? "multiple" : false}
-        options={props.data.sort((a, b) => a.label.localeCompare(b.label))}
+        options={sortedOptions}
+        optionRender={(option) => (
+          <OptionLabel label={option.label} color={option.data?.color} />
+        )}
+        labelRender={({ label, value }) => (
+          <OptionLabel label={label} color={findOptionColor(props.data, value)} />
+        )}
+        tagRender={({ label, value, closable, onClose }) => {
+          const color = findOptionColor(props.data, value);
+          return (
+            <Tag
+              color={color}
+              closable={closable}
+              onClose={onClose}
+              style={{ marginInlineEnd: 4 }}
+            >
+              {label}
+            </Tag>
+          );
+        }}
         disabled={props.disable}
         allowClear={!props.readonly && true}
         value={props.value}
@@ -87,22 +139,33 @@ const SelcetIndex = ({ defaultValue, ...props }) => {
 
   if (props.readonly) {
     if (props.value) {
+      const { label, inline } = resolveReadonlyLabel({
+        display: props.display,
+        hideLabel: props.hideLabel,
+        inlineLabel: props.inlineLabel,
+        options: props.options,
+      });
+
       if (typeof props.value === "object" && Array.isArray(props.value)) {
         return (
-          <Readonly data-cy={props.testId}>
-            {readonlyFieldLabel({
-              display: props.display,
-              hideLabel: props.hideLabel,
-              options: props.options,
-            })}
+          <Readonly data-cy={props.testId} label={label} inline={inline} options={props.options}>
             <div>
               {props.value.map((i) => {
                 // Extract ID from MongoDB relation object if needed
                 const displayValue = extractRelationValue(i);
+                const color = findOptionColor(props.data, displayValue);
                 if (!props.dataSet[displayValue]) {
-                  return <Tag key={displayValue}>{displayValue}</Tag>;
+                  return (
+                    <Tag key={displayValue} color={color}>
+                      {displayValue}
+                    </Tag>
+                  );
                 }
-                return <Tag key={displayValue}>{props.dataSet[displayValue]}</Tag>;
+                return (
+                  <Tag key={displayValue} color={color}>
+                    {props.dataSet[displayValue]}
+                  </Tag>
+                );
               })}
             </div>
           </Readonly>
@@ -110,15 +173,13 @@ const SelcetIndex = ({ defaultValue, ...props }) => {
       } else {
         // Extract ID from MongoDB relation object if needed
         const displayValue = extractRelationValue(props.value);
+        const color = findOptionColor(props.data, displayValue);
         return (
-          <Readonly data-cy={props.testId}>
-            {readonlyFieldLabel({
-              display: props.display,
-              hideLabel: props.hideLabel,
-              options: props.options,
-            })}
+          <Readonly data-cy={props.testId} label={label} inline={inline} options={props.options}>
             <div>
-              <Tag>{props.dataSet[displayValue] || displayValue}</Tag>
+              <Tag color={color}>
+                {props.dataSet[displayValue] || displayValue}
+              </Tag>
             </div>
           </Readonly>
         );
@@ -129,13 +190,12 @@ const SelcetIndex = ({ defaultValue, ...props }) => {
 
   return (
     <>
-      <Form.Item
+      <LabeledFormItem
         name={props.name}
-        {...formItemLabelProps({
-          display: props.display,
-          hideLabel: props.hideLabel,
-          options: props.options,
-        })}
+        display={props.display}
+        hideLabel={props.hideLabel}
+        inlineLabel={props.inlineLabel}
+        options={props.options}
         initialValue={value}
         rules={rules}
       >
@@ -146,7 +206,7 @@ const SelcetIndex = ({ defaultValue, ...props }) => {
             setValue(val);
           }}
         />
-      </Form.Item>
+      </LabeledFormItem>
     </>
   );
 };

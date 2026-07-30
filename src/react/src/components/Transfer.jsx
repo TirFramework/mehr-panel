@@ -1,7 +1,7 @@
-import {Form, Input, Transfer} from "antd";
+import {Transfer} from "antd";
 
 import { separationRules } from "../lib/helpers";
-import { formItemLabelProps } from "../lib/fieldLabel";
+import { LabeledFormItem } from "../lib/fieldLabel";
 import {useState} from "react";
 
 const Text = (props) => {
@@ -26,12 +26,11 @@ const Text = (props) => {
 
   return (
     <>
-      <Form.Item
-        {...formItemLabelProps({
-          display: props.display,
-          hideLabel: props.hideLabel,
-          options: props.options,
-        })}
+      <LabeledFormItem
+        display={props.display}
+        hideLabel={props.hideLabel}
+        inlineLabel={props.inlineLabel}
+        options={props.options}
         name={props.name}
         initialValue={targetKeys}
         rules={rules}
@@ -51,7 +50,7 @@ const Text = (props) => {
                   height: 300,
               }}
           />
-      </Form.Item>
+      </LabeledFormItem>
     </>
   );
 };

@@ -14,6 +14,10 @@ import {
   isAccessDeniedError,
   moduleLoadQueryOptions,
 } from "../lib/queryErrors";
+import {
+  readSidebarCache,
+  writeSidebarCache,
+} from "../lib/sidebarCache";
 
 export const useGetData = (pageModule, filter, options) => {
   const serializedFilter = JSON.stringify(filter || {});
@@ -53,15 +57,27 @@ export const useDeleteRow = () => {
 };
 
 export const useSidebar = () => {
+  const cached = readSidebarCache();
+
   const query = useQuery({
     queryKey: [`sidebar`],
-    queryFn: () => getSidebar(),
-    staleTime: 5 * 60 * 1000,
+    queryFn: async () => {
+      const data = await getSidebar();
+      writeSidebarCache(data);
+      return data;
+    },
+    // Hydrate from localStorage so refresh never flashes loading when cache exists.
+    initialData: cached?.data,
+    initialDataUpdatedAt: cached?.updatedAt,
+    // Always treat as stale → background refetch; UI keeps showing cache.
+    staleTime: 0,
+    gcTime: 1000 * 60 * 60 * 24 * 7,
     enabled: !!getApiToken(),
     retry: false,
     retryOnMount: false,
-    refetchOnMount: false,
-    refetchOnReconnect: false,
+    refetchOnMount: "always",
+    refetchOnReconnect: true,
+    refetchOnWindowFocus: false,
     refetchInterval: (query) =>
       query.state.status === "success" ? 5 * 60 * 1000 : false,
   });

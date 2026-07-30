@@ -29,7 +29,7 @@ import {
 import { useMutation } from '@tanstack/react-query';
 import axios from '../lib/axios';
 import { separationRules } from '../lib/helpers';
-import { formItemLabelProps, readonlyFieldLabel } from '../lib/fieldLabel';
+import { LabeledFormItem, resolveReadonlyLabel } from '../lib/fieldLabel';
 import Readonly from '../blocks/Readonly';
 import InputAddonWrapper, { extractAddonOptions } from './InputAddon';
 
@@ -491,9 +491,15 @@ const AI = ({
 
     // Readonly display
     if (readonly) {
+        const { label, inline } = resolveReadonlyLabel({
+            display,
+            hideLabel,
+            inlineLabel: props.inlineLabel,
+            options,
+        });
+
         return (
-            <Readonly data-cy={testId}>
-                {readonlyFieldLabel({ display, hideLabel, options })}
+            <Readonly data-cy={testId} label={label} inline={inline} options={options}>
                 <div>{value}</div>
             </Readonly>
         );
@@ -502,18 +508,18 @@ const AI = ({
     // Loading state for dynamic component
     if (!isBuiltinType && componentLoading) {
         return (
-            <Form.Item {...formItemLabelProps({ display, hideLabel, options })} name={name}>
+            <LabeledFormItem display={display} hideLabel={hideLabel} inlineLabel={props.inlineLabel} options={options} name={name}>
                 <Spin size="small" /> Loading component...
-            </Form.Item>
+            </LabeledFormItem>
         );
     }
 
     // Error state for dynamic component
     if (!isBuiltinType && componentError) {
         return (
-            <Form.Item {...formItemLabelProps({ display, hideLabel, options })} name={name}>
+            <LabeledFormItem display={display} hideLabel={hideLabel} inlineLabel={props.inlineLabel} options={options} name={name}>
                 <Text type="danger">{componentError}</Text>
-            </Form.Item>
+            </LabeledFormItem>
         );
     }
 
@@ -560,8 +566,11 @@ const AI = ({
     if (inputTypeLower === 'text') {
         return (
             <>
-                <Form.Item
-                    {...formItemLabelProps({ display, hideLabel, options })}
+                <LabeledFormItem
+                    display={display}
+                    hideLabel={hideLabel}
+                    inlineLabel={props.inlineLabel}
+                    options={options}
                     name={name}
                     initialValue={value || defaultValue}
                     rules={formRules}
@@ -576,7 +585,7 @@ const AI = ({
                             {...addonInputOptions}
                         />
                     </InputAddonWrapper>
-                </Form.Item>
+                </LabeledFormItem>
                 {FloatingResultCard}
             </>
         );
@@ -585,8 +594,11 @@ const AI = ({
     // Render Textarea with AI button positioned at top-right
     return (
         <>
-            <Form.Item
-                {...formItemLabelProps({ display, hideLabel, options })}
+            <LabeledFormItem
+                display={display}
+                hideLabel={hideLabel}
+                inlineLabel={props.inlineLabel}
+                options={options}
                 name={name}
                 initialValue={value || defaultValue}
                 rules={formRules}
@@ -601,7 +613,7 @@ const AI = ({
                         {...addonInputOptions}
                     />
                 </InputAddonWrapper>
-            </Form.Item>
+            </LabeledFormItem>
             <div style={{
                 position: 'relative',
                 marginTop: -28,

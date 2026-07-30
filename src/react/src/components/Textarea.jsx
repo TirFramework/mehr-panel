@@ -1,8 +1,9 @@
 import React from "react";
-import { Form, Input } from "antd";
+import { Input } from "antd";
 
 import { separationRules } from "../lib/helpers";
-import { formItemLabelProps, readonlyFieldLabel } from "../lib/fieldLabel";
+import { LabeledFormItem, resolveReadonlyLabel } from "../lib/fieldLabel";
+import Readonly from "../blocks/Readonly";
 import InputAddonWrapper, { extractAddonOptions } from "./InputAddon";
 
 const { TextArea: Textarea } = Input;
@@ -16,15 +17,17 @@ const TextareaComponent = (props) => {
   });
 
   if (props.readonly) {
+    const { label, inline } = resolveReadonlyLabel({
+      display: props.display,
+      hideLabel: props.hideLabel,
+      inlineLabel: props.inlineLabel,
+      options: props.options,
+    });
+
     return (
-      <>
-        {readonlyFieldLabel({
-          display: props.display,
-          hideLabel: props.hideLabel,
-          options: props.options,
-        })}
+      <Readonly data-cy={props.testId} label={label} inline={inline} options={props.options}>
         {props.value}
-      </>
+      </Readonly>
     );
   }
 
@@ -34,12 +37,11 @@ const TextareaComponent = (props) => {
 
   return (
     <>
-      <Form.Item
-        {...formItemLabelProps({
-          display: props.display,
-          hideLabel: props.hideLabel,
-          options: props.options,
-        })}
+      <LabeledFormItem
+        display={props.display}
+        hideLabel={props.hideLabel}
+        inlineLabel={props.inlineLabel}
+        options={props.options}
         name={props.name}
         initialValue={props.value}
         rules={rules}
@@ -53,7 +55,7 @@ const TextareaComponent = (props) => {
             {...inputOptions}
           />
         </InputAddonWrapper>
-      </Form.Item>
+      </LabeledFormItem>
     </>
   );
 };

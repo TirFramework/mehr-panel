@@ -1,6 +1,9 @@
 const API_TOKEN_KEY = "api_token";
 export const API_TOKEN_CHANGED = "api_token_changed";
 
+/** Keep in sync with lib/sidebarCache.js */
+const SIDEBAR_CACHE_KEY = "mp-sidebar-cache";
+
 function isValidToken(token) {
     return Boolean(token) && token !== "undefined" && token !== "null";
 }
@@ -37,6 +40,12 @@ export function setApiToken(token) {
 
 export function clearApiToken() {
     localStorage.removeItem(API_TOKEN_KEY);
+    // Sidebar-only persistent cache (see lib/sidebarCache.js)
+    try {
+        localStorage.removeItem(SIDEBAR_CACHE_KEY);
+    } catch {
+        // ignore
+    }
     notifyTokenChange();
 }
 

@@ -1,7 +1,8 @@
 import React from "react";
 import { Form, Checkbox } from "antd";
 import { separationRules } from "../lib/helpers";
-import { readonlyFieldLabel } from "../lib/fieldLabel";
+import { resolveReadonlyLabel } from "../lib/fieldLabel";
+import Readonly from "../blocks/Readonly";
 import { CheckCircleOutlined } from "@ant-design/icons";
 
 const CheckboxComponent = (props) => {
@@ -12,16 +13,18 @@ const CheckboxComponent = (props) => {
     updateRules: props.updateRules,
   });
 
-if (props.readonly) {
+  if (props.readonly) {
+    const { label, inline } = resolveReadonlyLabel({
+      display: props.display,
+      hideLabel: props.hideLabel,
+      inlineLabel: props.inlineLabel,
+      options: props.options,
+    });
+
     return (
-      <>
-        {readonlyFieldLabel({
-          display: props.display,
-          hideLabel: props.hideLabel,
-          options: props.options,
-        })}
-        {props.value ? <CheckCircleOutlined style={{ color: 'green', fontSize: '18px' }} /> : <>  </>}
-      </>
+      <Readonly data-cy={props.testId} label={label} inline={inline} options={props.options}>
+        {props.value ? <CheckCircleOutlined style={{ color: 'green', fontSize: '18px' }} /> : null}
+      </Readonly>
     );
   }
 

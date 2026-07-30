@@ -1,9 +1,12 @@
 import React from "react";
-import { Form, Input, Tag } from "antd";
+import { Input, Tag } from "antd";
 import { QuestionCircleOutlined } from "@ant-design/icons";
 
 import { separationRules } from "../lib/helpers";
-import { formItemLabelProps, readonlyFieldLabel } from "../lib/fieldLabel";
+import {
+  LabeledFormItem,
+  resolveReadonlyLabel,
+} from "../lib/fieldLabel";
 import Readonly from "../blocks/Readonly";
 import InputAddonWrapper, { extractAddonOptions } from "./InputAddon";
 
@@ -31,6 +34,7 @@ const Text = ({
   updateRules,
   readonly,
   hideLabel,
+  inlineLabel,
   display,
   comment,
   name,
@@ -40,7 +44,6 @@ const Text = ({
   disable,
   value,
   relation,
-  ...props
 }) => {
   const formRules = separationRules({
     pageType: pageType,
@@ -85,9 +88,15 @@ const Text = ({
       valueContent = extractRelationValue(value);
     }
 
+    const { label, inline } = resolveReadonlyLabel({
+      display,
+      hideLabel,
+      inlineLabel,
+      options,
+    });
+
     return (
-      <Readonly data-cy={testId}>
-        {readonlyFieldLabel({ display, hideLabel, options })}
+      <Readonly data-cy={testId} label={label} inline={inline} options={options}>
         {valueContent}
       </Readonly>
     );
@@ -96,24 +105,25 @@ const Text = ({
   const { addonBefore, addonAfter, inputOptions } = extractAddonOptions(options);
 
   return (
-    <>
-      <Form.Item
-        {...formItemLabelProps({ display, hideLabel, options })}
-        tooltip={fieldCommentTooltip(comment)}
-        name={name}
-        initialValue={value || defaultValue}
-        rules={formRules}
-      >
-        <InputAddonWrapper addonBefore={addonBefore} addonAfter={addonAfter}>
-          <Input
-            data-cy={testId}
-            {...inputOptions}
-            placeholder={placeholder || inputOptions.placeholder}
-            disabled={disable}
-          />
-        </InputAddonWrapper>
-      </Form.Item>
-    </>
+    <LabeledFormItem
+      display={display}
+      hideLabel={hideLabel}
+      inlineLabel={inlineLabel}
+      options={options}
+      tooltip={fieldCommentTooltip(comment)}
+      name={name}
+      initialValue={value || defaultValue}
+      rules={formRules}
+    >
+      <InputAddonWrapper addonBefore={addonBefore} addonAfter={addonAfter}>
+        <Input
+          data-cy={testId}
+          {...inputOptions}
+          placeholder={placeholder || inputOptions.placeholder}
+          disabled={disable}
+        />
+      </InputAddonWrapper>
+    </LabeledFormItem>
   );
 };
 

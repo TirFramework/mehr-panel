@@ -1,17 +1,12 @@
 import React, { useState } from "react";
-import { Form, Input, Button } from "antd";
+import { Input, Button } from "antd";
 import { EyeInvisibleOutlined, EyeTwoTone } from "@ant-design/icons";
 
 import { separationRules, isRequired } from "../lib/helpers";
-import { formItemLabelProps } from "../lib/fieldLabel";
+import { LabeledFormItem } from "../lib/fieldLabel";
 import InputAddonWrapper, { extractAddonOptions } from "./InputAddon";
 
-const Text = (props) => {
-  // console.log("🚀 ~ file: text.js ~ line 6 ~ Text ~ data", data)
-  // console.log("🚀 ~ ---------------------------------------------------")
-  // console.log("🚀 ~ file: text.js ~ line 15 ~ Text ~ data.display", data.display)
-  // console.log("🚀 ~ file: text.js ~ line 6 ~ Text ~ data", data)
-
+const Password = (props) => {
   const rules = separationRules({
     pageType: props.pageType,
     rules: props.rules,
@@ -35,12 +30,11 @@ const Text = (props) => {
           Change Password
         </Button>
       ) : (
-        <Form.Item
-          {...formItemLabelProps({
-            display: props.display,
-            hideLabel: props.hideLabel,
-            options: props.options,
-          })}
+        <LabeledFormItem
+          display={props.display}
+          hideLabel={props.hideLabel}
+          inlineLabel={props.inlineLabel}
+          options={props.options}
           name={props.name}
           rules={rules}
         >
@@ -52,10 +46,10 @@ const Text = (props) => {
               }
             />
           </InputAddonWrapper>
-        </Form.Item>
+        </LabeledFormItem>
       )}
     </>
   );
 };
 
-export default Text;
+export default Password;

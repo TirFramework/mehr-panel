@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import * as api from "../api";
 import { persistLoginSession } from "../lib/loginSession";
+import { clearSidebarCache } from "../lib/sidebarCache";
 
 /**
  * Auth flow only — not form fields, labels, rules, or translations.
@@ -52,6 +53,7 @@ export default function useLogin() {
       // so DefaultLayout does not reuse a cached 401 for ["general"].
       queryClient.removeQueries({ queryKey: ["general"] });
       queryClient.removeQueries({ queryKey: ["sidebar"] });
+      clearSidebarCache();
 
       return { status: "success" };
     } catch (error) {

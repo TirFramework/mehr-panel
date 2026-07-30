@@ -209,9 +209,8 @@ const CreateForm = ({ type }) => {
         form={form}
         validateMessages={validateMessages}
         name="basic"
+        layout="vertical"
         scrollToFirstError={true}
-        labelCol={{ span: 24 }}
-        wrapperCol={{ span: 24 }}
         initialValues={{ remember: true }}
         onFieldsChange={handleFieldsChange}
         className="form"

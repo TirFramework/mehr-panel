@@ -1,8 +1,9 @@
 import React from "react";
-import { Form, Radio, Tag } from "antd";
+import { Radio, Tag } from "antd";
 
 import { separationRules } from "../lib/helpers";
-import { formItemLabelProps, readonlyFieldLabel } from "../lib/fieldLabel";
+import { LabeledFormItem, resolveReadonlyLabel } from "../lib/fieldLabel";
+import Readonly from "../blocks/Readonly";
 
 const Field = (props) => {
   const rules = separationRules({
@@ -13,46 +14,42 @@ const Field = (props) => {
   });
 
   if (props.readonly) {
+    const { label, inline } = resolveReadonlyLabel({
+      display: props.display,
+      hideLabel: props.hideLabel,
+      inlineLabel: props.inlineLabel,
+      options: props.options,
+    });
+
     if (typeof props.value === "object") {
       return (
-        <div data-cy={props.testId} className="read-only">
-          {readonlyFieldLabel({
-            display: props.display,
-            hideLabel: props.hideLabel,
-            options: props.options,
-          })}
+        <Readonly data-cy={props.testId} label={label} inline={inline} options={props.options}>
           <div>
             {props.value.map((i) => (
               <Tag>{props.dataSet[i]}</Tag>
             ))}
           </div>
-        </div>
+        </Readonly>
       );
     } else {
       return (
-        <div data-cy={props.testId} className="read-only">
-          {readonlyFieldLabel({
-            display: props.display,
-            hideLabel: props.hideLabel,
-            options: props.options,
-          })}
+        <Readonly data-cy={props.testId} label={label} inline={inline} options={props.options}>
           <div>
             <Tag>{props.dataSet[props.value]}</Tag>
           </div>
-        </div>
+        </Readonly>
       );
     }
   }
 
   return (
     <>
-      <Form.Item
+      <LabeledFormItem
         name={props.name}
-        {...formItemLabelProps({
-          display: props.display,
-          hideLabel: props.hideLabel,
-          options: props.options,
-        })}
+        display={props.display}
+        hideLabel={props.hideLabel}
+        inlineLabel={props.inlineLabel}
+        options={props.options}
         initialValue={props.value}
         rules={rules}
       >
@@ -66,7 +63,7 @@ const Field = (props) => {
           optionType="button"
           buttonStyle="solid"
         ></Radio.Group>
-      </Form.Item>
+      </LabeledFormItem>
     </>
   );
 };

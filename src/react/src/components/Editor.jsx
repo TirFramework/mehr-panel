@@ -1,9 +1,10 @@
 import React from "react";
-import { Card, Form } from "antd";
+import { Card } from "antd";
 
 import AntdTinymce from "./AntdTinymce";
 import { separationRules } from "../lib/helpers";
-import { formItemLabelProps, readonlyFieldLabel } from "../lib/fieldLabel";
+import { LabeledFormItem, resolveReadonlyLabel } from "../lib/fieldLabel";
+import Readonly from "../blocks/Readonly";
 
 export default function App(props) {
   const rules = separationRules({
@@ -14,28 +15,29 @@ export default function App(props) {
   });
 
   if (props.readonly) {
+    const { label, inline } = resolveReadonlyLabel({
+      display: props.display,
+      hideLabel: props.hideLabel,
+      inlineLabel: props.inlineLabel,
+      options: props.options,
+    });
+
     return (
-      <>
-        {readonlyFieldLabel({
-          display: props.display,
-          hideLabel: props.hideLabel,
-          options: props.options,
-        })}
+      <Readonly data-cy={props.testId} label={label} inline={inline} options={props.options}>
         <Card size="small" className="read-only__value--editor">
           <div dangerouslySetInnerHTML={{ __html: props.value }} />
         </Card>
-      </>
+      </Readonly>
     );
   }
 
   return (
     <>
-      <Form.Item
-        {...formItemLabelProps({
-          display: props.display,
-          hideLabel: props.hideLabel,
-          options: props.options,
-        })}
+      <LabeledFormItem
+        display={props.display}
+        hideLabel={props.hideLabel}
+        inlineLabel={props.inlineLabel}
+        options={props.options}
         name={props.name}
         initialValue={props.value || props.defaultValue}
         rules={rules}
@@ -47,7 +49,7 @@ export default function App(props) {
           basePath={props.basePath}
           disabled={props.disabled}
         />
-      </Form.Item>
+      </LabeledFormItem>
     </>
   );
 }

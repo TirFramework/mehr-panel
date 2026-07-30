@@ -23,7 +23,7 @@ import Config from "../constants/config";
 import { useLanguage } from "../context/LanguageContext";
 import { useDeleteRow } from "../Request";
 import IndexPaginationTotal from "./IndexPaginationTotal";
-import { resolveHideLabel } from "../lib/fieldLabel";
+import { resolveHideLabel, resolveInlineLabel } from "../lib/fieldLabel";
 
 const { Text } = Typography;
 
@@ -180,18 +180,38 @@ function IndexCardItem({ row, columns, configs, pageModule, t }) {
     >
       <Row gutter={[16, 12]} style={{ flex: 1 }}>
         {fields.map((col) => {
-          const hideLabel = resolveHideLabel({ options: col.field?.options });
+          const fieldOptions = col.field?.options;
+          const hideLabel = resolveHideLabel({ options: fieldOptions });
+          const inlineLabel = resolveInlineLabel(fieldOptions);
+          const label = columnLabel(col);
+          const value = cellText(row, col);
+
           return (
             <Col
               key={col.key || col.fieldName || String(col.dataIndex)}
               {...fieldColProps(col)}
             >
-              {!hideLabel ? (
-                <Text type="secondary" style={{ fontSize: 12 }}>
-                  {columnLabel(col)}
-                </Text>
-              ) : null}
-              <div>{cellText(row, col)}</div>
+              {hideLabel ? (
+                <div className="index-card-field__value">{value}</div>
+              ) : inlineLabel ? (
+                <div className="index-card-field index-card-field--inline">
+                  <Text
+                    type="secondary"
+                    className="index-card-field__label"
+                    style={{ fontSize: 13 }}
+                  >
+                    {label}:
+                  </Text>
+                  <div className="index-card-field__value">{value}</div>
+                </div>
+              ) : (
+                <>
+                  <Text type="secondary" style={{ fontSize: 12 }}>
+                    {label}
+                  </Text>
+                  <div className="index-card-field__value">{value}</div>
+                </>
+              )}
             </Col>
           );
         })}

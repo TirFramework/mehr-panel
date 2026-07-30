@@ -3,7 +3,7 @@ import { Form, Input, Button, Space } from "antd";
 import { EditOutlined, LockOutlined } from "@ant-design/icons";
 
 import { separationRules } from "../lib/helpers";
-import { formItemLabelProps, readonlyFieldLabel } from "../lib/fieldLabel";
+import { LabeledFormItem, resolveReadonlyLabel } from "../lib/fieldLabel";
 import Readonly from "../blocks/Readonly";
 import InputAddonWrapper, { extractAddonOptions } from "./InputAddon";
 
@@ -120,13 +120,15 @@ const Slug = (props) => {
   );
 
   if (props.readonly) {
+    const { label, inline } = resolveReadonlyLabel({
+      display: props.display,
+      hideLabel: props.hideLabel,
+      inlineLabel: props.inlineLabel,
+      options: props.options,
+    });
+
     return (
-      <Readonly data-cy={props.testId}>
-        {readonlyFieldLabel({
-          display: props.display,
-          hideLabel: props.hideLabel,
-          options: props.options,
-        })}
+      <Readonly data-cy={props.testId} label={label} inline={inline} options={props.options}>
         {props.value}
       </Readonly>
     );
@@ -136,12 +138,11 @@ const Slug = (props) => {
     Boolean(props.disabled || props.disable) || (Boolean(fromField) && synced);
 
   return (
-    <Form.Item
-      {...formItemLabelProps({
-        display: props.display,
-        hideLabel: props.hideLabel,
-        options: props.options,
-      })}
+    <LabeledFormItem
+      display={props.display}
+      hideLabel={props.hideLabel}
+      inlineLabel={props.inlineLabel}
+      options={props.options}
       name={props.name}
       rules={rules}
       initialValue={toSlug(props.value)}
@@ -167,7 +168,7 @@ const Slug = (props) => {
           />
         </InputAddonWrapper>
       )}
-    </Form.Item>
+    </LabeledFormItem>
   );
 };
 

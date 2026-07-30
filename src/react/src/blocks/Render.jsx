@@ -65,13 +65,19 @@ const Render = (props) => {
       </>
     );
   } else if (props.type === "Select") {
+    const findOptionColor = (value) => {
+      if (!Array.isArray(props.data)) return undefined;
+      return props.data.find((o) => String(o.value) === String(value))?.color;
+    };
     if (typeof props.value === "object") {
       return (
         <>
           <label>{props.display}:</label>
           <div>
             {props.value.map((i) => (
-              <Tag key={i}>{props.dataSet[i]}</Tag>
+              <Tag key={i} color={findOptionColor(i)}>
+                {props.dataSet[i]}
+              </Tag>
             ))}
           </div>
         </>
@@ -81,7 +87,9 @@ const Render = (props) => {
         <>
           <label>{props.display}:</label>
           <div>
-            <Tag>{props.dataSet[props.value]}</Tag>
+            <Tag color={findOptionColor(props.value)}>
+              {props.dataSet[props.value]}
+            </Tag>
           </div>
         </>
       );

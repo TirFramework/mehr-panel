@@ -1,7 +1,8 @@
 import React from "react";
-import { Form, DatePicker } from "antd";
+import { DatePicker } from "antd";
 import { separationRules } from "../lib/helpers";
-import { formItemLabelProps, readonlyFieldLabel } from "../lib/fieldLabel";
+import { LabeledFormItem, resolveReadonlyLabel } from "../lib/fieldLabel";
+import Readonly from "../blocks/Readonly";
 import utc from "dayjs/plugin/utc";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 import dayjs from "dayjs";
@@ -78,41 +79,40 @@ const DatePickerComponent = (props) => {
   };
 
   if (props.readonly) {
-    return (
-      <>
-        {readonlyFieldLabel({
-          display: props.display,
-          hideLabel: props.hideLabel,
-          options: props.options,
-        })}
-        <div data-cy={props.testId}>
-          {props.value ? (
-            <>
-              {dayjs(props.value).format(props?.options?.dateFormat) ||
-                "YYYY-MM-DD"}
+    const { label, inline } = resolveReadonlyLabel({
+      display: props.display,
+      hideLabel: props.hideLabel,
+      inlineLabel: props.inlineLabel,
+      options: props.options,
+    });
 
-              {props.options.showTime &&
-                " " +
-                dayjs(props.value).format(
-                  props?.options?.showTime || "HH:mm:ss"
-                )}
-            </>
-          ) : (
-            <span style={{ color: '#d9d9d9' }}>-</span>
-          )}
-        </div>
-      </>
+    return (
+      <Readonly data-cy={props.testId} label={label} inline={inline} options={props.options}>
+        {props.value ? (
+          <>
+            {dayjs(props.value).format(props?.options?.dateFormat) ||
+              "YYYY-MM-DD"}
+
+            {props.options.showTime &&
+              " " +
+              dayjs(props.value).format(
+                props?.options?.showTime || "HH:mm:ss"
+              )}
+          </>
+        ) : (
+          <span style={{ color: '#d9d9d9' }}>-</span>
+        )}
+      </Readonly>
     );
   }
 
   return (
     <>
-      <Form.Item
-        {...formItemLabelProps({
-          display: props.display,
-          hideLabel: props.hideLabel,
-          options: props.options,
-        })}
+      <LabeledFormItem
+        display={props.display}
+        hideLabel={props.hideLabel}
+        inlineLabel={props.inlineLabel}
+        options={props.options}
         name={props.name}
         initialValue={
           props.value
@@ -146,7 +146,7 @@ const DatePickerComponent = (props) => {
           }
           testId={props.testId}
         />
-      </Form.Item>
+      </LabeledFormItem>
     </>
   );
 };

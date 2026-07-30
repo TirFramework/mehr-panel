@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from "react";
-import { Upload, Button, Tooltip, Form, Space, Popover } from "antd";
+import { Upload, Button, Tooltip, Space, Popover } from "antd";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import { useDrag, useDrop } from "react-dnd";
@@ -7,7 +7,7 @@ import update from "immutability-helper";
 import { FileOutlined, QuestionCircleOutlined, UploadOutlined } from "@ant-design/icons";
 
 import { getAccept, separationRules } from "../lib/helpers";
-import { formItemLabelProps } from "../lib/fieldLabel";
+import { LabeledFormItem } from "../lib/fieldLabel";
 import { getApiToken } from "../lib/authToken";
 import { useLanguage } from "../context/LanguageContext";
 
@@ -269,20 +269,19 @@ const CustomUpload = ({ defaultValue, ...props }) => {
   }
 
   return (
-    <Form.Item
+    <LabeledFormItem
       name={props.name}
-      {...formItemLabelProps({
-        display: props.display,
-        hideLabel: props.hideLabel,
-        options: props.options,
-      })}
+      display={props.display}
+      hideLabel={props.hideLabel}
+      inlineLabel={props.inlineLabel}
+      options={props.options}
       tooltip={fieldCommentTooltip(props.comment)}
       initialValue={props.value || defaultValue}
       rules={rules}
       getValueFromEvent={normFile}
     >
       <DragSortingUpload {...props} />
-    </Form.Item>
+    </LabeledFormItem>
   );
 };
 

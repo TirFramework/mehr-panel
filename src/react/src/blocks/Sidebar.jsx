@@ -39,7 +39,7 @@ const MyIcon = memo(
 // Memoized Sidebar Component
 const Sidebar = memo(function App() {
   const { t } = useLanguage();
-  const { data: menus, ...menusQuery } = useSidebar();
+  const { data: menus } = useSidebar();
   const [isCollapsible, setIsCollapsible] = useLocalStorage("collapsible", {
     status: false,
   });
@@ -211,7 +211,7 @@ const Sidebar = memo(function App() {
           zIndex: 1000,
         }}
       >
-        {menusQuery.isLoading ? (
+        {!menus ? (
           <div className="menu__sidebar-scroll menu__sidebar-scroll--loading">
             {t.SIDEBAR_LOADING}
           </div>

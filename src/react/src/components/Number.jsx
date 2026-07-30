@@ -1,8 +1,9 @@
 import React from "react";
-import { Form, Input, InputNumber } from "antd";
+import { Input, InputNumber } from "antd";
 
 import { separationRules } from "../lib/helpers";
-import { formItemLabelProps, readonlyFieldLabel } from "../lib/fieldLabel";
+import { LabeledFormItem, resolveReadonlyLabel } from "../lib/fieldLabel";
+import Readonly from "../blocks/Readonly";
 import InputAddonWrapper, { extractAddonOptions } from "./InputAddon";
 import {
   buildLeadingZeroRules,
@@ -53,26 +54,27 @@ const NumberIndex = (props) => {
         ? formatNumberWithSeparator(props.value, separatorChar)
         : props.value;
 
+    const { label, inline } = resolveReadonlyLabel({
+      display: props.display,
+      hideLabel: props.hideLabel,
+      inlineLabel: props.inlineLabel,
+      options: props.options,
+    });
+
     return (
-      <div data-cy={props.testId} className="read-only">
-        {readonlyFieldLabel({
-          display: props.display,
-          hideLabel: props.hideLabel,
-          options: props.options,
-        })}
+      <Readonly data-cy={props.testId} label={label} inline={inline} options={props.options}>
         {displayValue}
-      </div>
+      </Readonly>
     );
   }
 
   if (allowLeadingZeros) {
     return (
-      <Form.Item
-        {...formItemLabelProps({
-          display: props.display,
-          hideLabel: props.hideLabel,
-          options: props.options,
-        })}
+      <LabeledFormItem
+        display={props.display}
+        hideLabel={props.hideLabel}
+        inlineLabel={props.inlineLabel}
+        options={props.options}
         name={props.name}
         initialValue={resolveStringInitialValue(
           props.value,
@@ -90,17 +92,16 @@ const NumberIndex = (props) => {
             style={{ width: "100%" }}
           />
         </InputAddonWrapper>
-      </Form.Item>
+      </LabeledFormItem>
     );
   }
 
   return (
-    <Form.Item
-      {...formItemLabelProps({
-        display: props.display,
-        hideLabel: props.hideLabel,
-        options: props.options,
-      })}
+    <LabeledFormItem
+      display={props.display}
+      hideLabel={props.hideLabel}
+      inlineLabel={props.inlineLabel}
+      options={props.options}
       name={props.name}
       initialValue={props.value || props.defaultValue}
       rules={numberRules}
@@ -123,7 +124,7 @@ const NumberIndex = (props) => {
           }
         />
       </InputAddonWrapper>
-    </Form.Item>
+    </LabeledFormItem>
   );
 };
 
