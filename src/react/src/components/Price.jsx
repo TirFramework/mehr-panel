@@ -39,7 +39,7 @@ const Price = (props) => {
       <>
         {readonlyFieldLabel({
           display: props.display,
-          hideLable: props.hideLable,
+          hideLabel: props.hideLabel,
           options: props.options,
         })}
         {currency} {formatNumberWithSeparator(props.value)}
@@ -51,7 +51,7 @@ const Price = (props) => {
     <Form.Item
       {...formItemLabelProps({
         display: props.display,
-        hideLable: props.hideLable,
+        hideLabel: props.hideLabel,
         options: props.options,
       })}
       name={props.name}

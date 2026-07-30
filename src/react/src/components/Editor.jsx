@@ -18,7 +18,7 @@ export default function App(props) {
       <>
         {readonlyFieldLabel({
           display: props.display,
-          hideLable: props.hideLable,
+          hideLabel: props.hideLabel,
           options: props.options,
         })}
         <Card size="small" className="read-only__value--editor">
@@ -33,7 +33,7 @@ export default function App(props) {
       <Form.Item
         {...formItemLabelProps({
           display: props.display,
-          hideLable: props.hideLable,
+          hideLabel: props.hideLabel,
           options: props.options,
         })}
         name={props.name}

@@ -312,7 +312,7 @@ export default function RatingStars(props) {
   if (props.readonly) {
     return (
       <Readonly>
-        {!props.hideLable && <div>{props.display}</div>}
+        {!props.hideLabel && <div>{props.display}</div>}
         <Rate disabled value={Number(props.value) || 0} />
       </Readonly>
     );
@@ -321,7 +321,7 @@ export default function RatingStars(props) {
   return (
     <Form.Item
       name={props.name}
-      label={props.hideLable ? undefined : props.display}
+      label={props.hideLabel ? undefined : props.display}
       rules={rules}
       initialValue={props.value}
     >
@@ -335,13 +335,19 @@ export default function RatingStars(props) {
 
 ### Typical props
 
-`name`, `type`, `display`, `value`, `rules`, `creationRules`, `updateRules`, `pageType`, `readonly`, `disable`, `options`, `data`, `dataSet`, `col`, `existent`, `form`, `relation`, `table`, `hideLable`, `testId`, …
+`name`, `type`, `display`, `value`, `rules`, `creationRules`, `updateRules`, `pageType`, `readonly`, `disable`, `options`, `data`, `dataSet`, `col`, `existent`, `form`, `relation`, `table`, `hideLabel`, `testId`, …
 
-**Label options** (on field `options` from schema — not top-level props):
+**Label hide** — two places only:
+
+| Place | Effect |
+|--------|--------|
+| top-level `hideLabel` | Forced hide (e.g. table cells) |
+| `options.hideLabel` | Hide the field label from schema |
+
+**Other label options** on `options`:
 
 | Option | Effect |
 |--------|--------|
-| `options.hideLabel` | Hide the field label |
 | `options.inlineLabel` | Label and control on one row; colon after the label |
 
 Example:

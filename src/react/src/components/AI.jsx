@@ -113,7 +113,7 @@ const AI = ({
     pageType,
     testId,
     options = {},
-    hideLable,
+    hideLabel,
     comment,
     ...props
 }) => {
@@ -493,7 +493,7 @@ const AI = ({
     if (readonly) {
         return (
             <Readonly data-cy={testId}>
-                {readonlyFieldLabel({ display, hideLable, options })}
+                {readonlyFieldLabel({ display, hideLabel, options })}
                 <div>{value}</div>
             </Readonly>
         );
@@ -502,7 +502,7 @@ const AI = ({
     // Loading state for dynamic component
     if (!isBuiltinType && componentLoading) {
         return (
-            <Form.Item {...formItemLabelProps({ display, hideLable, options })} name={name}>
+            <Form.Item {...formItemLabelProps({ display, hideLabel, options })} name={name}>
                 <Spin size="small" /> Loading component...
             </Form.Item>
         );
@@ -511,7 +511,7 @@ const AI = ({
     // Error state for dynamic component
     if (!isBuiltinType && componentError) {
         return (
-            <Form.Item {...formItemLabelProps({ display, hideLable, options })} name={name}>
+            <Form.Item {...formItemLabelProps({ display, hideLabel, options })} name={name}>
                 <Text type="danger">{componentError}</Text>
             </Form.Item>
         );
@@ -561,7 +561,7 @@ const AI = ({
         return (
             <>
                 <Form.Item
-                    {...formItemLabelProps({ display, hideLable, options })}
+                    {...formItemLabelProps({ display, hideLabel, options })}
                     name={name}
                     initialValue={value || defaultValue}
                     rules={formRules}
@@ -586,7 +586,7 @@ const AI = ({
     return (
         <>
             <Form.Item
-                {...formItemLabelProps({ display, hideLable, options })}
+                {...formItemLabelProps({ display, hideLabel, options })}
                 name={name}
                 initialValue={value || defaultValue}
                 rules={formRules}

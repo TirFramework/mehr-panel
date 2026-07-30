@@ -30,7 +30,7 @@ const Text = ({
   creationRules,
   updateRules,
   readonly,
-  hideLable,
+  hideLabel,
   display,
   comment,
   name,
@@ -87,7 +87,7 @@ const Text = ({
 
     return (
       <Readonly data-cy={testId}>
-        {readonlyFieldLabel({ display, hideLable, options })}
+        {readonlyFieldLabel({ display, hideLabel, options })}
         {valueContent}
       </Readonly>
     );
@@ -98,7 +98,7 @@ const Text = ({
   return (
     <>
       <Form.Item
-        {...formItemLabelProps({ display, hideLable, options })}
+        {...formItemLabelProps({ display, hideLabel, options })}
         tooltip={fieldCommentTooltip(comment)}
         name={name}
         initialValue={value || defaultValue}

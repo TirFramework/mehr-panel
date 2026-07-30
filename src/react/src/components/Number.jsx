@@ -57,7 +57,7 @@ const NumberIndex = (props) => {
       <div data-cy={props.testId} className="read-only">
         {readonlyFieldLabel({
           display: props.display,
-          hideLable: props.hideLable,
+          hideLabel: props.hideLabel,
           options: props.options,
         })}
         {displayValue}
@@ -70,7 +70,7 @@ const NumberIndex = (props) => {
       <Form.Item
         {...formItemLabelProps({
           display: props.display,
-          hideLable: props.hideLable,
+          hideLabel: props.hideLabel,
           options: props.options,
         })}
         name={props.name}
@@ -98,7 +98,7 @@ const NumberIndex = (props) => {
     <Form.Item
       {...formItemLabelProps({
         display: props.display,
-        hideLable: props.hideLable,
+        hideLabel: props.hideLabel,
         options: props.options,
       })}
       name={props.name}

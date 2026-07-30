@@ -20,7 +20,7 @@ const TextareaComponent = (props) => {
       <>
         {readonlyFieldLabel({
           display: props.display,
-          hideLable: props.hideLable,
+          hideLabel: props.hideLabel,
           options: props.options,
         })}
         {props.value}
@@ -37,7 +37,7 @@ const TextareaComponent = (props) => {
       <Form.Item
         {...formItemLabelProps({
           display: props.display,
-          hideLable: props.hideLable,
+          hideLabel: props.hideLabel,
           options: props.options,
         })}
         name={props.name}

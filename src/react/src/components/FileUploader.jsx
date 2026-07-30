@@ -273,7 +273,7 @@ const CustomUpload = ({ defaultValue, ...props }) => {
       name={props.name}
       {...formItemLabelProps({
         display: props.display,
-        hideLable: props.hideLable,
+        hideLabel: props.hideLabel,
         options: props.options,
       })}
       tooltip={fieldCommentTooltip(props.comment)}

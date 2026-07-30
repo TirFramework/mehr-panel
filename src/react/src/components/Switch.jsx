@@ -18,7 +18,7 @@ const SwitchIndex = (props) => {
       <>
         {readonlyFieldLabel({
           display: props.display,
-          hideLable: props.hideLable,
+          hideLabel: props.hideLabel,
           options: props.options,
         })}
         <div className="read-only__value">
@@ -33,7 +33,7 @@ const SwitchIndex = (props) => {
       <Form.Item
         {...formItemLabelProps({
           display: props.display,
-          hideLable: props.hideLable,
+          hideLabel: props.hideLabel,
           options: props.options,
         })}
         name={props.name}

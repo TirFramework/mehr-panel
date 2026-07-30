@@ -18,7 +18,7 @@ const Field = (props) => {
         <div data-cy={props.testId} className="read-only">
           {readonlyFieldLabel({
             display: props.display,
-            hideLable: props.hideLable,
+            hideLabel: props.hideLabel,
             options: props.options,
           })}
           <div>
@@ -33,7 +33,7 @@ const Field = (props) => {
         <div data-cy={props.testId} className="read-only">
           {readonlyFieldLabel({
             display: props.display,
-            hideLable: props.hideLable,
+            hideLabel: props.hideLabel,
             options: props.options,
           })}
           <div>
@@ -50,7 +50,7 @@ const Field = (props) => {
         name={props.name}
         {...formItemLabelProps({
           display: props.display,
-          hideLable: props.hideLable,
+          hideLabel: props.hideLabel,
           options: props.options,
         })}
         initialValue={props.value}

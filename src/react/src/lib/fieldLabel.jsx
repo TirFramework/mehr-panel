@@ -1,10 +1,10 @@
 /**
- * Label options live on field `options` from the API:
+ * Label options:
  *   options.hideLabel  — hide the label entirely
  *   options.inlineLabel — label + control on one row, colon after label
  *
- * Also accepted: hideLable / hide_label (typos / snake_case).
- * Top-level `hideLable` is only for table cells (forced hide).
+ * Top-level `hideLabel` is only for table cells (forced hide).
+ * Legacy API typo `hideLable` is still accepted when reading.
  */
 
 function normalizeOptions(options) {
@@ -25,13 +25,13 @@ function isOptionEnabled(value) {
   return value === true || value === 1 || value === "1" || value === "true";
 }
 
-export function resolveHideLabel({ hideLable, options } = {}) {
+export function resolveHideLabel({ hideLabel, hideLable, options } = {}) {
   const opts = normalizeOptions(options);
   return Boolean(
-    hideLable ||
+    hideLabel ||
+      hideLable ||
       isOptionEnabled(opts.hideLabel) ||
-      isOptionEnabled(opts.hideLable) ||
-      isOptionEnabled(opts.hide_label)
+      isOptionEnabled(opts.hideLable)
   );
 }
 
@@ -49,12 +49,13 @@ export function resolveInlineLabel(options = {}) {
  */
 export function formItemLabelProps({
   display,
+  hideLabel,
   hideLable,
   options,
   className,
 } = {}) {
   const opts = normalizeOptions(options);
-  const hide = resolveHideLabel({ hideLable, options: opts });
+  const hide = resolveHideLabel({ hideLabel, hideLable, options: opts });
   const inline = !hide && resolveInlineLabel(opts);
 
   if (hide) {
@@ -79,9 +80,14 @@ export function formItemLabelProps({
 /**
  * Label node for readonly / detail rendering.
  */
-export function readonlyFieldLabel({ display, hideLable, options } = {}) {
+export function readonlyFieldLabel({
+  display,
+  hideLabel,
+  hideLable,
+  options,
+} = {}) {
   const opts = normalizeOptions(options);
-  if (resolveHideLabel({ hideLable, options: opts })) {
+  if (resolveHideLabel({ hideLabel, hideLable, options: opts })) {
     return null;
   }
 
@@ -104,7 +110,6 @@ export function stripLabelOptions(options = {}) {
   const {
     hideLabel,
     hideLable,
-    hide_label,
     inlineLabel,
     inline_label,
     ...rest

@@ -23,7 +23,6 @@ export function extractAddonOptions(options = {}) {
     addonAfter,
     hideLabel,
     hideLable,
-    hide_label,
     inlineLabel,
     inline_label,
     ...inputOptions

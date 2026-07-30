@@ -166,7 +166,7 @@ const Render = ({ item, value, rowIndex, data, id, minWidth }) => {
     <Field
       value={value}
       {...item.field}
-      hideLable={true}
+      hideLabel={true}
       table={true}
       id={id}
       // Do not pass row as `data` — field.data is Select/Radio options.

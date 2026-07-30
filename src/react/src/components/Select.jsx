@@ -92,7 +92,7 @@ const SelcetIndex = ({ defaultValue, ...props }) => {
           <Readonly data-cy={props.testId}>
             {readonlyFieldLabel({
               display: props.display,
-              hideLable: props.hideLable,
+              hideLabel: props.hideLabel,
               options: props.options,
             })}
             <div>
@@ -114,7 +114,7 @@ const SelcetIndex = ({ defaultValue, ...props }) => {
           <Readonly data-cy={props.testId}>
             {readonlyFieldLabel({
               display: props.display,
-              hideLable: props.hideLable,
+              hideLabel: props.hideLabel,
               options: props.options,
             })}
             <div>
@@ -133,7 +133,7 @@ const SelcetIndex = ({ defaultValue, ...props }) => {
         name={props.name}
         {...formItemLabelProps({
           display: props.display,
-          hideLable: props.hideLable,
+          hideLabel: props.hideLabel,
           options: props.options,
         })}
         initialValue={value}
