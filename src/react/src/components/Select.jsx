@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { Select, Tag } from "antd";
+import { Link } from "react-router-dom";
 
 import { separationRules } from "../lib/helpers";
 import { LabeledFormItem, resolveReadonlyLabel, fieldCommentTooltip } from "../lib/fieldLabel";
 import Readonly from "../blocks/Readonly";
 import InputAddonWrapper, { extractAddonOptions } from "./InputAddon";
+import Config from "../constants/config";
 
 const findOptionColor = (data, value) => {
   if (!Array.isArray(data) || value === undefined || value === null) {
@@ -91,14 +93,6 @@ const MySelect = (props) => {
   );
 };
 
-// const handelDefaultValue = (defaultValue) => {
-//   if (isNaN(Number(defaultValue))) {
-//     return defaultValue;
-//   } else {
-//     return Number(defaultValue);
-//   }
-// };
-
 const SelcetIndex = ({ defaultValue, ...props }) => {
   const [value, setValue] = useState(props.value || defaultValue);
   useEffect(() => {
@@ -112,29 +106,46 @@ const SelcetIndex = ({ defaultValue, ...props }) => {
     updateRules: props.updateRules,
   });
 
-  // Extract the display field name from relation if available
-  const getDisplayFieldName = () => {
-    if (props.relation && props.relation.field) {
-      return props.relation.field;
-    }
-    return null;
-  };
-
   // Extract value from relation object using the defined display field
   // Handles both MongoDB objects and simple IDs/strings/booleans from MySQL
   const extractRelationValue = (val) => {
-    // If it's an object (MongoDB relation case), extract the display field
-    if (typeof val === 'object' && val !== null) {
+    if (typeof val === "object" && val !== null) {
       const displayField = props.relation?.field;
-      // If relation field is defined, use it; otherwise use first non-null value
       if (displayField && val[displayField] !== undefined) {
         return val[displayField];
       }
-      return Object.values(val).find(v => v !== null);
+      return Object.values(val).find((v) => v !== null);
     }
 
-    // For all other cases (string, number, boolean, etc.), return as-is
     return val;
+  };
+
+  const getReadonlyLabel = (val) => {
+    const displayValue = extractRelationValue(val);
+    return props.dataSet?.[displayValue] || displayValue;
+  };
+
+  const renderReadonlyTag = (val, key) => {
+    const optionValue = extractRelationValue(val);
+    const label = getReadonlyLabel(val);
+    const color = findOptionColor(props.data, optionValue);
+    const linkTemplate = props.options?.linkTemplate;
+
+    if (!linkTemplate || optionValue === undefined || optionValue === null) {
+      return (
+        <Tag key={key} color={color}>
+          {label}
+        </Tag>
+      );
+    }
+
+    const to = `/${Config.prefix}/${linkTemplate}/detail?id=${optionValue}`;
+
+    return (
+      <Link key={key} to={to}>
+        <Tag color={color}>{label}</Tag>
+      </Link>
+    );
   };
 
   if (props.readonly) {
@@ -156,31 +167,14 @@ const SelcetIndex = ({ defaultValue, ...props }) => {
             comment={props.comment}
           >
             <div>
-              {props.value.map((i) => {
-                // Extract ID from MongoDB relation object if needed
-                const displayValue = extractRelationValue(i);
-                const color = findOptionColor(props.data, displayValue);
-                if (!props.dataSet[displayValue]) {
-                  return (
-                    <Tag key={displayValue} color={color}>
-                      {displayValue}
-                    </Tag>
-                  );
-                }
-                return (
-                  <Tag key={displayValue} color={color}>
-                    {props.dataSet[displayValue]}
-                  </Tag>
-                );
-              })}
+              {props.value.map((i, index) =>
+                renderReadonlyTag(i, extractRelationValue(i) ?? index)
+              )}
             </div>
           </Readonly>
         );
       }
 
-      // Extract ID from MongoDB relation object if needed
-      const displayValue = extractRelationValue(props.value);
-      const color = findOptionColor(props.data, displayValue);
       return (
         <Readonly
           data-cy={props.testId}
@@ -189,11 +183,7 @@ const SelcetIndex = ({ defaultValue, ...props }) => {
           options={props.options}
           comment={props.comment}
         >
-          <div>
-            <Tag color={color}>
-              {props.dataSet[displayValue] || displayValue}
-            </Tag>
-          </div>
+          <div>{renderReadonlyTag(props.value, "single")}</div>
         </Readonly>
       );
     }

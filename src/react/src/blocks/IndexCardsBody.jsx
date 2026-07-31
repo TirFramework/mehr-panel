@@ -221,7 +221,8 @@ function IndexCardItem({ row, columns, configs, pageModule, t }) {
 
 
 /**
- * Index body as cards — uses field.col (0 = auto, 1–24 = span) for field width inside the card.
+ * Index body as cards — uses field.col for field width inside the card.
+ * See docs/FIELD_COL.md (span, auto, fill, full, CSS size, responsive object).
  */
 function IndexCardsBody({ index }) {
   const { t } = useLanguage();

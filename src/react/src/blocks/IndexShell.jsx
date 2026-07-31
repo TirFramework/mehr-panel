@@ -1,6 +1,5 @@
 import React from "react";
-import { Link } from "react-router-dom";
-import { PlusOutlined, ClearOutlined } from "@ant-design/icons";
+import { ClearOutlined } from "@ant-design/icons";
 import {
   Button,
   Form,
@@ -12,10 +11,10 @@ import {
   Tag,
 } from "antd";
 import * as helpers from "../lib/helpers";
-import Config from "../constants/config";
 import Search from "./Search";
 import AiSearch from "./AiSearch";
 import CustomCol from "./CustomCol";
+import Field from "../components/Field";
 import Slot from "../components/Slot";
 import { getPlacementsForSearch, isCustomView } from "../lib/utils";
 
@@ -229,22 +228,16 @@ function IndexShell({
               <Col flex="none" className="gutter-row page-index__actions">
                 <Space>
                   <Slot name="IndexToolbar" pageModule={pageModule} />
-                  {(pageData?.configs?.ed?.create ||
-                    pageData?.configs?.actions?.create) && (
-                    <Link to={`/${Config.prefix}/${pageModule}/create-edit`}>
-                      <Button
-                        size="large"
-                        type="primary"
-                        htmlType="button"
-                        icon={<PlusOutlined />}
-                        loading={pageDataQuery.isLoading}
-                      >
-                        <span className="create-text">
-                          {pageData?.configs?.module_title}
-                        </span>
-                      </Button>
-                    </Link>
-                  )}
+                  {pageData?.buttons?.map((btn, index) => (
+                    <Field
+                      {...btn}
+                      key={`btn-${btn.name ?? btn.action ?? index}-${index}`}
+                      type={btn.action}
+                      form={form}
+                      loading={pageDataQuery.isLoading}
+                      actions={pageData?.configs?.ed}
+                    />
+                  ))}
                 </Space>
               </Col>
             </Row>

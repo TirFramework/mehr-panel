@@ -1,9 +1,11 @@
 import React from "react";
 import { Card, Tag } from "antd";
+import { Link } from "react-router-dom";
 import dayjs from "dayjs";
 import Field from "../components/Field";
 import { useLanguage } from "../context/LanguageContext";
 import { formatJalali, resolveUseJalali } from "../lib/jalaliGenerateConfig";
+import Config from "../constants/config";
 
 const Render = (props) => {
   const { t, lang } = useLanguage();
@@ -74,31 +76,39 @@ const Render = (props) => {
       if (!Array.isArray(props.data)) return undefined;
       return props.data.find((o) => String(o.value) === String(value))?.color;
     };
-    if (typeof props.value === "object") {
+
+    const renderTag = (value, key) => {
+      const label = props.dataSet?.[value] ?? value;
+      const color = findOptionColor(value);
+      const linkTemplate = props.options?.linkTemplate;
+      const tag = <Tag color={color}>{label}</Tag>;
+
+      if (!linkTemplate || value === undefined || value === null) {
+        return <Tag key={key} color={color}>{label}</Tag>;
+      }
+
       return (
-        <>
-          <label>{props.display}:</label>
-          <div>
-            {props.value.map((i) => (
-              <Tag key={i} color={findOptionColor(i)}>
-                {props.dataSet[i]}
-              </Tag>
-            ))}
-          </div>
-        </>
+        <Link key={key} to={`/${Config.prefix}/${linkTemplate}/detail?id=${value}`}>
+          {tag}
+        </Link>
       );
-    } else {
+    };
+
+    if (typeof props.value === "object" && Array.isArray(props.value)) {
       return (
         <>
           <label>{props.display}:</label>
-          <div>
-            <Tag color={findOptionColor(props.value)}>
-              {props.dataSet[props.value]}
-            </Tag>
-          </div>
+          <div>{props.value.map((i) => renderTag(i, i))}</div>
         </>
       );
     }
+
+    return (
+      <>
+        <label>{props.display}:</label>
+        <div>{renderTag(props.value, props.value)}</div>
+      </>
+    );
   } else if (props.type === "FileUploader") {
     if (typeof props.value === "object") {
       return (
