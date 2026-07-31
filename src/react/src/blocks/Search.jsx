@@ -22,7 +22,7 @@ function Search({ value, onSearch, loading, placeholder }) {
   };
 
   return (
-    <Space orientation="vertical" size={0}>
+    <Space className="search-input-container" orientation="vertical" size={0}>
       <Space.Compact size="large" className="search-input">
         <Input
           placeholder={placeholder}

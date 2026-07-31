@@ -725,11 +725,11 @@ body.dark-mode .field-readonly-comment {
   height: 1em;
 }
 
-.read-only__value-text {
+/* .read-only__value-text {
   min-width: 0;
   word-break: normal;
   white-space: nowrap;
-}
+} */
 
 .read-only--comment-end .field-readonly-comment {
   margin-inline-start: 2px;
@@ -785,6 +785,10 @@ body.dark-mode .field-load-error {
 /* options.hideLabel — hide Form.Item label entirely */
 .field-item--hide-label.ant-form-item .ant-form-item-label {
   display: none !important;
+}
+
+.index-page__cards .table-cell {
+  width: auto !important;
 }
 
 .index-page__cards .index-card-field--inline {

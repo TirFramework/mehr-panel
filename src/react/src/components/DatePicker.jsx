@@ -6,50 +6,89 @@ import Readonly from "../blocks/Readonly";
 import utc from "dayjs/plugin/utc";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 import dayjs from "dayjs";
+import JalaliDatePicker from "./JalaliDatePicker";
+import {
+  formatJalali,
+  toJalaliDayjs,
+  resolveUseJalali,
+} from "../lib/jalaliGenerateConfig";
+import { useLanguage } from "../context/LanguageContext";
 
 dayjs.extend(utc);
 dayjs.extend(customParseFormat);
+const parseDayjsValue = (raw, { enableTimezone, showTime, jalali }) => {
+  if (!raw) return null;
+  const withTime =
+    enableTimezone ||
+    (showTime && typeof showTime === "object" && Object.keys(showTime).length > 0);
+
+  let parsed;
+  if (withTime) {
+    parsed = dayjs(raw);
+  } else {
+    parsed = dayjs(raw, "YYYY-MM-DDTHH:mm:ss.SSSSSSZ");
+    if (!parsed.isValid()) {
+      parsed = dayjs(raw);
+    }
+  }
+
+  if (!parsed.isValid()) return null;
+  return jalali ? toJalaliDayjs(parsed) : parsed;
+};
 
 const CustomDatePicker = ({
   format,
   onChange,
   value,
   defaultValue,
+  jalali,
+  PickerComponent = DatePicker,
   ...props
 }) => {
-  const IsShowTime = Object.keys(props.showTime).length > 0;
+  const showTimeObj =
+    props.showTime && typeof props.showTime === "object" ? props.showTime : null;
+  const IsShowTime = !!(showTimeObj && Object.keys(showTimeObj).length > 0);
+
   let formattedValue = null;
   if (value) {
-    if (props.enableTimezone || IsShowTime) {
-      formattedValue = dayjs(value);
-    } else {
-      formattedValue = dayjs(value, "YYYY-MM-DDTHH:mm:ss.SSSSSSZ");
-    }
+    formattedValue = parseDayjsValue(value, {
+      enableTimezone: props.enableTimezone,
+      showTime: showTimeObj,
+      jalali,
+    });
   } else if (defaultValue) {
     if (props.enableTimezone || IsShowTime) {
-      formattedValue = dayjs(defaultValue).utc();
+      formattedValue = jalali
+        ? toJalaliDayjs(dayjs(defaultValue).utc())
+        : dayjs(defaultValue).utc();
     } else {
-      formattedValue = dayjs(defaultValue, "YYYY-MM-DDTHH:mm:ss.SSSSSSZ");
+      formattedValue = parseDayjsValue(defaultValue, {
+        enableTimezone: false,
+        showTime: false,
+        jalali,
+      });
     }
   }
 
   return (
-    <DatePicker
+    <PickerComponent
       {...props}
       format={format}
       onChange={(data) => {
+        if (!data) {
+          onChange(null);
+          return;
+        }
+        // Jalali dayjs formats YYYY as 14xx — switch to Gregorian before API serialize
+        const gregorian = dayjs.isDayjs(data)
+          ? data.calendar?.("gregory") || dayjs(data)
+          : dayjs(data);
+
         if (props.enableTimezone || IsShowTime) {
-          let formattedData = null;
-          if (data) {
-            formattedData = dayjs(data).utc().format("YYYY-MM-DDTHH:mm:ss.SSSSSSZ");
-          }
-          onChange(formattedData);
+          onChange(gregorian.utc().format("YYYY-MM-DDTHH:mm:ss.SSSSSSZ"));
         } else {
           onChange(
-            data
-              ? dayjs(data).startOf("day").format("YYYY-MM-DD") +
-              "T00:00:00.000000Z"
-              : null
+            gregorian.startOf("day").format("YYYY-MM-DD") + "T00:00:00.000000Z"
           );
         }
       }}
@@ -60,9 +99,13 @@ const CustomDatePicker = ({
 };
 
 const DatePickerComponent = (props) => {
+  const { lang } = useLanguage();
+  const jalali = resolveUseJalali(props.options, lang);
   const dateFormat = props.options.dateFormat
     ? props.options.dateFormat
-    : "YYYY-MM-DD";
+    : jalali
+      ? "YYYY/MM/DD"
+      : "YYYY-MM-DD";
 
   const picker = props.options.picker ? props.options.picker : "date";
 
@@ -74,8 +117,28 @@ const DatePickerComponent = (props) => {
   });
 
   const disablePastDates = (current) => {
-    // Disable dates before or equal to today
-    return current && current <= new Date().setHours(0, 0, 0, 0);
+    return current && current <= dayjs().startOf("day");
+  };
+
+  const formatReadonly = (value) => {
+    if (!value) return null;
+    const datePart = jalali
+      ? formatJalali(value, props?.options?.dateFormat || dateFormat)
+      : dayjs(value).format(props?.options?.dateFormat || dateFormat);
+
+    const timePart =
+      props.options.showTime &&
+      " " +
+        (jalali
+          ? formatJalali(value, props?.options?.showTime || "HH:mm:ss")
+          : dayjs(value).format(props?.options?.showTime || "HH:mm:ss"));
+
+    return (
+      <>
+        {datePart}
+        {timePart}
+      </>
+    );
   };
 
   if (props.readonly) {
@@ -95,22 +158,20 @@ const DatePickerComponent = (props) => {
         comment={props.comment}
       >
         {props.value ? (
-          <>
-            {dayjs(props.value).format(props?.options?.dateFormat) ||
-              "YYYY-MM-DD"}
-
-            {props.options.showTime &&
-              " " +
-              dayjs(props.value).format(
-                props?.options?.showTime || "HH:mm:ss"
-              )}
-          </>
+          formatReadonly(props.value)
         ) : (
-          <span style={{ color: '#d9d9d9' }}>-</span>
+          <span style={{ color: "#d9d9d9" }}>-</span>
         )}
       </Readonly>
     );
   }
+
+  const initialRaw = props.value || props.defaultValue;
+  const initialValue = initialRaw
+    ? jalali
+      ? toJalaliDayjs(initialRaw)
+      : dayjs(initialRaw)
+    : undefined;
 
   return (
     <>
@@ -120,16 +181,12 @@ const DatePickerComponent = (props) => {
         inlineLabel={props.inlineLabel}
         options={props.options}
         name={props.name}
-        initialValue={
-          props.value
-            ? dayjs(props.value)
-            : props.defaultValue
-              ? dayjs(props.defaultValue)
-              : undefined
-        }
+        initialValue={initialValue}
         rules={rules}
       >
         <CustomDatePicker
+          PickerComponent={jalali ? JalaliDatePicker : DatePicker}
+          jalali={jalali}
           format={
             !props.options?.showTime?.length
               ? dateFormat
@@ -145,10 +202,10 @@ const DatePickerComponent = (props) => {
           picker={picker}
           className={`${props.readonly && "readOnly"} w-full`}
           style={{ width: "100%" }}
-          enableTimezone={props.timezone[0]}
-          timezone={props.timezone[1]}
+          enableTimezone={props.timezone?.[0]}
+          timezone={props.timezone?.[1]}
           disabledDate={
-            props.options?.disabledPast ? { disablePastDates } : false
+            props.options?.disabledPast ? disablePastDates : undefined
           }
           testId={props.testId}
         />

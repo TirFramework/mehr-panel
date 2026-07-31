@@ -3,18 +3,23 @@ import { Card, Tag } from "antd";
 import dayjs from "dayjs";
 import Field from "../components/Field";
 import { useLanguage } from "../context/LanguageContext";
+import { formatJalali, resolveUseJalali } from "../lib/jalaliGenerateConfig";
 
 const Render = (props) => {
-  const { t } = useLanguage();
+  const { t, lang } = useLanguage();
   if (props.type === "DatePicker") {
+    const jalali = resolveUseJalali(props?.options, lang);
+    const dateFormat =
+      props?.options?.dateFormat || (jalali ? "YYYY/MM/DD" : "YYYY-MM-DD");
+
     return (
       <>
         <label>{props.display}:</label>
         <div>
           {props.value &&
-            dayjs(props.value).format(
-              props?.options?.dateFormat || "YYYY-MM-DD"
-            )}
+            (jalali
+              ? formatJalali(props.value, dateFormat)
+              : dayjs(props.value).format(dateFormat))}
         </div>
       </>
     );
