@@ -103,7 +103,7 @@ export const useGeneralQuery = () => {
     staleTime: 5 * 60 * 1000,
     enabled: !!getApiToken(),
     retry: false,
-    // Never remount-retry 403/404; only soft-retry other cached errors (e.g. old anonymous fail)
+    // Never remount-retry 403/404/500; only soft-retry other cached errors (e.g. old anonymous fail)
     retryOnMount: (query) => {
       if (isAccessDeniedError(query.state.error)) return false;
       return query.state.status === "error";

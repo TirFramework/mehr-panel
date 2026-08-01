@@ -7,6 +7,7 @@ import update from "immutability-helper";
 import {
   FileOutlined,
   InboxOutlined,
+  PlusOutlined,
   UploadOutlined,
 } from "@ant-design/icons";
 
@@ -48,6 +49,12 @@ function isOptionEnabled(value) {
 function resolveDragAndDrop(options) {
   const opts = normalizeFieldOptions(options);
   return isOptionEnabled(opts.dragAndDrop) || isOptionEnabled(opts.dragger);
+}
+
+/** options.avatar → circular single-image uploader */
+function resolveAvatar(options) {
+  const opts = normalizeFieldOptions(options);
+  return isOptionEnabled(opts.avatar);
 }
 
 /** options.icon / options.dragIcon → custom SVG (or node) for Dragger */
@@ -107,7 +114,13 @@ const DragableUploadListItem = ({ originNode, moveRow, file, fileList }) => {
 
 const DragSortingUpload = (props) => {
   const { t } = useLanguage();
-  const dragAndDrop = resolveDragAndDrop(props.options);
+  const avatar = resolveAvatar(props.options);
+  const dragAndDrop = !avatar && resolveDragAndDrop(props.options);
+  const maxCount = avatar
+    ? Number(props.maxCount) > 0
+      ? Number(props.maxCount)
+      : 1
+    : props.maxCount;
 
   const initialValueHandeling = (data) => {
     if (data === undefined || data === null || data === "") {
@@ -197,26 +210,30 @@ const DragSortingUpload = (props) => {
     Array.isArray(props.fileRules) ? props.fileRules : [props.fileRules]
   );
 
+  const list = Array.isArray(fileList) ? fileList : [];
+
   const sharedUploadProps = {
     "data-cy": props.testId,
     accept: accept || undefined,
     action: props.postUrl,
     headers: uploadHeaders,
-    fileList: Array.isArray(fileList) ? fileList : [],
-    listType: "picture",
-    maxCount: props.maxCount,
+    fileList: list,
+    listType: avatar ? "picture-circle" : "picture",
+    maxCount,
     onChange,
     disabled: props.disable,
     className: props.readonly
       ? "readOnly"
-      : dragAndDrop
-        ? "mp-upload-dragger"
-        : " ",
+      : avatar
+        ? "mp-upload-avatar"
+        : dragAndDrop
+          ? "mp-upload-dragger"
+          : " ",
   };
 
   // List reordering uses react-dnd HTML5Backend, which can block native file
-  // drops — only enable it for the button uploader.
-  if (!dragAndDrop) {
+  // drops — only enable it for the button uploader (not avatar / dragger).
+  if (!dragAndDrop && !avatar) {
     sharedUploadProps.itemRender = (originNode, file, currFileList) => (
       <DragableUploadListItem
         disabled={props.disable}
@@ -228,7 +245,18 @@ const DragSortingUpload = (props) => {
     );
   }
 
-  const uploadControl = dragAndDrop ? (
+  const avatarTrigger = (
+    <div className="mp-upload-avatar__trigger">
+      <PlusOutlined />
+      <div className="mp-upload-avatar__hint">{t.AVATAR_CLICK_TO_UPLOAD}</div>
+    </div>
+  );
+
+  const uploadControl = avatar ? (
+    <Upload {...sharedUploadProps}>
+      {list.length >= (maxCount || 1) ? null : avatarTrigger}
+    </Upload>
+  ) : dragAndDrop ? (
     <Upload.Dragger {...sharedUploadProps}>
       <p className="ant-upload-drag-icon">{resolveDragIcon(props.options)}</p>
       <p className="ant-upload-text">{t.UPLOAD_DRAG_TEXT}</p>
@@ -246,14 +274,14 @@ const DragSortingUpload = (props) => {
     </Upload>
   );
 
-  if (dragAndDrop) {
+  if (dragAndDrop || avatar) {
     return uploadControl;
   }
 
   return <DndProvider backend={HTML5Backend}>{uploadControl}</DndProvider>;
 };
 
-const ReadonlyFileUploader = ({ value, basePath, display }) => {
+const ReadonlyFileUploader = ({ value, basePath, display, avatar }) => {
   if (!value) {
     return null;
   }
@@ -269,19 +297,24 @@ const ReadonlyFileUploader = ({ value, basePath, display }) => {
     value.includes(".webp");
 
   if (isPicture) {
+    const size = avatar ? 96 : 45;
     return (
       <a
         href={fileUrl}
         target="_blank"
         rel="noreferrer"
+        className={avatar ? "mp-upload-avatar__readonly" : undefined}
         style={{ cursor: "pointer" }}
       >
         <img
           src={fileUrl}
           alt={display}
-          width={45}
-          height={45}
-          style={{ objectFit: "cover" }}
+          width={size}
+          height={size}
+          style={{
+            objectFit: "cover",
+            borderRadius: avatar ? "50%" : undefined,
+          }}
         />
       </a>
     );
@@ -301,11 +334,12 @@ const CustomUpload = ({ defaultValue, ...props }) => {
     creationRules: props.creationRules,
     updateRules: props.updateRules,
   });
+  const avatar = resolveAvatar(props.options);
 
   const normFile = (e) => {
     const list = Array.isArray(e) ? e : e?.fileList;
     if (!Array.isArray(list)) {
-      return Number(props.maxCount) === 1 ? undefined : [];
+      return Number(props.maxCount) === 1 || avatar ? undefined : [];
     }
 
     const toPath = (item) => {
@@ -319,7 +353,7 @@ const CustomUpload = ({ defaultValue, ...props }) => {
       return undefined;
     };
 
-    if (Number(props.maxCount) === 1) {
+    if (Number(props.maxCount) === 1 || avatar) {
       const path = toPath(list[0]);
       // While uploading, keep fileList in form so antd never gets null/undefined
       return path !== undefined ? path : list;
@@ -331,7 +365,7 @@ const CustomUpload = ({ defaultValue, ...props }) => {
   };
 
   if (props.readonly) {
-    const placeholder = props.options?.placeholder;
+    const placeholder = normalizeFieldOptions(props.options)?.placeholder;
 
     if (Array.isArray(props.value)) {
       if (props.value.length === 0) {
@@ -340,6 +374,7 @@ const CustomUpload = ({ defaultValue, ...props }) => {
             value={placeholder}
             basePath={props.basePath}
             display={props.display}
+            avatar={avatar}
           />
         ) : (
           <div>No Found</div>
@@ -353,6 +388,7 @@ const CustomUpload = ({ defaultValue, ...props }) => {
               value={item}
               basePath={props.basePath}
               display={props.display}
+              avatar={avatar}
             />
           ))}
         </Space>
@@ -363,6 +399,7 @@ const CustomUpload = ({ defaultValue, ...props }) => {
         value={props.value || placeholder}
         basePath={props.basePath}
         display={props.display}
+        avatar={avatar}
       />
     );
   }

@@ -12,6 +12,35 @@ const normalizeDuration = (value) => {
     return Number.isNaN(numeric) ? DEFAULT_DURATION : numeric;
 };
 
+/** Only the panel axios instance (baseURL = apiBaseUrl/prefix) — not host-app requests. */
+function isMehrPanelRequest(error) {
+    const baseURL = String(error?.config?.baseURL || "").replace(/\/+$/, "");
+    if (!baseURL) return false;
+
+    const expected = `${Config.apiBaseUrl}/${Config.prefix}`.replace(/\/+$/, "");
+    return baseURL === expected || baseURL.endsWith(`/${Config.prefix}`);
+}
+
+function isOnLoginPage() {
+    return (
+        window.location.pathname === `/${Config.prefix}/login` ||
+        window.location.pathname.endsWith("/login")
+    );
+}
+
+function clearSessionAndGoToLogin() {
+    // Don't wipe a freshly stored session when a public page
+    // (e.g. login document-title probe) got an unauthenticated response.
+    if (isOnLoginPage()) return;
+
+    clearApiToken();
+    setTimeout(() => {
+        if (window.location.pathname !== `/${Config.prefix}/login`) {
+            window.location.replace(`/${Config.prefix}/login`);
+        }
+    }, 1000);
+}
+
 export const handleErrorSideEffects = (error) => {
     const response = error?.response;
     const data = response?.data;
@@ -31,21 +60,11 @@ export const handleErrorSideEffects = (error) => {
         }, 500);
     }
 
-    if (response.status === 401) {
-        // Don't wipe a freshly stored session when a public page
-        // (e.g. login document-title probe) got an unauthenticated 401.
-        const onLoginPage =
-            window.location.pathname === `/${Config.prefix}/login` ||
-            window.location.pathname.endsWith("/login");
-
-        if (!onLoginPage) {
-            clearApiToken();
-            setTimeout(() => {
-                if (window.location.pathname !== `/${Config.prefix}/login`) {
-                    window.location.replace(`/${Config.prefix}/login`);
-                }
-            }, 1000);
-        }
+    if (
+        isMehrPanelRequest(error) &&
+        (response.status === 401 || response.status === 403)
+    ) {
+        clearSessionAndGoToLogin();
     }
 };
 

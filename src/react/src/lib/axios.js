@@ -5,40 +5,39 @@ import { applyAuthHeader, getApiToken } from "./authToken";
 import { parseJsonResponse } from "./parseJsonResponse";
 
 /**
- * Axios defaults
+ * Dedicated Mehr Panel HTTP client — does not mutate global axios defaults,
+ * so host-app requests stay unaffected.
  */
+const panelAxios = axios.create({
+    baseURL: Config.apiBaseUrl + "/" + Config.prefix,
+    timeout: 600000,
+    headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+    },
+    paramsSerializer: (params) => {
+        const oldData = { ...params };
+        const newData = {};
 
-axios.defaults.baseURL = Config.apiBaseUrl + "/" + Config.prefix;
-
-// Headers
-axios.defaults.headers.common["Content-Type"] = "application/json";
-axios.defaults.headers.common.Accept = "application/json";
-
-delete axios.defaults.headers.common.Authorization;
-
-axios.defaults.paramsSerializer = (params) => {
-    const oldData = { ...params };
-    const newData = {};
-
-    Object.keys(oldData).forEach((key) => {
-        if (oldData[key] !== null) {
-            if (typeof oldData[key] === "object") {
-                newData[key] = JSON.stringify(oldData[key]);
-            } else {
-                newData[key] = oldData[key];
+        Object.keys(oldData).forEach((key) => {
+            if (oldData[key] !== null) {
+                if (typeof oldData[key] === "object") {
+                    newData[key] = JSON.stringify(oldData[key]);
+                } else {
+                    newData[key] = oldData[key];
+                }
             }
-        }
-    });
-    return new URLSearchParams(newData).toString();
-};
+        });
+        return new URLSearchParams(newData).toString();
+    },
+});
 
-axios.defaults.timeout = 600000;
+delete panelAxios.defaults.headers.common.Authorization;
 
-// Add a request interceptor
-axios.interceptors.request.use(
+panelAxios.interceptors.request.use(
     async (inputConfig) => {
         applyAuthHeader(inputConfig.headers, getApiToken());
-        delete axios.defaults.headers.common.Authorization;
+        delete panelAxios.defaults.headers.common.Authorization;
 
         return inputConfig;
     },
@@ -46,8 +45,8 @@ axios.interceptors.request.use(
         throw error;
     },
 );
-// Add a response interceptor
-axios.interceptors.response.use(
+
+panelAxios.interceptors.response.use(
     (response) => {
         response.data = parseJsonResponse(response.data);
         return response;
@@ -69,4 +68,4 @@ axios.interceptors.response.use(
     },
 );
 
-export default axios;
+export default panelAxios;

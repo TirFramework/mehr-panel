@@ -60,7 +60,7 @@ export default function useIndexPage() {
     pagination?.key || pageModule,
     pagination,
     {
-      // Wait for columns OK — don't hammer /data after a 403/404 on the module
+      // Wait for columns OK — don't hammer /data after a 403/404/500 on the module
       enabled:
         !!pagination?.key &&
         pageDataQuery.isSuccess &&

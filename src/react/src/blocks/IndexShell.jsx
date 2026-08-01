@@ -16,9 +16,29 @@ import AiSearch from "./AiSearch";
 import CustomCol from "./CustomCol";
 import Field from "../components/Field";
 import Slot from "../components/Slot";
-import { getPlacementsForSearch, isCustomView } from "../lib/utils";
+import { getPlacementsForSearch, getSearchableFromCols, isCustomView } from "../lib/utils";
 
 const { Title } = Typography;
+
+function toClassToken(value) {
+  return String(value ?? "")
+    .trim()
+    .replace(/\s+/g, "-")
+    .replace(/[^a-zA-Z0-9_-]/g, "");
+}
+
+function humanizeFieldLabel(value) {
+  return typeof value === "string" ? value.replace(/_/g, "-") : value;
+}
+
+function filterValueTokens(val) {
+  if (Array.isArray(val)) return val.filter((v) => v != null && v !== "");
+  if (val && typeof val === "object") {
+    return [val.from, val.to].filter((v) => v != null && v !== "");
+  }
+  if (val != null && val !== "") return [val];
+  return [];
+}
 
 /**
  * Index chrome: title + toolbar (search / filters / create).
@@ -127,7 +147,8 @@ function IndexShell({
                     />
                   )}
 
-                  {(!aiMode || !pageData?.configs?.ai_search) && (
+                  {(!aiMode || !pageData?.configs?.ai_search) &&
+                    !!getSearchableFromCols(pageData?.cols) && (
                     <Search
                       loading={dataQuery.isLoading}
                       value={pagination?.search}
@@ -153,6 +174,7 @@ function IndexShell({
                         type="primary"
                         size="large"
                         danger
+                        className="page-index__clear-filters"
                         onClick={handleClearFilters}
                       />
                     )}
@@ -161,68 +183,104 @@ function IndexShell({
                     Object.keys(pagination.filters || {}).filter(
                       (k) => !aiFilterKeys.includes(k)
                     ).length > 0) && (
-                    <span
-                      style={{
-                        display: "inline-flex",
-                        flexWrap: "wrap",
-                        gap: 2,
-                        alignItems: "center",
-                      }}
-                    >
-                      {[
-                        ...aiFilterKeys.map((k) => ({
-                          key: k,
-                          color: "purple",
-                          isAi: true,
-                        })),
-                        ...Object.keys(pagination.filters || {})
-                          .filter((k) => !aiFilterKeys.includes(k))
-                          .map((k) => ({ key: k, color: "blue", isAi: false })),
-                      ].map(({ key, color, isAi }) => {
-                        const col = pageData?.cols?.find(
-                          (c) => c.fieldName === key
-                        );
-                        const titleText =
-                          typeof col?.title === "string"
-                            ? col.title
-                            : (col?.title?.props?.title ??
-                              col?.title?.props?.children ??
-                              key);
-                        const val = pagination.filters?.[key];
-                        const getLabel = (v) =>
-                          col?.filters?.find(
-                            (f) => String(f.value) === String(v)
-                          )?.label ?? v;
-                        const display = Array.isArray(val)
-                          ? val.slice(0, 3).map(getLabel).join(", ") +
+                      <span
+                        style={{
+                          display: "inline-flex",
+                          flexWrap: "wrap",
+                          gap: 2,
+                          alignItems: "center",
+                        }}
+                      >
+                        {[
+                          ...aiFilterKeys.map((k) => ({
+                            key: k,
+                            color: "purple",
+                            isAi: true,
+                          })),
+                          ...Object.keys(pagination.filters || {})
+                            .filter((k) => !aiFilterKeys.includes(k))
+                            .map((k) => ({ key: k, color: "blue", isAi: false })),
+                        ].map(({ key, color, isAi }) => {
+                          const col = pageData?.cols?.find(
+                            (c) => c.fieldName === key
+                          );
+                          const rawTitle =
+                            typeof col?.title === "string"
+                              ? col.title
+                              : (col?.title?.props?.title ??
+                                (typeof col?.title?.props?.children === "string"
+                                  ? col.title.props.children
+                                  : null) ??
+                                key);
+                          const titleText = humanizeFieldLabel(rawTitle);
+                          const val = pagination.filters?.[key];
+                          const getLabel = (v) =>
+                            col?.filters?.find(
+                              (f) => String(f.value) === String(v)
+                            )?.label ?? v;
+                          const display = Array.isArray(val)
+                            ? val.slice(0, 3).map(getLabel).join(", ") +
                             (val.length > 3 ? " …" : "")
-                          : val && typeof val === "object"
-                            ? val.from && val.to
-                              ? `${val.from} – ${val.to}`
-                              : val.to
-                                ? `≤ ${val.to}`
-                                : val.from
-                                  ? `≥ ${val.from}`
-                                  : ""
-                            : getLabel(val);
-                        return (
-                          <Tag
-                            key={key}
-                            color={color}
-                            closable
-                            onClose={() => removeFilterKey(key, isAi)}
-                            className="page-index__filter-tag"
-                          >
-                            <strong>
-                              {titleText}
-                              {display ? ": " : ""}
-                            </strong>
-                            {display}
-                          </Tag>
-                        );
-                      })}
-                    </span>
-                  )}
+                            : val && typeof val === "object"
+                              ? val.from && val.to
+                                ? `${val.from} – ${val.to}`
+                                : val.to
+                                  ? `≤ ${val.to}`
+                                  : val.from
+                                    ? `≥ ${val.from}`
+                                    : ""
+                              : getLabel(val);
+                          const filterToken = toClassToken(key);
+                          const valueTokens = filterValueTokens(val)
+                            .map(toClassToken)
+                            .filter(Boolean);
+                          return (
+                            <Tag
+                              key={key}
+                              color={color}
+                              closable
+                              onClose={() => removeFilterKey(key, isAi)}
+                              className={[
+                                "page-index__filter-tag",
+                                filterToken &&
+                                `page-index__filter-tag--${filterToken}`,
+                                ...valueTokens.map(
+                                  (v) => `page-index__filter-tag--value-${v}`
+                                ),
+                              ]
+                                .filter(Boolean)
+                                .join(" ")}
+                            >
+                              <strong
+                                className={[
+                                  "page-index__filter-tag__label",
+                                  filterToken &&
+                                  `page-index__filter-tag__label--${filterToken}`,
+                                ]
+                                  .filter(Boolean)
+                                  .join(" ")}
+                              >
+                                {titleText}
+                                {display ? ": " : ""}
+                              </strong>
+                              {display ? (
+                                <span
+                                  className={[
+                                    "page-index__filter-tag__value",
+                                    ...valueTokens.map(
+                                      (v) =>
+                                        `page-index__filter-tag__value--${v}`
+                                    ),
+                                  ].join(" ")}
+                                >
+                                  {display}
+                                </span>
+                              ) : null}
+                            </Tag>
+                          );
+                        })}
+                      </span>
+                    )}
                 </Space>
               </Col>
               <Col flex="none" className="gutter-row page-index__actions">

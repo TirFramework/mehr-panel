@@ -13,7 +13,7 @@ A Laravel package for managing an admin panel.
    or for update
 
    ```bash
-   composer require tir/mehr-panel:12.8.83
+   composer require tir/mehr-panel:12.8.84
    ```
 
 2. Publish the configuration file (optional, to customize prefixes):
@@ -34,13 +34,25 @@ A Laravel package for managing an admin panel.
    php artisan vendor:publish --tag=mehr-panel-customize
    ```
 
-5. Install frontend dependencies:
+5. Merge package `package.json` into the application `package.json`:
+
+   ```bash
+   php artisan mehr-panel:merge-package
+   ```
+
+   To overwrite existing values in the application `package.json`:
+
+   ```bash
+   php artisan mehr-panel:merge-package --override
+   ```
+
+6. Install frontend dependencies:
 
    ```bash
    npm install
    ```
 
-6. Build assets for production:
+7. Build assets for production:
    ```bash
    npm run build
    ```

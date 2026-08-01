@@ -10,10 +10,11 @@ export function getQueryHttpStatus(query) {
 }
 
 /**
- * Axios / query failure that must not be retried or refetched.
+ * Axios / query failure that must not be retried or refetched
+ * (show NotFoundPage instead: 403 / 404 / 500).
  */
 export function isAccessDeniedStatus(status) {
-  return status === 403 || status === 404;
+  return status === 403 || status === 404 || status === 500;
 }
 
 export function isAccessDeniedError(error) {
@@ -21,7 +22,7 @@ export function isAccessDeniedError(error) {
 }
 
 /**
- * True when load failed with 404 or 403 — show access/error page like NotFound.
+ * True when load failed with 403, 404, or 500 — show access/error page like NotFound.
  * @param {object} query
  */
 export function isQueryLoadBlocked(query) {
@@ -29,23 +30,28 @@ export function isQueryLoadBlocked(query) {
 }
 
 /**
- * Pick the most relevant blocked status from several queries (403 preferred over 404).
+ * Pick the most relevant blocked status from several queries
+ * (403 preferred, then 404, then 500).
  * @param {...object} queries
- * @returns {404 | 403 | null}
+ * @returns {403 | 404 | 500 | null}
  */
 export function getLoadBlockedStatus(...queries) {
   let found404 = false;
+  let found500 = false;
   for (const query of queries) {
     const status = getQueryHttpStatus(query);
     if (status === 403) return 403;
     if (status === 404) found404 = true;
+    if (status === 500) found500 = true;
   }
-  return found404 ? 404 : null;
+  if (found404) return 404;
+  if (found500) return 500;
+  return null;
 }
 
 /**
  * Shared React Query options for module loads (index/list/create/detail).
- * After a 403/404, do not hit the API again on remount/reconnect.
+ * After a 403/404/500, do not hit the API again on remount/reconnect.
  */
 export const moduleLoadQueryOptions = {
   retry: false,

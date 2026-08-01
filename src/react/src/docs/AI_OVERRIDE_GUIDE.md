@@ -265,7 +265,7 @@ IndexShell      →  title, search, AI, CustomCol, filter tags, Create, IndexToo
 
 ### Useful `index` fields
 
-`form`, `t`, `pageModule`, `pageData`, `indexData`, `columns`, `mergedColumns`, `rows`, `pagination`, `setPagination`, `listPagination`, `isEmpty`, `emptyDescription`, `notFound`, `loadErrorStatus` (404 \| 403), `headerLoading`, `bodyLoading`, `handleChangeTable`, `onSearch`, `handleClearFilters`, `handleAiFilters`, `handleAiClear`, `handleAiModeChange`, `handleColumnChange`, `handlePaginationChange`, `removeFilterKey`, queries, …
+`form`, `t`, `pageModule`, `pageData`, `indexData`, `columns`, `mergedColumns`, `rows`, `pagination`, `setPagination`, `listPagination`, `isEmpty`, `emptyDescription`, `notFound`, `loadErrorStatus` (404 \| 403 \| 500), `headerLoading`, `bodyLoading`, `handleChangeTable`, `onSearch`, `handleClearFilters`, `handleAiFilters`, `handleAiClear`, `handleAiModeChange`, `handleColumnChange`, `handlePaginationChange`, `removeFilterKey`, queries, …
 
 ### `IndexShell` extra props (list-style)
 

@@ -17,11 +17,13 @@ export default {
   CONFIRM:           "Bestätigen",
   NO_RESULTS_FOUND:  "Keine Ergebnisse gefunden",
 
-  // 404 / 403 page
+  // 404 / 403 / 500 page
   NOT_FOUND_TITLE:   "Seite nicht gefunden",
   NOT_FOUND_DESC:    "Die gesuchte Seite existiert nicht oder wurde verschoben.",
   FORBIDDEN_TITLE:   "Zugriff verweigert",
   FORBIDDEN_DESC:    "Sie haben keine Berechtigung, diese Seite anzuzeigen.",
+  SERVER_ERROR_TITLE: "Etwas ist schiefgelaufen",
+  SERVER_ERROR_DESC:  "Der Server hat einen Fehler festgestellt. Bitte versuchen Sie es später erneut.",
   GO_BACK:           "Zurück",
   GO_HOME:           "Zum Dashboard",
 
